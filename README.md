@@ -3,9 +3,6 @@
 monorepo management with pnpm workspace
 
 ## Quick start
-### Add sub packages
-
-`cd packages && git clone ${repoUrl}`
 
 ### Install dependencies for all repos
 
@@ -27,6 +24,9 @@ monorepo management with pnpm workspace
 
 `pnpm i ${dependencyName} -W`
 
+### Add sub packages
+
+`cd packages && git clone ${repoUrl}`
 
 
 ## Dev Guide
