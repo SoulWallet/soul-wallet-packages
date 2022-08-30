@@ -27,6 +27,16 @@ monorepo management with pnpm workspace
 
 `pnpm i ${dependencyName} -W`
 
-### Linking packages
+
+
+## Dev Guide
+
+### Import sibling package
+
+Link package as dependency first, which is already done in the repo:
 
 `pnpm add ${dependencyPackage} --filter ${packageName}`
+
+Import package like what you did before, take `soul-wallet-lib` for example:
+
+`import { WalletLib } from "soul-wallet-lib";`
