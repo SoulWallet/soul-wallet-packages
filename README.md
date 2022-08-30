@@ -4,6 +4,10 @@ monorepo management with pnpm workspace
 
 ## Quick start
 
+### Install pnpm
+
+`npm i -g pnpm`
+
 ### Install dependencies for all repos
 
 `pnpm i`
