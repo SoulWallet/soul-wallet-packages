@@ -1,0 +1,1 @@
+export { CreatePassword } from "./component";

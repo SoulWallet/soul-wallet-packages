@@ -1,0 +1,16 @@
+{
+  "name": "soul-wallet-packages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:wallet": "pnpm --filter soul-wallet-plugin run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "style-loader": "^3.3.1"
+  }
+}
