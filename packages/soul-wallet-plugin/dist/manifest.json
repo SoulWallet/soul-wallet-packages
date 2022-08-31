@@ -20,5 +20,5 @@
         "128": "icon-128.png"
     },
     "host_permissions": ["https://*/*"],
-    "permissions": ["tabs", "activeTab", "notifications", "scripting"]
+    "permissions": ["tabs", "activeTab", "notifications", "scripting", "storage"]
 }
