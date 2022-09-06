@@ -50,6 +50,7 @@ importers:
       '@typescript-eslint/parser': ^4.4.1
       autoprefixer: ^10.4.1
       awesome-typescript-loader: ^5.2.1
+      axios: ^0.27.2
       babel-core: ^6.26.3
       babel-jest: ^26.5.2
       babel-loader: ^8.1.0
@@ -86,6 +87,7 @@ importers:
       webpack-merge: ^5.8.0
     dependencies:
       '@types/react-router-dom': 5.3.3
+      axios: 0.27.2
       classnames: 2.3.1
       daisyui: 2.24.0_25hquoklqeoqwmt7fwvvcyxm5e
       ethereumjs-util: 7.1.5
@@ -134,7 +136,7 @@ importers:
       postcss-loader: 6.2.1_qjv4cptcpse3y5hrjkrbb7drda
       prettier: 2.7.1
       react-test-renderer: 17.0.2_react@17.0.2
-      tailwindcss: 3.1.8_postcss@8.4.16
+      tailwindcss: 3.1.8
       ts-jest: 26.5.6_hiruyezz6whlouk4tx2v6ut2z4
       ts-loader: 8.4.0_frxmcuunqqqeqipt45cd6rjuvu
       typescript: 4.8.2
@@ -5397,6 +5399,15 @@ packages:
     resolution: {integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==}
     dev: false
 
+  /axios/0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.15.1
+      form-data: 4.0.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /babel-code-frame/6.26.0:
     resolution: {integrity: sha512-XqYMR2dfdGMW+hd0IUZ2PwK+fGeFkOxZJ0wY+JaQAHzt1Zx8LcvpiZD2NiGkEG8qx0CfkAOr5xt76d1e8vG90g==}
     dependencies:
@@ -6970,7 +6981,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.16
       postcss-js: 4.0.0_postcss@8.4.16
-      tailwindcss: 3.1.8_postcss@8.4.16
+      tailwindcss: 3.1.8
     transitivePeerDependencies:
       - ts-node
     dev: false
@@ -8281,6 +8292,16 @@ packages:
       tslib: 1.14.1
     dev: true
 
+  /follow-redirects/1.15.1:
+    resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -8417,6 +8438,15 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.35
     dev: true
+
+  /form-data/4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: false
 
   /forwarded/0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -13772,12 +13802,10 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
-  /tailwindcss/3.1.8_postcss@8.4.16:
+  /tailwindcss/3.1.8:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

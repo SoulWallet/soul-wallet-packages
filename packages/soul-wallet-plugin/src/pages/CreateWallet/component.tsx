@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios'
 import Logo from "@src/components/Logo";
 import { SendEmail } from "@src/components/SendEmail";
 import { CreatePassword } from "@src/components/CreatePassword";
 
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
+
+    const sendAPI = async () => {
+      
+    }
 
     const onVerified = () => {
         setStep(1);

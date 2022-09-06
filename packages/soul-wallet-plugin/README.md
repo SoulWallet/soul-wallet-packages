@@ -29,6 +29,22 @@ soul-wallet-extension
 (figma)[https://www.figma.com/file/pLBiwLUILaudvLxVmo7Msd/Untitled?node-id=0%3A1]
 (heroicons)[https://heroicons.com/]
 
-## TODO
+## API
+- send email
+- save latest guardian list
 
-[x] ignore browser dark mode setting
+## Contract
+- Activate wallet
+- guardians(list, add, remove)
+
+## Design 
+- Sign transaction modal
+- Send
+
+## Product
+- assets erc20 whitelist
+
+## Frontend
+- activity history, click redirect to scan
+- save name locally
+- cache guardians list
