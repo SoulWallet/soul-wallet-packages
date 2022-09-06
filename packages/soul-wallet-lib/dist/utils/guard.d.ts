@@ -17,4 +17,5 @@ export declare class Guard {
      * check if the value is keccak256 hash
      */
     static keccak256(value: string): void;
+    static positiveInteger(value: number): void;
 }

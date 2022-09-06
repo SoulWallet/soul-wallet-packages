@@ -1,4 +1,5 @@
+import { AbiItem } from 'web3-utils';
 export interface IContract {
-    ABI: any;
+    ABI: AbiItem[] | AbiItem;
     bytecode: string;
 }

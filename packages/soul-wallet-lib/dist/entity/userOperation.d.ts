@@ -1,115 +1,38 @@
+import { TransactionInfo } from './transactionInfo';
 /**
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/UserOperation.sol
  */
 declare class UserOperation {
-    private _sender;
-    private _nonce;
-    private _initCode;
-    private _callData;
-    private _callGas;
-    private _verificationGas;
-    private _preVerificationGas;
-    private _maxFeePerGas;
-    private _maxPriorityFeePerGas;
-    private _paymaster;
-    private _paymasterData;
-    private _signature;
-    constructor(sender: string, nonce: number, paymaster: string, callData?: string, initCode?: string);
+    sender: string;
+    nonce: number;
+    initCode: string;
+    callData: string;
+    callGas: number;
+    verificationGas: number;
+    preVerificationGas: number;
+    maxFeePerGas: number;
+    maxPriorityFeePerGas: number;
+    paymaster: string;
+    paymasterData: string;
+    signature: string;
     /**
-     * the sender account of this request
+     * estimate the gas
+     * @param entryPointAddress the entry point address
+     * @param estimateGasFunc the estimate gas function
+     * @returns false if failed
      */
-    get sender(): string;
+    estimateGas(entryPointAddress: string, estimateGasFunc: (txInfo: TransactionInfo) => Promise<number>): Promise<boolean>;
     /**
-     * the sender account of this request
+     * get the paymaster sign hash
+     * @returns
      */
-    set sender(value: string);
+    payMasterSignHash(): string;
     /**
-     * unique value the sender uses to verify it is not a replay.
+     * sign the user operation
+     * @param entryPoint the entry point address
+     * @param chainId the chain id
+     * @param privateKey the private key
      */
-    get nonce(): number;
-    /**
-     * unique value the sender uses to verify it is not a replay.
-     */
-    set nonce(value: number);
-    /**
-     * if set, the account contract will be created by this constructor
-     */
-    get initCode(): string;
-    /**
-     * if set, the account contract will be created by this constructor
-     */
-    set initCode(value: string);
-    /**
-     * the method call to execute on this account.
-     */
-    get callData(): string;
-    /**
-     * the method call to execute on this account.
-     */
-    set callData(value: string);
-    /**
-     * gas used for validateUserOp and validatePaymasterUserOp
-     */
-    get callGas(): number;
-    /**
-     * gas used for validateUserOp and validatePaymasterUserOp
-     */
-    set callGas(value: number);
-    /**
-     * gas not calculated by the handleOps method, but added to the gas paid. Covers batch overhead.
-     */
-    get verificationGas(): number;
-    /**
-     * gas not calculated by the handleOps method, but added to the gas paid. Covers batch overhead.
-     */
-    set verificationGas(value: number);
-    /**
-     * gas not calculated by the handleOps method, but added to the gas paid. Covers batch overhead.
-     */
-    get preVerificationGas(): number;
-    /**
-     * gas not calculated by the handleOps method, but added to the gas paid. Covers batch overhead.
-     */
-    set preVerificationGas(value: number);
-    /**
-     * same as EIP-1559 gas parameter
-     */
-    get maxFeePerGas(): number;
-    /**
-     * same as EIP-1559 gas parameter
-     */
-    set maxFeePerGas(value: number);
-    /**
-     * same as EIP-1559 gas parameter
-     */
-    get maxPriorityFeePerGas(): number;
-    /**
-     * same as EIP-1559 gas parameter
-     */
-    set maxPriorityFeePerGas(value: number);
-    /**
-     * if set, the paymaster will pay for the transaction instead of the sender
-     */
-    get paymaster(): string;
-    /**
-     * if set, the paymaster will pay for the transaction instead of the sender
-     */
-    set paymaster(value: string);
-    /**
-     * extra data used by the paymaster for validation
-     */
-    get paymasterData(): string;
-    /**
-     * extra data used by the paymaster for validation
-     */
-    set paymasterData(value: string);
-    /**
-     * sender-verified signature over the entire request, the EntryPoint address and the chain ID.
-     */
-    get signature(): string;
-    /**
-     * sender-verified signature over the entire request, the EntryPoint address and the chain ID.
-     */
-    set signature(value: string);
+    sign(entryPoint: string, chainId: number, privateKey: string): void;
 }
 export { UserOperation };

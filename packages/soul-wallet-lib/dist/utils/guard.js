@@ -8,7 +8,7 @@ const web3Helper_1 = require("./web3Helper");
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 20:12:45
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-05 21:27:56
+ * @LastEditTime: 2022-08-05 22:44:14
  */
 class Guard {
     static get web3() {
@@ -32,8 +32,13 @@ class Guard {
                 throw new Error('Invalid uint');
             }
         }
-        else if (value < 0) {
-            throw new Error('Invalid uint');
+        else {
+            if (value < 0) {
+                throw new Error('Invalid uint');
+            }
+            else if (value % 1 !== 0) {
+                throw new Error('Invalid uint');
+            }
         }
     }
     /**
@@ -51,6 +56,12 @@ class Guard {
         Guard.hex(value);
         if (value.length !== 66) {
             throw new Error('Invalid keccak256 value');
+        }
+    }
+    static positiveInteger(value) {
+        Guard.uint(value);
+        if (value === 0) {
+            throw new Error('Invalid positive integer');
         }
     }
 }
