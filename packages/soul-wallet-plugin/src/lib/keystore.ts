@@ -38,12 +38,13 @@ export default class KeyStore {
      * get the EOA address
      * @returns EOA address, null is failed or no keystore
      */
-    public async getAddress(): Promise<string | null> {
+    public async getAddress(): Promise<string> {
         const val = await getLocalStorage(this.keyStoreKey);
+        console.log('va is', val.address)
         if (val && val.address) {
             return this.web3.utils.toChecksumAddress(val.address);
         }
-        return null;
+        return '';
     }
 
     /**
@@ -51,14 +52,14 @@ export default class KeyStore {
      * @param password 
      * @returns EOA address, null is failed
      */
-    public async createNewAddress(password: string): Promise<string | null> {
+    public async createNewAddress(password: string): Promise<string> {
         try {
             const account = this.web3.eth.accounts.create();
             const KeystoreV3 = this.web3.eth.accounts.encrypt(account.privateKey, password);
             setLocalStorage(this.keyStoreKey, KeystoreV3);
             return account.address;
         } catch (error) {
-            return null;
+            return '';
         }
     }
 

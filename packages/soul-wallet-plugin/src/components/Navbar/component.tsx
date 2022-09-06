@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Logo from "@src/assets/logo.svg";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import IconMenu from "@src/assets/menu.svg";
-// import sdk from "@src/sdk";
 
 interface IProps {
     backUrl?: string;

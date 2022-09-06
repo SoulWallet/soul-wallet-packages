@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios'
 import Logo from "@src/components/Logo";
 import { SendEmail } from "@src/components/SendEmail";
 import { CreatePassword } from "@src/components/CreatePassword";
@@ -14,9 +13,11 @@ export function CreateWallet() {
 
     const onVerified = () => {
         setStep(1);
+        
     };
 
-    const onCreated = () => {
+    const onCreated = (address: string | null) => {
+        console.log('created address', address)
         setStep(2);
     };
 

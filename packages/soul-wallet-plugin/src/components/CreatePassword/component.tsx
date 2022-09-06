@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import IconEnter from "@src/assets/enter.svg";
+import KeyStore from "@src/lib/keystore";
 import { Input } from "../Input";
 
+const keyStore = KeyStore.getInstance();
+
 interface CreatePasswordProps {
-    onCreated: () => void;
+    onCreated: (address: string | null) => void;
 }
 
 interface ErrorProps {
@@ -52,7 +55,9 @@ export function CreatePassword({ onCreated }: CreatePasswordProps) {
         // clear previous errors
         setErrors(errorDefaultValues);
         if (checkParams()) {
-            onCreated();
+            // do create account
+            const address = await keyStore.createNewAddress(newPassword);
+            onCreated(address);
         }
     };
 

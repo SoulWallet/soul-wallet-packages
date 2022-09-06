@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
+import KeyStore from "@src/lib/keystore";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import { Welcome } from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
@@ -10,9 +11,19 @@ import { Wallet } from "@src/pages/Wallet";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
 
+const keyStore = KeyStore.getInstance();
+
 export function Popup() {
-    // Sends the `popupMounted` event
-    React.useEffect(() => {
+    const [account, setAccount] = useState<string>("");
+
+    const checkUserState = async () => {
+        // check if user has account
+        setAccount(await keyStore.getAddress());
+    };
+
+    useEffect(() => {
+        checkUserState();
+
         if (!browser) {
             return;
         }
@@ -33,7 +44,7 @@ export function Popup() {
                         path="/guardian/:address"
                         element={<GuardianDetail />}
                     />
-                    <Route path="*" element={<Wallet />} />
+                    <Route path="*" element={account ? <Wallet /> : <Welcome />} />
                 </Routes>
             </Router>
             <ToastContainer position="bottom-center" />

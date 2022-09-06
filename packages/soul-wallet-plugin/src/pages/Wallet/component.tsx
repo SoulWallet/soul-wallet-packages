@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "@src/components/Navbar";
-
+import KeyStore from "@src/lib/keystore";
 import AccountInfo from "@src/components/AccountInfo";
 import Operations from "./comp/Operations";
 import Actions from "./comp/Actions";
 
+const keyStore = KeyStore.getInstance();
+
 export function Wallet() {
+    const [account, setAccount] = useState<string>("");
+
+    const getAccount = async () => {
+        setAccount(await keyStore.getAddress());
+    };
+
+    useEffect(() => {
+        getAccount();
+    }, []);
+
     return (
         <>
             <Navbar />
-            <AccountInfo
-                account="0x6b5cf860506c6291711478F54123312066944B3"
-                action="activate"
-            />
+            <AccountInfo account={account} action="activate" />
 
             <Actions />
 

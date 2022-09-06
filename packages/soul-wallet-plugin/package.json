@@ -72,6 +72,7 @@
         "ethereumjs-util": "^7.1.5",
         "ethers": "^5.6.9",
         "material-react-toastify": "^1.0.1",
+        "node-polyfill-webpack-plugin": "^2.0.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-jazzicon": "^1.0.4",

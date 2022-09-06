@@ -17,7 +17,7 @@ export function copyText(value: string) {
 export async function getLocalStorage(key: string): Promise<any> {
     return new Promise((resolve, _) => {
         chrome.storage.local.get(key, function (result) {
-            resolve(result);
+            resolve(result[key]);
         });
     });
 }

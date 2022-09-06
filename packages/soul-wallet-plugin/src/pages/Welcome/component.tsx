@@ -1,12 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Logo from "@src/assets/logo.svg";
 import LogoText from "@src/assets/logo-text.svg";
-import { WalletLib } from "soul-wallet-lib";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import sdk from "@src/sdk";
 import config from "@src/config";
 
 export function Welcome() {
+    const navigate = useNavigate();
+
     return (
         <>
             {/* <Navbar /> */}
