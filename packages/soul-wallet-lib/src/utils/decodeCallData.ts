@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-05 12:47:49
+ * @LastEditTime: 2022-09-06 12:59:43
  */
 import axios from 'axios';
 import { readFileSync } from 'fs';
@@ -151,6 +151,11 @@ export class DecodeCallData {
      * @returns 
      */
     public async decode(callData: string): Promise<IDecode | null> {
+
+        if (callData.length < 10) {
+            return null;
+        }
+
         callData = callData.toLowerCase();
         const bytes4 = callData.slice(0, 10)
         const method = this.bytes4Methods.get(bytes4);

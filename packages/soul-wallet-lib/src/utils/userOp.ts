@@ -60,34 +60,6 @@ export function packUserOp(op: UserOperation, forSignature = true): string {
   return encode(typevalues, forSignature)
 }
 
-export function packUserOp1(op: UserOperation): string {
-  return defaultAbiCoder.encode([
-    'address', // sender
-    'uint256', // nonce
-    'bytes32', // initCode
-    'bytes32', // callData
-    'uint256', // callGas
-    'uint', // verificationGas
-    'uint', // preVerificationGas
-    'uint256', // maxFeePerGas
-    'uint256', // maxPriorityFeePerGas
-    'address', // paymaster
-    'bytes32' // paymasterData
-  ], [
-    op.sender,
-    op.nonce,
-    keccak256(op.initCode),
-    keccak256(op.callData),
-    op.callGas,
-    op.verificationGas,
-    op.preVerificationGas,
-    op.maxFeePerGas,
-    op.maxPriorityFeePerGas,
-    op.paymaster,
-    keccak256(op.paymasterData)
-  ])
-}
-
 export function getRequestId(op: UserOperation, entryPointAddress: string, chainId: number): string {
   const userOpHash = keccak256(packUserOp(op, true))
   const enc = defaultAbiCoder.encode(
@@ -125,10 +97,44 @@ function _signUserOp(op: UserOperation, entryPointAddress: string, chainId: numb
  */
 export function signUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
   const sign = _signUserOp(op, entryPointAddress, chainId, privateKey);
-  const enc = defaultAbiCoder.encode(['uint8', 'tuple(address,bytes)[]'], [SignatureMode.owner, [
-    new Web3().eth.accounts.privateKeyToAccount(privateKey).address,
-    sign
-  ]]);
+  const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
+    [
+      SignatureMode.owner,
+      [
+        {
+          signer: new Web3().eth.accounts.privateKeyToAccount(privateKey).address,
+          signature: sign
+        }
+      ]
+    ]
+  );
   return enc;
 }
+
+export function payMasterSignHash(op: UserOperation): string {
+  return keccak256(defaultAbiCoder.encode([
+    'address', // sender
+    'uint256', // nonce
+    'bytes32', // initCode
+    'bytes32', // callData
+    'uint256', // callGas
+    'uint', // verificationGas
+    'uint', // preVerificationGas
+    'uint256', // maxFeePerGas
+    'uint256', // maxPriorityFeePerGas
+    'address', // paymaster
+  ], [
+    op.sender,
+    op.nonce,
+    keccak256(op.initCode),
+    keccak256(op.callData),
+    op.callGas,
+    op.verificationGas,
+    op.preVerificationGas,
+    op.maxFeePerGas,
+    op.maxPriorityFeePerGas,
+    op.paymaster,
+  ]))
+}
+
 
