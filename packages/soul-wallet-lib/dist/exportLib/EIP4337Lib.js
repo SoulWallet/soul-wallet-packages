@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:57:09
+ * @LastEditTime: 2022-09-08 10:07:54
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -17,7 +17,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EIP4337Lib = void 0;
+exports.UserOperation = exports.EIP4337Lib = void 0;
 const utils_1 = require("ethers/lib/utils");
 const address_1 = require("../defines/address");
 const userOperation_1 = require("../entity/userOperation");
@@ -137,7 +137,7 @@ class EIP4337Lib {
                     if (isNaN(nextNonce)) {
                         throw new Error('nonce is not a number');
                     }
-                    return nonce;
+                    return nextNonce;
                 }
             }
             catch (error) {
@@ -158,4 +158,6 @@ EIP4337Lib.Defines = {
     AddressZero: address_1.AddressZero,
     Create2Factory: address_1.Create2Factory
 };
+var userOperation_2 = require("../entity/userOperation");
+Object.defineProperty(exports, "UserOperation", { enumerable: true, get: function () { return userOperation_2.UserOperation; } });
 //# sourceMappingURL=EIP4337Lib.js.map

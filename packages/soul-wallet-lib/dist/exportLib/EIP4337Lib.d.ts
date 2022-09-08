@@ -66,3 +66,4 @@ export declare class EIP4337Lib {
      */
     private static getNonce;
 }
+export { UserOperation } from "../entity/userOperation";

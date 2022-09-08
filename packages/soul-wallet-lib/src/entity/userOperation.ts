@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:54:30
+ * @LastEditTime: 2022-09-08 20:30:11
  */
 
 import Web3 from 'web3';
@@ -31,6 +31,22 @@ class UserOperation {
     public paymasterData: string = '0x';
     public signature: string = '0x';
 
+    public clone(): UserOperation {
+        const clone = new UserOperation();
+        clone.sender = this.sender;
+        clone.nonce = this.nonce;
+        clone.initCode = this.initCode;
+        clone.callData = this.callData;
+        clone.callGas = this.callGas;
+        clone.verificationGas = this.verificationGas;
+        clone.preVerificationGas = this.preVerificationGas;
+        clone.maxFeePerGas = this.maxFeePerGas;
+        clone.maxPriorityFeePerGas = this.maxPriorityFeePerGas;
+        clone.paymaster = this.paymaster;
+        clone.paymasterData = this.paymasterData;
+        clone.signature = this.signature;
+        return clone;
+    }
 
     /**
      * estimate the gas

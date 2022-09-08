@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:54:30
+ * @LastEditTime: 2022-09-08 20:30:11
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -37,6 +37,22 @@ class UserOperation {
         this.paymaster = '0x';
         this.paymasterData = '0x';
         this.signature = '0x';
+    }
+    clone() {
+        const clone = new UserOperation();
+        clone.sender = this.sender;
+        clone.nonce = this.nonce;
+        clone.initCode = this.initCode;
+        clone.callData = this.callData;
+        clone.callGas = this.callGas;
+        clone.verificationGas = this.verificationGas;
+        clone.preVerificationGas = this.preVerificationGas;
+        clone.maxFeePerGas = this.maxFeePerGas;
+        clone.maxPriorityFeePerGas = this.maxPriorityFeePerGas;
+        clone.paymaster = this.paymaster;
+        clone.paymasterData = this.paymasterData;
+        clone.signature = this.signature;
+        return clone;
     }
     /**
      * estimate the gas

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:57:09
+ * @LastEditTime: 2022-09-08 10:07:54
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -180,7 +180,7 @@ export class EIP4337Lib {
                 if (isNaN(nextNonce)) {
                     throw new Error('nonce is not a number');
                 }
-                return nonce;
+                return nextNonce;
             }
 
         } catch (error) {
@@ -190,3 +190,5 @@ export class EIP4337Lib {
 
 
 }
+
+export { UserOperation } from "../entity/userOperation";

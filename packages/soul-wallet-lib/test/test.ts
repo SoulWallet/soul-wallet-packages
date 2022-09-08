@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 19:07:41
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 13:07:39
+ * @LastEditTime: 2022-09-08 20:42:11
  */
 import { WalletLib } from '../src/app';
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
@@ -14,9 +14,8 @@ import { assert } from 'console';
 import fs from 'fs';
 import { Utils } from './Utils';
 import * as dotenv from 'dotenv';
-import { UserOperation } from '../src/entity/userOperation';
-import { EIP4337Lib } from '../src/exportLib/EIP4337Lib';
- 
+import { EIP4337Lib, UserOperation } from '../src/exportLib/EIP4337Lib';
+
 dotenv.config({ path: './test/.env' });
 
 
@@ -196,7 +195,6 @@ async function main() {
     }
 
     const gasFee = await Utils.getGasPrice(chainId);
-
     let nonce = await EIP4337Lib.Utils.getNonce(simpleWalletAddress, web3);
     let userOperation: UserOperation = new EIP4337Lib.UserOperation();
     userOperation.nonce = nonce;
@@ -216,30 +214,41 @@ async function main() {
             web3.utils.toHex(web3.utils.toWei("0.00001", 'ether')), "0x"
         ]
     );
+    // transferOwner(address account)
+    // console.log(`transferOwner(address account):`, web3.eth.abi.encodeFunctionCall({
+    //     name: 'transferOwner',
+    //     type: 'function',
+    //     inputs: [{
+    //         type: 'address',
+    //         name: 'account'
+    //     }],
+    // }, [account_sponser.address]));
+
 
 
     await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
 
-    const paymasterSignHash = userOperation.payMasterSignHash();
-    console.log(`paymasterSignHash`, paymasterSignHash);
-    userOperation.paymasterData = Utils.signPayMasterHash(paymasterSignHash, PAYMASTER_SIGN_KEY)
-    console.log(`paymasterData`, userOperation.paymasterData);
+
+    const signData = await Utils.signOp([userOperation]);
+    if (!signData || signData.length !== 1) {
+        throw new Error('signData is null');
+    }
+    userOperation.paymaster = signData[0].paymaster;
+    userOperation.paymasterData = signData[0].paymasterData;
+
     userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
 
     try {
         const result = await entryPointContract.methods.simulateValidation(userOperation).call({
             from: EIP4337Lib.Defines.AddressZero
         });
+      
         console.log(`simulateValidation result:`, result);
-        if (true) {
-            const handleOpsCallData = entryPointContract.methods.handleOps([userOperation], BENEFICIARY_ADDR).encodeABI();
-            const AASendTx = await Utils.signAndSendTransaction(web3,
-                SPONSER_KEY,
-                entryPointAddress,
-                '0x00',
-                handleOpsCallData);
-            console.log(`AASendTx:`, AASendTx);
-        }
+
+        const signData = await Utils.sendOp([userOperation]);
+        console.log(`signData:`, signData);
+
+
     } catch (error) {
         console.error(error);
         throw new Error("simulateValidation error");
