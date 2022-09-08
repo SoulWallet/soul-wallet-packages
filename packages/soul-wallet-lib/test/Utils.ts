@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:24:16
+ * @LastEditTime: 2022-09-08 11:54:04
  */
 
 
@@ -15,8 +15,7 @@ import axios from 'axios';
 import { UserOperation } from '../src/entity/userOperation';
 import { arrayify, defaultAbiCoder, hexlify, hexZeroPad, keccak256 } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
-
-
+import { HttpPOSTResponse, signData } from './entity/PayMasterRPC';
 
 export class Utils {
 
@@ -173,6 +172,49 @@ export class Utils {
         ]))
     }
 
+    static async signOp(ops: UserOperation[]) {
+        try {
+            const data = await axios.post('http://paymasterapi-poc.soulwallets.me/sign', {
+                method: 'sign',
+                data: ops,
+                extra: {}
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const resp = data.data as HttpPOSTResponse;
+            if (resp.code === 0) {
+                return resp.data as signData[];
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return null;
+    }
+
+
+    static async sendOp(ops: UserOperation[]) {
+        try {
+            const data = await axios.post('http://paymasterapi-poc.soulwallets.me/send', {
+                method: 'send',
+                data: ops,
+                extra: {}
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const resp = data.data as HttpPOSTResponse;
+            if (resp.code === 0) {
+                return resp.data as signData[];
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return null;
+    }
+
     static signPayMasterHash(message: string, privateKey: string): string {
         const msg1 = Buffer.concat([
             Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
@@ -245,6 +287,6 @@ export class Utils {
             ['bytes32', 'address', 'uint256'],
             [userOpHash, entryPointAddress, chainId])
         return keccak256(enc)
-    } 
+    }
 
 }
