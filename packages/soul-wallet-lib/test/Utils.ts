@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-08 11:54:04
+ * @LastEditTime: 2022-09-09 20:31:58
  */
 
 
@@ -172,11 +172,14 @@ export class Utils {
         ]))
     }
 
-    static async signOp(ops: UserOperation[]) {
+    static signOpUrl = 'http://paymasterapi-poc.soulwallets.me/sign';//'http://127.0.0.1/sign';//
+    static sendOpUrl = 'http://paymasterapi-poc.soulwallets.me/send';//'http://127.0.0.1/send';// 
+
+    static async signOp(op: UserOperation) {
         try {
-            const data = await axios.post('http://paymasterapi-poc.soulwallets.me/sign', {
+            const data = await axios.post(Utils.signOpUrl, {
                 method: 'sign',
-                data: ops,
+                data: op,
                 extra: {}
             }, {
                 headers: {
@@ -185,7 +188,7 @@ export class Utils {
             });
             const resp = data.data as HttpPOSTResponse;
             if (resp.code === 0) {
-                return resp.data as signData[];
+                return resp.data as signData;
             }
         } catch (error) {
             console.log(error);
@@ -194,11 +197,11 @@ export class Utils {
     }
 
 
-    static async sendOp(ops: UserOperation[]) {
+    static async sendOp(op: UserOperation) {
         try {
-            const data = await axios.post('http://paymasterapi-poc.soulwallets.me/send', {
+            const data = await axios.post(Utils.sendOpUrl, {
                 method: 'send',
-                data: ops,
+                data: op,
                 extra: {}
             }, {
                 headers: {
@@ -207,7 +210,7 @@ export class Utils {
             });
             const resp = data.data as HttpPOSTResponse;
             if (resp.code === 0) {
-                return resp.data as signData[];
+                return resp.data as signData;
             }
         } catch (error) {
             console.log(error);
