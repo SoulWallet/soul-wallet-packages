@@ -11,7 +11,7 @@ import { UserOperation } from '../../src/exportLib/EIP4337Lib';
 
 export class HttpPOSTRequest {
     method: 'sign' | 'send' | undefined;
-    data?: UserOperation[];
+    data?: UserOperation;
     extra?: any = {};
 }
 
@@ -47,7 +47,7 @@ export class HttpPOSTResponse {
     /**
      * any data
      */
-    data: any | signData[] = {};
+    data: any | signData = {};
 }
 export class signData {
     succ: boolean;

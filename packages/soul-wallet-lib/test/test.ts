@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 19:07:41
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-08 20:42:11
+ * @LastEditTime: 2022-09-09 20:25:27
  */
 import { WalletLib } from '../src/app';
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
@@ -229,12 +229,12 @@ async function main() {
     await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
 
 
-    const signData = await Utils.signOp([userOperation]);
-    if (!signData || signData.length !== 1) {
+    const signData = await Utils.signOp(userOperation);
+    if (!signData) {
         throw new Error('signData is null');
     }
-    userOperation.paymaster = signData[0].paymaster;
-    userOperation.paymasterData = signData[0].paymasterData;
+    userOperation.paymaster = signData.paymaster;
+    userOperation.paymasterData = signData.paymasterData;
 
     userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
 
@@ -242,10 +242,10 @@ async function main() {
         const result = await entryPointContract.methods.simulateValidation(userOperation).call({
             from: EIP4337Lib.Defines.AddressZero
         });
-      
+
         console.log(`simulateValidation result:`, result);
 
-        const signData = await Utils.sendOp([userOperation]);
+        const signData = await Utils.sendOp(userOperation);
         console.log(`signData:`, signData);
 
 
