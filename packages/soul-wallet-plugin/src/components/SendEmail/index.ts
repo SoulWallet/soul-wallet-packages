@@ -1,1 +1,0 @@
-export { SendEmail } from "./component";

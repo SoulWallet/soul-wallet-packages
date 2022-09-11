@@ -111,26 +111,23 @@ export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
                             }}
                             error={errors.code}
                             verified={verifyCode.length === 6}
+                            ExtraButton={
+                                <>
+                                    {gapTime > 0 ? (
+                                        <span className="text-[rgba(0,0,0,.2)] bg-gray30 py-[5px] px-3 text-xs rounded-xl">
+                                            {gapTime}s
+                                        </span>
+                                    ) : (
+                                        <a
+                                            className="bg-blue py-[5px] px-3 text-white text-xs rounded-xl cursor-pointer"
+                                            onClick={doSend}
+                                        >
+                                            Resend
+                                        </a>
+                                    )}
+                                </>
+                            }
                         />
-
-                        <div className="mt-4">
-                            {gapTime > 0 ? (
-                                <div className="">
-                                    You can resend after{" "}
-                                    <span className="text-blueDeep">
-                                        {gapTime}
-                                    </span>{" "}
-                                    seconds.
-                                </div>
-                            ) : (
-                                <a
-                                    className="text-blueDeep cursor-pointer"
-                                    onClick={doSend}
-                                >
-                                    Resend
-                                </a>
-                            )}
-                        </div>
                     </div>
                     <img
                         src={IconEnter}

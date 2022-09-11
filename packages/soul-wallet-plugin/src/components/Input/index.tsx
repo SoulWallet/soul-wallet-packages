@@ -9,6 +9,7 @@ interface InputProps {
     verified?: boolean;
     value: string;
     error: string;
+    ExtraButton?: React.ReactNode,
     onChange: (value: string) => void;
 }
 
@@ -19,6 +20,7 @@ export function Input({
     type = "text",
     verified,
     label,
+    ExtraButton,
     onChange,
 }: InputProps) {
     return (
@@ -45,6 +47,10 @@ export function Input({
                         className="absolute right-4 top-0 bottom-0 my-auto"
                     />
                 )}
+                <div className="absolute right-4 flex items-center top-0 bottom-0">
+                    {ExtraButton}
+                    {/* <ExtraButton /> */}
+                </div>
             </div>
 
             {error && (

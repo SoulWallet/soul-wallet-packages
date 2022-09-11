@@ -15,8 +15,10 @@ export default function Welcome() {
     const navigate = useNavigate();
 
     const checkLocked = async () => {
-        const res = await keyStore.checkLocked();
-        setIsLocked(res);
+        const res = await keyStore.getPassword();
+        if (res) {
+            setIsLocked(true);
+        }
     };
 
     const doUnlock = async () => {

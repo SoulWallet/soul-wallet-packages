@@ -81,11 +81,10 @@ export default class KeyStore {
     }
 
     /**
-     * check if user is locked
+     * get password set by user
      */
-    public async checkLocked(): Promise<boolean> {
-        const storedAddress = (await getLocalStorage(this.keyStoreKey)).address
-        return storedAddress && !this._privateKey ? true: false
+    public async getPassword(): Promise<string> {
+        return await getSessionStorage('pw');
     }
 
     /**

@@ -19,7 +19,7 @@ export function Popup() {
     const [account, setAccount] = useState<string>("");
 
     const checkUserState = async () => {
-        const sessionPw = await getSessionStorage("pw");
+        const sessionPw = await keyStore.getPassword();
         if (sessionPw) {
             await keyStore.unlock(sessionPw);
             setAccount(await keyStore.getAddress());
