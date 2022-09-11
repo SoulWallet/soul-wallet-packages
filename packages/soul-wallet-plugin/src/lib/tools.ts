@@ -46,3 +46,33 @@ export async function removeLocalStorage(key: string) {
         });
     });
 }
+
+/**
+ * get session storage
+ * @param key
+ * @returns
+ */
+export async function getSessionStorage(key: string): Promise<string> {
+    // @ts-ignore
+    return (await chrome.storage.session.get(key))[key];
+}
+
+/**
+ * set session storage
+ * @param key
+ * @param value
+ * @returns
+ */
+export async function setSessionStorage(key: string, value: any): Promise<void> {
+    // @ts-ignore
+    return await chrome.storage.session.set({ [key]: value });
+}
+
+/**
+ * remove session storage
+ */
+
+export async function removeSessionStorage(key: string): Promise<void> {
+    // @ts-ignore
+    return await chrome.storage.session.remove(key);
+}

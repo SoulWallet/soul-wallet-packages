@@ -44,3 +44,6 @@ Link package as dependency first, which is already done in the repo:
 Import package like what you did before, take `soul-wallet-lib` for example:
 
 `import { WalletLib } from "soul-wallet-lib";`
+
+## TODO
+[] chrome.storage.session requires chrome version >= 102, add polyfill.

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import KeyStore from "@src/lib/keystore";
-import { getLocalStorage } from "@src/lib/tools";
+import { getSessionStorage } from "@src/lib/tools";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
@@ -19,7 +19,7 @@ export function Popup() {
     const [account, setAccount] = useState<string>("");
 
     const checkUserState = async () => {
-        const sessionPw = await getLocalStorage("pw");
+        const sessionPw = await getSessionStorage("pw");
         if (sessionPw) {
             await keyStore.unlock(sessionPw);
             setAccount(await keyStore.getAddress());
