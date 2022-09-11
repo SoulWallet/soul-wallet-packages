@@ -1,19 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@src/assets/logo.svg";
 import IconArrowBack from "@src/assets/arrow-left.svg";
+import KeyStore from "@src/lib/keystore";
 import IconMenu from "@src/assets/menu.svg";
+
+const keyStore = KeyStore.getInstance();
 
 interface IProps {
     backUrl?: string;
 }
 
 export function Navbar({ backUrl }: IProps) {
+    const navigate = useNavigate();
     const doLockWallet = async () => {
-        // sdk.wallet.lockWallet();
-    };
-    const doRecoverWallet = async () => {
-        // sdk.wallet.recoverWallet();
+        await keyStore.lock();
+        navigate("/welcome");
     };
 
     return (
@@ -43,11 +45,12 @@ export function Navbar({ backUrl }: IProps) {
                         <li>
                             <Link to="/create-wallet">Create Wallet</Link>
                         </li>
-                        {/* <li>
-                            <a onClick={doLockWallet}>Lock Wallet</a>
-                        </li> */}
+
                         <li>
                             <Link to="/recover-wallet">Recover Wallet</Link>
+                        </li>
+                        <li>
+                            <a onClick={doLockWallet}>Lock Wallet</a>
                         </li>
                     </ul>
                 </div>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import KeyStore from "@src/lib/keystore";
+import { getLocalStorage } from "@src/lib/tools";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { Welcome } from "@src/pages/Welcome";
+import Welcome from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
 import { CreateWallet } from "@src/pages/CreateWallet";
@@ -14,11 +15,16 @@ import GuardianAdd from "@src/pages/Guardian/add";
 const keyStore = KeyStore.getInstance();
 
 export function Popup() {
+    const [loading, setLoading] = useState(true);
     const [account, setAccount] = useState<string>("");
 
     const checkUserState = async () => {
-        // check if user has account
-        setAccount(await keyStore.getAddress());
+        const sessionPw = await getLocalStorage("pw");
+        if (sessionPw) {
+            await keyStore.unlock(sessionPw);
+            setAccount(await keyStore.getAddress());
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -35,7 +41,7 @@ export function Popup() {
         <div className="artboard phone-1 phone bg-white text-base">
             <Router>
                 <Routes>
-                    {/* <Route path="/" element={<Welcome />} /> */}
+                    <Route path="/welcome" element={<Welcome />} />
                     <Route path="/wallet" element={<Wallet />} />
                     <Route path="/create-wallet" element={<CreateWallet />} />
                     <Route path="/recover-wallet" element={<RecoverWallet />} />
@@ -44,7 +50,12 @@ export function Popup() {
                         path="/guardian/:address"
                         element={<GuardianDetail />}
                     />
-                    <Route path="*" element={account ? <Wallet /> : <Welcome />} />
+                    {!loading && (
+                        <Route
+                            path="*"
+                            element={account ? <Wallet /> : <Welcome />}
+                        />
+                    )}
                 </Routes>
             </Router>
             <ToastContainer position="bottom-center" />

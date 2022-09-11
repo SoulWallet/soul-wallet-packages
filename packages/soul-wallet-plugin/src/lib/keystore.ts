@@ -8,7 +8,7 @@
  */
 
 import Web3 from "web3";
-import { setLocalStorage, getLocalStorage } from "@src/lib/tools";
+import { setLocalStorage, getLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import { arrayify } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 
@@ -40,7 +40,6 @@ export default class KeyStore {
      */
     public async getAddress(): Promise<string> {
         const val = await getLocalStorage(this.keyStoreKey);
-        console.log('va is', val.address)
         if (val && val.address) {
             return this.web3.utils.toChecksumAddress(val.address);
         }
@@ -69,6 +68,7 @@ export default class KeyStore {
             if (val && val.address && val.crypto) {
                 const account = this.web3.eth.accounts.decrypt(val, password);
                 this._privateKey = account.privateKey;
+                setLocalStorage('pw', password);
                 return account.address;
             }
         }
@@ -77,6 +77,15 @@ export default class KeyStore {
 
     public async lock(): Promise<void> {
         this._privateKey = null;
+        await removeLocalStorage('pw');
+    }
+
+    /**
+     * check if user is locked
+     */
+    public async checkLocked(): Promise<boolean> {
+        const storedAddress = (await getLocalStorage(this.keyStoreKey)).address
+        return storedAddress && !this._privateKey ? true: false
     }
 
     /**
