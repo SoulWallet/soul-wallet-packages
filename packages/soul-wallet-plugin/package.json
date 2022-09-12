@@ -16,8 +16,7 @@
         "react",
         "typescript",
         "chrome",
-        "extension",
-        "boilerplate"
+        "extension"
     ],
     "author": "Alexander Schwartzberg",
     "license": "MIT",

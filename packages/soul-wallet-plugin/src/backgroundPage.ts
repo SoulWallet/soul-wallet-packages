@@ -14,7 +14,10 @@ import browser from "webextension-polyfill";
 //     chrome.storage.local.remove("pw");
 // });
 
-chrome.runtime.onMessage.addListener(msg => {
-    console.log('msg', msg);
-
-})
+chrome.runtime.onMessage.addListener((msg) => {
+    switch (msg.type) {
+        case "sign":
+            chrome.tabs.create({ url: "popup.html" });
+            break;
+    }
+});

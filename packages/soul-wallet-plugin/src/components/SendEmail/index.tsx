@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "@src/components/Button";
 import IconEnter from "@src/assets/enter.svg";
-import IconLoading from "@src/assets/loading.gif";
+// import IconLoading from "@src/assets/loading.gif";
 import { Input } from "../Input";
 
 interface SendEmailProps {
@@ -33,7 +33,6 @@ export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
         const res = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
             email,
         );
-        console.log(res);
         if (!res) {
             setErrors((prev) => ({
                 ...prev,

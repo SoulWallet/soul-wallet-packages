@@ -9,6 +9,8 @@ module.exports = {
                 blueDeep: "#514DF5",
                 gray10: "rgba(0,0,0,.1)",
                 gray30: "#d9d9d9",
+                gray40: 'rgba(217, 217, 217, .2)',
+                green: '#48BE93',
             },
         },
     },

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import KeyStore from "@src/lib/keystore";
-import { getSessionStorage } from "@src/lib/tools";
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
@@ -11,6 +10,7 @@ import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
+// import Send from "@src/pages/Send";
 
 const keyStore = KeyStore.getInstance();
 
@@ -43,6 +43,8 @@ export function Popup() {
                 <Routes>
                     <Route path="/welcome" element={<Welcome />} />
                     <Route path="/wallet" element={<Wallet />} />
+                    {/* <Route path="/" element={<Send />} /> */}
+                    {/* <Route path="/send" element={<Send />} /> */}
                     <Route path="/create-wallet" element={<CreateWallet />} />
                     <Route path="/recover-wallet" element={<RecoverWallet />} />
                     <Route path="/guardian/add" element={<GuardianAdd />} />

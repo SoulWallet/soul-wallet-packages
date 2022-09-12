@@ -14,11 +14,24 @@
     "background": {
         "service_worker": "js/backgroundPage.js"
     },
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+            "js": ["js/contentScripts.js"]
+        }
+    ],
     "icons": {
         "16": "icon-16.png",
         "48": "icon-48.png",
         "128": "icon-128.png"
+        
     },
     "host_permissions": ["https://*/*"],
-    "permissions": ["tabs", "activeTab", "notifications", "scripting", "storage"]
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "notifications",
+        "scripting",
+        "storage"
+    ]
 }

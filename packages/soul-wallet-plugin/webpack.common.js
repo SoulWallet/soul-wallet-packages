@@ -4,6 +4,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 module.exports = {
     entry: {
         backgroundPage: path.join(__dirname, "src/backgroundPage.ts"),
+        contentScripts: path.join(__dirname, "src/contentScripts.ts"),
         popup: path.join(__dirname, "src/popup/index.tsx"),
     },
     output: {

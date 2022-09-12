@@ -6,7 +6,7 @@ interface IProps {
     children: React.ReactNode;
     classNames?: string;
     onClick: () => void;
-    loading: boolean;
+    loading?: boolean;
 }
 
 export default function Button({
