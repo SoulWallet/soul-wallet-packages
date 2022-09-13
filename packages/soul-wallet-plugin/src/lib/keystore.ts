@@ -55,7 +55,8 @@ export default class KeyStore {
         try {
             const account = this.web3.eth.accounts.create();
             const KeystoreV3 = this.web3.eth.accounts.encrypt(account.privateKey, password);
-            setLocalStorage(this.keyStoreKey, KeystoreV3);
+            await setLocalStorage(this.keyStoreKey, KeystoreV3);
+            await setSessionStorage('pw', password);
             return account.address;
         } catch (error) {
             return '';
@@ -85,6 +86,13 @@ export default class KeyStore {
      */
     public async getPassword(): Promise<string> {
         return await getSessionStorage('pw');
+    }
+
+    /** 
+     * check if user is locked
+     */
+    public async checkLocked(): Promise<string> {
+        return !(await this.getPassword()) && await getLocalStorage(this.keyStoreKey);
     }
 
     /**

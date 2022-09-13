@@ -16,17 +16,22 @@
     },
     "content_scripts": [
         {
-            "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-            "js": ["js/contentScripts.js"]
+            "matches": ["<all_urls>"],
+            "js": ["js/contentScripts.js"],
+            "web_accessible_resources": [
+                {
+                    "resources": [ "inject.js" ],
+                    "matches": [ "<all_urls>" ]
+                }
+            ]
         }
     ],
     "icons": {
         "16": "icon-16.png",
         "48": "icon-48.png",
         "128": "icon-128.png"
-        
     },
-    "host_permissions": ["https://*/*"],
+    "host_permissions": ["https://*/*", "http://*/*"],
     "permissions": [
         "tabs",
         "activeTab",

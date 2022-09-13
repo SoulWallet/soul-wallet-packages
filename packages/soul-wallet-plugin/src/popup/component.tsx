@@ -10,6 +10,7 @@ import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
+import { executeScript } from "@src/lib";
 // import Send from "@src/pages/Send";
 
 const keyStore = KeyStore.getInstance();
@@ -20,6 +21,7 @@ export function Popup() {
 
     const checkUserState = async () => {
         const sessionPw = await keyStore.getPassword();
+        console.log('pass', sessionPw)
         if (sessionPw) {
             await keyStore.unlock(sessionPw);
             setAccount(await keyStore.getAddress());

@@ -15,6 +15,7 @@ import browser from "webextension-polyfill";
 // });
 
 chrome.runtime.onMessage.addListener((msg) => {
+    console.log('msg is', msg.type)
     switch (msg.type) {
         case "sign":
             chrome.tabs.create({ url: "popup.html" });
