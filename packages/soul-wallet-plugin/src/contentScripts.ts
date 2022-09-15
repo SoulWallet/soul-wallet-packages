@@ -1,6 +1,6 @@
 // @ts-nocheck
-console.log("Content script in!");
-import browser from 'webextension-polyfill'
+console.log("Content script injected!");
+import browser from "webextension-polyfill";
 
 // function codeToInject() {
 //     window.soul = {
@@ -15,14 +15,6 @@ import browser from 'webextension-polyfill'
 // }
 
 // embed(codeToInject);
-chrome.runtime.onMessage.addListener((msg) => {
-    console.log('msg is', msg.type)
-    switch (msg.type) {
-        case "sign":
-            chrome.tabs.create({ url: "popup.html" });
-            break;
-    }
-});
 
 // (function () {
 //     function script() {
@@ -39,12 +31,36 @@ chrome.runtime.onMessage.addListener((msg) => {
 //     inject(script);
 // })();
 
+function sendMessage(data) {
+    data.url = `chrome-extension://${chrome.runtime.id}/popup.html`;
+    data.pos = {
+        width: 320,
+        height: 600,
+        top: 0,
+        left: window.screen.width - 320,
+    };
+    chrome.runtime.sendMessage(data);
+}
+
 function injectScript(file, node) {
-    console.log('file is', file)
+    console.log("file is", file);
     var th = document.getElementsByTagName(node)[0];
-    var s = document.createElement('script');
-    s.setAttribute('type', 'text/javascript');
-    s.setAttribute('src', file);
+    var s = document.createElement("script");
+    s.setAttribute("type", "text/javascript");
+    s.setAttribute("src", file);
     th.appendChild(s);
 }
-injectScript( browser.runtime.getURL('inject.js'), 'body');
+
+injectScript(browser.runtime.getURL("js/inject.js"), "body");
+
+// pass message to background
+window.addEventListener(
+    "message",
+    (msg) => {
+        if (msg.data.target === "soul") {
+            console.log("cc gfet", msg);
+            sendMessage(msg.data);
+        }
+    },
+    false,
+);

@@ -17,13 +17,13 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["js/contentScripts.js"],
-            "web_accessible_resources": [
-                {
-                    "resources": [ "inject.js" ],
-                    "matches": [ "<all_urls>" ]
-                }
-            ]
+            "js": ["js/contentScripts.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "matches": ["<all_urls>"],
+            "resources": ["js/inject.js"]
         }
     ],
     "icons": {
@@ -31,7 +31,6 @@
         "48": "icon-48.png",
         "128": "icon-128.png"
     },
-    "host_permissions": ["https://*/*", "http://*/*"],
     "permissions": [
         "tabs",
         "activeTab",

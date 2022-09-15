@@ -1,3 +1,0 @@
-window.soul = {
-    isSoul: true
-}
