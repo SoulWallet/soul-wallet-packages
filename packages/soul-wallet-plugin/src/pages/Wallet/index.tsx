@@ -23,7 +23,6 @@ export function Wallet() {
         <>
             <Navbar />
             <AccountInfo account={account} action="activate" />
-            <Link to="/sign">Sign</Link>
             <Actions />
             <Operations />
         </>

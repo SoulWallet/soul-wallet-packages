@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import { useNavigate } from "react-router-dom";
-import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import AddressIcon from "../AddressIcon";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
@@ -43,7 +43,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
-            <Jazzicon diameter={90} seed={jsNumberForAddress(account)} />
+            <AddressIcon width={90} address={account} />
             <div className="text-lg mt-1 mb-2">Account 1</div>
             <div
                 className="gap-2 flex items-center cursor-pointer tooltip"

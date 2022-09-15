@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import IconAdd from "@src/assets/add.svg";
-import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import AddressIcon from "@src/components/AddressIcon";
 import IconChevronRight from "@src/assets/chevron-right.svg";
 
 interface IGuardian {
@@ -42,10 +42,8 @@ export default function Assets() {
                     className="flex items-center justify-between py-5 px-3 cursor-pointer text-base hover:bg-gray-100"
                 >
                     <div className="flex items-center gap-2">
-                        <Jazzicon
-                            diameter={40}
-                            seed={jsNumberForAddress(item.address)}
-                        />
+                        <AddressIcon width={40} address={item.address} />
+
                         <div>
                             <div>{item.name}</div>
                             <div className="flex flex-col justify-between opacity-50 text-black">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import KeyStore from "@src/lib/keystore";
 // import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { HashRouter as Router,  Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
