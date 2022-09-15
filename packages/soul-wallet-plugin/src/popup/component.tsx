@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import KeyStore from "@src/lib/keystore";
-import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
+// import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router,  Routes, Route } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { ToastContainer } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
@@ -10,8 +11,8 @@ import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
-import { executeScript } from "@src/lib";
-// import Send from "@src/pages/Send";
+import Send from "@src/pages/Send";
+import Sign from "@src/pages/Sign";
 
 const keyStore = KeyStore.getInstance();
 
@@ -21,7 +22,6 @@ export function Popup() {
 
     const checkUserState = async () => {
         const sessionPw = await keyStore.getPassword();
-        console.log('pass', sessionPw)
         if (sessionPw) {
             await keyStore.unlock(sessionPw);
             setAccount(await keyStore.getAddress());
@@ -45,8 +45,8 @@ export function Popup() {
                 <Routes>
                     <Route path="/welcome" element={<Welcome />} />
                     <Route path="/wallet" element={<Wallet />} />
-                    {/* <Route path="/" element={<Send />} /> */}
-                    {/* <Route path="/send" element={<Send />} /> */}
+                    <Route path="/send" element={<Send />} />
+                    <Route path="/sign" element={<Sign />} />
                     <Route path="/create-wallet" element={<CreateWallet />} />
                     <Route path="/recover-wallet" element={<RecoverWallet />} />
                     <Route path="/guardian/add" element={<GuardianAdd />} />

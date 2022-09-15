@@ -32,10 +32,10 @@ import browser from "webextension-polyfill";
 // })();
 
 function sendMessage(data) {
-    data.url = `chrome-extension://${chrome.runtime.id}/popup.html`;
+    data.url = `chrome-extension://${chrome.runtime.id}/popup.html#/sign`;
     data.pos = {
         width: 320,
-        height: 600,
+        height: 568 + 28, // 28 is title bar
         top: 0,
         left: window.screen.width - 320,
     };
@@ -43,7 +43,6 @@ function sendMessage(data) {
 }
 
 function injectScript(file, node) {
-    console.log("file is", file);
     var th = document.getElementsByTagName(node)[0];
     var s = document.createElement("script");
     s.setAttribute("type", "text/javascript");
@@ -58,7 +57,6 @@ window.addEventListener(
     "message",
     (msg) => {
         if (msg.data.target === "soul") {
-            console.log("cc gfet", msg);
             sendMessage(msg.data);
         }
     },
