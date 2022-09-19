@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-08 10:07:54
+ * @LastEditTime: 2022-09-19 19:54:47
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -24,21 +24,27 @@ const userOperation_1 = require("../entity/userOperation");
 const guard_1 = require("../utils/guard");
 const web3Helper_1 = require("../utils/web3Helper");
 const simpleWallet_1 = require("../contracts/simpleWallet");
+const decodeCallData_1 = require("../utils/decodeCallData");
 class EIP4337Lib {
     /**
      * get wallet code
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
      * @returns the wallet code hex string
      */
-    static getWalletCode(entryPointAddress, ownerAddress) {
+    static getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress) {
+        //EntryPoint anEntryPoint, address anOwner, IERC20 token, address paymaster
         guard_1.Guard.address(entryPointAddress);
         guard_1.Guard.address(ownerAddress);
         const simpleWalletBytecode = new (web3Helper_1.Web3Helper.new().web3).eth.Contract(simpleWallet_1.SimpleWalletContract.ABI).deploy({
             data: simpleWallet_1.SimpleWalletContract.bytecode,
             arguments: [
                 entryPointAddress,
-                ownerAddress
+                ownerAddress,
+                tokenAddress,
+                payMasterAddress
             ]
         }).encodeABI();
         return simpleWalletBytecode;
@@ -47,25 +53,28 @@ class EIP4337Lib {
      * calculate wallet address by owner address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
      * @param salt the salt number,default is 0
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddress(entryPointAddress, ownerAddress, salt = 0, create2Factory = address_1.Create2Factory) {
-        return EIP4337Lib.calculateWalletAddressByCode(simpleWallet_1.SimpleWalletContract, [entryPointAddress, ownerAddress], salt, create2Factory);
+    static calculateWalletAddress(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress, salt = 0, create2Factory = address_1.Create2Factory) {
+        return EIP4337Lib.calculateWalletAddressByCode(simpleWallet_1.SimpleWalletContract, [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress], salt, create2Factory);
     }
     /**
      * get the userOperation for active (first time) the wallet
      * @param entryPointAddress
      * @param payMasterAddress
      * @param ownerAddress
+     * @param tokenAddress WETH address
      * @param maxFeePerGas
      * @param maxPriorityFeePerGas
      * @param salt
      * @param create2Factory
      */
-    static activateWalletOp(entryPointAddress, payMasterAddress, ownerAddress, maxFeePerGas, maxPriorityFeePerGas, salt = 0, create2Factory = address_1.Create2Factory) {
-        const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress);
+    static activateWalletOp(entryPointAddress, payMasterAddress, ownerAddress, tokenAddress, maxFeePerGas, maxPriorityFeePerGas, salt = 0, create2Factory = address_1.Create2Factory) {
+        const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
         const initCodeHash = (0, utils_1.keccak256)(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
         let userOperation = new EIP4337Lib.UserOperation();
@@ -152,7 +161,8 @@ exports.EIP4337Lib = EIP4337Lib;
  */
 EIP4337Lib.UserOperation = userOperation_1.UserOperation;
 EIP4337Lib.Utils = {
-    getNonce: EIP4337Lib.getNonce
+    getNonce: EIP4337Lib.getNonce,
+    DecodeCallData: decodeCallData_1.DecodeCallData
 };
 EIP4337Lib.Defines = {
     AddressZero: address_1.AddressZero,

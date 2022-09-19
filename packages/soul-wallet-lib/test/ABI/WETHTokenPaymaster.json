@@ -7,8 +7,8 @@
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "_verifyingSigner",
+				"internalType": "contract IERC20",
+				"name": "_WETHToken",
 				"type": "address"
 			}
 		],
@@ -37,6 +37,38 @@
 	{
 		"inputs": [
 			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "KnownWallets",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "WETHToken",
+		"outputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint32",
 				"name": "extraUnstakeDelaySec",
 				"type": "uint32"
@@ -45,6 +77,19 @@
 		"name": "addStake",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "walletCodeHash",
+				"type": "bytes32"
+			}
+		],
+		"name": "addWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -71,87 +116,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "sender",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "nonce",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bytes",
-						"name": "initCode",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "callData",
-						"type": "bytes"
-					},
-					{
-						"internalType": "uint256",
-						"name": "callGas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "verificationGas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "preVerificationGas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxFeePerGas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maxPriorityFeePerGas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "paymaster",
-						"type": "address"
-					},
-					{
-						"internalType": "bytes",
-						"name": "paymasterData",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "signature",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct UserOperation",
-				"name": "userOp",
-				"type": "tuple"
-			}
-		],
-		"name": "getHash",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
@@ -186,6 +150,19 @@
 			}
 		],
 		"name": "postOp",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "walletCodeHash",
+				"type": "bytes32"
+			}
+		],
+		"name": "removeWallet",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -322,16 +299,16 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "verifyingSigner",
-		"outputs": [
+		"inputs": [
 			{
-				"internalType": "address",
-				"name": "",
+				"internalType": "address payable",
+				"name": "to",
 				"type": "address"
 			}
 		],
-		"stateMutability": "view",
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

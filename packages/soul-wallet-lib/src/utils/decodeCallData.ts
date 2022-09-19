@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-06 12:59:43
+ * @LastEditTime: 2022-09-19 19:53:19
  */
 import axios from 'axios';
 import { readFileSync } from 'fs';
@@ -86,6 +86,33 @@ export class DecodeCallData {
             typesArray: ['address', 'bool']
         });
 
+        this.bytes4Methods.set('0x80c5c7d0', {
+            functionName: 'execFromEntryPoint',
+            functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
+            typesArray: ['address', 'uint256', 'bytes']
+        });
+        this.bytes4Methods.set('0xe6268114', {
+            functionName: 'deleteGuardianRequest',
+            functionSignature: 'deleteGuardianRequest(address)',
+            typesArray: ['address']
+        });
+        this.bytes4Methods.set('0x79f2d7c3', {
+            functionName: 'grantGuardianRequest',
+            functionSignature: 'grantGuardianRequest(address)',
+            typesArray: ['address']
+        });
+        this.bytes4Methods.set('0xaaf9bbd6', {
+            functionName: 'revokeGuardianRequest',
+            functionSignature: 'revokeGuardianRequest(address)',
+            typesArray: ['address']
+        });
+        this.bytes4Methods.set('0x4fb2e45d', {
+            functionName: 'transferOwner',
+            functionSignature: 'transferOwner(address)',
+            typesArray: ['address']
+        });
+
+
 
     }
 
@@ -162,11 +189,20 @@ export class DecodeCallData {
         if (method) {
             const typesArray = method.typesArray;
             const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
-            return {
-                functionName: method.functionName,
-                functionSignature: method.functionSignature,
-                params: params
-            };
+            //  functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
+            if (method.functionSignature === 'execFromEntryPoint(address,uint256,bytes)') {
+                const address = params[0];
+                const uint256 = params[1];
+                const bytes = params[2];
+                return this.decode(bytes);
+            } else {
+                return {
+                    functionName: method.functionName,
+                    functionSignature: method.functionSignature,
+                    params: params
+                };
+            }
+
         }
         const methodSignature = await this.read4BytesMethod(bytes4);
         if (!methodSignature) {

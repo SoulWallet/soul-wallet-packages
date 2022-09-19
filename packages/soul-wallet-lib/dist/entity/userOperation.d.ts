@@ -16,6 +16,7 @@ declare class UserOperation {
     paymasterData: string;
     signature: string;
     clone(): UserOperation;
+    toTuple(): string;
     /**
      * estimate the gas
      * @param entryPointAddress the entry point address

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-17 21:45:44
+ * @LastEditTime: 2022-09-19 18:08:21
  */
 
 
@@ -12,10 +12,10 @@ import fs from 'fs';
 import { SuggestedGasFees } from './entity/suggestedGasFees';
 import Web3 from 'web3';
 import axios from 'axios';
-import { UserOperation } from '../src/entity/userOperation';
 import { arrayify, defaultAbiCoder, hexlify, hexZeroPad, keccak256 } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
-import { HttpPOSTResponse, signData } from './entity/PayMasterRPC';
+import { HttpPOSTResponse, signData } from './entity/PayMasterRPC'; 
+import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
 
 export class Utils {
 
