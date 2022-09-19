@@ -10,7 +10,7 @@ export function RecoverWallet() {
     const navigate = useNavigate();
     const [step, setStep] = useState<number>(1);
 
-    const onVerified = () => {
+    const onReceiveCode = () => {
         setStep(1);
     };
 
@@ -26,7 +26,7 @@ export function RecoverWallet() {
                     <>
                         <div className="page-title mb-4">Recover</div>
                         <SendEmail
-                            onVerified={onVerified}
+                            onReceiveCode={onReceiveCode}
                             emailLabel="Verify your email address to proceed"
                         />
                     </>

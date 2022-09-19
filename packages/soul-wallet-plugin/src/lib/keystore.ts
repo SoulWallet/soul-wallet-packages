@@ -8,7 +8,7 @@
  */
 
 import Web3 from "web3";
-import { setLocalStorage, getLocalStorage, removeSessionStorage, getSessionStorage, setSessionStorage } from "@src/lib/tools";
+import { setLocalStorage, getLocalStorage, removeSessionStorage, getSessionStorage, setSessionStorage, removeLocalStorage } from "@src/lib/tools";
 import { arrayify } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 
@@ -78,6 +78,12 @@ export default class KeyStore {
 
     public async lock(): Promise<void> {
         this._privateKey = null;
+        await removeSessionStorage('pw');
+    }
+
+    public async delete(): Promise<void> {
+        this._privateKey = null;
+        await removeLocalStorage(this.keyStoreKey);
         await removeSessionStorage('pw');
     }
 

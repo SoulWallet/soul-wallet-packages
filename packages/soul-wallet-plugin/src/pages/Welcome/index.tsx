@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Logo from "@src/assets/logo.svg";
 import LogoText from "@src/assets/logo-text.svg";
+import { getLocalStorage } from "@src/lib/tools";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@src/components/Input";
 import KeyStore from "@src/lib/keystore";
@@ -14,13 +15,6 @@ export default function Welcome() {
 
     const navigate = useNavigate();
 
-    const checkLocked = async () => {
-        const res = await keyStore.checkLocked();
-        if (res) {
-            setIsLocked(true);
-        }
-    };
-
     const doUnlock = async () => {
         try {
             const address = await keyStore.unlock(password);
@@ -32,8 +26,20 @@ export default function Welcome() {
         }
     };
 
+    const seekDefaultRoute = async () => {
+        const cachedEmail = await getLocalStorage("cachedEmail");
+        if (cachedEmail) {
+            navigate("/create-wallet");
+        } else {
+            const res = await keyStore.checkLocked();
+            if (res) {
+                setIsLocked(true);
+            }
+        }
+    };
+
     useEffect(() => {
-        checkLocked();
+        seekDefaultRoute();
     }, []);
 
     return (

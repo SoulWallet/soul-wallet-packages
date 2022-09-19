@@ -1,24 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "@src/lib/api";
 import { Link } from "react-router-dom";
+import { getLocalStorage } from "@src/lib/tools";
 import Logo from "@src/components/Logo";
 import { SendEmail } from "@src/components/SendEmail";
 import { CreatePassword } from "@src/components/CreatePassword";
 
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
+    const [cachedEmail, setCachedEmail] = useState<string>("");
 
-    const sendAPI = async () => {
-      
-    }
+    const [email, setEmail] = useState<string>("");
 
-    const onVerified = () => {
-        setStep(1);
+    const onReceiveCode = async (email: string, code: string) => {
+        setEmail(email);
+        const res = await api.account.add({
+            email,
+            code,
+        });
+        if (res) {
+            setStep(1);
+        }
     };
 
-    const onCreated = (address: string | null) => {
-        console.log('created address', address)
-        setStep(2);
+    const onCreated = async (address: string | null) => {
+        const res = await api.account.update({
+            email,
+            wallet_address: address,
+        });
+        if (res) {
+            setStep(2);
+        }
     };
+
+    const getCachedProcess = async () => {
+        const storageCachedEmail = await getLocalStorage("cachedEmail");
+        if (storageCachedEmail) {
+            setCachedEmail(storageCachedEmail);
+        }
+    };
+
+    useEffect(() => {
+        getCachedProcess();
+    }, []);
 
     return (
         <>
@@ -30,7 +54,10 @@ export function CreateWallet() {
                             <div className="page-title mb-4">
                                 Email verification
                             </div>
-                            <SendEmail onVerified={onVerified} />
+                            <SendEmail
+                                onReceiveCode={onReceiveCode}
+                                cachedEmail={cachedEmail}
+                            />
                         </>
                     )}
                     {step === 1 && (

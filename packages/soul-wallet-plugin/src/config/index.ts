@@ -23,4 +23,6 @@ export const assetsList = [
 export default {
     walletName: "Soul Wallet",
     safeCenterURL: "https://google.com",
+    backendURL:
+        "http://soulwalletbackend-env.eba-zevy322d.us-west-2.elasticbeanstalk.com",
 };
