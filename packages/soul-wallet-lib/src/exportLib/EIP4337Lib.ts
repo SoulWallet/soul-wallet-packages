@@ -4,19 +4,18 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-08 10:07:54
+ * @LastEditTime: 2022-09-19 19:54:47
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
 import { AddressZero, Create2Factory } from "../defines/address";
-import { TransactionInfo } from "../entity/transactionInfo";
 import { UserOperation } from "../entity/userOperation";
 import { Guard } from "../utils/guard";
 import { Web3Helper } from "../utils/web3Helper";
 import { IContract } from "../contracts/icontract";
-import { signUserOp } from "../utils/userOp";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
+import { DecodeCallData } from '../utils/decodeCallData';
 
 
 export class EIP4337Lib {
@@ -27,7 +26,8 @@ export class EIP4337Lib {
     public static UserOperation = UserOperation;
 
     public static Utils = {
-        getNonce: EIP4337Lib.getNonce
+        getNonce: EIP4337Lib.getNonce,
+        DecodeCallData: DecodeCallData 
     }
 
     public static Defines = {
@@ -40,16 +40,21 @@ export class EIP4337Lib {
      * get wallet code
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
-     * @returns the wallet code hex string
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
+     * @returns the wallet code hex string  
      */
-    public static getWalletCode(entryPointAddress: string, ownerAddress: string) {
+    public static getWalletCode(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
+        //EntryPoint anEntryPoint, address anOwner, IERC20 token, address paymaster
         Guard.address(entryPointAddress);
         Guard.address(ownerAddress);
         const simpleWalletBytecode = new (Web3Helper.new().web3).eth.Contract(SimpleWalletContract.ABI).deploy({
             data: SimpleWalletContract.bytecode,
             arguments: [
                 entryPointAddress,
-                ownerAddress
+                ownerAddress,
+                tokenAddress,
+                payMasterAddress
             ]
         }).encodeABI();
         return simpleWalletBytecode;
@@ -58,7 +63,9 @@ export class EIP4337Lib {
     /**
      * calculate wallet address by owner address
      * @param entryPointAddress the entryPoint address
-     * @param ownerAddress the owner address
+     * @param ownerAddress the owner address 
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
      * @param salt the salt number,default is 0
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns 
@@ -66,11 +73,12 @@ export class EIP4337Lib {
     public static calculateWalletAddress(
         entryPointAddress: string,
         ownerAddress: string,
+        tokenAddress: string, payMasterAddress: string,
         salt: number = 0,
         create2Factory = Create2Factory) {
         return EIP4337Lib.calculateWalletAddressByCode(
             SimpleWalletContract,
-            [entryPointAddress, ownerAddress],
+            [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],
             salt,
             create2Factory
         );
@@ -81,6 +89,7 @@ export class EIP4337Lib {
      * @param entryPointAddress 
      * @param payMasterAddress 
      * @param ownerAddress 
+     * @param tokenAddress WETH address
      * @param maxFeePerGas 
      * @param maxPriorityFeePerGas 
      * @param salt 
@@ -90,11 +99,12 @@ export class EIP4337Lib {
         entryPointAddress: string,
         payMasterAddress: string,
         ownerAddress: string,
+        tokenAddress: string,
         maxFeePerGas: number,
         maxPriorityFeePerGas: number,
         salt: number = 0,
         create2Factory = Create2Factory) {
-        const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress);
+        const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
         const initCodeHash = keccak256(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
         let userOperation: UserOperation = new EIP4337Lib.UserOperation();

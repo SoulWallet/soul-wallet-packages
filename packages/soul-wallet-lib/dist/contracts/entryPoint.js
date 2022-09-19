@@ -56,80 +56,36 @@ const ABI = [
             {
                 "indexed": false,
                 "internalType": "uint256",
+                "name": "withdrawTime",
+                "type": "uint256"
+            }
+        ],
+        "name": "DepositUnstaked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
                 "name": "totalDeposit",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "unstakeDelaySec",
                 "type": "uint256"
             }
         ],
         "name": "Deposited",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "totalStaked",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "withdrawTime",
-                "type": "uint256"
-            }
-        ],
-        "name": "StakeLocked",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "withdrawTime",
-                "type": "uint256"
-            }
-        ],
-        "name": "StakeUnlocked",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "withdrawAddress",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "StakeWithdrawn",
         "type": "event"
     },
     {
@@ -230,7 +186,7 @@ const ABI = [
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "amount",
+                "name": "withdrawAmount",
                 "type": "uint256"
             }
         ],
@@ -240,12 +196,17 @@ const ABI = [
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
                 "internalType": "uint32",
                 "name": "_unstakeDelaySec",
                 "type": "uint32"
             }
         ],
-        "name": "addStake",
+        "name": "addStakeTo",
         "outputs": [],
         "stateMutability": "payable",
         "type": "function"
@@ -307,17 +268,7 @@ const ABI = [
         "outputs": [
             {
                 "internalType": "uint112",
-                "name": "deposit",
-                "type": "uint112"
-            },
-            {
-                "internalType": "bool",
-                "name": "staked",
-                "type": "bool"
-            },
-            {
-                "internalType": "uint112",
-                "name": "stake",
+                "name": "amount",
                 "type": "uint112"
             },
             {
@@ -348,17 +299,7 @@ const ABI = [
                 "components": [
                     {
                         "internalType": "uint112",
-                        "name": "deposit",
-                        "type": "uint112"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "staked",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "uint112",
-                        "name": "stake",
+                        "name": "amount",
                         "type": "uint112"
                     },
                     {
@@ -470,7 +411,7 @@ const ABI = [
             },
             {
                 "internalType": "uint256",
-                "name": "salt",
+                "name": "_salt",
                 "type": "uint256"
             }
         ],
@@ -488,20 +429,81 @@ const ABI = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "sender",
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "sender",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "nonce",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "initCode",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "callData",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "callGas",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "verificationGas",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "preVerificationGas",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "maxFeePerGas",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "maxPriorityFeePerGas",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "paymaster",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "paymasterData",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct UserOperation",
+                "name": "op",
+                "type": "tuple"
+            },
+            {
+                "internalType": "address payable",
+                "name": "beneficiary",
                 "type": "address"
             }
         ],
-        "name": "getSenderStorage",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "senderStorageCells",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
+        "name": "handleOp",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -672,7 +674,7 @@ const ABI = [
                     },
                     {
                         "internalType": "uint256",
-                        "name": "contextOffset",
+                        "name": "_context",
                         "type": "uint256"
                     },
                     {
@@ -691,7 +693,7 @@ const ABI = [
                 "type": "bytes"
             }
         ],
-        "name": "innerHandleOp",
+        "name": "internalHandleOp",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -700,6 +702,59 @@ const ABI = [
             }
         ],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "paymaster",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "stake",
+                "type": "uint256"
+            }
+        ],
+        "name": "isPaymasterStaked",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "requiredStake",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "requiredDelaySec",
+                "type": "uint256"
+            }
+        ],
+        "name": "isStaked",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -803,13 +858,6 @@ const ABI = [
     },
     {
         "inputs": [],
-        "name": "unlockStake",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "unstakeDelaySec",
         "outputs": [
             {
@@ -822,14 +870,8 @@ const ABI = [
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address payable",
-                "name": "withdrawAddress",
-                "type": "address"
-            }
-        ],
-        "name": "withdrawStake",
+        "inputs": [],
+        "name": "unstakeDeposit",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

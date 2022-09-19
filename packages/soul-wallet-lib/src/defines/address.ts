@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:27:00
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-05 16:27:00
+ * @LastEditTime: 2022-09-17 17:01:50
  */
 export const AddressZero = '0x0000000000000000000000000000000000000000';
 
