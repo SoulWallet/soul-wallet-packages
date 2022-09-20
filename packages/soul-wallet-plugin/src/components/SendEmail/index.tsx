@@ -91,10 +91,10 @@ export function SendEmail({
         }
         await setLocalStorage("cachedEmail", email);
         setEmailSending(true);
-        const res = await api.account.verifyEmail({
+        const res: any = await api.account.verifyEmail({
             email,
         });
-        if (res) {
+        if (res.code === 200) {
             setEmailSending(false);
             setEmailSent(true);
             startCountdown();

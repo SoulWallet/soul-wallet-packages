@@ -21,7 +21,7 @@ export function Navbar({ backUrl }: IProps) {
     // clear local wallet
     const doDeleteWallet = async () => {
         await keyStore.delete();
-        navigate("/create-wallet");
+        navigate("/welcome");
     };
 
     return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "@src/lib/api";
 import { Link } from "react-router-dom";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Logo from "@src/components/Logo";
 import { SendEmail } from "@src/components/SendEmail";
 import { CreatePassword } from "@src/components/CreatePassword";
@@ -14,11 +14,13 @@ export function CreateWallet() {
 
     const onReceiveCode = async (email: string, code: string) => {
         setEmail(email);
-        const res = await api.account.add({
+        // todo, extract ts
+        const res: any = await api.account.add({
             email,
             code,
         });
-        if (res) {
+        if (res.code === 200) {
+            await setLocalStorage("authorization", res.data.jwtToken);
             setStep(1);
         }
     };
