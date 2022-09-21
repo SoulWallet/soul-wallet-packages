@@ -1,5 +1,6 @@
 import { UserOperation } from "../entity/userOperation";
 import { IContract } from "../contracts/icontract";
+import { DecodeCallData } from '../utils/decodeCallData';
 export declare class EIP4337Lib {
     /**
      * User Operation
@@ -7,6 +8,7 @@ export declare class EIP4337Lib {
     static UserOperation: typeof UserOperation;
     static Utils: {
         getNonce: typeof EIP4337Lib.getNonce;
+        DecodeCallData: typeof DecodeCallData;
     };
     static Defines: {
         AddressZero: string;
@@ -16,29 +18,34 @@ export declare class EIP4337Lib {
      * get wallet code
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
      * @returns the wallet code hex string
      */
-    static getWalletCode(entryPointAddress: string, ownerAddress: string): string;
+    static getWalletCode(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string): string;
     /**
      * calculate wallet address by owner address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
      * @param salt the salt number,default is 0
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddress(entryPointAddress: string, ownerAddress: string, salt?: number, create2Factory?: string): string;
+    static calculateWalletAddress(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string, salt?: number, create2Factory?: string): string;
     /**
      * get the userOperation for active (first time) the wallet
      * @param entryPointAddress
      * @param payMasterAddress
      * @param ownerAddress
+     * @param tokenAddress WETH address
      * @param maxFeePerGas
      * @param maxPriorityFeePerGas
      * @param salt
      * @param create2Factory
      */
-    static activateWalletOp(entryPointAddress: string, payMasterAddress: string, ownerAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt?: number, create2Factory?: string): UserOperation;
+    static activateWalletOp(entryPointAddress: string, payMasterAddress: string, ownerAddress: string, tokenAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt?: number, create2Factory?: string): UserOperation;
     /**
      * calculate EIP-4337 wallet address
      * @param initContract the init Contract
