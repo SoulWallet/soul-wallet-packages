@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 21:36:57
+ * @LastEditTime: 2022-09-21 22:23:55
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -17,6 +17,7 @@ import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
+import { ERC1155, ERC20, ERC721 } from "../utils/Token";
 
 
 export class EIP4337Lib {
@@ -37,6 +38,12 @@ export class EIP4337Lib {
     }
 
     public static Guaridian = Guaridian;
+
+    public static Tokens = {
+        ERC20: ERC20,
+        ERC721: ERC721,
+        ERC1155: ERC1155
+    };
 
 
     /**

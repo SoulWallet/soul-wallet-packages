@@ -205,37 +205,35 @@ async function main() {
     if (simpleWalletWETHBalance > 0.001) {
         const gasFee = await Utils.getGasPrice(web3, chainId);
         let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-        let userOperation = new WalletLib.EIP4337.UserOperation();
-        userOperation.nonce = nonce;
-        userOperation.sender = simpleWalletAddress;
-        userOperation.paymaster = WETHPaymasterAddress;
-        userOperation.maxFeePerGas = gasFee.Max;
-        userOperation.maxPriorityFeePerGas = gasFee.MaxPriority;
+        let userOperation = await WalletLib.EIP4337.Tokens.ERC20.transfer(
+            web3 as any, simpleWalletAddress, nonce, entryPointAddress,
+            WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority,
+            WETHContractAddress, account_sponser.address, web3.utils.toWei("0.00001", 'ether'));
+        if (!userOperation) {
+            throw new Error('userOperation is null');
+        }
+        // let userOperation = new WalletLib.EIP4337.UserOperation();
+        // userOperation.nonce = nonce;
+        // userOperation.sender = simpleWalletAddress;
+        // userOperation.paymaster = WETHPaymasterAddress;
+        // userOperation.maxFeePerGas = gasFee.Max;
+        // userOperation.maxPriorityFeePerGas = gasFee.MaxPriority;
         if (await web3.eth.getCode(simpleWalletAddress) === '0x') {
             throw new Error('simpleWalletAddress is not active');
         }
         // userOperation.callData = web3.eth.abi.encodeFunctionCall(
         //     execFromEntryPoint,
         //     [
-        //         account_sponser.address,
-        //         web3.utils.toHex(web3.utils.toWei("0.00001", 'ether')), "0x"
+        //         WETHContractAddress,
+        //         "0x00",
+        //         WETHContract.methods.transfer(account_sponser.address, web3.utils.toHex(web3.utils.toWei("0.00001", 'ether'))).encodeABI()
         //     ]
         // );
-
-
-        userOperation.callData = web3.eth.abi.encodeFunctionCall(
-            execFromEntryPoint,
-            [
-                WETHContractAddress,
-                "0x00",
-                WETHContract.methods.transfer(account_sponser.address, web3.utils.toHex(web3.utils.toWei("0.00001", 'ether'))).encodeABI()
-            ]
-        );
-        userOperation.paymaster = WETHPaymasterAddress;
-        const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
-        if (!hasEstimateGas) {
-            throw new Error('estimateGas error');
-        }
+        // userOperation.paymaster = WETHPaymasterAddress;
+        // const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+        // if (!hasEstimateGas) {
+        //     throw new Error('estimateGas error');
+        // }
         userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
         const handleOpsCallData = entryPointContract.methods.handleOps([userOperation], BENEFICIARY_ADDR).encodeABI();
 
