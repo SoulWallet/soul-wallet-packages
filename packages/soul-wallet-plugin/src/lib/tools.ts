@@ -63,7 +63,10 @@ export async function getSessionStorage(key: string): Promise<string> {
  * @param value
  * @returns
  */
-export async function setSessionStorage(key: string, value: any): Promise<void> {
+export async function setSessionStorage(
+    key: string,
+    value: any,
+): Promise<void> {
     // @ts-ignore
     return await chrome.storage.session.set({ [key]: value });
 }
@@ -75,4 +78,21 @@ export async function setSessionStorage(key: string, value: any): Promise<void> 
 export async function removeSessionStorage(key: string): Promise<void> {
     // @ts-ignore
     return await chrome.storage.session.remove(key);
+}
+
+export async function getGuardianName(address: string): Promise<void> {
+    let guardianNameMapping =
+        (await getLocalStorage("guardianNameMapping")) || {};
+
+    return guardianNameMapping[address];
+}
+
+export async function setGuardianName(
+    address: string,
+    name: string,
+): Promise<void> {
+    let guardianNameMapping =
+        (await getLocalStorage("guardianNameMapping")) || {};
+    guardianNameMapping[address] = name;
+    await setLocalStorage("guardianNameMapping", guardianNameMapping);
 }

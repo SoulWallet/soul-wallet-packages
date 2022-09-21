@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import KeyStore from "@src/lib/keystore";
+import browser from "webextension-polyfill";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
 
@@ -8,7 +9,16 @@ const keyStore = KeyStore.getInstance();
 export default function SendTransaction() {
     const [account, setAccount] = useState<string>("");
     const doSignTransaction = async () => {
-        // todo, request browser request permission
+        // window.close();
+        browser.notifications.create(
+            String(parseInt(String(Math.random() * 1000))),
+            {
+                type: "basic",
+                iconUrl: "icon-48.png",
+                title: "Trsanction submitted",
+                message: "Please wait a moment...",
+            },
+        );
     };
 
     const getAccount = async () => {

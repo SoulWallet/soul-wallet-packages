@@ -18,6 +18,12 @@ export function Navbar({ backUrl }: IProps) {
         navigate("/welcome");
     };
 
+    // clear local wallet
+    const doDeleteWallet = async () => {
+        await keyStore.delete();
+        navigate("/welcome");
+    };
+
     return (
         <div className="navbar flex items-center justify-between">
             {backUrl ? (
@@ -42,15 +48,14 @@ export function Navbar({ backUrl }: IProps) {
                         tabIndex={0}
                         className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
                     >
-                        <li>
-                            <Link to="/create-wallet">Create Wallet</Link>
-                        </li>
-
-                        <li>
+                        {/* <li>
                             <Link to="/recover-wallet">Recover Wallet</Link>
-                        </li>
+                        </li> */}
                         <li>
                             <a onClick={doLockWallet}>Lock Wallet</a>
+                        </li>
+                        <li>
+                            <a onClick={doDeleteWallet}>Delete Wallet</a>
                         </li>
                     </ul>
                 </div>

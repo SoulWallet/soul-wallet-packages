@@ -9,5 +9,9 @@ chrome.runtime.onMessage.addListener((msg) => {
                 ...msg.pos,
             });
             break;
+        case "notify":
+            // browser.notifications.create({
+
+            // })
     }
 });

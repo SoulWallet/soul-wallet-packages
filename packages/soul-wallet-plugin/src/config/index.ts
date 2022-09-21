@@ -23,4 +23,6 @@ export const assetsList = [
 export default {
     walletName: "Soul Wallet",
     safeCenterURL: "https://google.com",
+    backendURL:
+        "https://securecenter-poc.soulwallets.me",
 };

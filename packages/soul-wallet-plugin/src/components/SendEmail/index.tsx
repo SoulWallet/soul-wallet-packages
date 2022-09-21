@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "@src/lib/api";
 import Button from "@src/components/Button";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@src/lib/tools";
 import IconEnter from "@src/assets/enter.svg";
-// import IconLoading from "@src/assets/loading.gif";
 import { Input } from "../Input";
 
 interface SendEmailProps {
     emailLabel?: string;
-    onVerified: () => void;
+    cachedEmail?: string;
+    onReceiveCode: (email: string, code: string) => void;
 }
 
 interface FormErrors {
@@ -14,7 +20,11 @@ interface FormErrors {
     code: string;
 }
 
-export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
+export function SendEmail({
+    emailLabel,
+    cachedEmail,
+    onReceiveCode,
+}: SendEmailProps) {
     const [email, setEmail] = useState<string>("");
     const [verifyCode, setVerifyCode] = useState<string>("");
     const [gapTime, setGapTime] = useState<any>(0);
@@ -26,7 +36,7 @@ export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
         code: "",
     });
 
-    const checkParams = (): boolean => {
+    const checkParams = (skipCheckNode = false): boolean => {
         let flag = true;
 
         // check email
@@ -42,7 +52,7 @@ export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
         }
 
         // check code
-        if (emailSent && verifyCode.length !== 6) {
+        if (!skipCheckNode && verifyCode.length !== 6) {
             setErrors((prev) => ({
                 ...prev,
                 code: "Not a valid verification code (6 digits)",
@@ -53,36 +63,51 @@ export function SendEmail({ emailLabel, onVerified }: SendEmailProps) {
         return flag;
     };
 
+    const startCountdown = async () => {
+        setGapTime(60);
+        const interval = setInterval(() => {
+            setGapTime((prev: number) => {
+                if (prev === 0) {
+                    clearInterval(sendInterval);
+                } else {
+                    return prev - 1;
+                }
+            });
+        }, 1000);
+        setSendInterval(interval);
+    };
+
     const doVerify = async () => {
         if (!checkParams()) {
             return;
         }
-
-        // send some api request here
-
-        onVerified();
+        onReceiveCode(email, verifyCode);
+        await removeLocalStorage("cachedEmail");
     };
+
     const doSend = async () => {
-        if (!checkParams()) {
+        if (!checkParams(true)) {
             return;
         }
+        await setLocalStorage("cachedEmail", email);
         setEmailSending(true);
-        setTimeout(() => {
+        const res: any = await api.account.verifyEmail({
+            email,
+        });
+        if (res.code === 200) {
             setEmailSending(false);
             setEmailSent(true);
-            setGapTime(60);
-            const interval = setInterval(() => {
-                setGapTime((prev: number) => {
-                    if (prev === 0) {
-                        clearInterval(sendInterval);
-                    } else {
-                        return prev - 1;
-                    }
-                });
-            }, 1000);
-            setSendInterval(interval);
-        }, 800);
+            startCountdown();
+        }
     };
+
+    useEffect(() => {
+        if (!cachedEmail) {
+            return;
+        }
+        setEmail(cachedEmail);
+        setEmailSent(true);
+    }, [cachedEmail]);
 
     return (
         <div className="form-control w-full">
