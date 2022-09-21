@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-19 19:54:47
+ * @LastEditTime: 2022-09-21 21:36:57
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -25,6 +25,7 @@ const guard_1 = require("../utils/guard");
 const web3Helper_1 = require("../utils/web3Helper");
 const simpleWallet_1 = require("../contracts/simpleWallet");
 const decodeCallData_1 = require("../utils/decodeCallData");
+const Guardian_1 = require("../utils/Guardian");
 class EIP4337Lib {
     /**
      * get wallet code
@@ -168,6 +169,7 @@ EIP4337Lib.Defines = {
     AddressZero: address_1.AddressZero,
     Create2Factory: address_1.Create2Factory
 };
+EIP4337Lib.Guaridian = Guardian_1.Guaridian;
 var userOperation_2 = require("../entity/userOperation");
 Object.defineProperty(exports, "UserOperation", { enumerable: true, get: function () { return userOperation_2.UserOperation; } });
 //# sourceMappingURL=EIP4337Lib.js.map

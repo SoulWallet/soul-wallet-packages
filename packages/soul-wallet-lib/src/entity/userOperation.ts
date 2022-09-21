@@ -4,12 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-17 10:35:07
+ * @LastEditTime: 2022-09-21 21:24:32
  */
 
 import Web3 from 'web3';
 import { Guard } from '../utils/guard';
-import { signUserOp, payMasterSignHash } from '../utils/userOp';
+import { signUserOp, payMasterSignHash, signUserOpWithKeyStore } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';
 
 /**
@@ -48,7 +48,7 @@ class UserOperation {
         return clone;
     }
 
-    public toTuple():string{
+    public toTuple(): string {
         /* 
         address sender;
         uint256 nonce;
@@ -112,6 +112,21 @@ class UserOperation {
         Guard.uint(chainId);
         Guard.address(entryPoint);
         this.signature = signUserOp(this, entryPoint, chainId, privateKey);
+    }
+    /**
+     * sign the user operation
+     * @param entryPoint the entry point address
+     * @param chainId the chain id
+     * @param privateKey the private key
+     */
+    public async keystoreSign(
+        entryPoint: string,
+        chainId: number, signAddress: string,
+        keyStoreSign: (message: string) => Promise<string | null>): Promise<boolean> {
+        Guard.uint(chainId);
+        Guard.address(entryPoint);
+        this.signature = await signUserOpWithKeyStore(this, entryPoint, chainId, signAddress, keyStoreSign);
+        return this.signature !== null;
     }
 }
 
