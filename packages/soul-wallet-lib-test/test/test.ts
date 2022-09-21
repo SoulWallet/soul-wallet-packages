@@ -69,7 +69,6 @@ async function main() {
 
     // #endregion
 
-
     // #region import accounts from private key  
 
     const account_sponser = web3.eth.accounts.privateKeyToAccount(SPONSER_KEY);
@@ -181,17 +180,19 @@ async function main() {
                 from: WalletLib.EIP4337.Defines.AddressZero
             });
             console.log(`simulateValidation result:`, result);
-            if (true) {
-                const tuple = activateOp.toTuple();
-                const handleOpsCallData = entryPointContract.methods.handleOps([activateOp], BENEFICIARY_ADDR).encodeABI();
-                const AASendTx = await Utils.signAndSendTransaction(web3,
-                    SPONSER_KEY,
-                    entryPointAddress,
-                    '0x00',
-                    handleOpsCallData);
 
-                console.log(`AASendTx:`, AASendTx);
-            }
+            const tuple = activateOp.toTuple();
+            //const handleOpsCallData = entryPointContract.methods.handleOps([activateOp], BENEFICIARY_ADDR).encodeABI();
+            // const AASendTx = await Utils.signAndSendTransaction(web3,
+            //     SPONSER_KEY,
+            //     entryPointAddress,
+            //     '0x00',
+            //     handleOpsCallData);
+
+            // console.log(`AASendTx:`, AASendTx);
+            await Utils.sendOPWait(activateOp, entryPointAddress, chainId);
+
+
         } catch (error) {
             console.error(error);
             throw new Error("simulateValidation error");
@@ -225,13 +226,16 @@ async function main() {
         userOperation.callData = web3.eth.abi.encodeFunctionCall(
             execFromEntryPoint,
             [
-                account_sponser.address,
+                WETHContractAddress,
                 "0x00",
                 WETHContract.methods.transfer(account_sponser.address, web3.utils.toHex(web3.utils.toWei("0.00001", 'ether'))).encodeABI()
             ]
         );
         userOperation.paymaster = WETHPaymasterAddress;
-        await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+        const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+        if (!hasEstimateGas) {
+            throw new Error('estimateGas error');
+        }
         userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
         const handleOpsCallData = entryPointContract.methods.handleOps([userOperation], BENEFICIARY_ADDR).encodeABI();
 
@@ -256,12 +260,8 @@ async function main() {
         // #endregion
 
 
-        const WETHSendTx = await Utils.signAndSendTransaction(web3,
-            SPONSER_KEY,
-            entryPointAddress,
-            '0x00',
-            handleOpsCallData);
-        console.log(`WETHSendTx:`, WETHSendTx);
+        await Utils.sendOPWait(userOperation, entryPointAddress, chainId);
+
     }
 
 
@@ -296,7 +296,10 @@ async function main() {
     );
     userOperation.paymaster = WETHPaymasterAddress;
 
-    await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+    const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+    if (!hasEstimateGas) {
+        throw new Error('estimateGas error');
+    }
 
     userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
 
@@ -307,9 +310,7 @@ async function main() {
 
         console.log(`simulateValidation result:`, result);
 
-        const signData = await Utils.sendOp(userOperation);
-        console.log(`signData:`, signData);
-
+        await Utils.sendOPWait(userOperation, entryPointAddress, chainId);
 
     } catch (error) {
         console.error(error);
