@@ -87,6 +87,12 @@ function _signUserOp(op: UserOperation, entryPointAddress: string, chainId: numb
   return signedMessage1;
 }
 
+async function _signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string,
+  chainId: number, keyStoreSign: (message: string) => Promise<string | null>) {
+  const message = getRequestId(op, entryPointAddress, chainId)
+  return await keyStoreSign(message);
+}
+
 /**
  * sign a user operation with the given private key
  * @param op 
@@ -103,6 +109,32 @@ export function signUserOp(op: UserOperation, entryPointAddress: string, chainId
       [
         {
           signer: new Web3().eth.accounts.privateKeyToAccount(privateKey).address,
+          signature: sign
+        }
+      ]
+    ]
+  );
+  return enc;
+}
+
+/**
+ * sign a user operation with the given private key
+ * @param op 
+ * @param entryPointAddress 
+ * @param chainId 
+ * @param signAddress user address
+ * @param keyStoreSign user sign function
+ * @returns signature
+ */
+export async function signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string,
+  chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
+  const sign = _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
+  const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
+    [
+      SignatureMode.owner,
+      [
+        {
+          signer: signAddress,
           signature: sign
         }
       ]

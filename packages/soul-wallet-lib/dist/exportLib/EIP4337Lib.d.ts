@@ -1,6 +1,7 @@
 import { UserOperation } from "../entity/userOperation";
 import { IContract } from "../contracts/icontract";
 import { DecodeCallData } from '../utils/decodeCallData';
+import { Guaridian } from "../utils/Guardian";
 export declare class EIP4337Lib {
     /**
      * User Operation
@@ -14,6 +15,7 @@ export declare class EIP4337Lib {
         AddressZero: string;
         Create2Factory: string;
     };
+    static Guaridian: typeof Guaridian;
     /**
      * get wallet code
      * @param entryPointAddress the entryPoint address

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-19 19:54:47
+ * @LastEditTime: 2022-09-21 21:36:57
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -16,6 +16,7 @@ import { IContract } from "../contracts/icontract";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
+import { Guaridian } from "../utils/Guardian";
 
 
 export class EIP4337Lib {
@@ -27,13 +28,15 @@ export class EIP4337Lib {
 
     public static Utils = {
         getNonce: EIP4337Lib.getNonce,
-        DecodeCallData: DecodeCallData 
+        DecodeCallData: DecodeCallData
     }
 
     public static Defines = {
         AddressZero: AddressZero,
         Create2Factory: Create2Factory
     }
+
+    public static Guaridian = Guaridian;
 
 
     /**

@@ -3,11 +3,20 @@
  * fork from:
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/test/UserOp.ts
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payMasterSignHash = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
+exports.payMasterSignHash = exports.signUserOpWithKeyStore = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
 const utils_1 = require("ethers/lib/utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
 const web3_1 = __importDefault(require("web3"));
@@ -85,6 +94,12 @@ function _signUserOp(op, entryPointAddress, chainId, privateKey) {
     const signedMessage1 = (0, ethereumjs_util_1.toRpcSig)(sig.v, sig.r, sig.s);
     return signedMessage1;
 }
+function _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const message = getRequestId(op, entryPointAddress, chainId);
+        return yield keyStoreSign(message);
+    });
+}
 /**
  * sign a user operation with the given private key
  * @param op
@@ -107,6 +122,31 @@ function signUserOp(op, entryPointAddress, chainId, privateKey) {
     return enc;
 }
 exports.signUserOp = signUserOp;
+/**
+ * sign a user operation with the given private key
+ * @param op
+ * @param entryPointAddress
+ * @param chainId
+ * @param signAddress user address
+ * @param keyStoreSign user sign function
+ * @returns signature
+ */
+function signUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, keyStoreSign) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const sign = _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
+        const enc = utils_1.defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'], [
+            SignatureMode.owner,
+            [
+                {
+                    signer: signAddress,
+                    signature: sign
+                }
+            ]
+        ]);
+        return enc;
+    });
+}
+exports.signUserOpWithKeyStore = signUserOpWithKeyStore;
 function payMasterSignHash(op) {
     return (0, utils_1.keccak256)(utils_1.defaultAbiCoder.encode([
         'address',
