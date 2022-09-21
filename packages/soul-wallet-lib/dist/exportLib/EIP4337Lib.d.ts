@@ -2,6 +2,7 @@ import { UserOperation } from "../entity/userOperation";
 import { IContract } from "../contracts/icontract";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
+import { ERC1155, ERC20, ERC721 } from "../utils/Token";
 export declare class EIP4337Lib {
     /**
      * User Operation
@@ -16,6 +17,11 @@ export declare class EIP4337Lib {
         Create2Factory: string;
     };
     static Guaridian: typeof Guaridian;
+    static Tokens: {
+        ERC20: typeof ERC20;
+        ERC721: typeof ERC721;
+        ERC1155: typeof ERC1155;
+    };
     /**
      * get wallet code
      * @param entryPointAddress the entryPoint address
