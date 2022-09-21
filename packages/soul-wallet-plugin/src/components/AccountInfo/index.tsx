@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import { useNavigate } from "react-router-dom";
+import api from "@src/lib/api";
 import AddressIcon from "../AddressIcon";
-import { copyText } from "@src/lib/tools";
+import { copyText, getLocalStorage } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
+import KeyStore from '@src/lib/keystore'
+
+const keyStore = KeyStore.getInstance();
 
 interface IProps {
     account: string;
@@ -32,13 +36,20 @@ export default function AccountInfo({ account, action }: IProps) {
         }, 1500);
     };
 
-    const doRemove = async () => {
+    const doRemoveGuardian = async () => {
         setLoading(true);
-        setTimeout(() => {
+
+        const res: any = await api.guardian.remove({
+            email: await getLocalStorage("email"),
+            wallet_address: await keyStore.getAddress(),
+            guardian: account,
+        });
+
+        if (res.code === 200) {
+            toast.success("Removed guardian");
             setLoading(false);
             navigate("/wallet");
-            toast.success("Guardian removed");
-        }, 1500);
+        }
     };
 
     return (
@@ -68,7 +79,7 @@ export default function AccountInfo({ account, action }: IProps) {
             {action === "remove" && (
                 <Button
                     classNames="btn-red mt-6"
-                    onClick={doRemove}
+                    onClick={doRemoveGuardian}
                     loading={loading}
                 >
                     Remove

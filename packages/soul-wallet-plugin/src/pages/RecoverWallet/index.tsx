@@ -20,10 +20,9 @@ export function RecoverWallet() {
         const res: any = await api.account.recover({
             email,
             code,
-            guardian_address: newOwnerAddress,
+            new_key: newOwnerAddress,
         });
         if (res.code === 200) {
-            
             await setLocalStorage("recovering", true);
             setStep(2);
         }

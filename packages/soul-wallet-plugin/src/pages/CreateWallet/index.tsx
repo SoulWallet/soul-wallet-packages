@@ -32,6 +32,8 @@ export function CreateWallet() {
         });
         if (res) {
             setStep(2);
+            // todo, this is for guardian
+            await setLocalStorage('email', email)
         }
     };
 
