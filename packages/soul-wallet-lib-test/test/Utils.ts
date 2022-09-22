@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 15:56:02
+ * @LastEditTime: 2022-09-22 10:56:21
  */
 
 
@@ -246,7 +246,7 @@ export class Utils {
     }
 
 
-    static async sendOPWait(op: UserOperation, entryPointAddress: string, chainId: number) {
+    static async sendOPWait(web3: Web3, op: UserOperation, entryPointAddress: string, chainId: number) {
         let ret: Ret_put | null = null;
         try {
             ret = await Utils.sendOp(op);
@@ -280,6 +280,19 @@ export class Utils {
                     console.log(`processing...`);
                 } else if (ret.code === 3) {
                     console.log(`success,tx:${ret.txHash}`);
+                    // check tx status
+                    for (let index = 0; index < 60; index++) {
+                        await Utils.sleep(1000);
+                        const receipt = await web3.eth.getTransactionReceipt(ret.txHash);
+                        if (receipt) {
+                            if (receipt.status === true) {
+                                console.log(`tx:${ret.txHash} has been confirmed`);
+                                break;
+                            } else {
+                                throw new Error('transaction failed');
+                            }
+                        }
+                    }
                     break;
                 } else if (ret.code === 4) {
                     console.log(`failed`);
