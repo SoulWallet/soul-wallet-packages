@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 21:30:01
+ * @LastEditTime: 2022-09-22 11:34:03
  */
 
 import { UserOperation } from "../entity/userOperation";
@@ -18,7 +18,7 @@ export class Guaridian {
     }
     private static async _guardian(web3: Web3, walletAddress: string, nonce: number,
         entryPointAddress: string, paymasterAddress: string,
-        maxFeePerGas: number, maxPriorityFeePerGas: number, encodeABI: string) {
+        maxFeePerGas: number, maxPriorityFeePerGas: number, callData: string) {
 
         walletAddress = web3.utils.toChecksumAddress(walletAddress);
         paymasterAddress = web3.utils.toChecksumAddress(paymasterAddress);
@@ -29,14 +29,7 @@ export class Guaridian {
         userOperation.paymaster = paymasterAddress;
         userOperation.maxFeePerGas = maxFeePerGas;
         userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        userOperation.callData = web3.eth.abi.encodeFunctionCall(
-            execFromEntryPoint,
-            [
-                walletAddress,
-                "0x00",
-                encodeABI
-            ]
-        );
+        userOperation.callData = callData;
         let gasEstimated = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
         if (!gasEstimated) {
             return null;
@@ -62,11 +55,10 @@ export class Guaridian {
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
 
         guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-
-        const encodeABI = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianRequest(guardianAddress).encodeABI()
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianRequest(guardianAddress).encodeABI()
 
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
-            maxFeePerGas, maxPriorityFeePerGas, encodeABI);
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
 
@@ -86,10 +78,10 @@ export class Guaridian {
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
         guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const encodeABI = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianRequest(guardianAddress).encodeABI()
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianRequest(guardianAddress).encodeABI()
 
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
-            maxFeePerGas, maxPriorityFeePerGas, encodeABI);
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
 
@@ -109,10 +101,10 @@ export class Guaridian {
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
         guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const encodeABI = Guaridian.walletContract(web3, walletAddress).methods.deleteGuardianRequest(guardianAddress).encodeABI()
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.deleteGuardianRequest(guardianAddress).encodeABI()
 
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
-            maxFeePerGas, maxPriorityFeePerGas, encodeABI);
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
     /**
@@ -131,10 +123,10 @@ export class Guaridian {
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
         guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const encodeABI = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianConfirmation(guardianAddress).encodeABI()
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianConfirmation(guardianAddress).encodeABI()
 
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
-            maxFeePerGas, maxPriorityFeePerGas, encodeABI);
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
     /**
@@ -153,9 +145,9 @@ export class Guaridian {
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
         guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const encodeABI = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianConfirmation(guardianAddress).encodeABI()
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianConfirmation(guardianAddress).encodeABI()
 
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
-            maxFeePerGas, maxPriorityFeePerGas, encodeABI);
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 }

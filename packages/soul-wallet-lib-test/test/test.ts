@@ -190,7 +190,7 @@ async function main() {
             //     handleOpsCallData);
 
             // console.log(`AASendTx:`, AASendTx);
-            await Utils.sendOPWait(activateOp, entryPointAddress, chainId);
+            await Utils.sendOPWait(web3, activateOp, entryPointAddress, chainId);
 
 
         } catch (error) {
@@ -200,6 +200,51 @@ async function main() {
 
     }
 
+    // guardian
+    {
+        /* 
+            account_guardian1: 0xbc4b82A8cd2a803bFB8e457d8D681b78D3F84957=>0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80
+            account_guardian2: 0x44Aa7e13893c929Cbcf8f1966Db7aa47eA80924A=>0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270
+            account_guardian3: 0x55fa93624E93a33415c2d0Ef0191ac9e426B840D=>0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376
+        */
+        const guardians = [web3.eth.accounts.privateKeyToAccount('0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80'),
+        web3.eth.accounts.privateKeyToAccount('0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270'),
+        web3.eth.accounts.privateKeyToAccount('0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376')
+        ];
+
+        {
+            // add grardian  
+            // for (let index = 0; index < guardians.length; index++) {
+            //     const guardian = guardians[index];
+            //     const gasFee = await Utils.getGasPrice(web3, chainId);
+            //     let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
+            //     const addGuardianOp = await WalletLib.EIP4337.Guaridian.grantGuardianRequest(
+            //         web3 as any, simpleWalletAddress, nonce, guardian.address, entryPointAddress, WETHPaymasterAddress,
+            //         gasFee.Max, gasFee.MaxPriority);
+            //     if (!addGuardianOp) {
+            //         throw new Error('addGuardianOp is null');
+            //     }
+            //     addGuardianOp.sign(entryPointAddress, chainId, account_user.privateKey);
+            //     await Utils.sendOPWait(web3, addGuardianOp, entryPointAddress, chainId); 
+            // } 
+        }
+        {
+            // confirmation
+            // for (let index = 0; index < guardians.length; index++) {
+            //     const guardian = guardians[index];
+            //     const gasFee = await Utils.getGasPrice(web3, chainId);
+            //     let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
+            //     const addGuardianOp = await WalletLib.EIP4337.Guaridian.grantGuardianConfirmation(
+            //         web3 as any, simpleWalletAddress, nonce, guardian.address, entryPointAddress, WETHPaymasterAddress,
+            //         gasFee.Max, gasFee.MaxPriority);
+            //     if (!addGuardianOp) {
+            //         throw new Error('addGuardianOp is null');
+            //     }
+            //     addGuardianOp.sign(entryPointAddress, chainId, account_user.privateKey);
+            //     await Utils.sendOPWait(web3, addGuardianOp, entryPointAddress, chainId);
+            // }
+        }
+    }
     // WETH send to account_sponser
     simpleWalletWETHBalance = parseFloat(web3.utils.fromWei(await WETHContract.methods.balanceOf(simpleWalletAddress).call() as string, 'ether'));
     if (simpleWalletWETHBalance > 0.001) {
@@ -235,8 +280,6 @@ async function main() {
         //     throw new Error('estimateGas error');
         // }
         userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
-        const handleOpsCallData = entryPointContract.methods.handleOps([userOperation], BENEFICIARY_ADDR).encodeABI();
-
 
         // #region decode CallData
 
@@ -258,7 +301,7 @@ async function main() {
         // #endregion
 
 
-        await Utils.sendOPWait(userOperation, entryPointAddress, chainId);
+        await Utils.sendOPWait(web3, userOperation, entryPointAddress, chainId);
 
     }
 
@@ -289,7 +332,8 @@ async function main() {
         execFromEntryPoint,
         [
             account_sponser.address,
-            web3.utils.toHex(web3.utils.toWei("0.00001", 'ether')), "0x"
+            web3.utils.toHex(web3.utils.toWei("0.00001", 'ether')),
+            "0x"
         ]
     );
     userOperation.paymaster = WETHPaymasterAddress;
@@ -308,7 +352,7 @@ async function main() {
 
         console.log(`simulateValidation result:`, result);
 
-        await Utils.sendOPWait(userOperation, entryPointAddress, chainId);
+        await Utils.sendOPWait(web3, userOperation, entryPointAddress, chainId);
 
     } catch (error) {
         console.error(error);
