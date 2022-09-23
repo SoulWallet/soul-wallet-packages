@@ -138,7 +138,7 @@ exports.signUserOp = signUserOp;
  */
 function signUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, keyStoreSign) {
     return __awaiter(this, void 0, void 0, function* () {
-        const sign = _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
+        const sign = yield _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
         const enc = utils_1.defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'], [
             SignatureMode.owner,
             [
