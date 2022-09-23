@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 15:27:20
+ * @LastEditTime: 2022-09-23 18:29:54
  */
 import axios from 'axios';
 import { readFileSync } from 'fs';
@@ -71,9 +71,9 @@ export class DecodeCallData {
             typesArray: ['address', 'bool']
         });
         this.bytes4Methods.set('0xf242432a', {
-            functionName: 'safeBatchTransferFrom',
-            functionSignature: 'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)',
-            typesArray: ['address', 'address', 'uint256[]', 'uint256[]', 'bytes']
+            functionName: 'safeTransferFrom',
+            functionSignature: 'safeTransferFrom(address,address,uint256,uint256,bytes)',
+            typesArray: ['address', 'address', 'uint256', 'uint256', 'bytes']
         });
         this.bytes4Methods.set('0x2eb2c2d6', {
             functionName: 'safeBatchTransferFrom',
