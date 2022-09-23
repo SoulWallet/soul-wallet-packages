@@ -1,21 +1,30 @@
 import React, { createContext, useState, useEffect } from "react";
 import { WalletLib } from "soul-wallet-lib";
+import Web3 from "web3";
 import config from "@src/config";
 import KeyStore from "@src/lib/keystore";
+
+// init global instances
 const keyStore = KeyStore.getInstance();
+const web3 = new Web3(config.provider);
 
 export const WalletContext = createContext({
     account: "",
     walletAddress: "",
+    getGasPrice: () => {},
+    activateWallet: () => {},
 });
 
 export const WalletContextProvider = ({ children }: any) => {
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
 
+    const getGasPrice = async () => {
+        return Number(await web3.eth.getGasPrice());
+    };
+
     const getAccount = async () => {
         const res = await keyStore.getAddress();
-        console.log("user account is", res);
         setAccount(res);
     };
 
@@ -27,8 +36,33 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             config.defaultSalt,
         );
-        console.log("wallet addressi s", res);
         setWalletAddress(res);
+    };
+
+    const activateWallet = async () => {
+        const currentFee = await getGasPrice();
+        const activateOp = WalletLib.EIP4337.activateWalletOp(
+            config.contracts.entryPoint,
+            config.contracts.paymaster,
+            account,
+            config.contracts.weth,
+            currentFee,
+            config.defaultTip,
+            config.defaultSalt,
+        );
+        console.log("op is", activateOp);
+
+        const signFunc:any = await keyStore.generateSign()
+
+        console.log('sign func', signFunc)
+
+        const signature = await activateOp.keystoreSign(
+            config.contracts.entryPoint,
+            config.chainId,
+            account,
+            signFunc,
+        );
+        console.log("signature is", signature);
     };
 
     useEffect(() => {
@@ -47,6 +81,8 @@ export const WalletContextProvider = ({ children }: any) => {
             value={{
                 account,
                 walletAddress,
+                getGasPrice,
+                activateWallet,
             }}
         >
             {children}

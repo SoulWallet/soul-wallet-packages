@@ -19,7 +19,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const [activated, setActivated] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const { account: userAddress } = useWalletContext();
+    const { account: userAddress, activateWallet } = useWalletContext();
 
     const doCopy = () => {
         copyText(account);
@@ -28,11 +28,12 @@ export default function AccountInfo({ account, action }: IProps) {
 
     const doActivate = async () => {
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setActivated(true);
-            toast.success("Account activated");
-        }, 1500);
+        await activateWallet();
+        // setTimeout(() => {
+        //     setLoading(false);
+        //     setActivated(true);
+        //     toast.success("Account activated");
+        // }, 1500);
     };
 
     const doRemoveGuardian = async () => {

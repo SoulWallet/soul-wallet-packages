@@ -106,17 +106,34 @@ export default class KeyStore {
      * @param message 
      * @returns signature, null is failed or keystore not unlocked
      */
-    public async sign(message: string): Promise<string | null> {
-        if (!this._privateKey) {
+    public async sign(message: string, _privateKey: string | null): Promise<string | null> {
+        if (!_privateKey) {
             return null;
         }
         const msg = Buffer.concat([
             Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
             Buffer.from(arrayify(message))
         ])
-        const sig = ecsign(keccak256_buffer(msg), Buffer.from(arrayify(this._privateKey)))
+        console.log('before private key', _privateKey)
+        const sig = ecsign(keccak256_buffer(msg), Buffer.from(arrayify(_privateKey)))
         const signedMessage = toRpcSig(sig.v, sig.r, sig.s);
         return signedMessage;
     }
 
+    /**
+     * generate sign function
+     * @param message 
+     * @returns sign function
+     */
+        public async generateSign() {
+            if (!this._privateKey) {
+                return null;
+            }
+
+            return async(message: string):Promise<any> => {
+                // console.log('got', _privateKey)
+                this.sign(message, this._privateKey)
+            }
+
+        }
 }
