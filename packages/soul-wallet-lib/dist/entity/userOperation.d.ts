@@ -43,5 +43,12 @@ declare class UserOperation {
      * @param privateKey the private key
      */
     keystoreSign(entryPoint: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>): Promise<boolean>;
+    /**
+     * get the request id (userOp hash)
+     * @param entryPointAddress the entry point address
+     * @param chainId the chain id
+     * @returns hex string
+     */
+    getRequestId(entryPointAddress: string, chainId: number): string;
 }
 export { UserOperation };

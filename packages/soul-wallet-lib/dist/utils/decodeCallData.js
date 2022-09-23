@@ -19,7 +19,7 @@ exports.DecodeCallData = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-19 19:53:19
+ * @LastEditTime: 2022-09-23 15:27:20
  */
 const axios_1 = __importDefault(require("axios"));
 const web3_1 = __importDefault(require("web3"));
@@ -85,7 +85,7 @@ class DecodeCallData {
         this.bytes4Methods.set('0xf242432a', {
             functionName: 'safeBatchTransferFrom',
             functionSignature: 'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)',
-            typesArray: ['address', 'address', 'uint256', 'uint256', 'bytes']
+            typesArray: ['address', 'address', 'uint256[]', 'uint256[]', 'bytes']
         });
         this.bytes4Methods.set('0x2eb2c2d6', {
             functionName: 'safeBatchTransferFrom',

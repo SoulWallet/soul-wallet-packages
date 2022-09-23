@@ -16,10 +16,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payMasterSignHash = exports.signUserOpWithKeyStore = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
+exports.payMasterSignHash = exports.packGuardiansSignByRequestId = exports.guardianSignRequestId = exports.guardianSignUserOp = exports.guardianSignRequestIdWithKeyStore = exports.guardianSignUserOpWithKeyStore = exports.signUserOpWithKeyStore = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
 const utils_1 = require("ethers/lib/utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
 const web3_1 = __importDefault(require("web3"));
+const ethers_1 = require("ethers");
+const simpleWallet_1 = require("../contracts/simpleWallet");
 function encode(typevalues, forSignature) {
     const types = typevalues.map(typevalue => typevalue.type === 'bytes' && forSignature ? 'bytes32' : typevalue.type);
     const values = typevalues.map((typevalue) => typevalue.type === 'bytes' && forSignature ? (0, utils_1.keccak256)(typevalue.val) : typevalue.val);
@@ -84,9 +86,12 @@ var SignatureMode;
 })(SignatureMode || (SignatureMode = {}));
 function _signUserOp(op, entryPointAddress, chainId, privateKey) {
     const message = getRequestId(op, entryPointAddress, chainId);
+    return _signReuestId(message, privateKey);
+}
+function _signReuestId(requestId, privateKey) {
     const msg1 = Buffer.concat([
         Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
-        Buffer.from((0, utils_1.arrayify)(message))
+        Buffer.from((0, utils_1.arrayify)(requestId))
     ]);
     const sig = (0, ethereumjs_util_1.ecsign)((0, ethereumjs_util_1.keccak256)(msg1), Buffer.from((0, utils_1.arrayify)(privateKey)));
     // that's equivalent of:  await signer.signMessage(message);
@@ -147,6 +152,126 @@ function signUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, key
     });
 }
 exports.signUserOpWithKeyStore = signUserOpWithKeyStore;
+/**
+ * guardian offline sign a user operation with the given keyStoreSign
+ * @param op
+ * @param entryPointAddress
+ * @param chainId
+ * @param signAddress
+ * @param keyStoreSign
+ * @returns
+ */
+function guardianSignUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, keyStoreSign) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const requestId = getRequestId(op, entryPointAddress, chainId);
+        return yield guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign);
+    });
+}
+exports.guardianSignUserOpWithKeyStore = guardianSignUserOpWithKeyStore;
+/**
+ * guardian offline sign a requestId with the given keyStoreSign
+ * @param requestId
+ * @param signAddress
+ * @param keyStoreSign
+ * @returns
+ */
+function guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const sign = yield keyStoreSign(requestId);
+        return sign;
+    });
+}
+exports.guardianSignRequestIdWithKeyStore = guardianSignRequestIdWithKeyStore;
+/**
+ * guardian offline sign a user operation with the given private key
+ * @param op
+ * @param entryPointAddress
+ * @param chainId
+ * @param privateKey
+ * @returns
+ */
+function guardianSignUserOp(op, entryPointAddress, chainId, privateKey) {
+    const requestId = getRequestId(op, entryPointAddress, chainId);
+    return guardianSignRequestId(requestId, privateKey);
+}
+exports.guardianSignUserOp = guardianSignUserOp;
+/**
+ * guardian offline sign a user operation with the given private key
+ * @param requestId
+ * @param privateKey
+ * @returns
+ */
+function guardianSignRequestId(requestId, privateKey) {
+    const sign = _signReuestId(requestId, privateKey);
+    return sign;
+}
+exports.guardianSignRequestId = guardianSignRequestId;
+/**
+ * sign a user operation with guardian signatures
+ * @param requestId
+ * @param signatures
+ * @param walletAddress if web3 and walletAddress is not null, will check the signer on chain
+ * @param web3 if web3 and walletAddress is not null, will check the signer on chain
+ * @returns
+ */
+function packGuardiansSignByRequestId(requestId, signatures, walletAddress = null, web3 = null) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const msg = (0, ethereumjs_util_1.keccak256)(Buffer.concat([
+            Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
+            Buffer.from((0, utils_1.arrayify)(requestId))
+        ]));
+        const signList = [];
+        const signerSet = new Set();
+        for (let index = 0; index < signatures.length; index++) {
+            const signature = signatures[index];
+            try {
+                const signer = (0, utils_1.recoverAddress)(msg, signature);
+                if (!signerSet.has(signer)) {
+                    signerSet.add(signer);
+                    signList.push({
+                        signer: signer,
+                        signature: signature
+                    });
+                }
+                else {
+                    console.log("duplicate signer: ", signer);
+                }
+            }
+            catch (error) {
+                throw new Error(`invalid signature: ${signature}`);
+            }
+        }
+        if (web3 && walletAddress) {
+            // function isGuardian(address account) public view returns (bool)
+            const contract = new web3.eth.Contract(simpleWallet_1.SimpleWalletContract.ABI, walletAddress);
+            const guardiansCount = parseInt(yield contract.methods.getGuardiansCount().call());
+            if (guardiansCount < 2) {
+                throw new Error(`guardians count must >= 2`);
+            }
+            const minSignatureLen = Math.round(guardiansCount / 2);
+            if (signList.length < minSignatureLen) {
+                throw new Error(`signatures count must >= ${minSignatureLen}`);
+            }
+            for (let index = 0; index < signList.length; index++) {
+                const sign = signList[index];
+                const isGuardian = yield contract.methods.isGuardian(sign.signer).call();
+                if (!isGuardian) {
+                    throw new Error(`signer ${sign.signer} is not a guardian`);
+                }
+            }
+        }
+        // sort signList by bn asc
+        signList.sort((a, b) => {
+            return ethers_1.BigNumber.from(a.signer).lt(ethers_1.BigNumber.from(b.signer)) ? -1 : 1;
+        });
+        const enc = utils_1.defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'], [
+            SignatureMode.guardians,
+            signList
+        ]);
+        return enc;
+    });
+}
+exports.packGuardiansSignByRequestId = packGuardiansSignByRequestId;
 function payMasterSignHash(op) {
     return (0, utils_1.keccak256)(utils_1.defaultAbiCoder.encode([
         'address',

@@ -4,12 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 21:24:32
+ * @LastEditTime: 2022-09-23 16:04:06
  */
 
 import Web3 from 'web3';
 import { Guard } from '../utils/guard';
-import { signUserOp, payMasterSignHash, signUserOpWithKeyStore } from '../utils/userOp';
+import { signUserOp, payMasterSignHash, signUserOpWithKeyStore, getRequestId, guardianSignUserOpWithKeyStore } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';
 
 /**
@@ -74,7 +74,7 @@ class UserOperation {
      */
     public async estimateGas(entryPointAddress: string, estimateGasFunc: (txInfo: TransactionInfo) => Promise<number>) {
         try {
-            this.verificationGas = 100000;
+            this.verificationGas = 150000;
             if (this.initCode.length > 0) {
                 this.verificationGas += (3200 + 200 * this.initCode.length);
             }
@@ -128,6 +128,17 @@ class UserOperation {
         this.signature = await signUserOpWithKeyStore(this, entryPoint, chainId, signAddress, keyStoreSign);
         return this.signature !== null;
     }
+
+    /**
+     * get the request id (userOp hash)
+     * @param entryPointAddress the entry point address
+     * @param chainId the chain id
+     * @returns hex string
+     */
+    public getRequestId(entryPointAddress: string, chainId: number): string {
+        return getRequestId(this, entryPointAddress, chainId);
+    }
+
 }
 
 
