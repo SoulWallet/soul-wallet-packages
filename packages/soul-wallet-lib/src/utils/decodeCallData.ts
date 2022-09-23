@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-19 19:53:19
+ * @LastEditTime: 2022-09-23 19:14:09
  */
 import axios from 'axios';
 import { readFileSync } from 'fs';
@@ -23,12 +23,9 @@ export class DecodeCallData {
      0x23b872dd	transferFrom(address,address,uint256)
      0xb88d4fde	safeTransferFrom(address,address,uint256,bytes)
      0x42842e0e	safeTransferFrom(address,address,uint256)
-     0x23b872dd	transferFrom(address,address,uint256)
-     0x095ea7b3	approve(address,uint256)
      0xa22cb465	setApprovalForAll(address,bool)
      0xf242432a	safeTransferFrom(address,address,uint256,uint256,bytes)
      0x2eb2c2d6	safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)
-     0xa22cb465	setApprovalForAll(address,bool)
              */
         this.bytes4Methods.set('0xa9059cbb', {
             functionName: 'transfer',
@@ -54,38 +51,22 @@ export class DecodeCallData {
             functionName: 'safeTransferFrom',
             functionSignature: 'safeTransferFrom(address,address,uint256)',
             typesArray: ['address', 'address', 'uint256']
-        });
-        this.bytes4Methods.set('0x23b872dd', {
-            functionName: 'transferFrom',
-            functionSignature: 'transferFrom(address,address,uint256)',
-            typesArray: ['address', 'address', 'uint256']
-        });
-        this.bytes4Methods.set('0x095ea7b3', {
-            functionName: 'approve',
-            functionSignature: 'approve(address,uint256)',
-            typesArray: ['address', 'uint256']
-        });
+        }); 
         this.bytes4Methods.set('0xa22cb465', {
             functionName: 'setApprovalForAll',
             functionSignature: 'setApprovalForAll(address,bool)',
             typesArray: ['address', 'bool']
         });
         this.bytes4Methods.set('0xf242432a', {
-            functionName: 'safeBatchTransferFrom',
-            functionSignature: 'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)',
+            functionName: 'safeTransferFrom',
+            functionSignature: 'safeTransferFrom(address,address,uint256,uint256,bytes)',
             typesArray: ['address', 'address', 'uint256', 'uint256', 'bytes']
         });
         this.bytes4Methods.set('0x2eb2c2d6', {
             functionName: 'safeBatchTransferFrom',
             functionSignature: 'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)',
             typesArray: ['address', 'address', 'uint256[]', 'uint256[]', 'bytes']
-        });
-        this.bytes4Methods.set('0xa22cb465', {
-            functionName: 'setApprovalForAll',
-            functionSignature: 'setApprovalForAll(address,bool)',
-            typesArray: ['address', 'bool']
-        });
-
+        }); 
         this.bytes4Methods.set('0x80c5c7d0', {
             functionName: 'execFromEntryPoint',
             functionSignature: 'execFromEntryPoint(address,uint256,bytes)',

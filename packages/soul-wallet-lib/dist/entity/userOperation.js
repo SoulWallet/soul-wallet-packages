@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 21:24:32
+ * @LastEditTime: 2022-09-23 16:04:06
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -80,7 +80,7 @@ class UserOperation {
     estimateGas(entryPointAddress, estimateGasFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.verificationGas = 100000;
+                this.verificationGas = 150000;
                 if (this.initCode.length > 0) {
                     this.verificationGas += (3200 + 200 * this.initCode.length);
                 }
@@ -128,6 +128,15 @@ class UserOperation {
             this.signature = yield (0, userOp_1.signUserOpWithKeyStore)(this, entryPoint, chainId, signAddress, keyStoreSign);
             return this.signature !== null;
         });
+    }
+    /**
+     * get the request id (userOp hash)
+     * @param entryPointAddress the entry point address
+     * @param chainId the chain id
+     * @returns hex string
+     */
+    getRequestId(entryPointAddress, chainId) {
+        return (0, userOp_1.getRequestId)(this, entryPointAddress, chainId);
     }
 }
 exports.UserOperation = UserOperation;

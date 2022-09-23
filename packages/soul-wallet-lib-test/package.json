@@ -16,6 +16,7 @@
     "dotenv": "8.6.0",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.6.9",
+    "socks-proxy-agent": "^7.0.0",
     "soul-wallet-lib": "file:../soul-wallet-lib",
     "web3": "^1.7.5",
     "web3-utils": "^1.7.5"
