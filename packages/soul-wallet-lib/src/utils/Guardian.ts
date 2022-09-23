@@ -4,13 +4,14 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-22 11:34:03
+ * @LastEditTime: 2022-09-23 16:08:29
  */
 
 import { UserOperation } from "../entity/userOperation";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
-import { execFromEntryPoint } from "../defines/ABI";
+import { guardianSignUserOpWithKeyStore, guardianSignRequestIdWithKeyStore, guardianSignUserOp, guardianSignRequestId, packGuardiansSignByRequestId } from "../utils/userOp";
+
 
 export class Guaridian {
     private static walletContract(web3: Web3, walletAddress: string) {
@@ -150,4 +151,27 @@ export class Guaridian {
         return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
+
+
+    static async transferOwner(web3: Web3, walletAddress: string,
+        nonce: number, entryPointAddress: string, paymasterAddress: string,
+        maxFeePerGas: number, maxPriorityFeePerGas: number, newOwner: string) {
+        newOwner = web3.utils.toChecksumAddress(newOwner);
+        const calldata = Guaridian.walletContract(web3, walletAddress).methods.transferOwner(newOwner).encodeABI()
+
+        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+            maxFeePerGas, maxPriorityFeePerGas, calldata);
+    }
+
+
+
+    static guardianSignUserOpWithKeyStore = guardianSignUserOpWithKeyStore;
+    static guardianSignRequestIdWithKeyStore = guardianSignRequestIdWithKeyStore
+    static guardianSignUserOp = guardianSignUserOp;
+    static guardianSignRequestId = guardianSignRequestId;
+    static packGuardiansSignByRequestId = packGuardiansSignByRequestId;
+
+
+
+
 }

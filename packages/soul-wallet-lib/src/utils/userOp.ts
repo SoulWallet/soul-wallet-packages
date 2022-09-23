@@ -3,10 +3,12 @@
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/test/UserOp.ts
  */
 
-import { arrayify, defaultAbiCoder, keccak256 } from 'ethers/lib/utils'
-import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
+import { arrayify, defaultAbiCoder, keccak256, recoverAddress } from 'ethers/lib/utils'
+import { ecsign, toRpcSig, fromRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 import { UserOperation } from '../entity/userOperation'
 import Web3 from 'web3'
+import { BigNumber } from 'ethers'
+import { SimpleWalletContract } from '../contracts/simpleWallet'
 
 function encode(typevalues: Array<{ type: string, val: any }>, forSignature: boolean): string {
   const types = typevalues.map(typevalue => typevalue.type === 'bytes' && forSignature ? 'bytes32' : typevalue.type)
@@ -75,9 +77,13 @@ enum SignatureMode {
 
 function _signUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
   const message = getRequestId(op, entryPointAddress, chainId)
+  return _signReuestId(message, privateKey);
+}
+
+function _signReuestId(requestId: string, privateKey: string): string {
   const msg1 = Buffer.concat([
     Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
-    Buffer.from(arrayify(message))
+    Buffer.from(arrayify(requestId))
   ])
 
   const sig = ecsign(keccak256_buffer(msg1), Buffer.from(arrayify(privateKey)))
@@ -142,6 +148,126 @@ export async function signUserOpWithKeyStore(op: UserOperation, entryPointAddres
   );
   return enc;
 }
+
+/**
+ * guardian offline sign a user operation with the given keyStoreSign
+ * @param op 
+ * @param entryPointAddress 
+ * @param chainId 
+ * @param signAddress 
+ * @param keyStoreSign 
+ * @returns 
+ */
+export async function guardianSignUserOpWithKeyStore(op: UserOperation, entryPointAddress: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
+  const requestId = getRequestId(op, entryPointAddress, chainId);
+  return await guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign);
+}
+
+/**
+ * guardian offline sign a requestId with the given keyStoreSign
+ * @param requestId 
+ * @param signAddress 
+ * @param keyStoreSign 
+ * @returns 
+ */
+export async function guardianSignRequestIdWithKeyStore(requestId: string, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
+  const sign = await keyStoreSign(requestId);
+  return sign;
+}
+
+/**
+ * guardian offline sign a user operation with the given private key
+ * @param op 
+ * @param entryPointAddress 
+ * @param chainId 
+ * @param privateKey 
+ * @returns 
+ */
+export function guardianSignUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
+  const requestId = getRequestId(op, entryPointAddress, chainId);
+  return guardianSignRequestId(requestId, privateKey);
+}
+
+/**
+ * guardian offline sign a user operation with the given private key
+ * @param requestId 
+ * @param privateKey 
+ * @returns 
+ */
+export function guardianSignRequestId(requestId: string, privateKey: string): string {
+  const sign = _signReuestId(requestId, privateKey);
+  return sign;
+}
+
+/**
+ * sign a user operation with guardian signatures
+ * @param requestId 
+ * @param signatures 
+ * @param walletAddress if web3 and walletAddress is not null, will check the signer on chain
+ * @param web3 if web3 and walletAddress is not null, will check the signer on chain
+ * @returns 
+ */
+export async function packGuardiansSignByRequestId(requestId: string, signatures: string[],
+  walletAddress: string | null = null, web3: Web3 | null = null): Promise<string> {
+  const msg = keccak256_buffer(Buffer.concat([
+    Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
+    Buffer.from(arrayify(requestId))
+  ]));
+  const signList = [];
+  const signerSet = new Set();
+  for (let index = 0; index < signatures.length; index++) {
+    const signature = signatures[index];
+    try {
+      const signer = recoverAddress(msg, signature);
+      if (!signerSet.has(signer)) {
+        signerSet.add(signer);
+        signList.push({
+          signer: signer,
+          signature: signature
+        });
+      } else {
+        console.log("duplicate signer: ", signer);
+      }
+    } catch (error) {
+      throw new Error(`invalid signature: ${signature}`);
+    }
+  }
+
+  if (web3 && walletAddress) {
+    // function isGuardian(address account) public view returns (bool)
+    const contract = new web3.eth.Contract(SimpleWalletContract.ABI, walletAddress);
+    const guardiansCount: number = parseInt(await contract.methods.getGuardiansCount().call());
+    if (guardiansCount < 2) {
+      throw new Error(`guardians count must >= 2`);
+    }
+    const minSignatureLen: number = Math.round(guardiansCount / 2);
+    if (signList.length < minSignatureLen) {
+      throw new Error(`signatures count must >= ${minSignatureLen}`);
+    }
+    for (let index = 0; index < signList.length; index++) {
+      const sign = signList[index];
+      const isGuardian = await contract.methods.isGuardian(sign.signer).call();
+      if (!isGuardian) {
+        throw new Error(`signer ${sign.signer} is not a guardian`);
+      }
+    }
+  }
+
+  // sort signList by bn asc
+  signList.sort((a, b) => {
+    return BigNumber.from(a.signer).lt(BigNumber.from(b.signer)) ? -1 : 1;
+  });
+
+  const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
+    [
+      SignatureMode.guardians,
+      signList
+    ]
+  );
+  return enc;
+}
+
+
 
 export function payMasterSignHash(op: UserOperation): string {
   return keccak256(defaultAbiCoder.encode([

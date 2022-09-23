@@ -63,6 +63,7 @@ async function main() {
      */
     const web3 = new Web3(HTTP_PROVIDER);
 
+
     // get chainId ( use for generate signature、gas price)
     const chainId = await web3.eth.net.getId();
     console.log(`chainId: ${chainId}`);
@@ -243,6 +244,54 @@ async function main() {
             //     addGuardianOp.sign(entryPointAddress, chainId, account_user.privateKey);
             //     await Utils.sendOPWait(web3, addGuardianOp, entryPointAddress, chainId);
             // }
+        }
+        {
+            // social recovery
+            const newOwner = web3.eth.accounts.create();
+            let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
+            const gasFee = await Utils.getGasPrice(web3, chainId);
+            const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(web3 as any, simpleWalletAddress, nonce,
+                entryPointAddress, WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority, newOwner.address);
+            if (!recoveryOp) {
+                throw new Error('recoveryOp is null');
+            }
+            // get requestId
+            const requestId = recoveryOp.getRequestId(entryPointAddress, chainId);
+            // account_guardian1 sign
+            const sign1 = WalletLib.EIP4337.Guaridian.guardianSignRequestId(requestId, guardians[0].privateKey);
+            // account_guardian2 sign
+            const sign2 = WalletLib.EIP4337.Guaridian.guardianSignRequestId(requestId, guardians[1].privateKey);
+
+            // pack sign without on chain check
+            //const signPack = await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(requestId, [sign1, sign2]);
+            // pack sign with on chain check
+            const signPack = await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(requestId, [sign1, sign2], simpleWalletAddress, web3 as any);
+
+            recoveryOp.signature = signPack;
+
+            // recovery now
+            await Utils.sendOPWait(web3, recoveryOp, entryPointAddress, chainId);
+
+            // recovery success
+
+            {
+                // change owner to orginal owner
+                let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
+                const gasFee = await Utils.getGasPrice(web3, chainId);
+                const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(web3 as any, simpleWalletAddress, nonce,
+                    entryPointAddress, WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority, account_user.address);
+                if (!recoveryOp) {
+                    throw new Error('recoveryOp is null');
+                }
+                recoveryOp.sign(entryPointAddress, chainId, newOwner.privateKey);
+                await Utils.sendOPWait(web3, recoveryOp, entryPointAddress, chainId);
+                console.log('change owner to orginal owner success');
+            }
+
+
+
+
+
         }
     }
     // WETH send to account_sponser

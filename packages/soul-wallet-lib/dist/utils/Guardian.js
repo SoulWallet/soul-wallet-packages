@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-22 11:34:03
+ * @LastEditTime: 2022-09-23 16:08:29
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -20,6 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Guaridian = void 0;
 const userOperation_1 = require("../entity/userOperation");
 const simpleWallet_1 = require("../contracts/simpleWallet");
+const userOp_1 = require("../utils/userOp");
 class Guaridian {
     static walletContract(web3, walletAddress) {
         return new web3.eth.Contract(simpleWallet_1.SimpleWalletContract.ABI, walletAddress);
@@ -137,6 +138,18 @@ class Guaridian {
             return yield this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, calldata);
         });
     }
+    static transferOwner(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, newOwner) {
+        return __awaiter(this, void 0, void 0, function* () {
+            newOwner = web3.utils.toChecksumAddress(newOwner);
+            const calldata = Guaridian.walletContract(web3, walletAddress).methods.transferOwner(newOwner).encodeABI();
+            return yield this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, calldata);
+        });
+    }
 }
 exports.Guaridian = Guaridian;
+Guaridian.guardianSignUserOpWithKeyStore = userOp_1.guardianSignUserOpWithKeyStore;
+Guaridian.guardianSignRequestIdWithKeyStore = userOp_1.guardianSignRequestIdWithKeyStore;
+Guaridian.guardianSignUserOp = userOp_1.guardianSignUserOp;
+Guaridian.guardianSignRequestId = userOp_1.guardianSignRequestId;
+Guaridian.packGuardiansSignByRequestId = userOp_1.packGuardiansSignByRequestId;
 //# sourceMappingURL=Guardian.js.map

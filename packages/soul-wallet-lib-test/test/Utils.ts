@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-22 10:56:21
+ * @LastEditTime: 2022-09-23 17:59:53
  */
 
 
@@ -17,6 +17,8 @@ import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util
 import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
 import { Ret_get, Ret_put } from './entity/bundler';
 
+import { SocksProxyAgent } from 'socks-proxy-agent';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 export class Utils {
 
 
@@ -215,30 +217,48 @@ export class Utils {
     // static bundlerUrl = 'http://127.0.0.1/'; 
     static bundlerUrl = 'https://bundler-poc.soulwallets.me/'
 
-
     static async sendOp(op: UserOperation) {
+        const proxyOptions = `socks5://127.0.0.1:1086`; // your sock5 host and port;
+        const httpsAgent = new SocksProxyAgent(proxyOptions);
         try {
-            // post or put
-            const data = await axios.post(Utils.bundlerUrl, op, {
+            // post or put 
+            const result = await axios({
+                httpsAgent,
+                method: 'PUT',//post or put
+                url: Utils.bundlerUrl,
+                data: op,
                 headers: {
+                    'accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
             });
-            const resp = data.data as Ret_put;
-            return resp;
+
+            return result.data as Ret_put;
+
         } catch (error) {
             console.log(error);
         }
         return null;
     }
     static async getOpStateByUserOperation(op: UserOperation, entryPointAddress: string, chainId: number) {
-        return Utils.getOpStateByReqeustId(Utils.getRequestId(op, entryPointAddress, chainId));
+        return Utils.getOpStateByReqeustId(op.getRequestId(entryPointAddress, chainId));
     }
     static async getOpStateByReqeustId(requestId: string) {
         try {
-            const data = await axios.get(`${Utils.bundlerUrl}${requestId}`);
-            const resp = data.data as Ret_get;
-            return resp;
+            const proxyOptions = `socks5://127.0.0.1:1086`; // your sock5 host and port;
+            const httpsAgent = new SocksProxyAgent(proxyOptions);
+
+            const result = await axios({
+                httpsAgent,
+                method: 'GET',
+                url: `${Utils.bundlerUrl}${requestId}`,
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            return result.data as Ret_get;
         } catch (error) {
             console.log(error);
         }
@@ -376,12 +396,12 @@ export class Utils {
         return Utils.encode(typevalues, forSignature)
     }
 
-    static getRequestId(op: UserOperation, entryPointAddress: string, chainId: number): string {
-        const userOpHash = keccak256(Utils.packUserOp(op, true))
-        const enc = defaultAbiCoder.encode(
-            ['bytes32', 'address', 'uint256'],
-            [userOpHash, entryPointAddress, chainId])
-        return keccak256(enc)
-    }
+    // static getRequestId(op: UserOperation, entryPointAddress: string, chainId: number): string {
+    //     const userOpHash = keccak256(Utils.packUserOp(op, true))
+    //     const enc = defaultAbiCoder.encode(
+    //         ['bytes32', 'address', 'uint256'],
+    //         [userOpHash, entryPointAddress, chainId])
+    //     return keccak256(enc)
+    // }
 
 }
