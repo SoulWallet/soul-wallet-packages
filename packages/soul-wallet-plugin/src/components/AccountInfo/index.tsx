@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import { useNavigate } from "react-router-dom";
 import api from "@src/lib/api";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import AddressIcon from "../AddressIcon";
 import { copyText, getLocalStorage } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
-import KeyStore from '@src/lib/keystore'
-
-const keyStore = KeyStore.getInstance();
 
 interface IProps {
     account: string;
@@ -21,6 +19,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const [activated, setActivated] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const { account: userAddress } = useWalletContext();
 
     const doCopy = () => {
         copyText(account);
@@ -41,7 +40,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
         const res: any = await api.guardian.remove({
             email: await getLocalStorage("email"),
-            wallet_address: await keyStore.getAddress(),
+            wallet_address: userAddress,
             guardian: account,
         });
 
@@ -55,7 +54,7 @@ export default function AccountInfo({ account, action }: IProps) {
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
             <AddressIcon width={72} address={account} />
-            <div className="text-lg mt-1 mb-2">Account 1</div>
+            <div className="text-lg mt-1 mb-2">Soul Wallet</div>
             <div
                 className="gap-2 flex items-center cursor-pointer tooltip"
                 data-tip={copied ? "Copied" : "Click to copy"}
