@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Logo from "@src/components/Logo";
+import { Link } from "react-router-dom";
 import api from "@src/lib/api";
 import { setLocalStorage, getLocalStorage } from "@src/lib/tools";
 import ImgSuccessCat from "@src/assets/success-cat.svg";
@@ -8,7 +9,7 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const [step, setStep] = useState<number>(0);
+    const [step, setStep] = useState<number>(3);
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
 
     const onCreated = (address: string | null) => {
@@ -33,14 +34,12 @@ export function RecoverWallet() {
 
         console.log("recovering?", recovering);
 
-        if (recovering) {
-            // send api to check recover status
-            // if all guardians pass
+        // send api to check recover status
+        // if all guardians pass
 
-            if (true) {
-                await setLocalStorage("recovering", false);
-                setStep(3);
-            }
+        if (true) {
+            await setLocalStorage("recovering", false);
+            setStep(3);
         }
     };
 
@@ -61,6 +60,7 @@ export function RecoverWallet() {
 
                 {step === 1 && (
                     <>
+                        {/** TODO, 这里邮箱是不能编辑的  */}
                         <div className="page-title mb-4">Recover</div>
                         <SendEmail
                             onReceiveCode={onReceiveCode}
@@ -100,18 +100,18 @@ export function RecoverWallet() {
                             src={ImgSuccessCat}
                             className="block mx-auto mb-12"
                         />
-                        <div className="page-title mb-6">Congratulation!</div>
+                        <div className="page-title mb-3">Congratulation!</div>
                         <div className="page-desc leading-6">
-                            Your wallet is recovered! <br />
-                            Please setup the passward to proceed!
+                            Your wallet is recovered!
                         </div>
                         <div className="fixed bottom-10 left-6 right-6">
-                            <a
+                            <Link
+                                to="/wallet"
                                 className="btn btn-blue w-full"
                                 onClick={() => setStep(3)}
                             >
-                                Setup password
-                            </a>
+                                My Wallet
+                            </Link>
                         </div>
                     </>
                 )}

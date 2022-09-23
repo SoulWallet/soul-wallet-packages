@@ -54,7 +54,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
-            <AddressIcon width={90} address={account} />
+            <AddressIcon width={72} address={account} />
             <div className="text-lg mt-1 mb-2">Account 1</div>
             <div
                 className="gap-2 flex items-center cursor-pointer tooltip"
