@@ -134,7 +134,7 @@ export function signUserOp(op: UserOperation, entryPointAddress: string, chainId
  */
 export async function signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string,
   chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
-  const sign = _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
+  const sign = await _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
   const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
     [
       SignatureMode.owner,
