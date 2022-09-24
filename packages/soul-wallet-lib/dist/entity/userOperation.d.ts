@@ -37,12 +37,11 @@ declare class UserOperation {
      */
     sign(entryPoint: string, chainId: number, privateKey: string): void;
     /**
-     * sign the user operation
-     * @param entryPoint the entry point address
-     * @param chainId the chain id
-     * @param privateKey the private key
+     * sign the user operation with personal sign
+     * @param signAddress the sign address
+     * @param signature the signature of the requestId
      */
-    keystoreSign(entryPoint: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>): Promise<boolean>;
+    signWithSignature(signAddress: string, signature: string): void;
     /**
      * get the request id (userOp hash)
      * @param entryPointAddress the entry point address
