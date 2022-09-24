@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
+import { Utils } from "@src/Utils";
 import config from "@src/config";
 import KeyStore from "@src/lib/keystore";
 
@@ -11,6 +12,7 @@ const web3 = new Web3(config.provider);
 export const WalletContext = createContext({
     account: "",
     walletAddress: "",
+    isContract: (address: string) => {},
     getGasPrice: () => {},
     activateWallet: () => {},
 });
@@ -18,6 +20,10 @@ export const WalletContext = createContext({
 export const WalletContextProvider = ({ children }: any) => {
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
+
+    const isContract = async (_address: string) => {
+        return await web3.eth.getCode(_address);
+    };
 
     const getGasPrice = async () => {
         return Number(await web3.eth.getGasPrice());
@@ -40,7 +46,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const activateWallet = async () => {
-        const currentFee = await getGasPrice();
+        const currentFee = (await getGasPrice()) * 2;
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.entryPoint,
             config.contracts.paymaster,
@@ -50,19 +56,24 @@ export const WalletContextProvider = ({ children }: any) => {
             config.defaultTip,
             config.defaultSalt,
         );
-        console.log("op is", activateOp);
 
-        const signFunc:any = await keyStore.generateSign()
-
-        console.log('sign func', signFunc)
-
-        const signature = await activateOp.keystoreSign(
+        const requestId = activateOp.getRequestId(
             config.contracts.entryPoint,
             config.chainId,
-            account,
-            signFunc,
         );
-        console.log("signature is", signature);
+
+        const signature = await keyStore.sign(requestId);
+
+        if (!signature) {
+            activateOp.signWithSignature(account, signature || "");
+
+            await Utils.sendOPWait(
+                web3,
+                activateOp,
+                config.contracts.entryPoint,
+                config.chainId,
+            );
+        }
     };
 
     useEffect(() => {
@@ -81,6 +92,7 @@ export const WalletContextProvider = ({ children }: any) => {
             value={{
                 account,
                 walletAddress,
+                isContract,
                 getGasPrice,
                 activateWallet,
             }}

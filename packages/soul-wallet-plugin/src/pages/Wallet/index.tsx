@@ -6,7 +6,20 @@ import Operations from "./comp/Operations";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    const { walletAddress } = useWalletContext();
+    const [activated, setActivated] = useState<boolean>(false);
+    const { walletAddress, isContract } = useWalletContext();
+
+    const checkActivated = async () => {
+        const res = isContract(walletAddress);
+        console.log("is Contract", res);
+    };
+
+    useEffect(() => {
+        if (!walletAddress) {
+            return;
+        }
+        checkActivated();
+    }, [walletAddress]);
 
     return (
         <>

@@ -9,13 +9,11 @@
 
 
 import fs from 'fs';
-import { SuggestedGasFees } from './entity/suggestedGasFees';
 import Web3 from 'web3';
 import axios from 'axios';
-import { arrayify, defaultAbiCoder, hexlify, hexZeroPad, keccak256 } from 'ethers/lib/utils'
-import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
+import { hexlify, hexZeroPad} from 'ethers/lib/utils'
 import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
-import { Ret_get, Ret_put } from './entity/bundler';
+import { Ret_get, Ret_put } from '../entity/bundler';
 
 export class Utils {
 
@@ -56,7 +54,7 @@ export class Utils {
         return null;
     }
     static async getOpStateByUserOperation(op: UserOperation, entryPointAddress: string, chainId: number) {
-        return Utils.getOpStateByReqeustId(Utils.getRequestId(op, entryPointAddress, chainId));
+        return Utils.getOpStateByReqeustId(op.getRequestId(entryPointAddress, chainId));
     }
     static async getOpStateByReqeustId(requestId: string) {
         try {

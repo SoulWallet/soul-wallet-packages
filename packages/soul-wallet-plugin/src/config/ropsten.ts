@@ -1,4 +1,17 @@
+import IconETH from "@src/assets/tokens/eth.svg";
+// import IconUSDC from "@src/assets/tokens/usdc.png";
+// import IconUSDT from "@src/assets/tokens/usdt.png";
+
+export const assetsList = [
+    {
+        icon: IconETH,
+        symbol: "WETH",
+        address: "0xec2a384Fa762C96140c817079768a1cfd0e908EA",
+    },
+];
+
 export default {
+    assetsList,
     provider: "https://ropsten.infura.io/v3/70d1f07f3ae54d9ab8d9b3bd6b8f5fe8",
     defaultSalt: 0,
     defaultTip: 4 * 10 ** 9,

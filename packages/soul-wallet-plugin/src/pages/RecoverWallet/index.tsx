@@ -9,7 +9,7 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const [step, setStep] = useState<number>(3);
+    const [step, setStep] = useState<number>(0);
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
 
     const onCreated = (address: string | null) => {
@@ -37,10 +37,10 @@ export function RecoverWallet() {
         // send api to check recover status
         // if all guardians pass
 
-        if (true) {
-            await setLocalStorage("recovering", false);
-            setStep(3);
-        }
+        // if (true) {
+        //     await setLocalStorage("recovering", false);
+        //     setStep(3);
+        // }
     };
 
     useEffect(() => {

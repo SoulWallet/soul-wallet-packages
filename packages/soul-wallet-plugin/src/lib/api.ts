@@ -8,7 +8,7 @@ const axio = axios.create({
 });
 
 axio.interceptors.request.use(async (config: any) => {
-    config.headers.authorization = await getLocalStorage("authorization");
+    config.headers.authorization = `bearer ${await getLocalStorage("authorization")}`;
     return config;
 });
 
