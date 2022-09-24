@@ -16,49 +16,12 @@ export declare function getRequestId(op: UserOperation, entryPointAddress: strin
  */
 export declare function signUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string;
 /**
- * sign a user operation with the given private key
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param signAddress user address
- * @param keyStoreSign user sign function
- * @returns signature
- */
-export declare function signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>): Promise<string>;
-/**
- * guardian offline sign a user operation with the given keyStoreSign
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param signAddress
- * @param keyStoreSign
+ * sign a user operation with the requestId signature
+ * @param signAddress signer address
+ * @param signature the signature of the requestId
  * @returns
  */
-export declare function guardianSignUserOpWithKeyStore(op: UserOperation, entryPointAddress: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>): Promise<string | null>;
-/**
- * guardian offline sign a requestId with the given keyStoreSign
- * @param requestId
- * @param signAddress
- * @param keyStoreSign
- * @returns
- */
-export declare function guardianSignRequestIdWithKeyStore(requestId: string, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>): Promise<string | null>;
-/**
- * guardian offline sign a user operation with the given private key
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param privateKey
- * @returns
- */
-export declare function guardianSignUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string;
-/**
- * guardian offline sign a user operation with the given private key
- * @param requestId
- * @param privateKey
- * @returns
- */
-export declare function guardianSignRequestId(requestId: string, privateKey: string): string;
+export declare function signUserOpWithPersonalSign(signAddress: string, signature: string): string;
 /**
  * sign a user operation with guardian signatures
  * @param requestId

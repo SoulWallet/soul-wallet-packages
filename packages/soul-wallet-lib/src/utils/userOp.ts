@@ -93,11 +93,6 @@ function _signReuestId(requestId: string, privateKey: string): string {
   return signedMessage1;
 }
 
-async function _signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string,
-  chainId: number, keyStoreSign: (message: string) => Promise<string | null>) {
-  const message = getRequestId(op, entryPointAddress, chainId)
-  return await keyStoreSign(message);
-}
 
 /**
  * sign a user operation with the given private key
@@ -109,94 +104,28 @@ async function _signUserOpWithKeyStore(op: UserOperation, entryPointAddress: str
  */
 export function signUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
   const sign = _signUserOp(op, entryPointAddress, chainId, privateKey);
-  const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
-    [
-      SignatureMode.owner,
-      [
-        {
-          signer: new Web3().eth.accounts.privateKeyToAccount(privateKey).address,
-          signature: sign
-        }
-      ]
-    ]
-  );
-  return enc;
+  return signUserOpWithPersonalSign(new Web3().eth.accounts.privateKeyToAccount(privateKey).address, sign);
 }
 
 /**
- * sign a user operation with the given private key
- * @param op 
- * @param entryPointAddress 
- * @param chainId 
- * @param signAddress user address
- * @param keyStoreSign user sign function
- * @returns signature
+ * sign a user operation with the requestId signature
+ * @param signAddress signer address
+ * @param signature the signature of the requestId
+ * @returns 
  */
-export async function signUserOpWithKeyStore(op: UserOperation, entryPointAddress: string,
-  chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
-  const sign = await _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
+export function signUserOpWithPersonalSign(signAddress: string, signature: string) {
   const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
     [
       SignatureMode.owner,
       [
         {
           signer: signAddress,
-          signature: sign
+          signature: signature
         }
       ]
     ]
   );
   return enc;
-}
-
-/**
- * guardian offline sign a user operation with the given keyStoreSign
- * @param op 
- * @param entryPointAddress 
- * @param chainId 
- * @param signAddress 
- * @param keyStoreSign 
- * @returns 
- */
-export async function guardianSignUserOpWithKeyStore(op: UserOperation, entryPointAddress: string, chainId: number, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
-  const requestId = getRequestId(op, entryPointAddress, chainId);
-  return await guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign);
-}
-
-/**
- * guardian offline sign a requestId with the given keyStoreSign
- * @param requestId 
- * @param signAddress 
- * @param keyStoreSign 
- * @returns 
- */
-export async function guardianSignRequestIdWithKeyStore(requestId: string, signAddress: string, keyStoreSign: (message: string) => Promise<string | null>) {
-  const sign = await keyStoreSign(requestId);
-  return sign;
-}
-
-/**
- * guardian offline sign a user operation with the given private key
- * @param op 
- * @param entryPointAddress 
- * @param chainId 
- * @param privateKey 
- * @returns 
- */
-export function guardianSignUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
-  const requestId = getRequestId(op, entryPointAddress, chainId);
-  return guardianSignRequestId(requestId, privateKey);
-}
-
-/**
- * guardian offline sign a user operation with the given private key
- * @param requestId 
- * @param privateKey 
- * @returns 
- */
-export function guardianSignRequestId(requestId: string, privateKey: string): string {
-  const sign = _signReuestId(requestId, privateKey);
-  return sign;
 }
 
 /**

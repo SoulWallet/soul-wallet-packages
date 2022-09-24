@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 16:04:06
+ * @LastEditTime: 2022-09-24 20:56:19
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -116,18 +116,12 @@ class UserOperation {
         this.signature = (0, userOp_1.signUserOp)(this, entryPoint, chainId, privateKey);
     }
     /**
-     * sign the user operation
-     * @param entryPoint the entry point address
-     * @param chainId the chain id
-     * @param privateKey the private key
+     * sign the user operation with personal sign
+     * @param signAddress the sign address
+     * @param signature the signature of the requestId
      */
-    keystoreSign(entryPoint, chainId, signAddress, keyStoreSign) {
-        return __awaiter(this, void 0, void 0, function* () {
-            guard_1.Guard.uint(chainId);
-            guard_1.Guard.address(entryPoint);
-            this.signature = yield (0, userOp_1.signUserOpWithKeyStore)(this, entryPoint, chainId, signAddress, keyStoreSign);
-            return this.signature !== null;
-        });
+    signWithSignature(signAddress, signature) {
+        this.signature = (0, userOp_1.signUserOpWithPersonalSign)(signAddress, signature);
     }
     /**
      * get the request id (userOp hash)

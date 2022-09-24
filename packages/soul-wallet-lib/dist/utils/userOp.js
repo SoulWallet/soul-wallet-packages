@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payMasterSignHash = exports.packGuardiansSignByRequestId = exports.guardianSignRequestId = exports.guardianSignUserOp = exports.guardianSignRequestIdWithKeyStore = exports.guardianSignUserOpWithKeyStore = exports.signUserOpWithKeyStore = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
+exports.payMasterSignHash = exports.packGuardiansSignByRequestId = exports.signUserOpWithPersonalSign = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
 const utils_1 = require("ethers/lib/utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
 const web3_1 = __importDefault(require("web3"));
@@ -99,12 +99,6 @@ function _signReuestId(requestId, privateKey) {
     const signedMessage1 = (0, ethereumjs_util_1.toRpcSig)(sig.v, sig.r, sig.s);
     return signedMessage1;
 }
-function _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const message = getRequestId(op, entryPointAddress, chainId);
-        return yield keyStoreSign(message);
-    });
-}
 /**
  * sign a user operation with the given private key
  * @param op
@@ -115,97 +109,28 @@ function _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign) {
  */
 function signUserOp(op, entryPointAddress, chainId, privateKey) {
     const sign = _signUserOp(op, entryPointAddress, chainId, privateKey);
+    return signUserOpWithPersonalSign(new web3_1.default().eth.accounts.privateKeyToAccount(privateKey).address, sign);
+}
+exports.signUserOp = signUserOp;
+/**
+ * sign a user operation with the requestId signature
+ * @param signAddress signer address
+ * @param signature the signature of the requestId
+ * @returns
+ */
+function signUserOpWithPersonalSign(signAddress, signature) {
     const enc = utils_1.defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'], [
         SignatureMode.owner,
         [
             {
-                signer: new web3_1.default().eth.accounts.privateKeyToAccount(privateKey).address,
-                signature: sign
+                signer: signAddress,
+                signature: signature
             }
         ]
     ]);
     return enc;
 }
-exports.signUserOp = signUserOp;
-/**
- * sign a user operation with the given private key
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param signAddress user address
- * @param keyStoreSign user sign function
- * @returns signature
- */
-function signUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, keyStoreSign) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const sign = yield _signUserOpWithKeyStore(op, entryPointAddress, chainId, keyStoreSign);
-        const enc = utils_1.defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'], [
-            SignatureMode.owner,
-            [
-                {
-                    signer: signAddress,
-                    signature: sign
-                }
-            ]
-        ]);
-        return enc;
-    });
-}
-exports.signUserOpWithKeyStore = signUserOpWithKeyStore;
-/**
- * guardian offline sign a user operation with the given keyStoreSign
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param signAddress
- * @param keyStoreSign
- * @returns
- */
-function guardianSignUserOpWithKeyStore(op, entryPointAddress, chainId, signAddress, keyStoreSign) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const requestId = getRequestId(op, entryPointAddress, chainId);
-        return yield guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign);
-    });
-}
-exports.guardianSignUserOpWithKeyStore = guardianSignUserOpWithKeyStore;
-/**
- * guardian offline sign a requestId with the given keyStoreSign
- * @param requestId
- * @param signAddress
- * @param keyStoreSign
- * @returns
- */
-function guardianSignRequestIdWithKeyStore(requestId, signAddress, keyStoreSign) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const sign = yield keyStoreSign(requestId);
-        return sign;
-    });
-}
-exports.guardianSignRequestIdWithKeyStore = guardianSignRequestIdWithKeyStore;
-/**
- * guardian offline sign a user operation with the given private key
- * @param op
- * @param entryPointAddress
- * @param chainId
- * @param privateKey
- * @returns
- */
-function guardianSignUserOp(op, entryPointAddress, chainId, privateKey) {
-    const requestId = getRequestId(op, entryPointAddress, chainId);
-    return guardianSignRequestId(requestId, privateKey);
-}
-exports.guardianSignUserOp = guardianSignUserOp;
-/**
- * guardian offline sign a user operation with the given private key
- * @param requestId
- * @param privateKey
- * @returns
- */
-function guardianSignRequestId(requestId, privateKey) {
-    const sign = _signReuestId(requestId, privateKey);
-    return sign;
-}
-exports.guardianSignRequestId = guardianSignRequestId;
+exports.signUserOpWithPersonalSign = signUserOpWithPersonalSign;
 /**
  * sign a user operation with guardian signatures
  * @param requestId

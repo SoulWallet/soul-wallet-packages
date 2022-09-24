@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 16:08:29
+ * @LastEditTime: 2022-09-24 20:34:23
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -147,9 +147,5 @@ class Guaridian {
     }
 }
 exports.Guaridian = Guaridian;
-Guaridian.guardianSignUserOpWithKeyStore = userOp_1.guardianSignUserOpWithKeyStore;
-Guaridian.guardianSignRequestIdWithKeyStore = userOp_1.guardianSignRequestIdWithKeyStore;
-Guaridian.guardianSignUserOp = userOp_1.guardianSignUserOp;
-Guaridian.guardianSignRequestId = userOp_1.guardianSignRequestId;
 Guaridian.packGuardiansSignByRequestId = userOp_1.packGuardiansSignByRequestId;
 //# sourceMappingURL=Guardian.js.map

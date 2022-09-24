@@ -4,13 +4,13 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 16:08:29
+ * @LastEditTime: 2022-09-24 20:34:23
  */
 
 import { UserOperation } from "../entity/userOperation";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
-import { guardianSignUserOpWithKeyStore, guardianSignRequestIdWithKeyStore, guardianSignUserOp, guardianSignRequestId, packGuardiansSignByRequestId } from "../utils/userOp";
+import { packGuardiansSignByRequestId } from "../utils/userOp";
 
 
 export class Guaridian {
@@ -164,11 +164,7 @@ export class Guaridian {
     }
 
 
-
-    static guardianSignUserOpWithKeyStore = guardianSignUserOpWithKeyStore;
-    static guardianSignRequestIdWithKeyStore = guardianSignRequestIdWithKeyStore
-    static guardianSignUserOp = guardianSignUserOp;
-    static guardianSignRequestId = guardianSignRequestId;
+ 
     static packGuardiansSignByRequestId = packGuardiansSignByRequestId;
 
 
