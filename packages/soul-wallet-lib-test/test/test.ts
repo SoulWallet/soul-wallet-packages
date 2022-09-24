@@ -174,7 +174,14 @@ async function main() {
             gasFee.Max, gasFee.MaxPriority,
             simpleWalletCreateSalt);
 
-        activateOp.sign(entryPointAddress, chainId, account_user.privateKey);
+        // sign with user private key
+        //activateOp.sign(entryPointAddress, chainId, account_user.privateKey);
+
+        // sign with signature
+        const requestId = activateOp.getRequestId(entryPointAddress, chainId); 
+        const signature = await web3.eth.accounts.sign(requestId, account_user.privateKey); 
+        activateOp.signWithSignature(account_user.address, signature.signature);
+
 
         try {
             const result = await entryPointContract.methods.simulateValidation(activateOp).call({
@@ -257,10 +264,10 @@ async function main() {
             }
             // get requestId
             const requestId = recoveryOp.getRequestId(entryPointAddress, chainId);
-            // account_guardian1 sign
-            const sign1 = WalletLib.EIP4337.Guaridian.guardianSignRequestId(requestId, guardians[0].privateKey);
+            // account_guardian1 sign 
+            const sign1 = await web3.eth.accounts.sign(requestId, guardians[0].privateKey).signature;  
             // account_guardian2 sign
-            const sign2 = WalletLib.EIP4337.Guaridian.guardianSignRequestId(requestId, guardians[1].privateKey);
+            const sign2 = await web3.eth.accounts.sign(requestId, guardians[1].privateKey).signature;   
 
             // pack sign without on chain check
             //const signPack = await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(requestId, [sign1, sign2]);
@@ -283,7 +290,11 @@ async function main() {
                 if (!recoveryOp) {
                     throw new Error('recoveryOp is null');
                 }
-                recoveryOp.sign(entryPointAddress, chainId, newOwner.privateKey);
+
+                const requestId = recoveryOp.getRequestId(entryPointAddress, chainId); 
+                const signature = await web3.eth.accounts.sign(requestId, newOwner.privateKey); 
+                recoveryOp.signWithSignature(newOwner.address, signature.signature); 
+
                 await Utils.sendOPWait(web3, recoveryOp, entryPointAddress, chainId);
                 console.log('change owner to orginal owner success');
             }

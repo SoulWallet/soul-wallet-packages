@@ -1,6 +1,6 @@
 import { UserOperation } from "../entity/userOperation";
 import Web3 from "web3";
-import { guardianSignUserOpWithKeyStore, guardianSignRequestIdWithKeyStore, guardianSignUserOp, guardianSignRequestId, packGuardiansSignByRequestId } from "../utils/userOp";
+import { packGuardiansSignByRequestId } from "../utils/userOp";
 export declare class Guaridian {
     private static walletContract;
     private static _guardian;
@@ -70,9 +70,5 @@ export declare class Guaridian {
      */
     static grantGuardianConfirmation(web3: Web3, walletAddress: string, nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number): Promise<UserOperation | null>;
     static transferOwner(web3: Web3, walletAddress: string, nonce: number, entryPointAddress: string, paymasterAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, newOwner: string): Promise<UserOperation | null>;
-    static guardianSignUserOpWithKeyStore: typeof guardianSignUserOpWithKeyStore;
-    static guardianSignRequestIdWithKeyStore: typeof guardianSignRequestIdWithKeyStore;
-    static guardianSignUserOp: typeof guardianSignUserOp;
-    static guardianSignRequestId: typeof guardianSignRequestId;
     static packGuardiansSignByRequestId: typeof packGuardiansSignByRequestId;
 }
