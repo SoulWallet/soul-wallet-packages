@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "@src/lib/api";
-import KeyStore from "@src/lib/keystore";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import IconAdd from "@src/assets/add.svg";
 import AddressIcon from "@src/components/AddressIcon";
 import IconChevronRight from "@src/assets/chevron-right.svg";
 import { getLocalStorage } from "@src/lib/tools";
 
-const keyStore = KeyStore.getInstance();
 
 export default function Guardians() {
+    const {walletAddress} = useWalletContext()
     const [loading, setLoading] = useState<boolean>(false);
     const [guardiansList, setGuardiansList] = useState<[]>([]);
     const [guardianNameMapping, setGuardianNameMapping] = useState<any>({});
@@ -19,7 +19,7 @@ export default function Guardians() {
         const email = await getLocalStorage("email");
         const res: any = await api.guardian.get({
             email,
-            wallet_address: await keyStore.getAddress(),
+            wallet_address: walletAddress,
         });
         setLoading(false);
         if (res.code === 200) {

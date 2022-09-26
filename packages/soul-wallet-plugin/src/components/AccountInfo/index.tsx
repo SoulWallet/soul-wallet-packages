@@ -19,7 +19,11 @@ export default function AccountInfo({ account, action }: IProps) {
     const [activated, setActivated] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const { account: userAddress, activateWallet } = useWalletContext();
+    const {
+        account: userAddress,
+        walletAddress,
+        activateWallet,
+    } = useWalletContext();
 
     const doCopy = () => {
         copyText(account);
@@ -29,11 +33,9 @@ export default function AccountInfo({ account, action }: IProps) {
     const doActivate = async () => {
         setLoading(true);
         await activateWallet();
-        // setTimeout(() => {
-        //     setLoading(false);
-        //     setActivated(true);
-        //     toast.success("Account activated");
-        // }, 1500);
+        setLoading(false);
+        setActivated(true);
+        toast.success("Account activated");
     };
 
     const doRemoveGuardian = async () => {
@@ -41,7 +43,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
         const res: any = await api.guardian.remove({
             email: await getLocalStorage("email"),
-            wallet_address: userAddress,
+            wallet_address: walletAddress,
             guardian: account,
         });
 

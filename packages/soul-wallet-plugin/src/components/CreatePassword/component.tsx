@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import IconEnter from "@src/assets/enter.svg";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import KeyStore from "@src/lib/keystore";
 import { Input } from "../Input";
 
@@ -20,6 +21,7 @@ const errorDefaultValues = {
 };
 
 export function CreatePassword({ onCreated }: CreatePasswordProps) {
+    const { generateWalletAddress} = useWalletContext()
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(errorDefaultValues);
@@ -57,7 +59,11 @@ export function CreatePassword({ onCreated }: CreatePasswordProps) {
         if (checkParams()) {
             // do create account
             const address = await keyStore.createNewAddress(newPassword);
-            onCreated(address);
+            //todo, remove any
+            const walletAddress:any= await generateWalletAddress(address);
+
+            console.log('tttt', walletAddress)
+            onCreated(walletAddress);
         }
     };
 

@@ -1,10 +1,16 @@
 import IconETH from "@src/assets/tokens/eth.svg";
+import IconWETH from "@src/assets/tokens/weth.png";
 // import IconUSDC from "@src/assets/tokens/usdc.png";
 // import IconUSDT from "@src/assets/tokens/usdt.png";
 
 export const assetsList = [
     {
         icon: IconETH,
+        symbol: "ETH",
+        address: "0x0000000000000000000000000000000000000000",
+    },
+    {
+        icon: IconWETH,
         symbol: "WETH",
         address: "0xec2a384Fa762C96140c817079768a1cfd0e908EA",
     },

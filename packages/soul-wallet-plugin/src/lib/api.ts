@@ -30,6 +30,7 @@ const guardian = {
     get: (params: any) => axio.post("/get-account-guardian", params),
     add: (params: any) => axio.post("/add-account-guardian", params),
     remove: (params: any) => axio.post("/del-account-guardian", params),
+    foo: (params: any) => axio.post('/fetch-recovery-records', params)
 };
 
 export default {

@@ -3,14 +3,18 @@ import { Navbar } from "@src/components/Navbar";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountInfo from "@src/components/AccountInfo";
 import Operations from "./comp/Operations";
+import api from "@src/lib/api";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
+    //TODO, BUG, first time entrance will show EOA address
+
     const [activated, setActivated] = useState<boolean>(false);
     const { walletAddress, isContract } = useWalletContext();
 
     const checkActivated = async () => {
-        const res = isContract(walletAddress);
+        console.log("wallet addr", walletAddress);
+        const res = await isContract(walletAddress);
         console.log("is Contract", res);
     };
 
@@ -21,9 +25,15 @@ export function Wallet() {
         checkActivated();
     }, [walletAddress]);
 
+    const getIt = async () => {
+        const res = await api.guardian.foo({ email: "bbb@gmail.com" });
+        console.log("foo", res);
+    };
+
     return (
         <>
             <Navbar />
+            {/* <a onClick={getIt}>Get it</a> */}
             <AccountInfo account={walletAddress} action="activate" />
             <Actions />
             <Operations />

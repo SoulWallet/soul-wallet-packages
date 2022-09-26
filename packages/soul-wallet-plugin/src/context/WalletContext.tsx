@@ -3,18 +3,33 @@ import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
 import { Utils } from "@src/Utils";
 import config from "@src/config";
+import BN from 'bignumber.js'
 import KeyStore from "@src/lib/keystore";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
 const web3 = new Web3(config.provider);
 
-export const WalletContext = createContext({
-    account: "",
-    walletAddress: "",
-    isContract: (address: string) => {},
-    getGasPrice: () => {},
-    activateWallet: () => {},
+interface IWalletContext {
+    web3: Web3;
+    account: string;
+    walletAddress: string;
+    isContract: (val: string) => Promise<boolean>;
+    getBalance: (val:string) => Promise<string>;
+    generateWalletAddress: (val: string) => string;
+    getGasPrice: () => Promise<number>;
+    activateWallet: () => Promise<void>;
+}
+
+export const WalletContext = createContext<IWalletContext>({
+    web3,
+    account: '',
+    walletAddress: '',
+    isContract: async(val: string) => { return false},
+    getBalance: async(val:string) => {return ''},
+    generateWalletAddress: (val: string) => {return ''},
+    getGasPrice: async() => {return 0},
+    activateWallet: async() => {},
 });
 
 export const WalletContextProvider = ({ children }: any) => {
@@ -22,8 +37,20 @@ export const WalletContextProvider = ({ children }: any) => {
     const [walletAddress, setWalletAddress] = useState<string>("");
 
     const isContract = async (_address: string) => {
-        return await web3.eth.getCode(_address);
+        const contractCode = await web3.eth.getCode(_address);
+        console.log(
+            "code is",
+            contractCode,
+            typeof contractCode,
+            contractCode !== "0x",
+        );
+        return contractCode !== "0x";
     };
+
+    const getBalance = async () => {
+        const res = await web3.eth.getBalance(walletAddress)
+        return new BN(res).shiftedBy(-18).toString();
+    }
 
     const getGasPrice = async () => {
         return Number(await web3.eth.getGasPrice());
@@ -34,14 +61,20 @@ export const WalletContextProvider = ({ children }: any) => {
         setAccount(res);
     };
 
-    const getWalletAddress = async () => {
-        const res = await WalletLib.EIP4337.calculateWalletAddress(
+    const generateWalletAddress = (address: string) => {
+        const walletAddress = WalletLib.EIP4337.calculateWalletAddress(
             config.contracts.entryPoint,
-            account,
+            address,
             config.contracts.weth,
             config.contracts.paymaster,
             config.defaultSalt,
         );
+        console.log('generated', walletAddress)
+        return walletAddress;
+    };
+
+    const getWalletAddress = async () => {
+        const res = await generateWalletAddress(account);
         setWalletAddress(res);
     };
 
@@ -90,9 +123,12 @@ export const WalletContextProvider = ({ children }: any) => {
     return (
         <WalletContext.Provider
             value={{
+                web3,
                 account,
                 walletAddress,
                 isContract,
+                getBalance,
+                generateWalletAddress,
                 getGasPrice,
                 activateWallet,
             }}

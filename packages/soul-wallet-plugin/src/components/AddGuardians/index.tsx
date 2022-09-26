@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@src/lib/api";
-import KeyStore from "@src/lib/keystore";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import Button from "@src/components/Button";
 import { Input } from "../Input";
 import { toast } from "material-react-toastify";
@@ -10,8 +10,6 @@ import {
     setGuardianName,
     setLocalStorage,
 } from "@src/lib/tools";
-
-const keyStore = KeyStore.getInstance();
 
 interface ErrorProps {
     name: string;
@@ -24,6 +22,7 @@ const errorDefaultValues = {
 };
 
 export default function AddGuardians() {
+    const {walletAddress} = useWalletContext()
     const navigate = useNavigate();
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -57,7 +56,7 @@ export default function AddGuardians() {
             setLoading(true);
             const res: any = await api.guardian.add({
                 email: await getLocalStorage("email"),
-                wallet_address: await keyStore.getAddress(),
+                wallet_address: walletAddress,
                 guardian: address,
             });
             if (res.code === 200) {

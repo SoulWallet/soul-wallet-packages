@@ -12,6 +12,7 @@ export function RecoverWallet() {
     const [step, setStep] = useState<number>(0);
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
 
+    //TODO, important, shouldn't affect current one
     const onCreated = (address: string | null) => {
         setNewOwnerAddress(address);
         setStep(1);
@@ -37,10 +38,10 @@ export function RecoverWallet() {
         // send api to check recover status
         // if all guardians pass
 
-        // if (true) {
-        //     await setLocalStorage("recovering", false);
-        //     setStep(3);
-        // }
+        if (recovering) {
+            await setLocalStorage("recovering", false);
+            setStep(3);
+        }
     };
 
     useEffect(() => {

@@ -25,7 +25,7 @@ export function CreateWallet() {
         }
     };
 
-    const onCreated = async (address: string | null) => {
+    const onCreated: any = async (address: string) => {
         const res = await api.account.update({
             email,
             wallet_address: address,
