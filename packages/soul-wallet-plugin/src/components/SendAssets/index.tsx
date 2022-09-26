@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../Button";
+import config from "@src/config";
+import useWalletContext from "@src/context/hooks/useWalletContext";
+import useErc20Contract from "@src/contract/useErc20Contract";
 import IconETH from "@src/assets/tokens/eth.svg";
+
 import { Link } from "react-router-dom";
 import { Input } from "../Input";
 
 interface ErrorProps {
     receiverAddress: string;
+    amount: string;
 }
 
 interface InfoItemProps {
@@ -16,28 +21,59 @@ interface InfoItemProps {
 interface ConfirmItemProps {
     label: string;
     title: string;
-    value: string;
+    value?: string;
     icon?: string;
 }
 
 const defaultErrorValues = {
     receiverAddress: "",
+    amount: "",
 };
 
-export default function SendAssets() {
+interface ISendAssets {
+    tokenAddress: string;
+}
+
+export default function SendAssets({ tokenAddress }: ISendAssets) {
     const [step, setStep] = useState<number>(0);
+    const [amount, setAmount] = useState<string>("");
+    const [balance, setBalance] = useState<string>("");
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
+    const { sendErc20, sendEth, getEthBalance } = useWalletContext();
+    const erc20Contract = useErc20Contract();
+
+    const tokenInfo = config.assetsList.filter(
+        (item) => item.address === tokenAddress,
+    )[0];
+
+    const getBalance = async () => {
+        let res = "";
+        if (tokenAddress === config.zeroAddress) {
+            res = await getEthBalance();
+            console.log("b1", res);
+        } else {
+            res = await erc20Contract.balanceOf(tokenAddress);
+            console.log("b2", res);
+        }
+        setBalance(res);
+    };
+
+    useEffect(() => {
+        getBalance();
+    }, []);
+
+    console.log("token info", tokenInfo);
 
     const ConfirmItem = ({ label, title, value, icon }: ConfirmItemProps) => {
         return (
             <div className="bg-gray40 py-4 px-6">
                 <div className=" opacity-80 mb-2">{label}</div>
-                <div className="flex items-center">
-                    {icon && <img src={icon} className="w-12 h-12" />}
+                <div className="flex items-center gap-1">
+                    {icon && <img src={icon} className="w-11 h-11" />}
                     <div className="flex flex-col">
-                        <div className="font-bold text-lg mb-2">{title}</div>
-                        <div>{value}</div>
+                        <div className="font-bold text-lg mb-1">{title}</div>
+                        {value && <div>{value}</div>}
                     </div>
                 </div>
             </div>
@@ -71,24 +107,29 @@ export default function SendAssets() {
                 )}
                 {step === 1 && (
                     <div>
-                        <div className="px-6">
-                            <div className="page-title mb-4">Send to</div>
+                        <div className="px-6 mb-6">
+                            <div className="page-title mb-4">Amount</div>
+                            <Input
+                                value={amount}
+                                placeholder="Send amount"
+                                onChange={setAmount}
+                                error={errors.amount}
+                            />
+
+                            {/* <div className="page-title mb-4">Send to</div>
                             <div className="p-3 rounded-lg text-base mb-6 receiver-address-box">
                                 {receiverAddress}
-                            </div>
+                            </div> */}
                         </div>
                         <ConfirmItem
                             label="Asset"
-                            title="ETH"
-                            icon={IconETH}
-                            value="Balance: 1000 ETH"
+                            title={tokenInfo.symbol}
+                            icon={tokenInfo.icon}
+                            value={`Balance: ${balance} ${tokenInfo.symbol}`}
                         />
                         <div className="h-3" />
-                        <ConfirmItem
-                            label="Amount"
-                            title="100 ETH"
-                            value="$164,535 USD"
-                        />
+
+                        <ConfirmItem label="Receiver" title={receiverAddress} />
                     </div>
                 )}
 
@@ -97,7 +138,7 @@ export default function SendAssets() {
                         <div className=" text-center">
                             <div className=" opacity-80 mb-3">Amount</div>
                             <div className=" font-bold text-2xl mb-4">
-                                100 ETH
+                                {amount} {tokenInfo.symbol}
                             </div>
                             <div className="text-green mb-11">Completed</div>
                         </div>
@@ -107,7 +148,7 @@ export default function SendAssets() {
                             <InfoItem title="Tx ID" value="0xcbe1...85049c" />
                             <InfoItem
                                 title="Date"
-                                value="2022-08-15 18:23:54"
+                                value={new Date().toLocaleString()}
                             />
                         </div>
                     </div>

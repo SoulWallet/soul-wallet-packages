@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import config from "@src/config";
 import { Link } from "react-router-dom";
 import ReceiveModal from "./comp/ReceiveModal";
 import IconReceive from "@src/assets/receive.svg";
@@ -19,7 +20,7 @@ export default function Actions() {
                 <div>Receive</div>
             </label>
             <Link
-                to="/send"
+                to={`/send/${config.zeroAddress}`}
                 className="w-1/2 flex flex-col justify-center items-center cursor-pointer text-base py-5 hover:bg-gray-200"
             >
                 <img className="w-6 mb-2" src={IconSend} />

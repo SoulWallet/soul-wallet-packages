@@ -47,7 +47,7 @@ export function Popup() {
                     <Routes>
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/wallet" element={<Wallet />} />
-                        <Route path="/send" element={<Send />} />
+                        <Route path="/send/:tokenAddress" element={<Send />} />
                         <Route path="/sign" element={<Sign />} />
                         <Route
                             path="/create-wallet"

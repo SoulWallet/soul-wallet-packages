@@ -5,7 +5,7 @@ import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";
 
 export default function Assets() {
-    const { getBalance } = useWalletContext();
+    const { getEthBalance } = useWalletContext();
     const [balanceMapping, setBalanceMapping] = useState<any>({});
     const erc20Contract = useErc20Contract();
 
@@ -14,10 +14,9 @@ export default function Assets() {
             // fix getBalance
             let balance: string = "0";
             if (item.symbol === "ETH") {
-                balance = await getBalance(item.address);
+                balance = await getEthBalance();
             } else {
                 balance = await erc20Contract.balanceOf(item.address);
-                console.log('so it', balance)
             }
 
             setBalanceMapping((prev: any) => {

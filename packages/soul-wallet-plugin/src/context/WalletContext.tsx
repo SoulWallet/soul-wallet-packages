@@ -15,10 +15,12 @@ interface IWalletContext {
     account: string;
     walletAddress: string;
     isContract: (val: string) => Promise<boolean>;
-    getBalance: (val:string) => Promise<string>;
+    getEthBalance: () => Promise<string>;
     generateWalletAddress: (val: string) => string;
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
+    sendErc20: () => Promise<void>;
+    sendEth: () => Promise<void>;
 }
 
 export const WalletContext = createContext<IWalletContext>({
@@ -26,10 +28,12 @@ export const WalletContext = createContext<IWalletContext>({
     account: '',
     walletAddress: '',
     isContract: async(val: string) => { return false},
-    getBalance: async(val:string) => {return ''},
+    getEthBalance: async() => {return ''},
     generateWalletAddress: (val: string) => {return ''},
     getGasPrice: async() => {return 0},
     activateWallet: async() => {},
+    sendErc20: async() => {},
+    sendEth: async() => {},
 });
 
 export const WalletContextProvider = ({ children }: any) => {
@@ -47,7 +51,7 @@ export const WalletContextProvider = ({ children }: any) => {
         return contractCode !== "0x";
     };
 
-    const getBalance = async () => {
+    const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress)
         return new BN(res).shiftedBy(-18).toString();
     }
@@ -78,6 +82,14 @@ export const WalletContextProvider = ({ children }: any) => {
         setWalletAddress(res);
     };
 
+    const sendEth = async () => {
+
+    }
+
+    const sendErc20 = async () => {
+
+    }
+
     const activateWallet = async () => {
         const currentFee = (await getGasPrice()) * 2;
         const activateOp = WalletLib.EIP4337.activateWalletOp(
@@ -97,7 +109,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
         const signature = await keyStore.sign(requestId);
 
-        if (!signature) {
+        if (signature) {
             activateOp.signWithSignature(account, signature || "");
 
             await Utils.sendOPWait(
@@ -127,10 +139,12 @@ export const WalletContextProvider = ({ children }: any) => {
                 account,
                 walletAddress,
                 isContract,
-                getBalance,
+                getEthBalance,
                 generateWalletAddress,
                 getGasPrice,
                 activateWallet,
+                sendErc20,
+                sendEth,
             }}
         >
             {children}
