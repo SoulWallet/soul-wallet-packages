@@ -2,7 +2,7 @@ import { UserOperation } from "../entity/userOperation";
 import { IContract } from "../contracts/icontract";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
-import { ERC1155, ERC20, ERC721 } from "../utils/Token";
+import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
 export declare class EIP4337Lib {
     /**
      * User Operation
@@ -21,6 +21,7 @@ export declare class EIP4337Lib {
         ERC20: typeof ERC20;
         ERC721: typeof ERC721;
         ERC1155: typeof ERC1155;
+        ETH: typeof ETH;
     };
     /**
      * get wallet code

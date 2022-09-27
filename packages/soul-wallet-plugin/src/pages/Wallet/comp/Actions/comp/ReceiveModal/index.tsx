@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import IconCopy from "@src/assets/copy.svg";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import { copyText } from "@src/lib/tools";
 import ImgQrCode from "@src/assets/qrcode.png";
 
@@ -10,11 +11,10 @@ interface IModalProps {
 
 export default function ReceiveModal({ modalId, onClose }: IModalProps) {
     const [copied, setCopied] = useState<boolean>(false);
-
-    const account = "0x6b5cf860506c6291711478F54123312066944B3";
+    const { walletAddress } = useWalletContext();
 
     const doCopy = () => {
-        copyText(account);
+        copyText(walletAddress);
         setCopied(true);
     };
 
@@ -28,7 +28,7 @@ export default function ReceiveModal({ modalId, onClose }: IModalProps) {
                 >
                     <img src={ImgQrCode} className="mb-4 w-4/5" />
                     <div className="mb-8 opacity-50 break-words w-4/5 text-center text-black">
-                        {account}
+                        {walletAddress}
                     </div>
                     <div
                         className="flex gap-1 items-center tooltip cursor-pointer"
@@ -41,11 +41,6 @@ export default function ReceiveModal({ modalId, onClose }: IModalProps) {
                         <img src={IconCopy} />
                         <span>Copy</span>
                     </div>
-                    {/* <div className="modal-action">
-                        <label htmlFor="my-modal" className="btn">
-                            Yay!
-                        </label>
-                    </div> */}
                 </label>
             </label>
         </div>

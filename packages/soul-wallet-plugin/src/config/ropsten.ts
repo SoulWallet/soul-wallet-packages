@@ -20,6 +20,7 @@ export default {
     assetsList,
     provider: "https://ropsten.infura.io/v3/70d1f07f3ae54d9ab8d9b3bd6b8f5fe8",
     defaultSalt: 0,
+    feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,
     chainId: 3,
     contracts: {

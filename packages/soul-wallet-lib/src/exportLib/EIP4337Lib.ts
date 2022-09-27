@@ -17,7 +17,7 @@ import { SimpleWalletContract } from "../contracts/simpleWallet";
 import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
-import { ERC1155, ERC20, ERC721 } from "../utils/Token";
+import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
 
 export class EIP4337Lib {
 
@@ -41,7 +41,8 @@ export class EIP4337Lib {
     public static Tokens = {
         ERC20: ERC20,
         ERC721: ERC721,
-        ERC1155: ERC1155
+        ERC1155: ERC1155,
+        ETH: ETH,
     }; 
 
 

@@ -174,7 +174,8 @@ EIP4337Lib.Guaridian = Guardian_1.Guaridian;
 EIP4337Lib.Tokens = {
     ERC20: Token_1.ERC20,
     ERC721: Token_1.ERC721,
-    ERC1155: Token_1.ERC1155
+    ERC1155: Token_1.ERC1155,
+    ETH: Token_1.ETH,
 };
 var userOperation_2 = require("../entity/userOperation");
 Object.defineProperty(exports, "UserOperation", { enumerable: true, get: function () { return userOperation_2.UserOperation; } });

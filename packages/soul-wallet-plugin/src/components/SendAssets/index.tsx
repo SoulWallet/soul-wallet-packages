@@ -50,7 +50,11 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
     const doSend = async () => {
         setSending(true);
-        await sendErc20(tokenAddress, receiverAddress, amount);
+        if (tokenAddress === config.zeroAddress) {
+            await sendEth(receiverAddress, amount);
+        } else {
+            await sendErc20(tokenAddress, receiverAddress, amount);
+        }
         setSending(false);
         setStep(2);
     };
@@ -123,11 +127,6 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                                 onChange={setAmount}
                                 error={errors.amount}
                             />
-
-                            {/* <div className="page-title mb-4">Send to</div>
-                            <div className="p-3 rounded-lg text-base mb-6 receiver-address-box">
-                                {receiverAddress}
-                            </div> */}
                         </div>
                         <ConfirmItem
                             label="Asset"
@@ -152,7 +151,11 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                         </div>
 
                         <div className="p-6 bg-gray40 flex flex-col gap-6">
-                            <InfoItem title="Receiver" value={receiverAddress} />
+                            <InfoItem
+                                title="Receiver"
+                                value={receiverAddress}
+                            />
+                            {/** TODO, show tx id here */}
                             {/* <InfoItem title="Tx ID" value="0xcbe1...85049c" /> */}
                             <InfoItem
                                 title="Date"

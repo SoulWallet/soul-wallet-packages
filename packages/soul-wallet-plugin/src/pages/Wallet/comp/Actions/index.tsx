@@ -5,7 +5,7 @@ import ReceiveModal from "./comp/ReceiveModal";
 import IconReceive from "@src/assets/receive.svg";
 import IconSend from "@src/assets/send.svg";
 
-export default function Actions() {
+export default function Actions({}) {
     const [receiveModalVisible, setReceiveModalVisible] =
         useState<boolean>(false);
 

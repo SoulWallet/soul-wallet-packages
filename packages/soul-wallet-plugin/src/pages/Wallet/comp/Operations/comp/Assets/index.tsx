@@ -36,7 +36,8 @@ export default function Assets() {
     return (
         <div>
             {config.assetsList.map((item) => (
-                <Link to={`/send/${item.address}`}
+                <Link
+                    to={`/send/${item.address}`}
                     key={item.symbol}
                     className="flex items-center justify-between py-5 px-3 cursor-pointer hover:bg-gray-100"
                 >
@@ -47,7 +48,6 @@ export default function Assets() {
                             <span>{item.symbol}</span>
                         </div>
                     </div>
-
                     <img src={IconChevronRight} />
                 </Link>
             ))}
