@@ -66,7 +66,7 @@ export function CreatePassword({
             // do create account
             const address = await keyStore.createNewAddress(newPassword, saveKey);
 
-            const walletAddress: string = generateWalletAddress(address);
+            const walletAddress: string = generateWalletAddress(address, true);
 
             if (onCreatedEoaAddress) {
                 onCreatedEoaAddress(address);

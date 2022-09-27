@@ -10,7 +10,7 @@ export default function Operations() {
 
     return (
         <>
-            <div className="p-0 pt-0">
+            <div className="p-0 pt-0 relative flex-1">
                 <div className="flex">
                     {tabs.map((item, index) => (
                         <a

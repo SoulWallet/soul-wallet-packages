@@ -16,7 +16,7 @@ interface IWalletContext {
     walletAddress: string;
     isContract: (val: string) => Promise<boolean>;
     getEthBalance: () => Promise<string>;
-    generateWalletAddress: (val: string) => string;
+    generateWalletAddress: (val: string, setNew: boolean) => string;
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
     deleteWallet: () => Promise<void>;
@@ -81,7 +81,7 @@ export const WalletContextProvider = ({ children }: any) => {
         setAccount(res);
     };
 
-    const generateWalletAddress = (address: string) => {
+    const generateWalletAddress = (address: string, setNew?: boolean) => {
         const walletAddress = WalletLib.EIP4337.calculateWalletAddress(
             config.contracts.entryPoint,
             address,
@@ -89,11 +89,15 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             config.defaultSalt,
         );
+        if (setNew) {
+            setWalletAddress(walletAddress);
+        }
         console.log("generated wallet address", walletAddress);
         return walletAddress;
     };
 
     const getWalletAddress = () => {
+        console.log("trig generate wall addr");
         const res = generateWalletAddress(account);
         setWalletAddress(res);
     };

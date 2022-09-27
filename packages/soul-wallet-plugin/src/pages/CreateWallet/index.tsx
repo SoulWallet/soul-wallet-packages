@@ -25,7 +25,7 @@ export function CreateWallet() {
         }
     };
 
-    const onCreatedWalletAddress: any = async (address: string) => {
+    const onCreatedWalletAddress:any= async (address: string) => {
         //eoa address
 
         const res = await api.account.update({
@@ -33,9 +33,10 @@ export function CreateWallet() {
             wallet_address: address,
         });
         if (res) {
-            setStep(2);
-            // todo, this is for guardian
+            // todo, this is for guardian, to be removed
+
             await setLocalStorage("email", email);
+            setStep(2);
         }
     };
 
@@ -72,7 +73,10 @@ export function CreateWallet() {
                             <div className="page-title mb-4">
                                 Create password
                             </div>
-                            <CreatePassword onCreatedWalletAddress={onCreatedWalletAddress} saveKey={true} />
+                            <CreatePassword
+                                onCreatedWalletAddress={onCreatedWalletAddress}
+                                saveKey={true}
+                            />
                         </>
                     )}
                     {step === 2 && (

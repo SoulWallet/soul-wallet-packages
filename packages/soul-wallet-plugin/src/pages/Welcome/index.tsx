@@ -29,12 +29,10 @@ export default function Welcome() {
     // TODO, need to refactor this
     const determineDefaultRoute = async () => {
         const recovering = await getLocalStorage("recovering");
+        const cachedRoute = await getLocalStorage("cachedRoute");
         if (recovering) {
             navigate("/recover-wallet");
-        }
-
-        const cachedRoute = await getLocalStorage("cachedRoute");
-        if (cachedRoute) {
+        } else if (cachedRoute) {
             navigate(cachedRoute);
         } else {
             const res = await keyStore.checkLocked();

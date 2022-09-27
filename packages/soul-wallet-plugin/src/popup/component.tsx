@@ -41,7 +41,7 @@ export function Popup() {
 
     // Renders the component tree
     return (
-        <div className="artboard phone-1 phone bg-white text-base">
+        <div className="artboard phone-1 phone bg-white text-base flex flex-col">
             <WalletContextProvider>
                 <Router>
                     <Routes>

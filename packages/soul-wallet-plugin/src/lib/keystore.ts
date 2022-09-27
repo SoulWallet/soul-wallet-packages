@@ -16,6 +16,7 @@ import {
     getSessionStorage,
     setSessionStorage,
     removeLocalStorage,
+    clearLocalStorage,
 } from "@src/lib/tools";
 // import { arrayify } from "ethers/lib/utils";
 // import {
@@ -90,11 +91,15 @@ export default class KeyStore {
     public async replaceAddress(): Promise<void> {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
+        await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
         await setLocalStorage("pw", stagingPw);
-        await removeLocalStorage("stagingAccount");
-        await removeLocalStorage("stagingKeystore");
-        await removeLocalStorage("stagingPw");
+
+        // // TODO, remove all localstorage
+        // await removeLocalStorage("stagingAccount");
+        // await removeLocalStorage("stagingKeystore");
+        // await removeLocalStorage("stagingPw");
+        // await removeLocalStorage("guardianNameMapping");
     }
 
     public async unlock(password: string): Promise<string | null> {
@@ -117,11 +122,14 @@ export default class KeyStore {
 
     public async delete(): Promise<void> {
         this._privateKey = null;
-        await removeLocalStorage(this.keyStoreKey);
-        await removeSessionStorage("pw");
-        await removeLocalStorage("stagingAccount");
-        await removeLocalStorage("stagingKeystore");
-        await removeLocalStorage("stagingPw");
+        // TODO, remove all localstorage
+        // await removeLocalStorage(this.keyStoreKey);
+        // await removeSessionStorage("pw");
+        // await removeLocalStorage("stagingAccount");
+        // await removeLocalStorage("stagingKeystore");
+        // await removeLocalStorage("stagingPw");
+        // await removeLocalStorage("guardianNameMapping");
+        await clearLocalStorage();
     }
 
     /**

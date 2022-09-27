@@ -38,7 +38,7 @@ export default function Guardians() {
     }, []);
 
     return (
-        <div className="relative pb-12 bg-white">
+        <div className="pb-12 bg-white">
             {loading && <div className="text-center py-6">Loading...</div>}
             {!loading && (!guardiansList || guardiansList.length === 0) && (
                 <div className="text-center py-6">
@@ -56,7 +56,7 @@ export default function Guardians() {
                             <AddressIcon width={40} address={item} />
 
                             <div>
-                                <div>{guardianNameMapping[item]}</div>
+                                {guardianNameMapping && <div>{guardianNameMapping[item]}</div>}
                                 <div className="flex flex-col justify-between opacity-50 text-black">
                                     {item.slice(0, 4)}...
                                     {item.slice(-4)}

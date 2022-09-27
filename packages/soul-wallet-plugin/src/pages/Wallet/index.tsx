@@ -16,6 +16,9 @@ export function Wallet() {
         console.log("wallet addr", walletAddress);
         const res = await isContract(walletAddress);
         console.log("is Contract", res);
+        if (res) {
+            setActivated(true);
+        }
     };
 
     useEffect(() => {

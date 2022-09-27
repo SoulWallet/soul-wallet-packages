@@ -48,6 +48,18 @@ export async function removeLocalStorage(key: string) {
 }
 
 /**
+ * clear local storage
+ */
+
+ export async function clearLocalStorage() {
+    return new Promise((resolve, _) => {
+        chrome.storage.local.clear(function () {
+            resolve(true);
+        });
+    });
+}
+
+/**
  * get session storage
  * @param key
  * @returns
