@@ -26,18 +26,16 @@ export default function Welcome() {
         }
     };
 
-
     // TODO, need to refactor this
-    const seekDefaultRoute = async () => {
+    const determineDefaultRoute = async () => {
         const recovering = await getLocalStorage("recovering");
-        console.log("is it recoering", recovering);
         if (recovering) {
             navigate("/recover-wallet");
         }
 
-        const cachedEmail = await getLocalStorage("cachedEmail");
-        if (cachedEmail) {
-            navigate("/create-wallet");
+        const cachedRoute = await getLocalStorage("cachedRoute");
+        if (cachedRoute) {
+            navigate(cachedRoute);
         } else {
             const res = await keyStore.checkLocked();
             if (res) {
@@ -47,7 +45,7 @@ export default function Welcome() {
     };
 
     useEffect(() => {
-        seekDefaultRoute();
+        determineDefaultRoute();
     }, []);
 
     return (

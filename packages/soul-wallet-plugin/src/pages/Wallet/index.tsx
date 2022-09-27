@@ -25,15 +25,9 @@ export function Wallet() {
         checkActivated();
     }, [walletAddress]);
 
-    const getIt = async () => {
-        const res = await api.guardian.foo({ email: "bbb@gmail.com" });
-        console.log("foo", res);
-    };
-
     return (
         <>
             <Navbar />
-            {/* <a onClick={getIt}>Get it</a> */}
             <AccountInfo account={walletAddress} action="activate" />
             <Actions />
             <Operations />

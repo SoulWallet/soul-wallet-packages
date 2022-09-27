@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Logo from "@src/components/Logo";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
-import { setLocalStorage, getLocalStorage } from "@src/lib/tools";
+import {
+    setLocalStorage,
+    getLocalStorage,
+    removeLocalStorage,
+} from "@src/lib/tools";
 import ImgSuccessCat from "@src/assets/success-cat.svg";
 import { CreatePassword } from "@src/components/CreatePassword";
 import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
+    const { deleteWallet, replaceAddress } = useWalletContext();
+    const navigate = useNavigate();
+    const [cachedEmail, setCachedEmail] = useState<string>("");
     const [step, setStep] = useState<number>(0);
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
 
-    //TODO, important, shouldn't affect current one
-    const onCreated = (address: string | null) => {
+    const onCreatedEoaAddress = async (address: string | null) => {
         setNewOwnerAddress(address);
+        // await setLocalStorage('newKey', address)
         setStep(1);
     };
 
@@ -22,25 +31,37 @@ export function RecoverWallet() {
         const res: any = await api.account.recover({
             email,
             code,
-            new_key: newOwnerAddress,
+            new_key: newOwnerAddress || await getLocalStorage('stagingAccount'),
         });
         if (res.code === 200) {
+            // replace old key
+            await replaceAddress();
             await setLocalStorage("recovering", true);
             setStep(2);
         }
     };
 
+    const doDeleteWallet = async () => {
+        await deleteWallet();
+        await removeLocalStorage("recovering");
+        navigate("/welcome");
+    };
+
     const checkRecoverStatus = async () => {
-        const recovering = await getLocalStorage("recovering");
-
-        console.log("recovering?", recovering);
-
-        // send api to check recover status
-        // if all guardians pass
-
-        if (recovering) {
-            await setLocalStorage("recovering", false);
-            setStep(3);
+        const _recovering = await getLocalStorage("recovering");
+        const _cachedEmail = await getLocalStorage("cachedEmail");
+        if (_cachedEmail) {
+            setCachedEmail(_cachedEmail);
+            setStep(1);
+        } else if (_recovering) {
+            setStep(2);
+            const res = await api.guardian.records({
+                email: await getLocalStorage("email"),
+            });
+            console.log("recov status", res);
+            // send api to check recover status
+            // if all guardians pass, setStep(3)
+            // await setLocalStorage("recovering", false);
         }
     };
 
@@ -55,7 +76,10 @@ export function RecoverWallet() {
                 {step === 0 && (
                     <>
                         <div className="page-title mb-4">Recover</div>
-                        <CreatePassword onCreated={onCreated} />
+                        <CreatePassword
+                            onCreatedEoaAddress={onCreatedEoaAddress}
+                            saveKey={false}
+                        />
                     </>
                 )}
 
@@ -64,6 +88,8 @@ export function RecoverWallet() {
                         {/** TODO, 这里邮箱是不能编辑的  */}
                         <div className="page-title mb-4">Recover</div>
                         <SendEmail
+                            cachedEmail={cachedEmail}
+                            source="/recover-wallet"
                             onReceiveCode={onReceiveCode}
                             emailLabel="Verify your email address to proceed"
                         />
@@ -72,7 +98,7 @@ export function RecoverWallet() {
 
                 {step === 2 && (
                     <>
-                        <div className="page-title mb-8">Recover</div>
+                        <div className="page-title mb-8">Recovering</div>
                         <div className="page-desc">
                             <div className="mb-5">
                                 Email verification succefully.
@@ -89,8 +115,8 @@ export function RecoverWallet() {
                                     Go to website
                                 </a>
                             </a>
-                            <a onClick={() => setStep(2)}>
-                                <a className="btn mt-4 w-full">Test success</a>
+                            <a onClick={doDeleteWallet}>
+                                <a className="btn mt-4 w-full">Delete Wallet</a>
                             </a>
                         </div>
                     </>

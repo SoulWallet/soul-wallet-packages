@@ -47,6 +47,11 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
         (item) => item.address === tokenAddress,
     )[0];
 
+    const doSend = async () => {
+        await sendErc20(tokenAddress, receiverAddress, amount);
+        setStep(2);
+    };
+
     const getBalance = async () => {
         let res = "";
         if (tokenAddress === config.zeroAddress) {
@@ -62,8 +67,6 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     useEffect(() => {
         getBalance();
     }, []);
-
-    console.log("token info", tokenInfo);
 
     const ConfirmItem = ({ label, title, value, icon }: ConfirmItemProps) => {
         return (
@@ -162,7 +165,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                     </Button>
                 )}
                 {step === 1 && (
-                    <Button classNames="btn-blue" onClick={() => setStep(2)}>
+                    <Button classNames="btn-blue" onClick={() => doSend()}>
                         Confirm
                     </Button>
                 )}

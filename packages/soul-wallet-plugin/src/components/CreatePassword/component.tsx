@@ -7,7 +7,9 @@ import { Input } from "../Input";
 const keyStore = KeyStore.getInstance();
 
 interface CreatePasswordProps {
-    onCreated: (address: string | null) => void;
+    onCreatedWalletAddress?: (address: string | null) => void;
+    onCreatedEoaAddress?: (address: string | null) => void;
+    saveKey?: boolean;
 }
 
 interface ErrorProps {
@@ -20,8 +22,12 @@ const errorDefaultValues = {
     confirmPassword: "",
 };
 
-export function CreatePassword({ onCreated }: CreatePasswordProps) {
-    const { generateWalletAddress} = useWalletContext()
+export function CreatePassword({
+    onCreatedWalletAddress,
+    onCreatedEoaAddress,
+    saveKey = false,
+}: CreatePasswordProps) {
+    const { generateWalletAddress } = useWalletContext();
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(errorDefaultValues);
@@ -58,12 +64,16 @@ export function CreatePassword({ onCreated }: CreatePasswordProps) {
         setErrors(errorDefaultValues);
         if (checkParams()) {
             // do create account
-            const address = await keyStore.createNewAddress(newPassword);
-            //todo, remove any
-            const walletAddress:any= await generateWalletAddress(address);
+            const address = await keyStore.createNewAddress(newPassword, saveKey);
 
-            console.log('tttt', walletAddress)
-            onCreated(walletAddress);
+            const walletAddress: string = generateWalletAddress(address);
+
+            if (onCreatedEoaAddress) {
+                onCreatedEoaAddress(address);
+            }
+            if (onCreatedWalletAddress) {
+                onCreatedWalletAddress(walletAddress);
+            }
         }
     };
 

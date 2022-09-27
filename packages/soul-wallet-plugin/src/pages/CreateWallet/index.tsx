@@ -25,7 +25,9 @@ export function CreateWallet() {
         }
     };
 
-    const onCreated: any = async (address: string) => {
+    const onCreatedWalletAddress: any = async (address: string) => {
+        //eoa address
+
         const res = await api.account.update({
             email,
             wallet_address: address,
@@ -33,7 +35,7 @@ export function CreateWallet() {
         if (res) {
             setStep(2);
             // todo, this is for guardian
-            await setLocalStorage('email', email)
+            await setLocalStorage("email", email);
         }
     };
 
@@ -59,6 +61,7 @@ export function CreateWallet() {
                                 Email verification
                             </div>
                             <SendEmail
+                                source="/create-wallet"
                                 onReceiveCode={onReceiveCode}
                                 cachedEmail={cachedEmail}
                             />
@@ -69,7 +72,7 @@ export function CreateWallet() {
                             <div className="page-title mb-4">
                                 Create password
                             </div>
-                            <CreatePassword onCreated={onCreated} />
+                            <CreatePassword onCreatedWalletAddress={onCreatedWalletAddress} saveKey={true} />
                         </>
                     )}
                     {step === 2 && (

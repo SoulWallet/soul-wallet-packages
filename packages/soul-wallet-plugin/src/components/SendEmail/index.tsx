@@ -10,6 +10,7 @@ import IconEnter from "@src/assets/enter.svg";
 import { Input } from "../Input";
 
 interface SendEmailProps {
+    source?: string;
     emailLabel?: string;
     cachedEmail?: string;
     onReceiveCode: (email: string, code: string) => void;
@@ -21,6 +22,7 @@ interface FormErrors {
 }
 
 export function SendEmail({
+    source,
     emailLabel,
     cachedEmail,
     onReceiveCode,
@@ -83,6 +85,7 @@ export function SendEmail({
         }
         onReceiveCode(email, verifyCode);
         await removeLocalStorage("cachedEmail");
+        await removeLocalStorage("cachedRoute");
     };
 
     const doSend = async () => {
@@ -90,6 +93,7 @@ export function SendEmail({
             return;
         }
         await setLocalStorage("cachedEmail", email);
+        await setLocalStorage('cachedRoute', source);
         setEmailSending(true);
         const res: any = await api.account.verifyEmail({
             email,

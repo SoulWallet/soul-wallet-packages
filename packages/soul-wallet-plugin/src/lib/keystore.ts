@@ -63,19 +63,38 @@ export default class KeyStore {
      * @param password
      * @returns EOA address, null is failed
      */
-    public async createNewAddress(password: string): Promise<string> {
+    public async createNewAddress(
+        password: string,
+        saveKey: boolean,
+    ): Promise<string> {
         try {
             const account = this.web3.eth.accounts.create();
             const KeystoreV3 = this.web3.eth.accounts.encrypt(
                 account.privateKey,
                 password,
             );
-            await setLocalStorage(this.keyStoreKey, KeystoreV3);
-            await setSessionStorage("pw", password);
+            if (saveKey) {
+                await setLocalStorage(this.keyStoreKey, KeystoreV3);
+                await setSessionStorage("pw", password);
+            } else {
+                await setLocalStorage("stagingAccount", account.address);
+                await setLocalStorage("stagingKeystore", KeystoreV3);
+                await setSessionStorage("stagingPw", password);
+            }
             return account.address;
         } catch (error) {
             return "";
         }
+    }
+
+    public async replaceAddress(): Promise<void> {
+        const stagingKeystore = await getLocalStorage("stagingKeystore");
+        const stagingPw = await getLocalStorage("stagingPw");
+        await setLocalStorage(this.keyStoreKey, stagingKeystore);
+        await setLocalStorage("pw", stagingPw);
+        await removeLocalStorage("stagingAccount");
+        await removeLocalStorage("stagingKeystore");
+        await removeLocalStorage("stagingPw");
     }
 
     public async unlock(password: string): Promise<string | null> {
@@ -100,6 +119,9 @@ export default class KeyStore {
         this._privateKey = null;
         await removeLocalStorage(this.keyStoreKey);
         await removeSessionStorage("pw");
+        await removeLocalStorage("stagingAccount");
+        await removeLocalStorage("stagingKeystore");
+        await removeLocalStorage("stagingPw");
     }
 
     /**
@@ -124,9 +146,7 @@ export default class KeyStore {
      * @param message
      * @returns signature, null is failed or keystore not unlocked
      */
-    public async sign(
-        message: string,
-    ): Promise<string | null> {
+    public async sign(message: string): Promise<string | null> {
         if (!this._privateKey) {
             return null;
         }
