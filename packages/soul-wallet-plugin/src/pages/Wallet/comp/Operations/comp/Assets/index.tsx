@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import IconChevronRight from "@src/assets/chevron-right.svg";
 import useErc20Contract from "@src/contract/useErc20Contract";
@@ -35,7 +36,7 @@ export default function Assets() {
     return (
         <div>
             {config.assetsList.map((item) => (
-                <div
+                <Link to={`/send/${item.address}`}
                     key={item.symbol}
                     className="flex items-center justify-between py-5 px-3 cursor-pointer hover:bg-gray-100"
                 >
@@ -48,7 +49,7 @@ export default function Assets() {
                     </div>
 
                     <img src={IconChevronRight} />
-                </div>
+                </Link>
             ))}
         </div>
     );

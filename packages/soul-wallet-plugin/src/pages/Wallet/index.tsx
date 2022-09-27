@@ -7,26 +7,7 @@ import api from "@src/lib/api";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    //TODO, BUG, first time entrance will show EOA address
-
-    const [activated, setActivated] = useState<boolean>(false);
-    const { walletAddress, isContract } = useWalletContext();
-
-    const checkActivated = async () => {
-        console.log("wallet addr", walletAddress);
-        const res = await isContract(walletAddress);
-        console.log("is Contract", res);
-        if (res) {
-            setActivated(true);
-        }
-    };
-
-    useEffect(() => {
-        if (!walletAddress) {
-            return;
-        }
-        checkActivated();
-    }, [walletAddress]);
+    const { walletAddress } = useWalletContext();
 
     return (
         <>

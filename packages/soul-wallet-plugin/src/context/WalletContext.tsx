@@ -13,8 +13,10 @@ const web3 = new Web3(config.provider);
 interface IWalletContext {
     web3: Web3;
     account: string;
+    // eoa, contract
+    walletType: string;
     walletAddress: string;
-    isContract: (val: string) => Promise<boolean>;
+    getWalletType: () => Promise<void>;
     getEthBalance: () => Promise<string>;
     generateWalletAddress: (val: string, setNew: boolean) => string;
     getGasPrice: () => Promise<number>;
@@ -32,10 +34,9 @@ interface IWalletContext {
 export const WalletContext = createContext<IWalletContext>({
     web3,
     account: "",
+    walletType: "",
     walletAddress: "",
-    isContract: async (val: string) => {
-        return false;
-    },
+    getWalletType: async()=>{},
     getEthBalance: async () => {
         return "";
     },
@@ -55,17 +56,7 @@ export const WalletContext = createContext<IWalletContext>({
 export const WalletContextProvider = ({ children }: any) => {
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
-
-    const isContract = async (_address: string) => {
-        const contractCode = await web3.eth.getCode(_address);
-        console.log(
-            "code is",
-            contractCode,
-            typeof contractCode,
-            contractCode !== "0x",
-        );
-        return contractCode !== "0x";
-    };
+    const [walletType, setWalletType] = useState<string>("");
 
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
@@ -102,31 +93,12 @@ export const WalletContextProvider = ({ children }: any) => {
         setWalletAddress(res);
     };
 
-    const sendEth = async () => {};
-
-    const sendErc20 = async (
-        tokenAddress: string,
-        to: string,
-        amount: string,
-    ) => {
-        const currentFee = (await getGasPrice()) * 1.5;
-        //todo, handle precision
-        const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
-        const op = WalletLib.EIP4337.Tokens.ERC20.transfer(
-            web3,
-            walletAddress,
-            nonce,
-            config.contracts.entryPoint,
-            config.contracts.paymaster,
-            currentFee,
-            config.defaultTip,
-            tokenAddress,
-            to,
-            amountInWei,
-        );
-        executeOperation(op);
+    const getWalletType = async () => {
+        const contractCode = await web3.eth.getCode(walletAddress);
+        setWalletType(contractCode !== "0x" ? "contract" : "eoa");
     };
+
+
 
     const executeOperation = async (operation: any) => {
         const requestId = operation.getRequestId(
@@ -157,7 +129,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const activateWallet = async () => {
-        const currentFee = (await getGasPrice()) * 1.5;
+        const currentFee = (await getGasPrice()) * 3;
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.entryPoint,
             config.contracts.paymaster,
@@ -168,25 +140,33 @@ export const WalletContextProvider = ({ children }: any) => {
             config.defaultSalt,
         );
 
-        executeOperation(activateOp);
+        await executeOperation(activateOp);
+    };
 
-        // const requestId = activateOp.getRequestId(
-        //     config.contracts.entryPoint,
-        //     config.chainId,
-        // );
+    const sendEth = async () => {};
 
-        // const signature = await keyStore.sign(requestId);
-
-        // if (signature) {
-        //     activateOp.signWithSignature(account, signature || "");
-
-        //     await Utils.sendOPWait(
-        //         web3,
-        //         activateOp,
-        //         config.contracts.entryPoint,
-        //         config.chainId,
-        //     );
-        // }
+    const sendErc20 = async (
+        tokenAddress: string,
+        to: string,
+        amount: string,
+    ) => {
+        const currentFee = (await getGasPrice()) * 3;
+        const amountInWei = new BN(amount).shiftedBy(18).toString();
+        const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+        const op = await WalletLib.EIP4337.Tokens.ERC20.transfer(
+            web3,
+            walletAddress,
+            nonce,
+            config.contracts.entryPoint,
+            config.contracts.paymaster,
+            currentFee,
+            config.defaultTip,
+            tokenAddress,
+            to,
+            amountInWei,
+        );
+        console.log('op', op);
+        await executeOperation(op);
     };
 
     useEffect(() => {
@@ -197,6 +177,13 @@ export const WalletContextProvider = ({ children }: any) => {
     }, [account]);
 
     useEffect(() => {
+        if (!walletAddress) {
+            return;
+        }
+        getWalletType();
+    }, [walletAddress]);
+
+    useEffect(() => {
         getAccount();
     }, []);
 
@@ -205,8 +192,9 @@ export const WalletContextProvider = ({ children }: any) => {
             value={{
                 web3,
                 account,
+                walletType,
                 walletAddress,
-                isContract,
+                getWalletType,
                 getEthBalance,
                 generateWalletAddress,
                 getGasPrice,

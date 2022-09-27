@@ -15,13 +15,13 @@ interface IProps {
 
 export default function AccountInfo({ account, action }: IProps) {
     const navigate = useNavigate();
-
-    const [activated, setActivated] = useState<boolean>(false);
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const {
         account: userAddress,
         walletAddress,
+        walletType,
+        getWalletType,
         activateWallet,
     } = useWalletContext();
 
@@ -34,7 +34,7 @@ export default function AccountInfo({ account, action }: IProps) {
         setLoading(true);
         await activateWallet();
         setLoading(false);
-        setActivated(true);
+        getWalletType();
         toast.success("Account activated");
     };
 
@@ -69,7 +69,7 @@ export default function AccountInfo({ account, action }: IProps) {
                     {account.slice(0, 4)}...{account.slice(-4)}
                 </span>
             </div>
-            {action === "activate" && !activated && (
+            {action === "activate" && walletType === "eoa" && (
                 <Button
                     classNames="btn-blue mb-4 mt-6"
                     onClick={doActivate}

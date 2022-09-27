@@ -36,6 +36,7 @@ interface ISendAssets {
 
 export default function SendAssets({ tokenAddress }: ISendAssets) {
     const [step, setStep] = useState<number>(0);
+    const [sending, setSending] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>("");
     const [balance, setBalance] = useState<string>("");
     const [receiverAddress, setReceiverAddress] = useState<string>("");
@@ -48,7 +49,9 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     )[0];
 
     const doSend = async () => {
+        setSending(true);
         await sendErc20(tokenAddress, receiverAddress, amount);
+        setSending(false);
         setStep(2);
     };
 
@@ -75,7 +78,9 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                 <div className="flex items-center gap-1">
                     {icon && <img src={icon} className="w-11 h-11" />}
                     <div className="flex flex-col">
-                        <div className="font-bold text-lg mb-1">{title}</div>
+                        <div className="font-bold text-lg break-all">
+                            {title}
+                        </div>
                         {value && <div>{value}</div>}
                     </div>
                 </div>
@@ -85,9 +90,9 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
     const InfoItem = ({ title, value }: InfoItemProps) => {
         return (
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-4">
                 <div className="text-sm opacity-80">{title}</div>
-                <div className="text-base opacity-60 break-words max-w-xs">
+                <div className="text-base opacity-60 break-all max-w-xs">
                     {value}
                 </div>
             </div>
@@ -147,8 +152,8 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                         </div>
 
                         <div className="p-6 bg-gray40 flex flex-col gap-6">
-                            <InfoItem title="Address" value={receiverAddress} />
-                            <InfoItem title="Tx ID" value="0xcbe1...85049c" />
+                            <InfoItem title="Receiver" value={receiverAddress} />
+                            {/* <InfoItem title="Tx ID" value="0xcbe1...85049c" /> */}
                             <InfoItem
                                 title="Date"
                                 value={new Date().toLocaleString()}
@@ -165,7 +170,11 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                     </Button>
                 )}
                 {step === 1 && (
-                    <Button classNames="btn-blue" onClick={() => doSend()}>
+                    <Button
+                        classNames="btn-blue"
+                        onClick={() => doSend()}
+                        loading={sending}
+                    >
                         Confirm
                     </Button>
                 )}
