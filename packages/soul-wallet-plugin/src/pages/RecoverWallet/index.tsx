@@ -15,8 +15,11 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const { deleteWallet, replaceAddress } = useWalletContext();
+    const { deleteWallet, replaceAddress, getRecoverId, walletAddress } =
+        useWalletContext();
     const navigate = useNavigate();
+    const [progress, setProgress] = useState<number>();
+    const [recoverStatus, setRecoverStatus] = useState();
     const [cachedEmail, setCachedEmail] = useState<string>("");
     const [step, setStep] = useState<number>(0);
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
@@ -28,10 +31,15 @@ export function RecoverWallet() {
     };
 
     const onReceiveCode = async (email: string, code: string) => {
+        const new_key =
+            newOwnerAddress || (await getLocalStorage("stagingAccount"));
+        const { requestId }: any = await getRecoverId(new_key);
+
         const res: any = await api.account.recover({
             email,
             code,
-            new_key: newOwnerAddress || await getLocalStorage('stagingAccount'),
+            new_key,
+            request_id: requestId,
         });
         if (res.code === 200) {
             // replace old key
@@ -58,7 +66,8 @@ export function RecoverWallet() {
             const res = await api.guardian.records({
                 email: await getLocalStorage("email"),
             });
-            console.log("recov status", res);
+            console.log("recover status", res);
+            setProgress(60);
             // send api to check recover status
             // if all guardians pass, setStep(3)
             // await setLocalStorage("recovering", false);
@@ -68,6 +77,11 @@ export function RecoverWallet() {
     useEffect(() => {
         checkRecoverStatus();
     }, []);
+
+    const progressStyle = {
+        "--value": progress,
+        "--size": "72px",
+    } as React.CSSProperties;
 
     return (
         <>
@@ -98,26 +112,44 @@ export function RecoverWallet() {
 
                 {step === 2 && (
                     <>
-                        <div className="page-title mb-8">Recovering</div>
+                        <div className="page-title mb-6">Recovering</div>
                         <div className="page-desc">
                             <div className="mb-5">
                                 Email verification succefully.
                             </div>
                             <div>
-                                Your wallet will be reocved on this device once
-                                one of your guardians sign the transaction on
-                                our website.
+                                Your wallet will be recovered on this device
+                                once one of your guardians sign the transaction
+                                on our website.
+                            </div>
+                            <div className="flex items-center justify-center gap-6 mt-3">
+                                <div
+                                    className="radial-progress text-primary"
+                                    style={progressStyle}
+                                >
+                                    70%
+                                </div>
+                                <div>Progress: 1/3</div>
+                            </div>
+                            <div className="mt-3">
+                                <div className="font-bold">Guardians Address</div>
+                                <div className="h-16 overflow-scroll">
+                                    {[...Array(8)].map((item) => (
+                                        <div>0x123123123</div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                        <div className="fixed bottom-10 left-6 right-6">
+
+                        <div className="fixed bottom-8 left-6 right-6">
                             <a href={config.safeCenterURL} target="_blank">
                                 <a className="btn btn-blue w-full">
                                     Go to website
                                 </a>
                             </a>
-                            <a onClick={doDeleteWallet}>
+                            {/* <a onClick={doDeleteWallet}>
                                 <a className="btn mt-4 w-full">Delete Wallet</a>
-                            </a>
+                            </a> */}
                         </div>
                     </>
                 )}

@@ -22,7 +22,7 @@ const errorDefaultValues = {
 };
 
 export default function AddGuardians() {
-    const {walletAddress} = useWalletContext()
+    const { walletAddress, addGuardian } = useWalletContext();
     const navigate = useNavigate();
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -54,6 +54,7 @@ export default function AddGuardians() {
         setErrors(errorDefaultValues);
         if (checkParams()) {
             setLoading(true);
+            await addGuardian(address);
             const res: any = await api.guardian.add({
                 email: await getLocalStorage("email"),
                 wallet_address: walletAddress,
@@ -70,7 +71,7 @@ export default function AddGuardians() {
 
     return (
         <div className="p-4 pt-0">
-            <div className="page-title mb-4">Add Guardians</div>
+            <div className="page-title mb-4">Add Guardian</div>
 
             <div className="form-control w-full">
                 <div className="mb-2">
