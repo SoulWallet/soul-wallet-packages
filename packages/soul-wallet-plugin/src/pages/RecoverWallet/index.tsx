@@ -15,13 +15,19 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const { deleteWallet, replaceAddress, getRecoverId, walletAddress } =
-        useWalletContext();
-    const navigate = useNavigate();
+    const {
+        account,
+        replaceAddress,
+        getRecoverId,
+        recoverWallet,
+        // deleteWallet,
+        walletAddress,
+    } = useWalletContext();
     const [progress, setProgress] = useState<number>();
-    const [recoverStatus, setRecoverStatus] = useState();
+    const navigate = useNavigate();
     const [cachedEmail, setCachedEmail] = useState<string>("");
     const [step, setStep] = useState<number>(0);
+    const [detail, setDetail] = useState<any>({});
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
 
     const onCreatedEoaAddress = async (address: string | null) => {
@@ -49,11 +55,11 @@ export function RecoverWallet() {
         }
     };
 
-    const doDeleteWallet = async () => {
-        await deleteWallet();
-        await removeLocalStorage("recovering");
-        navigate("/welcome");
-    };
+    // const doDeleteWallet = async () => {
+    //     await deleteWallet();
+    //     await removeLocalStorage("recovering");
+    //     navigate("/welcome");
+    // };
 
     const checkRecoverStatus = async () => {
         const _recovering = await getLocalStorage("recovering");
@@ -64,14 +70,28 @@ export function RecoverWallet() {
         } else if (_recovering) {
             setStep(2);
             const res = await api.guardian.records({
-                email: await getLocalStorage("email"),
+                new_key: account,
             });
-            console.log("recover status", res);
-            setProgress(60);
+            console.log("recover status", res.data);
+            setProgress(100);
+
+            setDetail(res.data);
+
+            // setProgress();
             // send api to check recover status
             // if all guardians pass, setStep(3)
             // await setLocalStorage("recovering", false);
         }
+    };
+
+    const doRecover = async () => {
+        const signatures = detail.recoveryRecords.recovery_records.map(
+            (item: any) => item.signature,
+        );
+        console.log("sigs", signatures);
+        const res = await recoverWallet(walletAddress, signatures);
+        console.log("ressssss", res);
+        navigate("/wallet");
     };
 
     useEffect(() => {
@@ -112,42 +132,46 @@ export function RecoverWallet() {
 
                 {step === 2 && (
                     <>
-                        <div className="page-title mb-6">Recovering</div>
+                        <div className="page-title mb-4">Recovering</div>
                         <div className="page-desc">
-                            <div className="mb-5">
-                                Email verification succefully.
-                            </div>
                             <div>
                                 Your wallet will be recovered on this device
                                 once one of your guardians sign the transaction
                                 on our website.
                             </div>
-                            <div className="flex items-center justify-center gap-6 mt-3">
+                            <div className="flex items-center justify-center gap-6 mt-4 ">
                                 <div
                                     className="radial-progress text-primary"
                                     style={progressStyle}
                                 >
-                                    70%
+                                    {progress}%
                                 </div>
                                 <div>Progress: 1/3</div>
                             </div>
-                            <div className="mt-3">
-                                <div className="font-bold">Guardians Address</div>
-                                <div className="h-16 overflow-scroll">
-                                    {[...Array(8)].map((item) => (
-                                        <div>0x123123123</div>
-                                    ))}
-                                </div>
+                            <div className="divider mt-6">Guardian Address</div>
+                            <div className="h-16 mt-2 overflow-scroll">
+                                {[...Array(8)].map((item) => (
+                                    <div>0x123123123</div>
+                                ))}
                             </div>
                         </div>
 
                         <div className="fixed bottom-8 left-6 right-6">
-                            <a href={config.safeCenterURL} target="_blank">
-                                <a className="btn btn-blue w-full">
-                                    Go to website
+                            {progress === 100 ? (
+                                <a onClick={doRecover}>
+                                    <a className="btn btn-blue w-full">
+                                        Recover
+                                    </a>
                                 </a>
-                            </a>
-                            {/* <a onClick={doDeleteWallet}>
+                            ) : (
+                                <a href={config.safeCenterURL} target="_blank">
+                                    <a className="btn btn-blue w-full">
+                                        Go to website
+                                    </a>
+                                </a>
+                            )}
+                            {/* 
+                            <a onClick={doDeleteWallet}>
                                 <a className="btn mt-4 w-full">Delete Wallet</a>
                             </a> */}
                         </div>

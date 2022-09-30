@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function Logo() {
     return (
-        <Link to="/" className="flex items-center mb-12">
+        <Link to="/" className="flex items-center mb-8">
             <img className="w-12" src={ImgLogo} />
             <img className="w-24" src={ImgLogoText} />
         </Link>

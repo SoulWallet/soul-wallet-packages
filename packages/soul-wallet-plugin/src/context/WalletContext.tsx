@@ -151,7 +151,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const { requestId, recoveryOp } = await getRecoverId(newOwner);
-        console.log("req id is", requestId);
+        console.log("before sign pack", requestId, signatures, walletAddress);
         const signPack =
             await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(
                 requestId,
@@ -159,6 +159,8 @@ export const WalletContextProvider = ({ children }: any) => {
                 walletAddress,
                 web3 as any,
             );
+
+        console.log("after sign pack", signPack);
 
         recoveryOp.signature = signPack;
 

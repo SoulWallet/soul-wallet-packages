@@ -26,6 +26,7 @@ const account = {
     update: (params: any) => axio.post("/update-account", params),
     verifyEmail: (params: any) => axio.post("/verify-email", params),
     recover: (params: any) => axio.post("/add-recovery-record", params),
+    isWalletOwner: (params: any) => axio.post("/is-wallet-owner", params),
 };
 
 const guardian = {
