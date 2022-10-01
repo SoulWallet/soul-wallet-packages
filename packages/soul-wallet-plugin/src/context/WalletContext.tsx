@@ -6,6 +6,7 @@ import { Utils } from "@src/Utils";
 import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
+import EntryPointABI from "../contract/abi/EntryPoint.json";
 import { getLocalStorage } from "@src/lib/tools";
 
 // init global instances
@@ -93,18 +94,14 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             config.defaultSalt,
         );
-        // if (setNew) {
-        //     setWalletAddress(walletAddress);
-        // }
+
         console.log("generated wallet address", walletAddress);
         return walletAddress;
     };
 
     const getWalletAddress = async () => {
-        // const res = generateWalletAddress(account);
         const res: any = await api.account.getWalletAddress({
             email: "m@gmail.com",
-            //  await getLocalStorage("email"),
         });
 
         setWalletAddress(res.data.wallet_address);
@@ -125,8 +122,6 @@ export const WalletContextProvider = ({ children }: any) => {
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
-
-            ////////
 
             await Utils.sendOPWait(
                 web3,
@@ -162,7 +157,12 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const { requestId, recoveryOp } = await getRecoverId(newOwner);
-        console.log("signatures", signatures);
+
+        const entryPointContract = new web3.eth.Contract(
+            EntryPointABI,
+            config.contracts.entryPoint,
+        );
+
         const signPack =
             await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(
                 requestId,
@@ -174,6 +174,13 @@ export const WalletContextProvider = ({ children }: any) => {
         console.log("after sign pack", signPack);
 
         recoveryOp.signature = signPack;
+
+        const result = await entryPointContract.methods
+            .simulateValidation(recoveryOp)
+            .call({
+                from: WalletLib.EIP4337.Defines.AddressZero,
+            });
+        console.log(`recoverOp simulateValidation result:`, result);
 
         // recovery now
         await Utils.sendOPWait(
