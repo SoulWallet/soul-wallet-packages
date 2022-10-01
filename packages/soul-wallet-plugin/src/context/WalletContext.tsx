@@ -101,9 +101,9 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const getWalletAddress = async () => {
         const res: any = await api.account.getWalletAddress({
-            email: "m@gmail.com",
+            key: account,
         });
-
+        console.log('get wallet address', res)
         setWalletAddress(res.data.wallet_address);
     };
 

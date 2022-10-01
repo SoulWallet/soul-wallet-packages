@@ -7,7 +7,7 @@ import { Input } from "../Input";
 const keyStore = KeyStore.getInstance();
 
 interface CreatePasswordProps {
-    onCreatedWalletAddress?: (address: string | null) => void;
+    onCreatedWalletAddress?: (address: string | null, eoaAddress: string | null) => void;
     onCreatedEoaAddress?: (address: string | null) => void;
     saveKey?: boolean;
 }
@@ -75,7 +75,7 @@ export function CreatePassword({
 
             if (onCreatedWalletAddress) {
                 const walletAddress: string = generateWalletAddress(address);
-                onCreatedWalletAddress(walletAddress);
+                onCreatedWalletAddress(walletAddress, address);
             }
         }
     };

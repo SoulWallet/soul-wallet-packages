@@ -25,12 +25,13 @@ export function CreateWallet() {
         }
     };
 
-    const onCreatedWalletAddress:any= async (address: string) => {
+    const onCreatedWalletAddress:any= async (address: string, eoaAddress: string) => {
         //eoa address
 
         const res = await api.account.update({
             email,
             wallet_address: address,
+            key: eoaAddress,
         });
         if (res) {
             // todo, this is for guardian, to be removed
