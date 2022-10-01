@@ -20,7 +20,7 @@ export function RecoverWallet() {
         replaceAddress,
         getRecoverId,
         recoverWallet,
-        // deleteWallet,
+        deleteWallet,
         walletAddress,
     } = useWalletContext();
     const [progress, setProgress] = useState<number>();
@@ -55,11 +55,11 @@ export function RecoverWallet() {
         }
     };
 
-    // const doDeleteWallet = async () => {
-    //     await deleteWallet();
-    //     await removeLocalStorage("recovering");
-    //     navigate("/welcome");
-    // };
+    const doDeleteWallet = async () => {
+        await deleteWallet();
+        await removeLocalStorage("recovering");
+        navigate("/welcome");
+    };
 
     const checkRecoverStatus = async () => {
         const _recovering = await getLocalStorage("recovering");
@@ -88,8 +88,8 @@ export function RecoverWallet() {
         const signatures = detail.recoveryRecords.recovery_records.map(
             (item: any) => item.signature,
         );
-        console.log("sigs", signatures);
-        const res = await recoverWallet(walletAddress, signatures);
+        const res = await recoverWallet(account, signatures);
+        await removeLocalStorage("recovering");
         console.log("ressssss", res);
         navigate("/wallet");
     };
@@ -170,10 +170,10 @@ export function RecoverWallet() {
                                     </a>
                                 </a>
                             )}
-                            {/* 
+
                             <a onClick={doDeleteWallet}>
                                 <a className="btn mt-4 w-full">Delete Wallet</a>
-                            </a> */}
+                            </a>
                         </div>
                     </>
                 )}

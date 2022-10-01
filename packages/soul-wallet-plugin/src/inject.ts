@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 // inject global variable to user page
 window.soul = {
     isSoul: true,
@@ -10,3 +11,12 @@ window.soul = {
         });
     },
 };
+
+
+// const web3 = new Web3('infura')
+
+
+
+// const web3 = new Web3(provider);
+
+// contract.methods.addLiquidity().send();

@@ -64,14 +64,17 @@ export function CreatePassword({
         setErrors(errorDefaultValues);
         if (checkParams()) {
             // do create account
-            const address = await keyStore.createNewAddress(newPassword, saveKey);
-
-            const walletAddress: string = generateWalletAddress(address, true);
+            const address = await keyStore.createNewAddress(
+                newPassword,
+                saveKey,
+            );
 
             if (onCreatedEoaAddress) {
                 onCreatedEoaAddress(address);
             }
+
             if (onCreatedWalletAddress) {
+                const walletAddress: string = generateWalletAddress(address);
                 onCreatedWalletAddress(walletAddress);
             }
         }

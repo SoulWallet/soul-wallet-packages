@@ -1,10 +1,12 @@
 import React, { createContext, useState, useEffect } from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
+import api from "@src/lib/api";
 import { Utils } from "@src/Utils";
 import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
+import { getLocalStorage } from "@src/lib/tools";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -16,9 +18,10 @@ interface IWalletContext {
     // eoa, contract
     walletType: string;
     walletAddress: string;
+    getWalletAddress: () => Promise<void>;
     getWalletType: () => Promise<void>;
     getEthBalance: () => Promise<string>;
-    generateWalletAddress: (val: string, setNew: boolean) => string;
+    generateWalletAddress: (val: string) => string;
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
@@ -39,6 +42,7 @@ export const WalletContext = createContext<IWalletContext>({
     account: "",
     walletType: "",
     walletAddress: "",
+    getWalletAddress: async () => {},
     getWalletType: async () => {},
     getEthBalance: async () => {
         return "";
@@ -72,7 +76,8 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getGasPrice = async () => {
-        return Number(await web3.eth.getGasPrice());
+        return 5 * 10 ** 9;
+        // return Number(await web3.eth.getGasPrice());
     };
 
     const getAccount = async () => {
@@ -80,7 +85,7 @@ export const WalletContextProvider = ({ children }: any) => {
         setAccount(res);
     };
 
-    const generateWalletAddress = (address: string, setNew?: boolean) => {
+    const generateWalletAddress = (address: string) => {
         const walletAddress = WalletLib.EIP4337.calculateWalletAddress(
             config.contracts.entryPoint,
             address,
@@ -88,17 +93,21 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             config.defaultSalt,
         );
-        if (setNew) {
-            setWalletAddress(walletAddress);
-        }
+        // if (setNew) {
+        //     setWalletAddress(walletAddress);
+        // }
         console.log("generated wallet address", walletAddress);
         return walletAddress;
     };
 
-    const getWalletAddress = () => {
-        console.log("trig generate wall addr");
-        const res = generateWalletAddress(account);
-        setWalletAddress(res);
+    const getWalletAddress = async () => {
+        // const res = generateWalletAddress(account);
+        const res: any = await api.account.getWalletAddress({
+            email: "m@gmail.com",
+            //  await getLocalStorage("email"),
+        });
+
+        setWalletAddress(res.data.wallet_address);
     };
 
     const getWalletType = async () => {
@@ -116,6 +125,8 @@ export const WalletContextProvider = ({ children }: any) => {
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
+
+            ////////
 
             await Utils.sendOPWait(
                 web3,
@@ -151,7 +162,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const { requestId, recoveryOp } = await getRecoverId(newOwner);
-        console.log("before sign pack", requestId, signatures, walletAddress);
+        console.log("signatures", signatures);
         const signPack =
             await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(
                 requestId,
@@ -295,6 +306,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 account,
                 walletType,
                 walletAddress,
+                getWalletAddress,
                 getRecoverId,
                 recoverWallet,
                 addGuardian,

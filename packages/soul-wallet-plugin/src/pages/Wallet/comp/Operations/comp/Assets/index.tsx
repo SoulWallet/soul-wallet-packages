@@ -6,7 +6,7 @@ import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";
 
 export default function Assets() {
-    const { getEthBalance } = useWalletContext();
+    const { getEthBalance, walletAddress } = useWalletContext();
     const [balanceMapping, setBalanceMapping] = useState<any>({});
     const erc20Contract = useErc20Contract();
 
@@ -30,8 +30,11 @@ export default function Assets() {
     };
 
     useEffect(() => {
+        if(!walletAddress){
+            return
+        }
         getBalances();
-    }, []);
+    }, [walletAddress]);
 
     return (
         <div>
