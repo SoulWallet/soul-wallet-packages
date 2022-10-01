@@ -32,7 +32,6 @@ monorepo management with pnpm workspace
 
 `cd packages && git clone ${repoUrl}`
 
-
 ## Dev Guide
 
 ### Import sibling package
@@ -47,3 +46,4 @@ Import package like what you did before, take `soul-wallet-lib` for example:
 
 ## TODO
 [] chrome.storage.session requires chrome version >= 102, add polyfill.
+[] get-wallet-address
