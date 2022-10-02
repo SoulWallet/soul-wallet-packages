@@ -56,7 +56,7 @@ export default function AddGuardians() {
             setLoading(true);
             await addGuardian(address);
             const res: any = await api.guardian.add({
-                email: await getLocalStorage("email"),
+                // email: await getLocalStorage("email"),
                 wallet_address: walletAddress,
                 guardian: address,
             });

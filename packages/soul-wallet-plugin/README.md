@@ -48,3 +48,6 @@ soul-wallet-extension
 - activity history, click redirect to scan
 - save name locally
 - cache guardians list
+
+## TODO
+1. add hash to contentScript and background

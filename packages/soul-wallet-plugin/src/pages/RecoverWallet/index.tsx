@@ -21,7 +21,6 @@ export function RecoverWallet() {
         getRecoverId,
         recoverWallet,
         deleteWallet,
-        walletAddress,
     } = useWalletContext();
     const [progress, setProgress] = useState<number>();
     const navigate = useNavigate();
@@ -77,7 +76,6 @@ export function RecoverWallet() {
 
             setDetail(res.data);
 
-            // setProgress();
             // send api to check recover status
             // if all guardians pass, setStep(3)
             // await setLocalStorage("recovering", false);
@@ -89,6 +87,12 @@ export function RecoverWallet() {
             (item: any) => item.signature,
         );
         const res = await recoverWallet(account, signatures);
+        
+        // todo, notify api
+        await api.account.finishRecoveryRecord({
+            new_key: account,
+        });
+
         await removeLocalStorage("recovering");
         console.log("ressssss", res);
         navigate("/wallet");

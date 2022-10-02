@@ -13,6 +13,7 @@ interface IProps {
     action: string;
 }
 
+// todo, add loading for whole page before get account
 export default function AccountInfo({ account, action }: IProps) {
     const navigate = useNavigate();
     const [copied, setCopied] = useState<boolean>(false);
@@ -42,7 +43,6 @@ export default function AccountInfo({ account, action }: IProps) {
         setLoading(true);
 
         const res: any = await api.guardian.remove({
-            email: await getLocalStorage("email"),
             wallet_address: walletAddress,
             guardian: account,
         });
@@ -58,17 +58,20 @@ export default function AccountInfo({ account, action }: IProps) {
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
             <AddressIcon width={72} address={account} />
             <div className="text-lg mt-1 mb-2">Soul Wallet</div>
-            <div
-                className="gap-2 flex items-center cursor-pointer tooltip"
-                data-tip={copied ? "Copied" : "Click to copy"}
-                onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
-                onClick={doCopy}
-            >
-                <img src={IconCopy} className="w-4 opacity-50" />
-                <span className="opacity-50 text-base text-black">
-                    {account.slice(0, 4)}...{account.slice(-4)}
-                </span>
-            </div>
+            {account && (
+                <div
+                    className="gap-2 flex items-center cursor-pointer tooltip"
+                    data-tip={copied ? "Copied" : "Click to copy"}
+                    onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
+                    onClick={doCopy}
+                >
+                    <img src={IconCopy} className="w-4 opacity-50" />
+                    <span className="opacity-50 text-base text-black">
+                        {account.slice(0, 4)}...{account.slice(-4)}
+                    </span>
+                </div>
+            )}
+
             {action === "activate" && walletType === "eoa" && (
                 <Button
                     classNames="btn-blue mb-4 mt-6"

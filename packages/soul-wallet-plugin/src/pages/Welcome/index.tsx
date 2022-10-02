@@ -5,6 +5,7 @@ import { getLocalStorage } from "@src/lib/tools";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@src/components/Input";
 import KeyStore from "@src/lib/keystore";
+import browser from "webextension-polyfill";
 
 const keyStore = KeyStore.getInstance();
 
@@ -73,15 +74,16 @@ export default function Welcome() {
                         </a>
                     </>
                 ) : (
-                    <Link to="/create-wallet">
-                        <a className="btn btn-blue w-full mb-4">
-                            Create a Wallet
-                        </a>
+                    <Link
+                        to="/create-wallet"
+                        className="btn btn-blue w-full mb-4"
+                    >
+                        Create a Wallet
                     </Link>
                 )}
 
-                <Link to="/recover-wallet">
-                    <a className="text-blueDeep text-sm">Recover a wallet</a>
+                <Link to="/recover-wallet" className="text-blueDeep text-sm">
+                    Recover a wallet
                 </Link>
             </div>
         </div>

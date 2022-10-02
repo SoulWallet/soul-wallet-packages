@@ -6,7 +6,11 @@ import Operations from "./comp/Operations";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    const { walletAddress } = useWalletContext();
+    const { walletAddress, getWalletAddress } = useWalletContext();
+
+    // useEffect(() => {
+    //     getWalletAddress();
+    // }, []);
 
     return (
         <>
