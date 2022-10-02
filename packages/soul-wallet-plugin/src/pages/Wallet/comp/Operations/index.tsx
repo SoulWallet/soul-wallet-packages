@@ -3,7 +3,7 @@ import cn from "classnames";
 import Assets from "./comp/Assets";
 import Activitys from "./comp/Activitys";
 import Guardians from "./comp/Guardians";
-const tabs = ["assets", "activitys", "guardians"];
+const tabs = ["assets", "activity", "guardians"];
 
 export default function Operations() {
     const [activeTabIndex, setActiveTabIndex] = useState<number>(0);

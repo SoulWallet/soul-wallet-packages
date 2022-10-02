@@ -83,7 +83,7 @@ export default function Welcome() {
                 )}
 
                 <Link to="/recover-wallet" className="text-blueDeep text-sm">
-                    Recover a wallet
+                    Recover Wallet
                 </Link>
             </div>
         </div>

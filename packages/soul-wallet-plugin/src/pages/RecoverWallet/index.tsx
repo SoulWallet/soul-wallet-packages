@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Logo from "@src/components/Logo";
+import BN from "bignumber.js";
+import Button from "@src/components/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
@@ -28,6 +30,9 @@ export function RecoverWallet() {
     const [step, setStep] = useState<number>(0);
     const [detail, setDetail] = useState<any>({});
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
+    const [recoveringWallet, setRecoveringWallet] = useState(false);
+    const [guardianNameMapping, setGuardianNameMapping] = useState<any>({});
+    const [recoveryRecords, setRecoveryRecords] = useState<any[]>([]);
 
     const onCreatedEoaAddress = async (address: string | null) => {
         setNewOwnerAddress(address);
@@ -50,6 +55,7 @@ export function RecoverWallet() {
             // replace old key
             await replaceAddress();
             await setLocalStorage("recovering", true);
+            checkRecoverStatus();
             setStep(2);
         }
     };
@@ -71,35 +77,47 @@ export function RecoverWallet() {
             const res = await api.guardian.records({
                 new_key: account,
             });
+
             console.log("recover status", res.data);
-            setProgress(100);
+
+            const require = res.data.requirements;
+            setProgress(
+                new BN(require.signedNum)
+                    .div(require.total)
+                    .times(100)
+                    .toNumber(),
+            );
 
             setDetail(res.data);
-
-            // send api to check recover status
-            // if all guardians pass, setStep(3)
-            // await setLocalStorage("recovering", false);
         }
     };
 
     const doRecover = async () => {
+        console.log();
         const signatures = detail.recoveryRecords.recovery_records.map(
             (item: any) => item.signature,
         );
-        const res = await recoverWallet(account, signatures);
-        
-        // todo, notify api
+        setRecoveringWallet(true);
+        await recoverWallet(account, signatures);
+
         await api.account.finishRecoveryRecord({
             new_key: account,
         });
 
+        setRecoveringWallet(true);
+
         await removeLocalStorage("recovering");
-        console.log("ressssss", res);
         navigate("/wallet");
+    };
+
+    const getGuardianNameMapping = async () => {
+        const res = await getLocalStorage("guardianNameMapping");
+        setGuardianNameMapping(res);
     };
 
     useEffect(() => {
         checkRecoverStatus();
+        getGuardianNameMapping();
     }, []);
 
     const progressStyle = {
@@ -145,28 +163,55 @@ export function RecoverWallet() {
                             </div>
                             <div className="flex items-center justify-center gap-6 mt-4 ">
                                 <div
-                                    className="radial-progress text-primary"
+                                    className="radial-progress bg-primary text-primary-content border-4 border-primary"
                                     style={progressStyle}
                                 >
                                     {progress}%
                                 </div>
-                                <div>Progress: 1/3</div>
                             </div>
                             <div className="divider mt-6">Guardian Address</div>
-                            <div className="h-16 mt-2 overflow-scroll">
-                                {[...Array(8)].map((item) => (
-                                    <div>0x123123123</div>
-                                ))}
+                            <div className="mt-2 pb-24">
+                                {detail.recoveryRecords &&
+                                    detail.recoveryRecords.recovery_records.map(
+                                        (item: any) => (
+                                            <div
+                                                className="flex justify-between py-1"
+                                                key={item.guardian_address}
+                                            >
+                                                <div className="font-mono">
+                                                    {item.guardian_address.slice(
+                                                        0,
+                                                        6,
+                                                    )}
+                                                    ...
+                                                    {item.guardian_address.slice(
+                                                        -6,
+                                                    )}
+                                                </div>
+                                                {item.signature ? (
+                                                    <div className="text-green">
+                                                        Signed
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-blue">
+                                                        Pending
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ),
+                                    )}
                             </div>
                         </div>
 
                         <div className="fixed bottom-8 left-6 right-6">
                             {progress === 100 ? (
-                                <a onClick={doRecover}>
-                                    <a className="btn btn-blue w-full">
-                                        Recover
-                                    </a>
-                                </a>
+                                <Button
+                                    loading={recoveringWallet}
+                                    classNames="btn btn-blue w-full"
+                                    onClick={doRecover}
+                                >
+                                    Recover
+                                </Button>
                             ) : (
                                 <a href={config.safeCenterURL} target="_blank">
                                     <a className="btn btn-blue w-full">
@@ -175,9 +220,9 @@ export function RecoverWallet() {
                                 </a>
                             )}
 
-                            <a onClick={doDeleteWallet}>
+                            {/* <a onClick={doDeleteWallet}>
                                 <a className="btn mt-4 w-full">Delete Wallet</a>
-                            </a>
+                            </a> */}
                         </div>
                     </>
                 )}

@@ -100,6 +100,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getWalletAddress = async () => {
+        console.log('before get', account)
         const res: any = await api.account.getWalletAddress({
             key: account,
         });
@@ -122,6 +123,18 @@ export const WalletContextProvider = ({ children }: any) => {
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
+
+            const entryPointContract = new web3.eth.Contract(
+                EntryPointABI,
+                config.contracts.entryPoint,
+            );
+
+            const result = await entryPointContract.methods
+                .simulateValidation(operation)
+                .call({
+                    from: WalletLib.EIP4337.Defines.AddressZero,
+                });
+            console.log(`recoverOp simulateValidation result:`, result);
 
             await Utils.sendOPWait(
                 web3,
