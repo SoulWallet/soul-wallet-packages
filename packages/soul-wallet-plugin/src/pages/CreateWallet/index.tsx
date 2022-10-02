@@ -10,7 +10,7 @@ import { CreatePassword } from "@src/components/CreatePassword";
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
     const [cachedEmail, setCachedEmail] = useState<string>("");
-    const { getWalletAddress } = useWalletContext();
+    const { getWalletAddress, getAccount } = useWalletContext();
 
     const [email, setEmail] = useState<string>("");
 
@@ -43,7 +43,7 @@ export function CreateWallet() {
             // await setLocalStorage("email", email);
 
             // get latest wallet address
-            await getWalletAddress();
+            await getAccount()
 
             setStep(2);
         }

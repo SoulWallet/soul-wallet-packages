@@ -25,6 +25,7 @@ interface IWalletContext {
     generateWalletAddress: (val: string) => string;
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
+    getAccount: () => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string) => Promise<object>;
     recoverWallet: (newOwner: string, signatures: string[]) => Promise<void>;
@@ -45,6 +46,7 @@ export const WalletContext = createContext<IWalletContext>({
     walletAddress: "",
     getWalletAddress: async () => {},
     getWalletType: async () => {},
+    getAccount: async () => {},
     getEthBalance: async () => {
         return "";
     },
@@ -334,6 +336,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 walletAddress,
                 getWalletAddress,
                 getRecoverId,
+                getAccount,
                 recoverWallet,
                 addGuardian,
                 getWalletType,
