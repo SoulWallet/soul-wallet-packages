@@ -16,9 +16,9 @@ export default function Guardians() {
 
     const getGuardians = async () => {
         setLoading(true);
-        const email = await getLocalStorage("email");
+        // const email = await getLocalStorage("email");
         const res: any = await api.guardian.get({
-            email,
+            // email,
             wallet_address: walletAddress,
         });
         setLoading(false);

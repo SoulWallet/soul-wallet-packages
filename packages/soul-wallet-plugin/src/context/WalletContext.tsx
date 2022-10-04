@@ -7,7 +7,7 @@ import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
 import EntryPointABI from "../contract/abi/EntryPoint.json";
-import { getLocalStorage } from "@src/lib/tools";
+import browser from "webextension-polyfill";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -100,10 +100,11 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getWalletAddress = async () => {
+        console.log('before get', account)
         const res: any = await api.account.getWalletAddress({
-            email: "m@gmail.com",
+            key: account,
         });
-
+        console.log("get wallet address", res);
         setWalletAddress(res.data.wallet_address);
     };
 
@@ -123,12 +124,28 @@ export const WalletContextProvider = ({ children }: any) => {
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
+            const entryPointContract = new web3.eth.Contract(
+                EntryPointABI,
+                config.contracts.entryPoint,
+            );
+
+            const result = await entryPointContract.methods
+                .simulateValidation(operation)
+                .call({
+                    from: WalletLib.EIP4337.Defines.AddressZero,
+                });
+            console.log(`recoverOp simulateValidation result:`, result);
+
             await Utils.sendOPWait(
                 web3,
                 operation,
                 config.contracts.entryPoint,
                 config.chainId,
             );
+
+            browser.runtime.sendMessage({
+                type: "notify",
+            });
         }
     };
 
@@ -182,15 +199,17 @@ export const WalletContextProvider = ({ children }: any) => {
             });
         console.log(`recoverOp simulateValidation result:`, result);
 
-        // recovery now
         await Utils.sendOPWait(
             web3,
             recoveryOp,
             config.contracts.entryPoint,
             config.chainId,
         );
+        // recovery now
+        browser.runtime.sendMessage({
+            type: "notify",
+        });
     };
-
     const addGuardian = async (guardianAddress: string) => {
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(

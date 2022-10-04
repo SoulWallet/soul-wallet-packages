@@ -6,15 +6,16 @@ import Operations from "./comp/Operations";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    const { walletAddress, account } = useWalletContext();
+    const { walletAddress, getWalletAddress } = useWalletContext();
+
+    // useEffect(() => {
+    //     getWalletAddress();
+    // }, []);
 
     return (
         <>
             <Navbar />
             <AccountInfo account={walletAddress} action="activate" />
-            <div className="text-center">
-                EOA: 0x{account.slice(0, 4)}...{account.slice(-4)}
-            </div>
             <Actions />
             <Operations />
         </>

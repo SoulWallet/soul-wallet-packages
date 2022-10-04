@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "@src/lib/api";
 import { Link } from "react-router-dom";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Logo from "@src/components/Logo";
 import { SendEmail } from "@src/components/SendEmail";
@@ -9,6 +10,7 @@ import { CreatePassword } from "@src/components/CreatePassword";
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
     const [cachedEmail, setCachedEmail] = useState<string>("");
+    const { getWalletAddress } = useWalletContext();
 
     const [email, setEmail] = useState<string>("");
 
@@ -25,17 +27,24 @@ export function CreateWallet() {
         }
     };
 
-    const onCreatedWalletAddress:any= async (address: string) => {
+    const onCreatedWalletAddress: any = async (
+        address: string,
+        eoaAddress: string,
+    ) => {
         //eoa address
 
         const res = await api.account.update({
             email,
             wallet_address: address,
+            key: eoaAddress,
         });
         if (res) {
-            // todo, this is for guardian, to be removed
+            // todo, this is for guardian, to be removed. removed
+            // await setLocalStorage("email", email);
 
-            await setLocalStorage("email", email);
+            // get latest wallet address
+            await getWalletAddress();
+
             setStep(2);
         }
     };
