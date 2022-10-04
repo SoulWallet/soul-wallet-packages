@@ -52,7 +52,7 @@ export function RecoverWallet() {
             request_id: requestId,
         });
         if (res.code === 200) {
-            // replace old key
+            await setLocalStorage("authorization", res.data.jwtToken);
             await replaceAddress();
             await setLocalStorage("recovering", true);
             checkRecoverStatus();
@@ -77,8 +77,6 @@ export function RecoverWallet() {
             const res = await api.guardian.records({
                 new_key: account,
             });
-
-            console.log("recover status", res.data);
 
             const require = res.data.requirements;
             setProgress(
@@ -157,16 +155,16 @@ export function RecoverWallet() {
                         <div className="page-title mb-4">Recovering</div>
                         <div className="page-desc">
                             <div>
-                                Your wallet will be recovered on this device
-                                once one of your guardians sign the transaction
-                                on our website.
+                                You can recover your wallet once more than 50%
+                                of your guardians have signed the transaction in
+                                the Security Center.
                             </div>
                             <div className="flex items-center justify-center gap-6 mt-4 ">
                                 <div
                                     className="radial-progress bg-primary text-primary-content border-4 border-primary"
                                     style={progressStyle}
                                 >
-                                    {progress}%
+                                    {new BN(progress || 0).integerValue()}%
                                 </div>
                             </div>
                             <div className="divider mt-6">Guardian Address</div>
@@ -204,7 +202,7 @@ export function RecoverWallet() {
                         </div>
 
                         <div className="fixed bottom-8 left-6 right-6">
-                            {progress === 100 ? (
+                            {progress && progress > 50 ? (
                                 <Button
                                     loading={recoveringWallet}
                                     classNames="btn btn-blue w-full"

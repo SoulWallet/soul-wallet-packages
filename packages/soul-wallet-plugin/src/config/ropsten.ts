@@ -23,6 +23,7 @@ export default {
     feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,
     chainId: 3,
+    scanUrl: "https://ropsten.etherscan.io",
     contracts: {
         entryPoint: "0xbAecF6408a14C2bbBF62c87C554689E0FFC24C34",
         weth: "0xec2a384Fa762C96140c817079768a1cfd0e908EA",

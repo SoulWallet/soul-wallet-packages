@@ -109,6 +109,7 @@ export class Utils {
                         if (receipt) {
                             if (receipt.status === true) {
                                 console.log(`tx:${ret.txHash} has been confirmed`);
+                                return ret.txHash;
                                 break;
                             } else {
                                 throw new Error('transaction failed');

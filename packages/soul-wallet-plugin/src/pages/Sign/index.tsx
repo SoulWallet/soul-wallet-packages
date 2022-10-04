@@ -1,6 +1,6 @@
-import React from "react";
-import SendTransaction from "@src/components/SendTransaction";
+// import React from "react";
+// import SignTransaction from "@src/components/SignTransaction";
 
 export default function Sign() {
-    return <SendTransaction />;
+    // return <SignTransaction />;
 }

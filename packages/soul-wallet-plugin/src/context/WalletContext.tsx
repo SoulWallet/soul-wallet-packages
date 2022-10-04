@@ -1,13 +1,21 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, {
+    createContext,
+    useState,
+    useEffect,
+    useRef,
+    createRef,
+} from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
 import api from "@src/lib/api";
 import { Utils } from "@src/Utils";
+import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
 import EntryPointABI from "../contract/abi/EntryPoint.json";
 import browser from "webextension-polyfill";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -27,6 +35,7 @@ interface IWalletContext {
     activateWallet: () => Promise<void>;
     getAccount: () => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
+    removeGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string) => Promise<object>;
     recoverWallet: (newOwner: string, signatures: string[]) => Promise<void>;
     deleteWallet: () => Promise<void>;
@@ -51,6 +60,7 @@ export const WalletContext = createContext<IWalletContext>({
         return "";
     },
     addGuardian: async () => {},
+    removeGuardian: async () => {},
     getRecoverId: async () => {
         return {};
     },
@@ -69,9 +79,11 @@ export const WalletContext = createContext<IWalletContext>({
 });
 
 export const WalletContextProvider = ({ children }: any) => {
+    const [activeOperation, setActiveOperation] = useState<any>({});
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
+    const signModal = createRef<any>();
 
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
@@ -102,7 +114,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getWalletAddress = async () => {
-        console.log('before get', account)
+        console.log("before get", account);
         const res: any = await api.account.getWalletAddress({
             key: account,
         });
@@ -115,7 +127,13 @@ export const WalletContextProvider = ({ children }: any) => {
         setWalletType(contractCode !== "0x" ? "contract" : "eoa");
     };
 
-    const executeOperation = async (operation: any) => {
+    const executeOperation = async (operation: any, actionName?: string) => {
+        try {
+            await signModal.current.show(operation, actionName);
+        } catch (err) {
+            throw Error("User rejected");
+        }
+
         const requestId = operation.getRequestId(
             config.contracts.entryPoint,
             config.chainId,
@@ -136,19 +154,36 @@ export const WalletContextProvider = ({ children }: any) => {
                 .call({
                     from: WalletLib.EIP4337.Defines.AddressZero,
                 });
+
+            // IMPORTANT TODO, catch errors
             console.log(`recoverOp simulateValidation result:`, result);
 
-            await Utils.sendOPWait(
+            const txHash = await Utils.sendOPWait(
                 web3,
                 operation,
                 config.contracts.entryPoint,
                 config.chainId,
             );
 
+            console.log("send op wait res", txHash);
+
+            // save to activity history
+            await saveActivityHistory({
+                actionName,
+                txHash: txHash,
+            });
+
             browser.runtime.sendMessage({
                 type: "notify",
             });
+            return txHash;
         }
+    };
+
+    const saveActivityHistory = async (history: any) => {
+        let prev = await getLocalStorage("activityHistory") || [];
+        prev.unshift(history);
+        await setLocalStorage("activityHistory", prev);
     };
 
     const deleteWallet = async () => {
@@ -160,6 +195,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const activateWallet = async () => {
+        const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.entryPoint,
@@ -171,7 +207,7 @@ export const WalletContextProvider = ({ children }: any) => {
             config.defaultSalt,
         );
 
-        await executeOperation(activateOp);
+        await executeOperation(activateOp, actionName);
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
@@ -189,8 +225,6 @@ export const WalletContextProvider = ({ children }: any) => {
                 walletAddress,
                 web3 as any,
             );
-
-        console.log("after sign pack", signPack);
 
         recoveryOp.signature = signPack;
 
@@ -213,6 +247,7 @@ export const WalletContextProvider = ({ children }: any) => {
         });
     };
     const addGuardian = async (guardianAddress: string) => {
+        const actionName = "Add Guardian";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
@@ -232,7 +267,33 @@ export const WalletContextProvider = ({ children }: any) => {
         if (!addGuardianOp) {
             throw new Error("addGuardianOp is null");
         }
-        await executeOperation(addGuardianOp);
+
+        await executeOperation(addGuardianOp, actionName);
+    };
+
+    const removeGuardian = async (guardianAddress: string) => {
+        const actionName = "Remove Guardian";
+        const currentFee = (await getGasPrice()) * config.feeMultiplier;
+        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+            walletAddress,
+            web3,
+        );
+        const removeGuardianOp =
+            await WalletLib.EIP4337.Guaridian.revokeGuardianRequest(
+                web3 as any,
+                walletAddress,
+                nonce,
+                guardianAddress,
+                config.contracts.entryPoint,
+                config.contracts.paymaster,
+                currentFee,
+                config.defaultTip,
+            );
+        if (!removeGuardianOp) {
+            throw new Error("removeGuardianOp is null");
+        }
+
+        await executeOperation(removeGuardianOp, actionName);
     };
 
     const getRecoverId = async (newOwner: string) => {
@@ -262,6 +323,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const sendEth = async (to: string, amount: string) => {
+        const actionName = "Send ETH";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
@@ -280,7 +342,7 @@ export const WalletContextProvider = ({ children }: any) => {
             amountInWei,
         );
 
-        await executeOperation(op);
+        await executeOperation(op, actionName);
     };
 
     const sendErc20 = async (
@@ -288,6 +350,7 @@ export const WalletContextProvider = ({ children }: any) => {
         to: string,
         amount: string,
     ) => {
+        const actionName = "Send Assets";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
@@ -306,7 +369,8 @@ export const WalletContextProvider = ({ children }: any) => {
             to,
             amountInWei,
         );
-        await executeOperation(op);
+
+        await executeOperation(op, actionName);
     };
 
     useEffect(() => {
@@ -339,6 +403,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 getAccount,
                 recoverWallet,
                 addGuardian,
+                removeGuardian,
                 getWalletType,
                 getEthBalance,
                 generateWalletAddress,
@@ -351,6 +416,7 @@ export const WalletContextProvider = ({ children }: any) => {
             }}
         >
             {children}
+            <SignTransaction ref={signModal} />
         </WalletContext.Provider>
     );
 };

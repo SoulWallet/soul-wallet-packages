@@ -3,10 +3,10 @@ import Button from "../Button";
 import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useErc20Contract from "@src/contract/useErc20Contract";
-import IconETH from "@src/assets/tokens/eth.svg";
-
+// import IconETH from "@src/assets/tokens/eth.svg";
 import { Link } from "react-router-dom";
 import { Input } from "../Input";
+import { toast } from "material-react-toastify";
 
 interface ErrorProps {
     receiverAddress: string;
@@ -41,32 +41,49 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     const [balance, setBalance] = useState<string>("");
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
-    const { sendErc20, sendEth, getEthBalance } = useWalletContext();
+    const { sendErc20, sendEth, getEthBalance, web3 } = useWalletContext();
     const erc20Contract = useErc20Contract();
 
     const tokenInfo = config.assetsList.filter(
         (item) => item.address === tokenAddress,
     )[0];
 
-    const doSend = async () => {
-        setSending(true);
-        if (tokenAddress === config.zeroAddress) {
-            await sendEth(receiverAddress, amount);
-        } else {
-            await sendErc20(tokenAddress, receiverAddress, amount);
+    const confirmAddress = () => {
+        if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
+            toast.error("Address not valid");
+            return;
         }
-        setSending(false);
-        setStep(2);
+        setStep(1);
+    };
+
+    const doSend = async () => {
+        if (!amount) {
+            toast.error("Amount not valid");
+            return;
+        }
+        if (amount > balance) {
+            toast.error("Balance not enough");
+            return;
+        }
+        setSending(true);
+        try {
+            if (tokenAddress === config.zeroAddress) {
+                await sendEth(receiverAddress, amount);
+            } else {
+                await sendErc20(tokenAddress, receiverAddress, amount);
+            }
+            setStep(2);
+        } finally {
+            setSending(false);
+        }
     };
 
     const getBalance = async () => {
         let res = "";
         if (tokenAddress === config.zeroAddress) {
             res = await getEthBalance();
-            console.log("b1", res);
         } else {
             res = await erc20Contract.balanceOf(tokenAddress);
-            console.log("b2", res);
         }
         setBalance(res);
     };
@@ -168,7 +185,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
             <div className="px-6 pb-12">
                 {step === 0 && (
-                    <Button classNames="btn-blue" onClick={() => setStep(1)}>
+                    <Button classNames="btn-blue" onClick={confirmAddress}>
                         Next
                     </Button>
                 )}

@@ -24,6 +24,7 @@ export default function AccountInfo({ account, action }: IProps) {
         walletType,
         getWalletType,
         activateWallet,
+        removeGuardian,
     } = useWalletContext();
 
     const doCopy = () => {
@@ -33,15 +34,20 @@ export default function AccountInfo({ account, action }: IProps) {
 
     const doActivate = async () => {
         setLoading(true);
-        await activateWallet();
-        setLoading(false);
-        getWalletType();
-        toast.success("Account activated");
+        try {
+            await activateWallet();
+            getWalletType();
+            toast.success("Account activated");
+        } catch (err) {
+            console.log("activate error", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const doRemoveGuardian = async () => {
         setLoading(true);
-
+        await removeGuardian(account);
         const res: any = await api.guardian.remove({
             wallet_address: walletAddress,
             guardian: account,
