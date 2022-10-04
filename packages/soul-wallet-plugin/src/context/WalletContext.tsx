@@ -197,6 +197,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const activateWallet = async () => {
         const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
+        console.log('feee', currentFee)
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.entryPoint,
             config.contracts.paymaster,

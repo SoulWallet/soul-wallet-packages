@@ -74,10 +74,12 @@ export default function Activities() {
                             )}
                         <div className="flex flex-col">
                             <div>{item.actionName}</div>
-                            <div className="flex flex-col justify-between opacity-50 text-black">
-                                {item.txHash.slice(0, 4)}...
-                                {item.txHash.slice(-4)}
-                            </div>
+                            {item.txHash && (
+                                <div className="flex flex-col justify-between opacity-50 text-black">
+                                    {item.txHash.slice(0, 4)}...
+                                    {item.txHash.slice(-4)}
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* <div>{item.amount}</div> */}

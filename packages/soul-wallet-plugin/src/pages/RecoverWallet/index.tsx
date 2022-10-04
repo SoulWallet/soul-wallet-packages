@@ -32,7 +32,6 @@ export function RecoverWallet() {
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
     const [recoveringWallet, setRecoveringWallet] = useState(false);
     const [guardianNameMapping, setGuardianNameMapping] = useState<any>({});
-    const [recoveryRecords, setRecoveryRecords] = useState<any[]>([]);
 
     const onCreatedEoaAddress = async (address: string | null) => {
         setNewOwnerAddress(address);
@@ -55,6 +54,9 @@ export function RecoverWallet() {
             await setLocalStorage("authorization", res.data.jwtToken);
             await replaceAddress();
             await setLocalStorage("recovering", true);
+
+            // TODO, maybe should save sessionStorage.pw as well
+            
             checkRecoverStatus();
             setStep(2);
         }
@@ -79,6 +81,7 @@ export function RecoverWallet() {
             });
 
             const require = res.data.requirements;
+
             setProgress(
                 new BN(require.signedNum)
                     .div(require.total)
@@ -91,10 +94,10 @@ export function RecoverWallet() {
     };
 
     const doRecover = async () => {
-        console.log();
-        const signatures = detail.recoveryRecords.recovery_records.map(
-            (item: any) => item.signature,
-        );
+        const signatures = detail.recoveryRecords.recovery_records
+            .filter((item: any) => item.signature)
+            .map((item: any) => item.signature);
+
         setRecoveringWallet(true);
         await recoverWallet(account, signatures);
 
@@ -164,7 +167,10 @@ export function RecoverWallet() {
                                     className="radial-progress bg-primary text-primary-content border-4 border-primary"
                                     style={progressStyle}
                                 >
-                                    {new BN(progress || 0).integerValue()}%
+                                    {new BN(progress || "0")
+                                        .integerValue()
+                                        .toString()}
+                                    %
                                 </div>
                             </div>
                             <div className="divider mt-6">Guardian Address</div>
