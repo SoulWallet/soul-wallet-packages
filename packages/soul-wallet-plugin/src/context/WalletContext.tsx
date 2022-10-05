@@ -29,6 +29,7 @@ interface IWalletContext {
     walletType: string;
     walletAddress: string;
     getWalletAddress: () => Promise<void>;
+    getWalletAddressByEmail: (email: string) => Promise<string>;
     getWalletType: () => Promise<void>;
     getEthBalance: () => Promise<string>;
     generateWalletAddress: (val: string) => string;
@@ -37,7 +38,7 @@ interface IWalletContext {
     getAccount: () => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
     removeGuardian: (guardianAddress: string) => Promise<void>;
-    getRecoverId: (newOwner: string) => Promise<object>;
+    getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
     recoverWallet: (newOwner: string, signatures: string[]) => Promise<void>;
     deleteWallet: () => Promise<void>;
     sendErc20: (
@@ -55,6 +56,7 @@ export const WalletContext = createContext<IWalletContext>({
     walletType: "",
     walletAddress: "",
     getWalletAddress: async () => {},
+    getWalletAddressByEmail: async () => {},
     getWalletType: async () => {},
     getAccount: async () => {},
     getEthBalance: async () => {
@@ -117,8 +119,15 @@ export const WalletContextProvider = ({ children }: any) => {
         const res: any = await api.account.getWalletAddress({
             key: account,
         });
-        console.log("get wallet address", res);
         setWalletAddress(res.data.wallet_address);
+    };
+
+    const getWalletAddressByEmail = async (email: string) => {
+        const res: any = await api.account.getWalletAddress({
+            email,
+        });
+        console.log("get wallet address", res);
+        return res.data.wallet_address;
     };
 
     const getWalletType = async () => {
@@ -217,7 +226,10 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
-        const { requestId, recoveryOp } = await getRecoverId(newOwner);
+        const { requestId, recoveryOp } = await getRecoverId(
+            newOwner,
+            walletAddress,
+        );
 
         const entryPointContract = new web3.eth.Contract(
             EntryPointABI,
@@ -302,7 +314,7 @@ export const WalletContextProvider = ({ children }: any) => {
         await executeOperation(removeGuardianOp, actionName);
     };
 
-    const getRecoverId = async (newOwner: string) => {
+    const getRecoverId = async (newOwner: string, walletAddress: string) => {
         let nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
@@ -405,6 +417,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 walletType,
                 walletAddress,
                 getWalletAddress,
+                getWalletAddressByEmail,
                 getRecoverId,
                 getAccount,
                 recoverWallet,

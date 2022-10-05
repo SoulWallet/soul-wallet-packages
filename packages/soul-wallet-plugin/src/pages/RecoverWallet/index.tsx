@@ -21,6 +21,7 @@ export function RecoverWallet() {
         account,
         replaceAddress,
         getRecoverId,
+        getWalletAddressByEmail,
         recoverWallet,
         deleteWallet,
     } = useWalletContext();
@@ -31,7 +32,6 @@ export function RecoverWallet() {
     const [detail, setDetail] = useState<any>({});
     const [newOwnerAddress, setNewOwnerAddress] = useState<string | null>("");
     const [recoveringWallet, setRecoveringWallet] = useState(false);
-    const [guardianNameMapping, setGuardianNameMapping] = useState<any>({});
 
     const onCreatedEoaAddress = async (address: string | null) => {
         setNewOwnerAddress(address);
@@ -42,7 +42,11 @@ export function RecoverWallet() {
     const onReceiveCode = async (email: string, code: string) => {
         const new_key =
             newOwnerAddress || (await getLocalStorage("stagingAccount"));
-        const { requestId }: any = await getRecoverId(new_key);
+
+        // get wallet address by email
+        const walletAddress = await getWalletAddressByEmail(email);
+
+        const { requestId }: any = await getRecoverId(new_key, walletAddress);
 
         const res: any = await api.account.recover({
             email,
@@ -109,14 +113,8 @@ export function RecoverWallet() {
         navigate("/wallet");
     };
 
-    const getGuardianNameMapping = async () => {
-        const res = await getLocalStorage("guardianNameMapping");
-        setGuardianNameMapping(res);
-    };
-
     useEffect(() => {
         checkRecoverStatus();
-        getGuardianNameMapping();
     }, []);
 
     const progressStyle = {
