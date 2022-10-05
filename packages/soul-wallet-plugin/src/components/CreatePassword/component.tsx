@@ -108,6 +108,7 @@ export function CreatePassword({
                     }
                     error={errors.confirmPassword}
                     value={confirmPassword}
+                    onEnter={doCreate}
                     onChange={(val) => {
                         setConfirmPassword(val);
                         setErrors((prev) => ({

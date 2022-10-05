@@ -93,6 +93,7 @@ export default function AddGuardians() {
                         label="Address"
                         error={errors.address}
                         value={address}
+                        onEnter={doAdd}
                         onChange={(val) => {
                             setAddress(val);
                             setErrors((prev) => ({

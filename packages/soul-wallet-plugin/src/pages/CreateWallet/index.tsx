@@ -10,7 +10,7 @@ import { CreatePassword } from "@src/components/CreatePassword";
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
     const [cachedEmail, setCachedEmail] = useState<string>("");
-    const { getWalletAddress, getAccount } = useWalletContext();
+    const { getAccount } = useWalletContext();
 
     const [email, setEmail] = useState<string>("");
 
@@ -39,11 +39,8 @@ export function CreateWallet() {
             key: eoaAddress,
         });
         if (res) {
-            // todo, this is for guardian, to be removed. removed
-            // await setLocalStorage("email", email);
-
             // get latest wallet address
-            await getAccount()
+            await getAccount();
 
             setStep(2);
         }

@@ -9,7 +9,8 @@ interface InputProps {
     verified?: boolean;
     value: string;
     error: string;
-    ExtraButton?: React.ReactNode,
+    ExtraButton?: React.ReactNode;
+    onEnter?: (e: any) => void;
     onChange: (value: string) => void;
 }
 
@@ -21,8 +22,16 @@ export function Input({
     verified,
     label,
     ExtraButton,
+    onEnter,
     onChange,
 }: InputProps) {
+    const onKeyDown = (e: any) => {
+        const { keyCode } = e;
+        if (keyCode === 13 && onEnter) {
+            onEnter();
+        }
+    };
+
     return (
         <div>
             {label && (
@@ -38,6 +47,7 @@ export function Input({
                     onChange={(e) => {
                         onChange(e.target.value);
                     }}
+                    onKeyDown={onKeyDown}
                     placeholder={placeholder}
                     className={cn("input w-full", error && "input-error")}
                 />

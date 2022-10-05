@@ -93,7 +93,7 @@ export function SendEmail({
             return;
         }
         await setLocalStorage("cachedEmail", email);
-        await setLocalStorage('cachedRoute', source);
+        await setLocalStorage("cachedRoute", source);
         setEmailSending(true);
         const res: any = await api.account.verifyEmail({
             email,
@@ -124,6 +124,7 @@ export function SendEmail({
                         setEmail(val);
                         setErrors((prev) => ({ ...prev, email: "" }));
                     }}
+                    onEnter={doSend}
                     error={errors.email}
                 />
             </div>
@@ -137,6 +138,7 @@ export function SendEmail({
                                 setVerifyCode(val);
                                 setErrors((prev) => ({ ...prev, code: "" }));
                             }}
+                            onEnter={doVerify}
                             error={errors.code}
                             verified={verifyCode.length === 6}
                             ExtraButton={
