@@ -56,7 +56,7 @@ export const WalletContext = createContext<IWalletContext>({
     walletType: "",
     walletAddress: "",
     getWalletAddress: async () => {},
-    getWalletAddressByEmail: async () => {},
+    getWalletAddressByEmail: async () => {return ''},
     getWalletType: async () => {},
     getAccount: async () => {},
     getEthBalance: async () => {
