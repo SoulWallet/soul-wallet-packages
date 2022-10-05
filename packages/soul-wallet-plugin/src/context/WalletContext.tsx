@@ -180,7 +180,7 @@ export const WalletContextProvider = ({ children }: any) => {
             browser.runtime.sendMessage({
                 type: "notify",
             });
-            
+
             return txHash;
         }
     };
@@ -197,6 +197,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const replaceAddress = async () => {
         await keyStore.replaceAddress();
+        await getAccount();
     };
 
     const activateWallet = async () => {

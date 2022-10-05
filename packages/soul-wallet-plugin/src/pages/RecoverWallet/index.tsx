@@ -54,8 +54,7 @@ export function RecoverWallet() {
             await replaceAddress();
             await setLocalStorage("authorization", res.data.jwtToken);
             await setLocalStorage("recovering", true);
-            console.log('authen is', await getLocalStorage('authorization'))
-            await checkRecoverStatus();
+            await checkRecoverStatus(new_key);
             setStep(2);
         }
     };
@@ -66,17 +65,17 @@ export function RecoverWallet() {
         navigate("/welcome");
     };
 
-    const checkRecoverStatus = async () => {
+    const checkRecoverStatus = async (newKey?: string) => {
         const _recovering = await getLocalStorage("recovering");
         const _cachedEmail = await getLocalStorage("cachedEmail");
         if (_cachedEmail) {
             setCachedEmail(_cachedEmail);
             setStep(1);
         } else if (_recovering) {
-            console.log('check status', await getLocalStorage('authorization'))
             setStep(2);
+            console.log("check account", account);
             const res = await api.guardian.records({
-                new_key: account,
+                new_key: newKey || account,
             });
 
             const require = res.data.requirements;
@@ -222,7 +221,6 @@ export function RecoverWallet() {
                                     </a>
                                 </a>
                             )}
-
                             {/* <a onClick={doDeleteWallet}>
                                 <a className="btn mt-4 w-full">Delete Wallet</a>
                             </a> */}

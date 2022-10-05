@@ -46,4 +46,4 @@ Import package like what you did before, take `soul-wallet-lib` for example:
 
 ## TODO
 [] chrome.storage.session requires chrome version >= 102, add polyfill.
-[] get-wallet-address
+[] recover wallet address again and again

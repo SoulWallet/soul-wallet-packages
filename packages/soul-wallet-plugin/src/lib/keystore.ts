@@ -91,8 +91,10 @@ export default class KeyStore {
     public async replaceAddress(): Promise<void> {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
+        const guardianNameMapping = await getLocalStorage('guardianNameMapping')
         await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
+        await setLocalStorage("guardianNameMapping", guardianNameMapping);
         await setSessionStorage("pw", stagingPw);
     }
 
