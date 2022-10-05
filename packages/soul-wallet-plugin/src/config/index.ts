@@ -3,7 +3,7 @@ import envConf from "./goerli";
 
 export default {
     walletName: "Soul Wallet",
-    safeCenterURL: "https://google.com",
+    safeCenterURL: "https://soul-wallet-www.vercel.app/",
     backendURL: "https://securecenter-poc.soulwallets.me",
     zeroAddress: "0x0000000000000000000000000000000000000000",
     ...envConf,

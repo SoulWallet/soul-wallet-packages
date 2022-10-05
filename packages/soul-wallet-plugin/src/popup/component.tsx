@@ -10,10 +10,10 @@ import "material-react-toastify/dist/ReactToastify.css";
 import { CreateWallet } from "@src/pages/CreateWallet";
 import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
+import { getLocalStorage } from "@src/lib/tools";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
 import Send from "@src/pages/Send";
-// import Sign from "@src/pages/Sign";
 
 const keyStore = KeyStore.getInstance();
 
@@ -23,7 +23,9 @@ export function Popup() {
 
     const checkUserState = async () => {
         const sessionPw = await keyStore.getPassword();
-        if (sessionPw) {
+        const recovering = await getLocalStorage("recovering");
+
+        if (sessionPw && !recovering) {
             await keyStore.unlock(sessionPw);
             setAccount(await keyStore.getAddress());
         }

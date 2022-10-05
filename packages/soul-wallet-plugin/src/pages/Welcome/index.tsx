@@ -31,6 +31,7 @@ export default function Welcome() {
     const determineDefaultRoute = async () => {
         const recovering = await getLocalStorage("recovering");
         const cachedRoute = await getLocalStorage("cachedRoute");
+
         if (recovering) {
             navigate("/recover-wallet");
         } else if (cachedRoute) {
@@ -44,6 +45,7 @@ export default function Welcome() {
     };
 
     useEffect(() => {
+        console.log("deter");
         determineDefaultRoute();
     }, []);
 

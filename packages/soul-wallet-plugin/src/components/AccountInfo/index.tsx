@@ -39,6 +39,7 @@ export default function AccountInfo({ account, action }: IProps) {
             getWalletType();
             toast.success("Account activated");
         } catch (err) {
+            toast.error("Failed to activate account");
             console.log("activate error", err);
         } finally {
             setLoading(false);
@@ -62,9 +63,19 @@ export default function AccountInfo({ account, action }: IProps) {
 
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
-            <AddressIcon width={72} address={account} />
-            <div className="text-lg mt-1 mb-2">Soul Wallet</div>
-            {account && (
+            {account ? (
+                <AddressIcon width={72} address={account} />
+            ) : (
+                <div className="w-[72px] h-[72px] block bg-white" />
+            )}
+
+            {action === "remove" ? (
+                <div className="text-lg mt-1 mb-2">Remove Guardian</div>
+            ) : (
+                <div className="text-lg mt-1 mb-2">Soul Wallet</div>
+            )}
+
+            {account ? (
                 <div
                     className="gap-2 flex items-center cursor-pointer tooltip"
                     data-tip={copied ? "Copied" : "Click to copy"}
@@ -76,7 +87,7 @@ export default function AccountInfo({ account, action }: IProps) {
                         {account.slice(0, 4)}...{account.slice(-4)}
                     </span>
                 </div>
-            )}
+            ) : <div className="h-6"></div>}
 
             {action === "activate" && walletType === "eoa" && (
                 <Button

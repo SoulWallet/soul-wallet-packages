@@ -51,13 +51,11 @@ export function RecoverWallet() {
             request_id: requestId,
         });
         if (res.code === 200) {
-            await setLocalStorage("authorization", res.data.jwtToken);
             await replaceAddress();
+            await setLocalStorage("authorization", res.data.jwtToken);
             await setLocalStorage("recovering", true);
-
-            // TODO, maybe should save sessionStorage.pw as well
-            
-            checkRecoverStatus();
+            console.log('authen is', await getLocalStorage('authorization'))
+            await checkRecoverStatus();
             setStep(2);
         }
     };
@@ -75,6 +73,7 @@ export function RecoverWallet() {
             setCachedEmail(_cachedEmail);
             setStep(1);
         } else if (_recovering) {
+            console.log('check status', await getLocalStorage('authorization'))
             setStep(2);
             const res = await api.guardian.records({
                 new_key: account,
@@ -211,7 +210,7 @@ export function RecoverWallet() {
                             {progress && progress > 50 ? (
                                 <Button
                                     loading={recoveringWallet}
-                                    classNames="btn btn-blue w-full"
+                                    classNames="btn btn-success text-white font-bold w-full"
                                     onClick={doRecover}
                                 >
                                     Recover
@@ -219,7 +218,7 @@ export function RecoverWallet() {
                             ) : (
                                 <a href={config.safeCenterURL} target="_blank">
                                     <a className="btn btn-blue w-full">
-                                        Go to website
+                                        Secure Center
                                     </a>
                                 </a>
                             )}

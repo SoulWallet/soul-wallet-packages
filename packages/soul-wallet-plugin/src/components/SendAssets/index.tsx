@@ -111,9 +111,9 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
     const InfoItem = ({ title, value }: InfoItemProps) => {
         return (
-            <div className="flex justify-between gap-4">
-                <div className="text-sm opacity-80">{title}</div>
-                <div className="text-base opacity-60 break-all max-w-xs">
+            <div className="flex w-full gap-3">
+                <div className="text-sm opacity-80 w-20 shrink-0">{title}</div>
+                <div className="text-base opacity-60 break-all max-w-xs text-left">
                     {value}
                 </div>
             </div>

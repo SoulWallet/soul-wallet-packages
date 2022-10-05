@@ -80,7 +80,7 @@ export default class KeyStore {
             } else {
                 await setLocalStorage("stagingAccount", account.address);
                 await setLocalStorage("stagingKeystore", KeystoreV3);
-                await setSessionStorage("stagingPw", password);
+                await setLocalStorage("stagingPw", password);
             }
             return account.address;
         } catch (error) {
@@ -93,13 +93,7 @@ export default class KeyStore {
         const stagingPw = await getLocalStorage("stagingPw");
         await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
-        await setLocalStorage("pw", stagingPw);
-
-        // // TODO, remove all localstorage
-        // await removeLocalStorage("stagingAccount");
-        // await removeLocalStorage("stagingKeystore");
-        // await removeLocalStorage("stagingPw");
-        // await removeLocalStorage("guardianNameMapping");
+        await setSessionStorage("pw", stagingPw);
     }
 
     public async unlock(password: string): Promise<string | null> {

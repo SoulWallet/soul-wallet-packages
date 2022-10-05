@@ -16,6 +16,7 @@ import KeyStore from "@src/lib/keystore";
 import EntryPointABI from "../contract/abi/EntryPoint.json";
 import browser from "webextension-polyfill";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { toast } from "material-react-toastify";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -79,7 +80,6 @@ export const WalletContext = createContext<IWalletContext>({
 });
 
 export const WalletContextProvider = ({ children }: any) => {
-    const [activeOperation, setActiveOperation] = useState<any>({});
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
@@ -114,7 +114,6 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getWalletAddress = async () => {
-        console.log("before get", account);
         const res: any = await api.account.getWalletAddress({
             key: account,
         });
@@ -167,6 +166,11 @@ export const WalletContextProvider = ({ children }: any) => {
 
             console.log("send op wait res", txHash);
 
+            if (!txHash) {
+                toast.error("Failed to execute contract");
+                return;
+            }
+
             // save to activity history
             await saveActivityHistory({
                 actionName,
@@ -176,12 +180,13 @@ export const WalletContextProvider = ({ children }: any) => {
             browser.runtime.sendMessage({
                 type: "notify",
             });
+            
             return txHash;
         }
     };
 
     const saveActivityHistory = async (history: any) => {
-        let prev = await getLocalStorage("activityHistory") || [];
+        let prev = (await getLocalStorage("activityHistory")) || [];
         prev.unshift(history);
         await setLocalStorage("activityHistory", prev);
     };
@@ -197,7 +202,6 @@ export const WalletContextProvider = ({ children }: any) => {
     const activateWallet = async () => {
         const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
-        console.log('feee', currentFee)
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.entryPoint,
             config.contracts.paymaster,
