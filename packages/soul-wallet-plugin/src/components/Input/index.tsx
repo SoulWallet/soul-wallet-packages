@@ -10,7 +10,7 @@ interface InputProps {
     value: string;
     error: string;
     ExtraButton?: React.ReactNode;
-    onEnter?: (e: any) => void;
+    onEnter?: () => void;
     onChange: (value: string) => void;
 }
 
