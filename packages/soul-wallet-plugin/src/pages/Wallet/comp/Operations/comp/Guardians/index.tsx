@@ -7,9 +7,8 @@ import AddressIcon from "@src/components/AddressIcon";
 import IconChevronRight from "@src/assets/chevron-right.svg";
 import { getLocalStorage } from "@src/lib/tools";
 
-
 export default function Guardians() {
-    const {walletAddress} = useWalletContext()
+    const { walletAddress } = useWalletContext();
     const [loading, setLoading] = useState<boolean>(false);
     const [guardiansList, setGuardiansList] = useState<[]>([]);
     const [guardianNameMapping, setGuardianNameMapping] = useState<any>({});
@@ -56,7 +55,9 @@ export default function Guardians() {
                             <AddressIcon width={40} address={item} />
 
                             <div>
-                                {guardianNameMapping && <div>{guardianNameMapping[item]}</div>}
+                                {guardianNameMapping && (
+                                    <div>{guardianNameMapping[item]}</div>
+                                )}
                                 <div className="flex flex-col justify-between opacity-50 text-black">
                                     {item.slice(0, 4)}...
                                     {item.slice(-4)}
@@ -73,12 +74,7 @@ export default function Guardians() {
                 className="absolute left-0 right-0 bottom-0 justify-center add-guardian-shadow bg-white py-3 flex gap-2 hover:bg-gray-100"
             >
                 <img src={IconAdd} />
-                <div>
-                    <span className="text-blue font-semibold">
-                        Add guardians
-                    </span>{" "}
-                    to secure
-                </div>
+                <div className="text-blue font-semibold">Add guardians</div>
             </Link>
         </div>
     );
