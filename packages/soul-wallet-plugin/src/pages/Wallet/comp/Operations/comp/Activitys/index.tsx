@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from "react";
-import IconReceive from "@src/assets/icons/receive.svg";
 import IconSend from "@src/assets/icons/send.svg";
+import IconInteraction from "@src/assets/icons/interaction.svg";
+import IconActivate from "@src/assets/icons/activate.svg";
+import IconAdd from "@src/assets/icons/add.svg";
+import IconRemove from "@src/assets/icons/remove.svg";
+// import IconReceive from "@src/assets/icons/receive.svg";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
-//todo, need action icons
-// interface IActivity {
-//     actionType: string;
-//     interactAddress: string;
-//     amount: string;
-// }
-
-// const activityList: IActivity[] = [
-//     {
-//         actionType: "Send",
-//         interactAddress: "0x123123123",
-//         amount: "1 ETH",
-//     },
-//     {
-//         actionType: "Receive",
-//         interactAddress: "0x123123123",
-//         amount: "0.5 ETH",
-//     },
-//     {
-//         actionType: "Receive",
-//         interactAddress: "0x123123123",
-//         amount: "0.2 ETH",
-//     },
-// ];
+const getIconMapping = (actionName: string) => {
+    switch (actionName) {
+        case "Send ETH":
+            return IconSend;
+        case "Send Assets":
+            return IconSend;
+        case "Activate Wallet":
+            return IconActivate;
+        case "Add Guardian":
+            return IconAdd;
+        case "Remove Guardian":
+            return IconRemove;
+        default:
+            return IconInteraction;
+    }
+};
 
 export default function Activities() {
     const [historyList, setHistoryList] = useState<any>([]);
@@ -55,23 +51,10 @@ export default function Activities() {
                     className="flex items-center justify-between py-5 px-3 cursor-pointer text-base hover:bg-gray-100"
                 >
                     <div className="flex items-center gap-2">
-                        {item.actionName === "Send Assets" && (
-                            <img src={IconSend} className="w-10 opacity-50" />
-                        )}
-                        {item.actionName === "Receive Assets" && (
-                            <img
-                                src={IconReceive}
-                                className="w-10 opacity-50"
-                            />
-                        )}
-                        {/** default contract interaction icon */}
-                        {item.actionName !== "Send Assets" &&
-                            item.actionName !== "Receive Assets" && (
-                                <img
-                                    src={IconSend}
-                                    className="w-10 opacity-50"
-                                />
-                            )}
+                        <img
+                            src={getIconMapping(item.actionName)}
+                            className="w-10"
+                        />
                         <div className="flex flex-col">
                             <div>{item.actionName}</div>
                             {item.txHash && (
