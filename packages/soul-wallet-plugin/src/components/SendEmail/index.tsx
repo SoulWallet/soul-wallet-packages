@@ -42,7 +42,7 @@ export function SendEmail({
         let flag = true;
 
         // check email
-        const res = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+        const res = /^[/.a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
             email,
         );
         if (!res) {
