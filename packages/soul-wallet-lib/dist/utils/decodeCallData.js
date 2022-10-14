@@ -19,7 +19,7 @@ exports.DecodeCallData = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 19:14:09
+ * @LastEditTime: 2022-10-14 18:31:39
  */
 const axios_1 = __importDefault(require("axios"));
 const web3_1 = __importDefault(require("web3"));
@@ -170,7 +170,7 @@ class DecodeCallData {
      */
     decode(callData) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (callData.length < 10) {
+            if (!callData || callData.length < 10) {
                 return null;
             }
             callData = callData.toLowerCase();
