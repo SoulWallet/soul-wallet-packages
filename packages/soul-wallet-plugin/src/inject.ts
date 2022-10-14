@@ -1,22 +1,92 @@
 // @ts-nocheck
+// import Web3 from 'web3'
+import config from "./config";
+import ProviderEngine from "web3-provider-engine";
+import CacheSubprovider from "web3-provider-engine/subproviders/cache.js";
+import FixtureSubprovider from "web3-provider-engine/subproviders/fixture.js";
+import FilterSubprovider from "web3-provider-engine/subproviders/filters.js";
+import VmSubprovider from "web3-provider-engine/subproviders/vm.js";
+import HookedWalletSubprovider from "web3-provider-engine/subproviders/hooked-wallet.js";
+import NonceSubprovider from "web3-provider-engine/subproviders/nonce-tracker.js";
+import RpcSubprovider from "web3-provider-engine/subproviders/rpc.js";
 
-// inject global variable to user page
-window.soul = {
-    isSoul: true,
-    sign: () => {
-        window.postMessage({
-            target: "soul",
-            type: "sign",
-            data: {},
-        });
-    },
-};
+var engine = new ProviderEngine();
 
+// static results
+engine.addProvider(
+    new FixtureSubprovider({
+        web3_clientVersion: "ProviderEngine/v0.0.0/javascript",
+        net_listening: true,
+        eth_hashrate: "0x00",
+        eth_mining: false,
+        eth_syncing: true,
+    }),
+);
 
-// const web3 = new Web3('infura')
+// cache layer
+engine.addProvider(new CacheSubprovider());
 
+// filters
+engine.addProvider(new FilterSubprovider());
 
+// pending nonce
+engine.addProvider(new NonceSubprovider());
 
-// const web3 = new Web3(provider);
+// vm
+engine.addProvider(new VmSubprovider());
 
-// contract.methods.addLiquidity().send();
+// id mgmt
+engine.addProvider(
+    new HookedWalletSubprovider({
+        getAccounts: function (cb) {
+            window.postMessage({
+                target: "soul",
+                type: "sign",
+                action: "getAccounts",
+                data: {},
+            });
+
+            window.addEventListener(
+                "message",
+                (msg) => {
+                    if (
+                        msg.data.type === "response" &&
+                        msg.data.action === "getAccounts"
+                    ) {
+                        cb(null, [msg.data.data]);
+                    }
+                },
+                false,
+            );
+        },
+        approveTransaction: function (cb) {
+            console.log("approve");
+        },
+        signTransaction: function (cb) {
+            console.log("sign");
+        },
+    }),
+);
+
+// data source
+engine.addProvider(
+    new RpcSubprovider({
+        rpcUrl: config.provider
+    }),
+);
+
+// log new blocks
+// engine.on("block", function (block) {
+//     console.log("BLOCK CHANGED:", "#" + block.number.toString("hex"));
+// });
+
+// network connectivity error
+engine.on("error", function (err) {
+    // report connectivity errors
+    console.error(err.stack);
+});
+
+// start polling for blocks
+engine.start();
+
+window.soul = engine;

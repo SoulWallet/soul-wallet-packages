@@ -93,6 +93,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getGasPrice = async () => {
+        console.log('network gas price', await web3.eth.getGasPrice())
         return 5 * 10 ** 9;
         // return Number(await web3.eth.getGasPrice());
     };

@@ -62,6 +62,7 @@ export default function Welcome() {
                             value={password}
                             placeholder="Password"
                             type="password"
+                            onEnter={doUnlock}
                             onChange={(val) => {
                                 setPassword(val);
                                 setPasswordError("");

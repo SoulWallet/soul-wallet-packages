@@ -54,5 +54,8 @@ module.exports = {
         alias: {
             "@src": path.resolve(__dirname, "src/"),
         },
+        fallback:{
+            fs: false
+        }
     },
 };

@@ -102,6 +102,8 @@ export function SendEmail({
             setEmailSending(false);
             setEmailSent(true);
             startCountdown();
+        }else{
+            setEmailSending(false);
         }
     };
 

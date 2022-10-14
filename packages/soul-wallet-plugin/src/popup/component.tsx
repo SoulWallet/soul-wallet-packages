@@ -14,6 +14,7 @@ import { getLocalStorage } from "@src/lib/tools";
 import GuardianDetail from "@src/pages/Guardian/detail";
 import GuardianAdd from "@src/pages/Guardian/add";
 import Send from "@src/pages/Send";
+import Sign from "@src/pages/Sign";
 
 const keyStore = KeyStore.getInstance();
 
@@ -50,7 +51,7 @@ export function Popup() {
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/wallet" element={<Wallet />} />
                         <Route path="/send/:tokenAddress" element={<Send />} />
-                        {/* <Route path="/sign" element={<Sign />} /> */}
+                        <Route path="/sign" element={<Sign />} />
                         <Route
                             path="/create-wallet"
                             element={<CreateWallet />}

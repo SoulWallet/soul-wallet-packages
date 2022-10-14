@@ -1,17 +1,21 @@
 import browser from "webextension-polyfill";
 
-chrome.runtime.onMessage.addListener((msg) => {
+browser.runtime.onMessage.addListener(async(msg) => {
     switch (msg.type) {
+        case "response":
+            console.log('response tab id', msg)
+            browser.tabs.sendMessage(Number(msg.tabId), msg);
+            break;
         case "sign":
+            const [tab] = await browser.tabs.query({active: true, currentWindow: true});
             browser.windows.create({
-                url: msg.url,
+                url: `${msg.url}&tabId=${tab.id}`,
                 type: "popup",
                 ...msg.pos,
             });
             break;
         case "notify":
             const notifyId = Math.ceil(Math.random() * 1000).toString();
-            console.log('ready to open', notifyId)
             browser.notifications.create(notifyId, {
                 type: "basic",
                 iconUrl: "../icon-48.png",
@@ -21,8 +25,3 @@ chrome.runtime.onMessage.addListener((msg) => {
             break;
     }
 });
-
-// check if there's transaction in queue
-// setInterval(() => {
-
-// }, 5000);
