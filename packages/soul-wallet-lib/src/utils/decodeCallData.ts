@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 19:14:09
+ * @LastEditTime: 2022-10-14 18:31:39
  */
 import axios from 'axios';
 import { readFileSync } from 'fs';
@@ -160,7 +160,7 @@ export class DecodeCallData {
      */
     public async decode(callData: string): Promise<IDecode | null> {
 
-        if (callData.length < 10) {
+        if (!callData || callData.length < 10) {
             return null;
         }
 
