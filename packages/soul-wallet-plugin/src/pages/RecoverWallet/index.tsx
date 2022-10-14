@@ -133,6 +133,10 @@ export function RecoverWallet() {
                             onCreatedEoaAddress={onCreatedEoaAddress}
                             saveKey={false}
                         />
+                        <div className="text-xs">
+                        Setting a new password will delete the signing key from your current device.<br/><br/>
+You will be able to access the wallet after &gt;50% of your guardians sign their signatures for your recovery request.
+                        </div>
                     </>
                 )}
 

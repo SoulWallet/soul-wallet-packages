@@ -97,7 +97,7 @@ export function CreatePassword({
                     }}
                 />
             </div>
-            <div className="mb-10">
+            <div className="mb-6">
                 <Input
                     type="password"
                     label="Confirm password"
