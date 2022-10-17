@@ -1,5 +1,5 @@
 // @ts-nocheck
-// import Web3 from 'web3'
+import Web3 from 'web3'
 import config from "./config";
 import ProviderEngine from "web3-provider-engine";
 import CacheSubprovider from "web3-provider-engine/subproviders/cache.js";
@@ -10,7 +10,10 @@ import HookedWalletSubprovider from "web3-provider-engine/subproviders/hooked-wa
 import NonceSubprovider from "web3-provider-engine/subproviders/nonce-tracker.js";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc.js";
 
+
 var engine = new ProviderEngine();
+
+window.web3 = new Web3(config.provider)
 
 // static results
 engine.addProvider(
@@ -39,13 +42,13 @@ engine.addProvider(new VmSubprovider());
 engine.addProvider(
     new HookedWalletSubprovider({
         getAccounts: function (cb) {
+            console.log('TODO, add cache here')
             window.postMessage({
                 target: "soul",
                 type: "sign",
                 action: "getAccounts",
                 data: {},
             });
-
             window.addEventListener(
                 "message",
                 (msg) => {
@@ -71,7 +74,7 @@ engine.addProvider(
 // data source
 engine.addProvider(
     new RpcSubprovider({
-        rpcUrl: config.provider
+        rpcUrl: config.provider,
     }),
 );
 
@@ -87,6 +90,11 @@ engine.on("error", function (err) {
 });
 
 // start polling for blocks
-engine.start();
+// engine.start();
 
-window.soul = engine;
+window.soul = {
+    enable: () => {
+        engine.start();
+        window.soul = engine;
+    },
+};
