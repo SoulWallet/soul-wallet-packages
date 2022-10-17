@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 16:05:42
+ * @LastEditTime: 2022-10-17 21:00:51
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -61,7 +61,7 @@ class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddress(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress, salt = 0, create2Factory = address_1.Create2Factory) {
+    static calculateWalletAddress(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress, salt, create2Factory) {
         return EIP4337Lib.calculateWalletAddressByCode(simpleWallet_1.SimpleWalletContract, [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress], salt, create2Factory);
     }
     /**
@@ -75,7 +75,7 @@ class EIP4337Lib {
      * @param salt
      * @param create2Factory
      */
-    static activateWalletOp(entryPointAddress, payMasterAddress, ownerAddress, tokenAddress, maxFeePerGas, maxPriorityFeePerGas, salt = 0, create2Factory = address_1.Create2Factory) {
+    static activateWalletOp(entryPointAddress, payMasterAddress, ownerAddress, tokenAddress, maxFeePerGas, maxPriorityFeePerGas, salt, create2Factory) {
         const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
         const initCodeHash = (0, utils_1.keccak256)(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
@@ -100,7 +100,7 @@ class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddressByCode(initContract, initArgs, salt, create2Factory = address_1.Create2Factory) {
+    static calculateWalletAddressByCode(initContract, initArgs, salt, create2Factory) {
         guard_1.Guard.hex(initContract.bytecode);
         const web3 = web3Helper_1.Web3Helper.new().web3;
         const initCodeWithArgs = new web3.eth.Contract(initContract.ABI).deploy({
@@ -117,7 +117,7 @@ class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns the EIP-4337 wallet address
      */
-    static calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory = address_1.Create2Factory) {
+    static calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory) {
         guard_1.Guard.keccak256(initCodeHash);
         guard_1.Guard.uint(salt);
         guard_1.Guard.address(create2Factory);
@@ -167,8 +167,7 @@ EIP4337Lib.Utils = {
     DecodeCallData: decodeCallData_1.DecodeCallData
 };
 EIP4337Lib.Defines = {
-    AddressZero: address_1.AddressZero,
-    Create2Factory: address_1.Create2Factory
+    AddressZero: address_1.AddressZero
 };
 EIP4337Lib.Guaridian = Guardian_1.Guaridian;
 EIP4337Lib.Tokens = {
