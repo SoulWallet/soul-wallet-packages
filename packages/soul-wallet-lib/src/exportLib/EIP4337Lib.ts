@@ -4,11 +4,11 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 16:05:42
+ * @LastEditTime: 2022-10-17 21:00:51
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
-import { AddressZero, Create2Factory } from "../defines/address";
+import { AddressZero } from "../defines/address";
 import { UserOperation } from "../entity/userOperation";
 import { Guard } from "../utils/guard";
 import { Web3Helper } from "../utils/web3Helper";
@@ -32,8 +32,7 @@ export class EIP4337Lib {
     }
 
     public static Defines = {
-        AddressZero: AddressZero,
-        Create2Factory: Create2Factory
+        AddressZero: AddressZero
     }
 
     public static Guaridian = Guaridian;
@@ -84,8 +83,8 @@ export class EIP4337Lib {
         entryPointAddress: string,
         ownerAddress: string,
         tokenAddress: string, payMasterAddress: string,
-        salt: number = 0,
-        create2Factory = Create2Factory) {
+        salt: number,
+        create2Factory:string) {
         return EIP4337Lib.calculateWalletAddressByCode(
             SimpleWalletContract,
             [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],
@@ -112,8 +111,8 @@ export class EIP4337Lib {
         tokenAddress: string,
         maxFeePerGas: number,
         maxPriorityFeePerGas: number,
-        salt: number = 0,
-        create2Factory = Create2Factory) {
+        salt: number,
+        create2Factory:string) {
         const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
         const initCodeHash = keccak256(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
@@ -143,7 +142,7 @@ export class EIP4337Lib {
         initContract: IContract,
         initArgs: any[] | undefined,
         salt: number,
-        create2Factory = Create2Factory): string {
+        create2Factory:string): string {
 
         Guard.hex(initContract.bytecode);
 
@@ -167,7 +166,7 @@ export class EIP4337Lib {
     private static calculateWalletAddressByCodeHash(
         initCodeHash: string,
         salt: number,
-        create2Factory = Create2Factory): string {
+        create2Factory:string): string {
 
         Guard.keccak256(initCodeHash);
         Guard.uint(salt);
