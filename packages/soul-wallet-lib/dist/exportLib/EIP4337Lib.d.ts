@@ -14,7 +14,6 @@ export declare class EIP4337Lib {
     };
     static Defines: {
         AddressZero: string;
-        Create2Factory: string;
     };
     static Guaridian: typeof Guaridian;
     static Tokens: {
@@ -42,7 +41,7 @@ export declare class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddress(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string, salt?: number, create2Factory?: string): string;
+    static calculateWalletAddress(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string, salt: number, create2Factory: string): string;
     /**
      * get the userOperation for active (first time) the wallet
      * @param entryPointAddress
@@ -54,7 +53,7 @@ export declare class EIP4337Lib {
      * @param salt
      * @param create2Factory
      */
-    static activateWalletOp(entryPointAddress: string, payMasterAddress: string, ownerAddress: string, tokenAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt?: number, create2Factory?: string): UserOperation;
+    static activateWalletOp(entryPointAddress: string, payMasterAddress: string, ownerAddress: string, tokenAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt: number, create2Factory: string): UserOperation;
     /**
      * calculate EIP-4337 wallet address
      * @param initContract the init Contract
@@ -64,7 +63,7 @@ export declare class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddressByCode(initContract: IContract, initArgs: any[] | undefined, salt: number, create2Factory?: string): string;
+    static calculateWalletAddressByCode(initContract: IContract, initArgs: any[] | undefined, salt: number, create2Factory: string): string;
     /**
      * calculate EIP-4337 wallet address
      * @param initCodeHash the init code after keccak256
