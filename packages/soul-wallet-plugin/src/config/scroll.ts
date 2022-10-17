@@ -10,22 +10,22 @@ export const assetsList = [
     {
         icon: IconWETH,
         symbol: "WETH",
-        address: "0x2787015262404f11d7B6920C7eB46e25595e2Bf5",
+        address: "0x",
     },
 ];
 
 export default {
     assetsList,
-    provider: "https://goerli.infura.io/v3/10e7994fd33346e9b339dcde4b20c3c6",
+    provider: "https://scroll.infura.io/v3/10e7994fd33346e9b339dcde4b20c3c6",
     defaultSalt: 0,
     feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,
     chainId: 5,
     scanUrl: "https://goerli.etherscan.io",
     contracts: {
-        entryPoint: "0x516638fcc2De106C325369187b86747fB29EbF32",
-        weth: "0x2787015262404f11d7B6920C7eB46e25595e2Bf5",
-        paymaster: "0x6cfE69b93B91dBfF4d2ea04fFd35dcc06490be4D",
-        create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
+        entryPoint: "0x",
+        weth: "0x",
+        paymaster: "0x",
+        create2Factory: "0xB68a9aA5c19f3024E1010F2864639793e2519cD8",
     },
 };

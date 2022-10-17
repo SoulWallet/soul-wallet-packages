@@ -110,6 +110,7 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.weth,
             config.contracts.paymaster,
             config.defaultSalt,
+            config.contracts.create2Factory,
         );
 
         console.log("generated wallet address", walletAddress);
@@ -221,6 +222,7 @@ export const WalletContextProvider = ({ children }: any) => {
             currentFee,
             config.defaultTip,
             config.defaultSalt,
+            config.contracts.create2Factory,
         );
 
         await executeOperation(activateOp, actionName);
