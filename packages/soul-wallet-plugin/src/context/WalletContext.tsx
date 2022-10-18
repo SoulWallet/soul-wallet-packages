@@ -16,7 +16,6 @@ import KeyStore from "@src/lib/keystore";
 import EntryPointABI from "../contract/abi/EntryPoint.json";
 import browser from "webextension-polyfill";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-import { toast } from "material-react-toastify";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -56,7 +55,9 @@ export const WalletContext = createContext<IWalletContext>({
     walletType: "",
     walletAddress: "",
     getWalletAddress: async () => {},
-    getWalletAddressByEmail: async () => {return ''},
+    getWalletAddressByEmail: async () => {
+        return "";
+    },
     getWalletType: async () => {},
     getAccount: async () => {},
     getEthBalance: async () => {
@@ -93,9 +94,10 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getGasPrice = async () => {
-        console.log('network gas price', await web3.eth.getGasPrice())
-        return 5 * 10 ** 9;
-        // return Number(await web3.eth.getGasPrice());
+        return 1000 * 10 ** 9;
+        // const gas = await web3.eth.getGasPrice();
+        // const gasMultiplied = new BN(gas).times(config.feeMultiplier).integerValue().toNumber();
+        // return Number(gas);
     };
 
     const getAccount = async () => {
@@ -128,7 +130,7 @@ export const WalletContextProvider = ({ children }: any) => {
         const res: any = await api.account.getWalletAddress({
             email,
         });
-        console.log("get wallet address", res);
+        console.log("get wallet address", res, email);
         return res.data.wallet_address;
     };
 
@@ -150,10 +152,8 @@ export const WalletContextProvider = ({ children }: any) => {
         );
 
         const signature = await keyStore.sign(requestId);
-
         if (signature) {
             operation.signWithSignature(account, signature || "");
-
             const entryPointContract = new web3.eth.Contract(
                 EntryPointABI,
                 config.contracts.entryPoint,
@@ -178,8 +178,7 @@ export const WalletContextProvider = ({ children }: any) => {
             console.log("send op wait res", txHash);
 
             if (!txHash) {
-                toast.error("Failed to execute contract");
-                return;
+                throw Error("Failed to execute contract");
             }
 
             // save to activity history
@@ -220,7 +219,8 @@ export const WalletContextProvider = ({ children }: any) => {
             account,
             config.contracts.weth,
             currentFee,
-            config.defaultTip,
+            currentFee,
+            // currentFee,
             config.defaultSalt,
             config.contracts.create2Factory,
         );
@@ -283,7 +283,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 config.contracts.entryPoint,
                 config.contracts.paymaster,
                 currentFee,
-                config.defaultTip,
+                currentFee,
             );
         if (!addGuardianOp) {
             throw new Error("addGuardianOp is null");
@@ -308,7 +308,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 config.contracts.entryPoint,
                 config.contracts.paymaster,
                 currentFee,
-                config.defaultTip,
+                currentFee,
             );
         if (!removeGuardianOp) {
             throw new Error("removeGuardianOp is null");
@@ -328,7 +328,7 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.entryPoint,
             config.contracts.paymaster,
             currentFee,
-            config.defaultTip,
+            currentFee,
             newOwner,
         );
         if (!recoveryOp) {
@@ -358,7 +358,7 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.entryPoint,
             config.contracts.paymaster,
             currentFee,
-            config.defaultTip,
+            currentFee,
             to,
             amountInWei,
         );
@@ -385,7 +385,7 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.entryPoint,
             config.contracts.paymaster,
             currentFee,
-            config.defaultTip,
+            currentFee,
             tokenAddress,
             to,
             amountInWei,

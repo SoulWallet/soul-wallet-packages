@@ -1,5 +1,5 @@
 // todo, chain should be direved from .env
-import envConf from "./goerli";
+import envConf from "./scroll";
 
 export default {
     walletName: "Soul Wallet",

@@ -1,6 +1,8 @@
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconWETH from "@src/assets/tokens/weth.png";
 
+const wethAddress = "0x2787015262404f11d7B6920C7eB46e25595e2Bf5"
+
 export const assetsList = [
     {
         icon: IconETH,
@@ -10,7 +12,7 @@ export const assetsList = [
     {
         icon: IconWETH,
         symbol: "WETH",
-        address: "0x2787015262404f11d7B6920C7eB46e25595e2Bf5",
+        address: wethAddress,
     },
 ];
 
@@ -22,9 +24,10 @@ export default {
     defaultTip: 10 * 10 ** 9,
     chainId: 5,
     scanUrl: "https://goerli.etherscan.io",
+    bundlerUrl: "https://bundler-poc.soulwallets.me",
     contracts: {
         entryPoint: "0x516638fcc2De106C325369187b86747fB29EbF32",
-        weth: "0x2787015262404f11d7B6920C7eB46e25595e2Bf5",
+        weth: wethAddress,
         paymaster: "0x6cfE69b93B91dBfF4d2ea04fFd35dcc06490be4D",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },

@@ -11,6 +11,7 @@
 import fs from 'fs';
 import Web3 from 'web3';
 import axios from 'axios';
+import config from './config';
 import { hexlify, hexZeroPad} from 'ethers/lib/utils'
 import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
 import { Ret_get, Ret_put } from '../entity/bundler';
@@ -36,7 +37,8 @@ export class Utils {
     }
 
     // static bundlerUrl = 'http://127.0.0.1/'; 
-    static bundlerUrl = 'https://bundler-poc.soulwallets.me/'
+    // add /
+    static bundlerUrl = `${config.bundlerUrl}/`;
 
     static async sendOp(op: UserOperation) {
         try {
