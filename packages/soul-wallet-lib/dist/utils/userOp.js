@@ -36,13 +36,12 @@ function packUserOp(op, forSignature = true) {
                 { type: 'uint256', name: 'nonce' },
                 { type: 'bytes', name: 'initCode' },
                 { type: 'bytes', name: 'callData' },
-                { type: 'uint256', name: 'callGas' },
-                { type: 'uint256', name: 'verificationGas' },
+                { type: 'uint256', name: 'callGasLimit' },
+                { type: 'uint256', name: 'verificationGasLimit' },
                 { type: 'uint256', name: 'preVerificationGas' },
                 { type: 'uint256', name: 'maxFeePerGas' },
                 { type: 'uint256', name: 'maxPriorityFeePerGas' },
-                { type: 'address', name: 'paymaster' },
-                { type: 'bytes', name: 'paymasterData' },
+                { type: 'bytes', name: 'paymasterAndData' },
                 { type: 'bytes', name: 'signature' }
             ],
             name: 'userOp',
@@ -58,13 +57,12 @@ function packUserOp(op, forSignature = true) {
         { type: 'uint256', val: op.nonce },
         { type: 'bytes', val: op.initCode },
         { type: 'bytes', val: op.callData },
-        { type: 'uint256', val: op.callGas },
-        { type: 'uint256', val: op.verificationGas },
+        { type: 'uint256', val: op.callGasLimit },
+        { type: 'uint256', val: op.verificationGasLimit },
         { type: 'uint256', val: op.preVerificationGas },
         { type: 'uint256', val: op.maxFeePerGas },
         { type: 'uint256', val: op.maxPriorityFeePerGas },
-        { type: 'address', val: op.paymaster },
-        { type: 'bytes', val: op.paymasterData }
+        { type: 'bytes', val: op.paymasterAndData }
     ];
     if (!forSignature) {
         // for the purpose of calculating gas cost, also hash signature
@@ -214,12 +212,12 @@ function payMasterSignHash(op) {
         op.nonce,
         (0, utils_1.keccak256)(op.initCode),
         (0, utils_1.keccak256)(op.callData),
-        op.callGas,
-        op.verificationGas,
+        op.callGasLimit,
+        op.verificationGasLimit,
         op.preVerificationGas,
         op.maxFeePerGas,
         op.maxPriorityFeePerGas,
-        op.paymaster,
+        op.paymasterAndData.substring(0, 42),
     ]));
 }
 exports.payMasterSignHash = payMasterSignHash;

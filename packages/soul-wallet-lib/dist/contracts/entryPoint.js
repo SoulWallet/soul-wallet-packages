@@ -5,11 +5,6 @@ const ABI = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_create2factory",
-                "type": "address"
-            },
-            {
                 "internalType": "uint256",
                 "name": "_paymasterStake",
                 "type": "uint256"
@@ -45,23 +40,15 @@ const ABI = [
         "type": "error"
     },
     {
-        "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
                 "internalType": "address",
-                "name": "account",
+                "name": "aggregator",
                 "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "withdrawTime",
-                "type": "uint256"
             }
         ],
-        "name": "DepositUnstaked",
-        "type": "event"
+        "name": "SignatureValidationFailed",
+        "type": "error"
     },
     {
         "anonymous": false,
@@ -77,15 +64,78 @@ const ABI = [
                 "internalType": "uint256",
                 "name": "totalDeposit",
                 "type": "uint256"
+            }
+        ],
+        "name": "Deposited",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "unstakeDelaySec",
+                "name": "totalStaked",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "withdrawTime",
                 "type": "uint256"
             }
         ],
-        "name": "Deposited",
+        "name": "StakeLocked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "withdrawTime",
+                "type": "uint256"
+            }
+        ],
+        "name": "StakeUnlocked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "withdrawAddress",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "StakeWithdrawn",
         "type": "event"
     },
     {
@@ -186,7 +236,7 @@ const ABI = [
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "withdrawAmount",
+                "name": "amount",
                 "type": "uint256"
             }
         ],
@@ -196,17 +246,12 @@ const ABI = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
                 "internalType": "uint32",
                 "name": "_unstakeDelaySec",
                 "type": "uint32"
             }
         ],
-        "name": "addStakeTo",
+        "name": "addStake",
         "outputs": [],
         "stateMutability": "payable",
         "type": "function"
@@ -225,19 +270,6 @@ const ABI = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "create2factory",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -268,7 +300,17 @@ const ABI = [
         "outputs": [
             {
                 "internalType": "uint112",
-                "name": "amount",
+                "name": "deposit",
+                "type": "uint112"
+            },
+            {
+                "internalType": "bool",
+                "name": "staked",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint112",
+                "name": "stake",
                 "type": "uint112"
             },
             {
@@ -299,7 +341,17 @@ const ABI = [
                 "components": [
                     {
                         "internalType": "uint112",
-                        "name": "amount",
+                        "name": "deposit",
+                        "type": "uint112"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "staked",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint112",
+                        "name": "stake",
                         "type": "uint112"
                     },
                     {
@@ -313,7 +365,7 @@ const ABI = [
                         "type": "uint64"
                     }
                 ],
-                "internalType": "struct StakeManager.DepositInfo",
+                "internalType": "struct IStakeManager.DepositInfo",
                 "name": "info",
                 "type": "tuple"
             }
@@ -347,12 +399,12 @@ const ABI = [
                     },
                     {
                         "internalType": "uint256",
-                        "name": "callGas",
+                        "name": "callGasLimit",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "verificationGas",
+                        "name": "verificationGasLimit",
                         "type": "uint256"
                     },
                     {
@@ -371,13 +423,8 @@ const ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "address",
-                        "name": "paymaster",
-                        "type": "address"
-                    },
-                    {
                         "internalType": "bytes",
-                        "name": "paymasterData",
+                        "name": "paymasterAndData",
                         "type": "bytes"
                     },
                     {
@@ -408,19 +455,33 @@ const ABI = [
                 "internalType": "bytes",
                 "name": "initCode",
                 "type": "bytes"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_salt",
-                "type": "uint256"
             }
         ],
         "name": "getSenderAddress",
         "outputs": [
             {
                 "internalType": "address",
-                "name": "",
+                "name": "sender",
                 "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            }
+        ],
+        "name": "getSenderStorage",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "senderStorageCells",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -431,59 +492,71 @@ const ABI = [
             {
                 "components": [
                     {
-                        "internalType": "address",
-                        "name": "sender",
+                        "components": [
+                            {
+                                "internalType": "address",
+                                "name": "sender",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "nonce",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "bytes",
+                                "name": "initCode",
+                                "type": "bytes"
+                            },
+                            {
+                                "internalType": "bytes",
+                                "name": "callData",
+                                "type": "bytes"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "callGasLimit",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "verificationGasLimit",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "preVerificationGas",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "maxFeePerGas",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "maxPriorityFeePerGas",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "bytes",
+                                "name": "paymasterAndData",
+                                "type": "bytes"
+                            },
+                            {
+                                "internalType": "bytes",
+                                "name": "signature",
+                                "type": "bytes"
+                            }
+                        ],
+                        "internalType": "struct UserOperation[]",
+                        "name": "userOps",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "contract IAggregator",
+                        "name": "aggregator",
                         "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "nonce",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "initCode",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "callData",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "callGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "verificationGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "preVerificationGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxFeePerGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriorityFeePerGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "paymaster",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "paymasterData",
-                        "type": "bytes"
                     },
                     {
                         "internalType": "bytes",
@@ -491,9 +564,9 @@ const ABI = [
                         "type": "bytes"
                     }
                 ],
-                "internalType": "struct UserOperation",
-                "name": "op",
-                "type": "tuple"
+                "internalType": "struct IEntryPoint.UserOpsPerAggregator[]",
+                "name": "opsPerAggregator",
+                "type": "tuple[]"
             },
             {
                 "internalType": "address payable",
@@ -501,7 +574,7 @@ const ABI = [
                 "type": "address"
             }
         ],
-        "name": "handleOp",
+        "name": "handleAggregatedOps",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -532,12 +605,12 @@ const ABI = [
                     },
                     {
                         "internalType": "uint256",
-                        "name": "callGas",
+                        "name": "callGasLimit",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "verificationGas",
+                        "name": "verificationGasLimit",
                         "type": "uint256"
                     },
                     {
@@ -556,13 +629,8 @@ const ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "address",
-                        "name": "paymaster",
-                        "type": "address"
-                    },
-                    {
                         "internalType": "bytes",
-                        "name": "paymasterData",
+                        "name": "paymasterAndData",
                         "type": "bytes"
                     },
                     {
@@ -589,74 +657,59 @@ const ABI = [
     {
         "inputs": [
             {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "sender",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "nonce",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "initCode",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "callData",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "callGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "verificationGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "preVerificationGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxFeePerGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriorityFeePerGas",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "paymaster",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "paymasterData",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "signature",
-                        "type": "bytes"
-                    }
-                ],
-                "internalType": "struct UserOperation",
-                "name": "op",
-                "type": "tuple"
+                "internalType": "bytes",
+                "name": "callData",
+                "type": "bytes"
             },
             {
                 "components": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "address",
+                                "name": "sender",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "nonce",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "callGasLimit",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "verificationGasLimit",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "preVerificationGas",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "address",
+                                "name": "paymaster",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "maxFeePerGas",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "maxPriorityFeePerGas",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct EntryPoint.MemoryUserOp",
+                        "name": "mUserOp",
+                        "type": "tuple"
+                    },
                     {
                         "internalType": "bytes32",
                         "name": "requestId",
@@ -668,13 +721,8 @@ const ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "enum EntryPoint.PaymentMode",
-                        "name": "paymentMode",
-                        "type": "uint8"
-                    },
-                    {
                         "internalType": "uint256",
-                        "name": "_context",
+                        "name": "contextOffset",
                         "type": "uint256"
                     },
                     {
@@ -693,7 +741,7 @@ const ABI = [
                 "type": "bytes"
             }
         ],
-        "name": "internalHandleOp",
+        "name": "innerHandleOp",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -702,59 +750,6 @@ const ABI = [
             }
         ],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "paymaster",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "stake",
-                "type": "uint256"
-            }
-        ],
-        "name": "isPaymasterStaked",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "requiredStake",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "requiredDelaySec",
-                "type": "uint256"
-            }
-        ],
-        "name": "isStaked",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -796,12 +791,12 @@ const ABI = [
                     },
                     {
                         "internalType": "uint256",
-                        "name": "callGas",
+                        "name": "callGasLimit",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "verificationGas",
+                        "name": "verificationGasLimit",
                         "type": "uint256"
                     },
                     {
@@ -820,13 +815,8 @@ const ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "address",
-                        "name": "paymaster",
-                        "type": "address"
-                    },
-                    {
                         "internalType": "bytes",
-                        "name": "paymasterData",
+                        "name": "paymasterAndData",
                         "type": "bytes"
                     },
                     {
@@ -838,6 +828,11 @@ const ABI = [
                 "internalType": "struct UserOperation",
                 "name": "userOp",
                 "type": "tuple"
+            },
+            {
+                "internalType": "bool",
+                "name": "offChainSigCheck",
+                "type": "bool"
             }
         ],
         "name": "simulateValidation",
@@ -851,8 +846,35 @@ const ABI = [
                 "internalType": "uint256",
                 "name": "prefund",
                 "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "actualAggregator",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "sigForUserOp",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "sigForAggregation",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "offChainSigInfo",
+                "type": "bytes"
             }
         ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "unlockStake",
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -870,8 +892,14 @@ const ABI = [
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "unstakeDeposit",
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "withdrawAddress",
+                "type": "address"
+            }
+        ],
+        "name": "withdrawStake",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

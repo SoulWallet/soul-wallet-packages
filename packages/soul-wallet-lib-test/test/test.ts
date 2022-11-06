@@ -1,426 +1,652 @@
+/*
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: z.cejay@gmail.com
+ * @Date: 2022-11-04 21:46:05
+ * @LastEditors: cejay
+ * @LastEditTime: 2022-11-06 14:57:15
+ */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
 import Web3 from 'web3';
-import { assert } from 'console';
 import fs from 'fs';
 import { Utils } from './Utils';
-import * as dotenv from 'dotenv';
 import { WalletLib } from 'soul-wallet-lib';
-
-dotenv.config({ path: './test/.env' });
+import { AbiItem } from 'web3-utils';
 
 async function main() {
 
-    // #region init variables
-
-    if (!process.env.USER_PRIVATE_KEY)
-        throw new Error('USER_PRIVATE_KEY is not defined');
-    if (!process.env.PAYMASTER_PRIVATE_KEY)
-        throw new Error('PAYMASTER_PRIVATE_KEY is not defined');
-    if (!process.env.PAYMASTER_SIGN_KEY)
-        throw new Error('PAYMASTER_SIGN_KEY is not defined');
-    if (!process.env.BENEFICIARY_ADDR)
-        throw new Error('BENEFICIARY_ADDR is not defined');
-    if (!process.env.HTTP_PROVIDER)
-        throw new Error('HTTP_PROVIDER is not defined');
-    if (!process.env.SPONSER_KEY)
-        throw new Error('SPONSER_KEY is not defined');
-
-    /**
-     * ETH provider url
-     */
-    //const HTTP_PROVIDER = 'https://goerli.optimism.io/';// process.env.HTTP_PROVIDER;
-    const HTTP_PROVIDER = process.env.HTTP_PROVIDER;
-
-    /**
-     * paymaster private key
-     */
-    const PAYMASTER_PRIVATE_KEY = process.env.PAYMASTER_PRIVATE_KEY;
-
-    /**
-     * paymaster sign key
-     */
-    const PAYMASTER_SIGN_KEY = process.env.PAYMASTER_SIGN_KEY;
-
-    /**
-     * beneficiary address
-     */
-    const BENEFICIARY_ADDR = process.env.BENEFICIARY_ADDR;
-
-    /**
-     * user private key
-     */
-    const USER_PRIVATE_KEY = process.env.USER_PRIVATE_KEY;
-
-    /**
-     * SPONSER_KEY
-     */
-    const SPONSER_KEY = process.env.SPONSER_KEY;
-
-
-    /**
-     * web3 instance
-     */
-    const web3 = new Web3(HTTP_PROVIDER);
-
-
-    // get chainId ( use for generate signature、gas price)
-    const chainId = await web3.eth.net.getId();
-    console.log(`chainId: ${chainId}`);
-
-    // #endregion
-
-    // #region import accounts from private key  
-
-    const account_sponser = web3.eth.accounts.privateKeyToAccount(SPONSER_KEY);
-    const balance = parseFloat(web3.utils.fromWei(await web3.eth.getBalance(account_sponser.address), 'ether'));
-    if (balance < 0.1 /* 0.1 ETH */) {
-        throw new Error('balance is not enough');
-    }
-    console.log(`account:${account_sponser.address},balance: ${balance} ETH`);
-
-    // #endregion
-
-
-    // #region EntryPoint
-
     /*
-    https://ropsten.etherscan.io/address/0xbaecf6408a14c2bbbf62c87c554689e0ffc24c34#code
-    https://goerli-optimism.etherscan.io/address/0xbaecf6408a14c2bbbf62c87c554689e0ffc24c34#code
+     local env:
+
+     1 install: npm install ganache --global
+     2 run:     ganache
      */
-    let entryPointAddress = '0xbAecF6408a14C2bbBF62c87C554689E0FFC24C34';
-
-    const _entryPointABI = JSON.parse(fs.readFileSync(`${__dirname}/ABI/EntryPoint.json`, 'utf8'));
-    const entryPointContract = new web3.eth.Contract(_entryPointABI, entryPointAddress);
-
-    // #endregion
+    const web3 = new Web3('http://127.0.0.1:8545');
 
 
-    const WETHContractAddress = '0xec2a384Fa762C96140c817079768a1cfd0e908EA';
-    /*
-    https://goerli-optimism.etherscan.io/address/0xec2a384fa762c96140c817079768a1cfd0e908ea#code
-    https://ropsten.etherscan.io/address/0xec2a384fa762c96140c817079768a1cfd0e908ea#code
-    */
+    const entryPointPath = './test/contracts/EntryPoint.sol';
+    const smartWalletPath = './test/contracts/SmartWallet.sol';
+    const wethPaymasterPath = './test/contracts/WETHPaymaster.sol';
 
 
-    const _WETHABI = JSON.parse(fs.readFileSync(`${__dirname}/ABI/WETH.json`, 'utf8'));
-    const WETHContract = new web3.eth.Contract(_WETHABI, WETHContractAddress);
+    const chainId = await web3.eth.getChainId();
 
+    // get account from web3 rpc node
+    let accounts = await web3.eth.personal.getAccounts();
 
-    // #region PayMaster
-
-    let WETHPaymasterAddress = '0xc299849c75a38fC9c91A7254d0F51A1a385EEb7a';
-
-
-    const _payMasterABI = JSON.parse(fs.readFileSync(`${__dirname}/ABI/WETHTokenPaymaster.json`, 'utf8'));
-    const payMasterContract = new web3.eth.Contract(_payMasterABI, WETHPaymasterAddress);
-
-    const depositInfo = await entryPointContract.methods.getDepositInfo(WETHPaymasterAddress).call();
-    if (!depositInfo) {
-        throw new Error('depositInfo is null,maybe cannot connect to entryPoint contract');
-    }
-
-    if (parseFloat(web3.utils.fromWei(depositInfo.amount as string, 'ether')) < 0.01) {
-        // deposit 0.002 ETH 
-        // add stake to payMaster : addStake(uint32 _unstakeDelaySec)
-        const addStakeCallData = payMasterContract.methods.addStake(
-            1
-        ).encodeABI();
-        await Utils.signAndSendTransaction(web3,
-            account_sponser.privateKey,
-            WETHPaymasterAddress,
-            web3.utils.toHex(web3.utils.toWei("0.02", 'ether')),
-            addStakeCallData);
-    }
-
-    // #endregion
+    // new account
+    const walletUser = await web3.eth.accounts.create();
 
 
 
+    //#region  deploy eip-2470
 
-    // #region SimpleWallet
-    const account_user = web3.eth.accounts.privateKeyToAccount(USER_PRIVATE_KEY);
+    const SingletonFactory = '0xce0042B868300000d44A59004Da54A005ffdcf9f';
 
-    const simpleWalletCreateSalt = 0;
-
-    let simpleWalletAddress = WalletLib.EIP4337.calculateWalletAddress(
-        entryPointAddress,
-        account_user.address,
-        WETHContractAddress,
-        WETHPaymasterAddress,
-        simpleWalletCreateSalt);
-
-    // get simpleWallet WETH balance
-    let simpleWalletWETHBalance = parseFloat(web3.utils.fromWei(
-        await WETHContract.methods.balanceOf(simpleWalletAddress).call(),
-        'ether'));
-    if (simpleWalletWETHBalance < 0.1) {
-
-        await Utils.signAndSendTransaction(web3,
-            account_sponser.privateKey,
-            WETHContractAddress,
-            '0x00',
-            WETHContract.methods.transfer(simpleWalletAddress, web3.utils.toHex(web3.utils.toWei("0.2", 'ether'))).encodeABI()
-        );
-
-
-    }
-
-    if (await web3.eth.getCode(simpleWalletAddress) === '0x') {
-        // activate wallet
-        const gasFee = await Utils.getGasPrice(web3, chainId);
-        const activateOp = WalletLib.EIP4337.activateWalletOp(entryPointAddress, WETHPaymasterAddress,
-            account_user.address, WETHContractAddress,
-            gasFee.Max, gasFee.MaxPriority,
-            simpleWalletCreateSalt);
-
-        // sign with user private key
-        //activateOp.sign(entryPointAddress, chainId, account_user.privateKey);
-
-        // sign with signature
-        const requestId = activateOp.getRequestId(entryPointAddress, chainId); 
-        const signature = await web3.eth.accounts.sign(requestId, account_user.privateKey); 
-        activateOp.signWithSignature(account_user.address, signature.signature);
-
-
-        try {
-            const result = await entryPointContract.methods.simulateValidation(activateOp).call({
-                from: WalletLib.EIP4337.Defines.AddressZero
-            });
-            console.log(`simulateValidation result:`, result);
-
-            const tuple = activateOp.toTuple();
-            //const handleOpsCallData = entryPointContract.methods.handleOps([activateOp], BENEFICIARY_ADDR).encodeABI();
-            // const AASendTx = await Utils.signAndSendTransaction(web3,
-            //     SPONSER_KEY,
-            //     entryPointAddress,
-            //     '0x00',
-            //     handleOpsCallData);
-
-            // console.log(`AASendTx:`, AASendTx);
-            await Utils.sendOPWait(web3, activateOp, entryPointAddress, chainId);
-
-
-        } catch (error) {
-            console.error(error);
-            throw new Error("simulateValidation error");
-        }
-
-    }
-
-    // guardian
-    {
-        /* 
-            account_guardian1: 0xbc4b82A8cd2a803bFB8e457d8D681b78D3F84957=>0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80
-            account_guardian2: 0x44Aa7e13893c929Cbcf8f1966Db7aa47eA80924A=>0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270
-            account_guardian3: 0x55fa93624E93a33415c2d0Ef0191ac9e426B840D=>0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376
-        */
-        const guardians = [web3.eth.accounts.privateKeyToAccount('0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80'),
-        web3.eth.accounts.privateKeyToAccount('0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270'),
-        web3.eth.accounts.privateKeyToAccount('0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376')
-        ];
-
+    // Send exactly 0.0247 ether to this single-use deployment account to 0xBb6e024b9cFFACB947A71991E386681B1Cd1477D
+    // https://eips.ethereum.org/EIPS/eip-2470
+    await web3.eth.sendTransaction(
         {
-            // add grardian  
-            // for (let index = 0; index < guardians.length; index++) {
-            //     const guardian = guardians[index];
-            //     const gasFee = await Utils.getGasPrice(web3, chainId);
-            //     let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-            //     const addGuardianOp = await WalletLib.EIP4337.Guaridian.grantGuardianRequest(
-            //         web3 as any, simpleWalletAddress, nonce, guardian.address, entryPointAddress, WETHPaymasterAddress,
-            //         gasFee.Max, gasFee.MaxPriority);
-            //     if (!addGuardianOp) {
-            //         throw new Error('addGuardianOp is null');
-            //     }
-            //     addGuardianOp.sign(entryPointAddress, chainId, account_user.privateKey);
-            //     await Utils.sendOPWait(web3, addGuardianOp, entryPointAddress, chainId); 
-            // } 
+            from: accounts[0],
+            to: '0xBb6e024b9cFFACB947A71991E386681B1Cd1477D',
+            value: web3.utils.toWei('0.0247', 'ether')
         }
-        {
-            // confirmation
-            // for (let index = 0; index < guardians.length; index++) {
-            //     const guardian = guardians[index];
-            //     const gasFee = await Utils.getGasPrice(web3, chainId);
-            //     let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-            //     const addGuardianOp = await WalletLib.EIP4337.Guaridian.grantGuardianConfirmation(
-            //         web3 as any, simpleWalletAddress, nonce, guardian.address, entryPointAddress, WETHPaymasterAddress,
-            //         gasFee.Max, gasFee.MaxPriority);
-            //     if (!addGuardianOp) {
-            //         throw new Error('addGuardianOp is null');
-            //     }
-            //     addGuardianOp.sign(entryPointAddress, chainId, account_user.privateKey);
-            //     await Utils.sendOPWait(web3, addGuardianOp, entryPointAddress, chainId);
-            // }
-        }
-        {
-            // social recovery
-            const newOwner = web3.eth.accounts.create();
-            let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-            const gasFee = await Utils.getGasPrice(web3, chainId);
-            const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(web3 as any, simpleWalletAddress, nonce,
-                entryPointAddress, WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority, newOwner.address);
-            if (!recoveryOp) {
-                throw new Error('recoveryOp is null');
-            }
-            // get requestId
-            const requestId = recoveryOp.getRequestId(entryPointAddress, chainId);
-            // account_guardian1 sign 
-            const sign1 = await web3.eth.accounts.sign(requestId, guardians[0].privateKey).signature;  
-            // account_guardian2 sign
-            const sign2 = await web3.eth.accounts.sign(requestId, guardians[1].privateKey).signature;   
-
-            // pack sign without on chain check
-            //const signPack = await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(requestId, [sign1, sign2]);
-            // pack sign with on chain check
-            const signPack = await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(requestId, [sign1, sign2], simpleWalletAddress, web3 as any);
-
-            recoveryOp.signature = signPack;
-
-            // recovery now
-            await Utils.sendOPWait(web3, recoveryOp, entryPointAddress, chainId);
-
-            // recovery success
-
-            {
-                // change owner to orginal owner
-                let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-                const gasFee = await Utils.getGasPrice(web3, chainId);
-                const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(web3 as any, simpleWalletAddress, nonce,
-                    entryPointAddress, WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority, account_user.address);
-                if (!recoveryOp) {
-                    throw new Error('recoveryOp is null');
-                }
-
-                const requestId = recoveryOp.getRequestId(entryPointAddress, chainId); 
-                const signature = await web3.eth.accounts.sign(requestId, newOwner.privateKey); 
-                recoveryOp.signWithSignature(newOwner.address, signature.signature); 
-
-                await Utils.sendOPWait(web3, recoveryOp, entryPointAddress, chainId);
-                console.log('change owner to orginal owner success');
-            }
-
-
-
-
-
-        }
-    }
-    // WETH send to account_sponser
-    simpleWalletWETHBalance = parseFloat(web3.utils.fromWei(await WETHContract.methods.balanceOf(simpleWalletAddress).call() as string, 'ether'));
-    if (simpleWalletWETHBalance > 0.001) {
-        const gasFee = await Utils.getGasPrice(web3, chainId);
-        let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-        let userOperation = await WalletLib.EIP4337.Tokens.ERC20.transfer(
-            web3 as any, simpleWalletAddress, nonce, entryPointAddress,
-            WETHPaymasterAddress, gasFee.Max, gasFee.MaxPriority,
-            WETHContractAddress, account_sponser.address, web3.utils.toWei("0.00001", 'ether'));
-        if (!userOperation) {
-            throw new Error('userOperation is null');
-        }
-        // let userOperation = new WalletLib.EIP4337.UserOperation();
-        // userOperation.nonce = nonce;
-        // userOperation.sender = simpleWalletAddress;
-        // userOperation.paymaster = WETHPaymasterAddress;
-        // userOperation.maxFeePerGas = gasFee.Max;
-        // userOperation.maxPriorityFeePerGas = gasFee.MaxPriority;
-        if (await web3.eth.getCode(simpleWalletAddress) === '0x') {
-            throw new Error('simpleWalletAddress is not active');
-        }
-        // userOperation.callData = web3.eth.abi.encodeFunctionCall(
-        //     execFromEntryPoint,
-        //     [
-        //         WETHContractAddress,
-        //         "0x00",
-        //         WETHContract.methods.transfer(account_sponser.address, web3.utils.toHex(web3.utils.toWei("0.00001", 'ether'))).encodeABI()
-        //     ]
-        // );
-        // userOperation.paymaster = WETHPaymasterAddress;
-        // const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
-        // if (!hasEstimateGas) {
-        //     throw new Error('estimateGas error');
-        // }
-        userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
-
-        // #region decode CallData
-
-        const tmpMap = new Map<string, string>();
-        WalletLib.EIP4337.Utils.DecodeCallData.new().setStorage((key, value) => {
-            tmpMap.set(key, value);
-        }, (key) => {
-            const v = tmpMap.get(key);
-            if (typeof (v) === 'string') {
-                return v;
-            }
-            return null;
-        });
-
-        const callDataDecode = await WalletLib.EIP4337.Utils.DecodeCallData.new().decode(userOperation.callData);
-        console.log(`callDataDecode:`, callDataDecode);
-
-
-        // #endregion
-
-
-        await Utils.sendOPWait(web3, userOperation, entryPointAddress, chainId);
-
-    }
-
-
-    // get balance of simpleWallet
-
-    let simpleWalletAddressBalance = await WETHContract.methods.balanceOf(simpleWalletAddress).call();
-    simpleWalletAddressBalance = parseFloat(web3.utils.fromWei(simpleWalletAddressBalance, 'ether'));
-    // let simpleWalletAddressBalance = parseFloat(web3.utils.fromWei(await web3.eth.getBalance(simpleWalletAddress)));
-    if (simpleWalletAddressBalance < 0.001) {
-        throw new Error('simpleWalletAddressBalance is less than 0.001');
-    }
-
-    const gasFee = await Utils.getGasPrice(web3, chainId);
-    let nonce = await WalletLib.EIP4337.Utils.getNonce(simpleWalletAddress, web3);
-    let userOperation = new WalletLib.EIP4337.UserOperation();
-    userOperation.nonce = nonce;
-    userOperation.sender = simpleWalletAddress;
-    userOperation.paymaster = WETHPaymasterAddress;
-    userOperation.maxFeePerGas = Math.pow(10, 15);// gasFee.Max;
-    userOperation.maxPriorityFeePerGas = Math.pow(10, 15);// gasFee.MaxPriority;
-    if (await web3.eth.getCode(simpleWalletAddress) === '0x') {
-        throw new Error('simpleWalletAddress is not active');
-    }
-
-    //transfer ether from simpleWallet for test
-    userOperation.callData = web3.eth.abi.encodeFunctionCall(
-        execFromEntryPoint,
-        [
-            account_sponser.address,
-            web3.utils.toHex(web3.utils.toWei("0.00001", 'ether')),
-            "0x"
-        ]
     );
-    userOperation.paymaster = WETHPaymasterAddress;
+    /*
+    0xf9016c8085174876e8008303c4d88080b90154608060405234801561001057600080fd5b50610134806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80634af63f0214602d575b600080fd5b60cf60048036036040811015604157600080fd5b810190602081018135640100000000811115605b57600080fd5b820183602082011115606c57600080fd5b80359060200191846001830284011164010000000083111715608d57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550509135925060eb915050565b604080516001600160a01b039092168252519081900360200190f35b6000818351602085016000f5939250505056fea26469706673582212206b44f8a82cb6b156bfcc3dc6aadd6df4eefd204bc928a4397fd15dacf6d5320564736f6c634300060200331b83247000822470
+     {
+        nonce: 0,
+        gasPrice: 100000000000,
+        value: 0,
+        data: '0x608060405234801561001057600080fd5b50610134806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80634af63f0214602d575b600080fd5b60cf60048036036040811015604157600080fd5b810190602081018135640100000000811115605b57600080fd5b820183602082011115606c57600080fd5b80359060200191846001830284011164010000000083111715608d57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550509135925060eb915050565b604080516001600160a01b039092168252519081900360200190f35b6000818351602085016000f5939250505056fea26469706673582212206b44f8a82cb6b156bfcc3dc6aadd6df4eefd204bc928a4397fd15dacf6d5320564736f6c63430006020033',
+        gasLimit: 247000,
+        v: 27,
+        r: '0x247000',
+        s: '0x2470'
+    }
+    */
+    try {
+        await web3.eth.sendSignedTransaction(
+            '0xf9016c8085174876e8008303c4d88080b90154608060405234801561001057600080fd5b50610134806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80634af63f0214602d575b600080fd5b60cf60048036036040811015604157600080fd5b810190602081018135640100000000811115605b57600080fd5b820183602082011115606c57600080fd5b80359060200191846001830284011164010000000083111715608d57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550509135925060eb915050565b604080516001600160a01b039092168252519081900360200190f35b6000818351602085016000f5939250505056fea26469706673582212206b44f8a82cb6b156bfcc3dc6aadd6df4eefd204bc928a4397fd15dacf6d5320564736f6c634300060200331b83247000822470'
+        );
+    } catch (error) { }
 
-    const hasEstimateGas = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
-    if (!hasEstimateGas) {
-        throw new Error('estimateGas error');
+    // check if SingletonFactory is deployed
+    let code = await web3.eth.getCode(SingletonFactory);
+    if (code === '0x') {
+        throw new Error('SingletonFactory is not deployed');
+    } else {
+        console.log('SingletonFactory is deployed');
     }
 
-    userOperation.sign(entryPointAddress, chainId, account_user.privateKey);
+    //#endregion
 
+    //#region deploy entrypoint
+    let entrypointCompile = await Utils.compileContract(entryPointPath, 'EntryPoint');
+    // deploy bytecode
+    let EntryPointAddress = '';
+    var _paymasterStake = web3.utils.toWei('1', 'ether');
+    var _unstakeDelaySec = 100;
+    var entrypointContract = new web3.eth.Contract(entrypointCompile.abi);
+    entrypointContract.deploy({
+        data: '0x' + entrypointCompile.bytecode,
+        arguments: [
+            _paymasterStake,
+            _unstakeDelaySec,
+        ]
+    }).send({
+        from: accounts[0],
+        gas: 10000000,
+    }).on('receipt', async (receipt) => {
+        //console.log('entrypointContract deployed at: ' + receipt.contractAddress);
+        if (receipt.contractAddress) {
+            EntryPointAddress = receipt.contractAddress;
+        }
+
+    }).on('error', (error) => {
+        console.log(error);
+    });
+    while (EntryPointAddress === '') {
+        await Utils.sleep(1000);
+        console.log('waiting for entrypointContract to be deployed');
+    }
+    entrypointContract.options.address = EntryPointAddress;
+    console.log('EntryPointAddress: ' + EntryPointAddress);
+
+    //#endregion
+
+    //#region deploy wallet logic
+
+    let walletLogicCompile = await Utils.compileContract(smartWalletPath, 'SmartWallet');
+    // deploy bytecode
+    let SmartWalletLogicAddress = '';
+
+    var walletLogicContract = new web3.eth.Contract(walletLogicCompile.abi);
+    walletLogicContract.deploy({
+        data: '0x' + walletLogicCompile.bytecode,
+        arguments: []
+    }).send({
+        from: accounts[0],
+        gas: 10000000,
+    }).on('receipt', async (receipt) => {
+        //console.log('walletContract deployed at: ' + receipt.contractAddress);
+        if (receipt.contractAddress) {
+            SmartWalletLogicAddress = receipt.contractAddress;
+        }
+    }).on('error', (error) => {
+        console.log(error);
+    });
+    while (SmartWalletLogicAddress === '') {
+        await Utils.sleep(1000);
+        console.log('waiting for walletLogicContract to be deployed');
+    }
+    console.log('SmartWalletLogicAddress: ' + SmartWalletLogicAddress);
+
+
+    //#endregion
+
+    //#region deploy weth
+
+    const _weth_bytecode = '0x606060405260408051908101604052600d81527f57726170706564204574686572000000000000000000000000000000000000006020820152600090805161004b9291602001906100b1565b5060408051908101604052600481527f5745544800000000000000000000000000000000000000000000000000000000602082015260019080516100939291602001906100b1565b506002805460ff1916601217905534156100ac57600080fd5b61014c565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100f257805160ff191683800117855561011f565b8280016001018555821561011f579182015b8281111561011f578251825591602001919060010190610104565b5061012b92915061012f565b5090565b61014991905b8082111561012b5760008155600101610135565b90565b6106a98061015b6000396000f3006060604052600436106100955763ffffffff60e060020a60003504166306fdde03811461009f578063095ea7b31461012957806318160ddd1461015f57806323b872dd146101845780632e1a7d4d146101ac578063313ce567146101c257806370a08231146101eb57806395d89b411461020a578063a9059cbb1461021d578063d0e30db014610095578063dd62ed3e1461023f575b61009d610264565b005b34156100aa57600080fd5b6100b26102ba565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100ee5780820151838201526020016100d6565b50505050905090810190601f16801561011b5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561013457600080fd5b61014b600160a060020a0360043516602435610358565b604051901515815260200160405180910390f35b341561016a57600080fd5b6101726103c4565b60405190815260200160405180910390f35b341561018f57600080fd5b61014b600160a060020a03600435811690602435166044356103d2565b34156101b757600080fd5b61009d600435610518565b34156101cd57600080fd5b6101d56105c6565b60405160ff909116815260200160405180910390f35b34156101f657600080fd5b610172600160a060020a03600435166105cf565b341561021557600080fd5b6100b26105e1565b341561022857600080fd5b61014b600160a060020a036004351660243561064c565b341561024a57600080fd5b610172600160a060020a0360043581169060243516610660565b600160a060020a033316600081815260036020526040908190208054349081019091557fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c915190815260200160405180910390a2565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156103505780601f1061032557610100808354040283529160200191610350565b820191906000526020600020905b81548152906001019060200180831161033357829003601f168201915b505050505081565b600160a060020a03338116600081815260046020908152604080832094871680845294909152808220859055909291907f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259085905190815260200160405180910390a350600192915050565b600160a060020a0330163190565b600160a060020a038316600090815260036020526040812054829010156103f857600080fd5b33600160a060020a031684600160a060020a0316141580156104425750600160a060020a038085166000908152600460209081526040808320339094168352929052205460001914155b156104a957600160a060020a03808516600090815260046020908152604080832033909416835292905220548290101561047b57600080fd5b600160a060020a03808516600090815260046020908152604080832033909416835292905220805483900390555b600160a060020a038085166000818152600360205260408082208054879003905592861680825290839020805486019055917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9085905190815260200160405180910390a35060019392505050565b600160a060020a0333166000908152600360205260409020548190101561053e57600080fd5b600160a060020a033316600081815260036020526040908190208054849003905582156108fc0290839051600060405180830381858888f19350505050151561058657600080fd5b33600160a060020a03167f7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b658260405190815260200160405180910390a250565b60025460ff1681565b60036020526000908152604090205481565b60018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156103505780601f1061032557610100808354040283529160200191610350565b60006106593384846103d2565b9392505050565b6004602090815260009283526040808420909152908252902054815600a165627a7a72305820ddedfb0ba7e4ed5e2c335eb9d42541173b86cda8a54f6c59663d43605e3dfc040029';
+    const _weth_abi: AbiItem[] = [
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "name",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "guy",
+                    "type": "address"
+                },
+                {
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "approve",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "totalSupply",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "src",
+                    "type": "address"
+                },
+                {
+                    "name": "dst",
+                    "type": "address"
+                },
+                {
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transferFrom",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "withdraw",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "decimals",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint8"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "balanceOf",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "symbol",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "dst",
+                    "type": "address"
+                },
+                {
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transfer",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "deposit",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "allowance",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "fallback"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "src",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "guy",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Approval",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "src",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "dst",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Transfer",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "dst",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Deposit",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "src",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "wad",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Withdrawal",
+            "type": "event"
+        }
+    ];
+    let WEthAddress = '';
+
+    var wethContract = new web3.eth.Contract(_weth_abi);
+    wethContract.deploy({
+        data: _weth_bytecode,
+        arguments: []
+    }).send({
+        from: accounts[0],
+        gas: 1000000,
+    }).on('receipt', async (receipt) => {
+        //console.log('walletContract deployed at: ' + receipt.contractAddress);
+        if (receipt.contractAddress) {
+            WEthAddress = receipt.contractAddress;
+        }
+    }).on('error', (error) => {
+        console.log(error);
+    });
+    while (WEthAddress === '') {
+        await Utils.sleep(1000);
+        console.log('waiting for weth to be deployed');
+    }
+    wethContract.options.address = WEthAddress;
+    console.log('WEthAddress: ' + WEthAddress);
+
+
+    //#endregion
+
+    //#region deploy wethpaymaster
+
+    let wethPaymasterCompile = await Utils.compileContract(wethPaymasterPath, 'WETHTokenPaymaster');
+    // deploy bytecode
+    await Utils.sleep(1000);
+    let WETHPaymasterAddress = '';
+    var WETHPaymasterContract = new web3.eth.Contract(wethPaymasterCompile.abi);
+    WETHPaymasterContract.deploy({
+        data: '0x' + wethPaymasterCompile.bytecode,
+        arguments: [
+            // constructor(EntryPoint _entryPoint,address _owner, IERC20 _WETHToken)
+            EntryPointAddress,
+            accounts[0],
+            WEthAddress
+        ]
+    }).send({
+        from: accounts[0],
+        gas: 10000000,
+    }).on('receipt', async (receipt) => {
+        //console.log('entrypointContract deployed at: ' + receipt.contractAddress);
+        if (receipt.contractAddress) {
+            WETHPaymasterAddress = receipt.contractAddress;
+        }
+
+    }).on('error', (error) => {
+        console.log(error);
+    });
+    while (WETHPaymasterAddress === '') {
+        await Utils.sleep(1000);
+        console.log('waiting for WETHPaymaster to be deployed');
+    }
+    console.log('WETHPaymasterAddress: ' + WETHPaymasterAddress);
+
+
+    //#endregion
+
+    //#region wethpaymaster stake
+
+    let wethPaymasterContract = new web3.eth.Contract(wethPaymasterCompile.abi, WETHPaymasterAddress);
+    const addStakeCallData = wethPaymasterContract.methods.addStake(
+        1
+    ).encodeABI();
+    const addStakeTx = {
+        from: accounts[0],
+        to: WETHPaymasterAddress,
+        data: addStakeCallData,
+        gas: 10000000,
+        value: _paymasterStake
+    };
+    const addStakeReceipt = await web3.eth.sendTransaction(addStakeTx);
+    //
+    const depositCallData = wethPaymasterContract.methods.deposit().encodeABI();
+    const depositTx = {
+        from: accounts[0],
+        to: WETHPaymasterAddress,
+        data: depositCallData,
+        gas: 10000000,
+        value: web3.utils.toWei('1', 'ether')
+    };
+    const depositReceipt = await web3.eth.sendTransaction(depositTx);
+    //console.log('addStakeReceipt: ' + JSON.stringify(addStakeReceipt));
+
+    5    //#endregion
+
+    //#region calculate wallet address
+
+    let walletAddress = await WalletLib.EIP4337.calculateWalletAddress(
+        SmartWalletLogicAddress, EntryPointAddress, walletUser.address, WEthAddress, WETHPaymasterAddress, 0, SingletonFactory
+    );
+    console.log('walletAddress: ' + walletAddress);
+    //#endregion
+
+    //#region swap eth to weth
+    // account[0] send 1 eth to WEthAddress
+    const swapEthToWethTx = {
+        from: accounts[0],
+        to: WEthAddress,
+        data: '0x',
+        gas: 10000000,
+        value: web3.utils.toWei('1', 'ether')
+    };
+    const swapEthToWethReceipt = await web3.eth.sendTransaction(swapEthToWethTx);
+    // wait for transaction to be mined
+    // get balance of weth
+    let wethBalance = await wethContract.methods.balanceOf(accounts[0]).call();
+    console.log('wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+
+
+    //#endregion
+
+    //#region send weth to wallet
+
+    // account[0] send 1 weth to walletAddress
+    await wethContract.methods.transfer(walletAddress, web3.utils.toWei('1', 'ether')).send({
+        from: accounts[0],
+        gas: 10000000,
+    });
+    // get balance of weth
+    wethBalance = await wethContract.methods.balanceOf(walletAddress).call();
+    console.log('Wallet wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+    //#endregion
+
+    //#region deploy wallet
+
+    const activateOp = WalletLib.EIP4337.activateWalletOp(
+        SmartWalletLogicAddress,
+        EntryPointAddress,
+        WETHPaymasterAddress,
+        walletUser.address,
+        WEthAddress,
+        parseInt(web3.utils.toWei('100', 'gwei')),
+        parseInt(web3.utils.toWei('10', 'gwei')),
+        0,
+        SingletonFactory
+    );
+    //console.log(activateOp);
+    const requestId = activateOp.getRequestId(EntryPointAddress, chainId);
+    {
+        //  function getRequestId(UserOperation calldata userOp) public view returns (bytes32) 
+        const _requestid = await entrypointContract.methods.getRequestId(activateOp).call();
+        if (_requestid !== requestId) {
+            throw new Error('requestId mismatch');
+        }
+
+    }
+
+
+    const signature = await web3.eth.accounts.sign(requestId, walletUser.privateKey);
+    activateOp.signWithSignature(walletUser.address, signature.signature);
+    await Utils.sleep(1000);
     try {
-        const result = await entryPointContract.methods.simulateValidation(userOperation).call({
+        const result = await entrypointContract.methods.simulateValidation(activateOp, false).call({
             from: WalletLib.EIP4337.Defines.AddressZero
         });
-
         console.log(`simulateValidation result:`, result);
 
-        await Utils.sendOPWait(web3, userOperation, entryPointAddress, chainId);
-
     } catch (error) {
-        console.error(error);
-        throw new Error("simulateValidation error");
+        throw error;
     }
 
+    // deploy wallet
+    await entrypointContract.methods.handleOps([activateOp], accounts[0]).send({
+        from: accounts[0],
+        gas: 10000000,
+    });
+    // wait
+    while (await web3.eth.getCode(walletAddress) === '0x') {
+        await Utils.sleep(1000);
+        console.log('waiting for wallet to be deployed');
+    }
+    console.log('wallet deployed');
 
-    // #endregion
+
+    //#endregion
+
+
+    //#region send weth from eip4337 wallet
+    // get nonce
+    const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+    const sendErc20Op = await WalletLib.EIP4337.Tokens.ERC20.transferFrom(
+        web3 as any, walletAddress,
+        nonce, EntryPointAddress, WETHPaymasterAddress,
+        parseInt(web3.utils.toWei('100', 'gwei')),
+        parseInt(web3.utils.toWei('10', 'gwei')),
+        WEthAddress, walletAddress, accounts[1], web3.utils.toWei('0.1', 'ether')
+    );
+    if(!sendErc20Op){
+        throw new Error('sendErc20Op is null');
+    }
+    const sendErc20RequestId = sendErc20Op.getRequestId(EntryPointAddress, chainId);
+    const sendErc20Signature = await web3.eth.accounts.sign(sendErc20RequestId, walletUser.privateKey);
+    sendErc20Op.signWithSignature(walletUser.address, sendErc20Signature.signature);
+    wethBalance = await wethContract.methods.balanceOf(accounts[1]).call();
+    console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+    await entrypointContract.methods.handleOps([sendErc20Op], accounts[0]).send({
+        from: accounts[0],
+        gas: 10000000,
+    });
+
+    wethBalance = await wethContract.methods.balanceOf(accounts[1]).call();
+    console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+
+
+
+
+    //#endregion
+
+
+
+
+
+
 
 
 

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-24 20:34:23
+ * @LastEditTime: 2022-11-05 09:19:52
  */
 
 import { UserOperation } from "../entity/userOperation";
@@ -18,16 +18,15 @@ export class Guaridian {
         return new web3.eth.Contract(SimpleWalletContract.ABI, walletAddress);
     }
     private static async _guardian(web3: Web3, walletAddress: string, nonce: number,
-        entryPointAddress: string, paymasterAddress: string,
+        entryPointAddress: string, paymasterAndData: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number, callData: string) {
 
         walletAddress = web3.utils.toChecksumAddress(walletAddress);
-        paymasterAddress = web3.utils.toChecksumAddress(paymasterAddress);
-
+        
         let userOperation: UserOperation = new UserOperation();
         userOperation.nonce = nonce;
         userOperation.sender = walletAddress;
-        userOperation.paymaster = paymasterAddress;
+        userOperation.paymasterAndData = paymasterAndData;
         userOperation.maxFeePerGas = maxFeePerGas;
         userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
         userOperation.callData = callData;

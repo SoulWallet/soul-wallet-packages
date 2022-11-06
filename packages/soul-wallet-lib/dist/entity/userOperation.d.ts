@@ -7,13 +7,12 @@ declare class UserOperation {
     nonce: number;
     initCode: string;
     callData: string;
-    callGas: number;
-    verificationGas: number;
+    callGasLimit: number;
+    verificationGasLimit: number;
     preVerificationGas: number;
     maxFeePerGas: number;
     maxPriorityFeePerGas: number;
-    paymaster: string;
-    paymasterData: string;
+    paymasterAndData: string;
     signature: string;
     clone(): UserOperation;
     toTuple(): string;

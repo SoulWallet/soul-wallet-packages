@@ -23,16 +23,27 @@ export declare class EIP4337Lib {
         ETH: typeof ETH;
     };
     /**
+     *
+     * @param entryPointAddress the entryPoint address
+     * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
+     * @returns inithex
+     */
+    private static getInitializeData;
+    /**
      * get wallet code
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
      * @param tokenAddress the WETH token address
      * @param payMasterAddress the payMaster address
      * @returns the wallet code hex string
      */
-    static getWalletCode(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string): string;
+    static getWalletCode(walletLogicAddress: string, entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string): string;
     /**
      * calculate wallet address by owner address
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
      * @param tokenAddress the WETH token address
@@ -41,9 +52,10 @@ export declare class EIP4337Lib {
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
-    static calculateWalletAddress(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string, salt: number, create2Factory: string): string;
+    static calculateWalletAddress(walletLogicAddress: string, entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string, salt: number, create2Factory: string): string;
     /**
      * get the userOperation for active (first time) the wallet
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress
      * @param payMasterAddress
      * @param ownerAddress
@@ -53,17 +65,18 @@ export declare class EIP4337Lib {
      * @param salt
      * @param create2Factory
      */
-    static activateWalletOp(entryPointAddress: string, payMasterAddress: string, ownerAddress: string, tokenAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt: number, create2Factory: string): UserOperation;
+    static activateWalletOp(walletLogicAddress: string, entryPointAddress: string, payMasterAddress: string, ownerAddress: string, tokenAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, salt: number, create2Factory: string): UserOperation;
+    private static getPackedInitCode;
     /**
      * calculate EIP-4337 wallet address
      * @param initContract the init Contract
-     * @param jsonInterface the jsonInterface of the contract
      * @param initArgs the init args
      * @param salt the salt number
      * @param create2Factory create2factory address defined in EIP-2470
      * @returns
      */
     static calculateWalletAddressByCode(initContract: IContract, initArgs: any[] | undefined, salt: number, create2Factory: string): string;
+    private static number2Bytes32;
     /**
      * calculate EIP-4337 wallet address
      * @param initCodeHash the init code after keccak256

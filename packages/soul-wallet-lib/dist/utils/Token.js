@@ -16,19 +16,18 @@ exports.ETH = exports.ERC1155 = exports.ERC721 = exports.ERC20 = exports.Token =
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 21:45:49
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 22:21:26
+ * @LastEditTime: 2022-11-05 09:20:15
  */
 const userOperation_1 = require("../entity/userOperation");
 const ABI_1 = require("../defines/ABI");
 class Token {
-    static createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, callContract, encodeABI, value = '0') {
+    static createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAndData, maxFeePerGas, maxPriorityFeePerGas, callContract, encodeABI, value = '0') {
         return __awaiter(this, void 0, void 0, function* () {
             walletAddress = web3.utils.toChecksumAddress(walletAddress);
-            paymasterAddress = web3.utils.toChecksumAddress(paymasterAddress);
             let userOperation = new userOperation_1.UserOperation();
             userOperation.nonce = nonce;
             userOperation.sender = walletAddress;
-            userOperation.paymaster = paymasterAddress;
+            userOperation.paymasterAndData = paymasterAndData;
             userOperation.maxFeePerGas = maxFeePerGas;
             userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
             userOperation.callData = web3.eth.abi.encodeFunctionCall(ABI_1.execFromEntryPoint, [

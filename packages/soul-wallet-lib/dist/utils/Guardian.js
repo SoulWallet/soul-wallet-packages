@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-24 20:34:23
+ * @LastEditTime: 2022-11-05 09:19:52
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -25,14 +25,13 @@ class Guaridian {
     static walletContract(web3, walletAddress) {
         return new web3.eth.Contract(simpleWallet_1.SimpleWalletContract.ABI, walletAddress);
     }
-    static _guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, callData) {
+    static _guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAndData, maxFeePerGas, maxPriorityFeePerGas, callData) {
         return __awaiter(this, void 0, void 0, function* () {
             walletAddress = web3.utils.toChecksumAddress(walletAddress);
-            paymasterAddress = web3.utils.toChecksumAddress(paymasterAddress);
             let userOperation = new userOperation_1.UserOperation();
             userOperation.nonce = nonce;
             userOperation.sender = walletAddress;
-            userOperation.paymaster = paymasterAddress;
+            userOperation.paymasterAndData = paymasterAndData;
             userOperation.maxFeePerGas = maxFeePerGas;
             userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
             userOperation.callData = callData;

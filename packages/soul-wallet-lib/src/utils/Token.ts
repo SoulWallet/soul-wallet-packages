@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 21:45:49
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-21 22:21:26
+ * @LastEditTime: 2022-11-05 09:20:15
  */
 import { UserOperation } from "../entity/userOperation";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
@@ -14,16 +14,15 @@ import { execFromEntryPoint, ERC1155 as erc1155, ERC20 as erc20, ERC721 as erc72
 export class Token {
 
     static async createOp(web3: Web3, walletAddress: string, nonce: number,
-        entryPointAddress: string, paymasterAddress: string,
+        entryPointAddress: string, paymasterAndData: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number, callContract: string, encodeABI: string, value: string = '0') {
 
         walletAddress = web3.utils.toChecksumAddress(walletAddress);
-        paymasterAddress = web3.utils.toChecksumAddress(paymasterAddress);
 
         let userOperation: UserOperation = new UserOperation();
         userOperation.nonce = nonce;
         userOperation.sender = walletAddress;
-        userOperation.paymaster = paymasterAddress;
+        userOperation.paymasterAndData = paymasterAndData;
         userOperation.maxFeePerGas = maxFeePerGas;
         userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
         userOperation.callData = web3.eth.abi.encodeFunctionCall(
