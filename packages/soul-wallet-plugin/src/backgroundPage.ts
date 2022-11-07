@@ -1,15 +1,48 @@
 import browser from "webextension-polyfill";
+import { getLocalStorage } from "@src/lib/tools";
 
-browser.runtime.onMessage.addListener(async(msg) => {
+browser.runtime.onMessage.addListener(async (msg) => {
+    // get current active tab
+    const [tab] = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+    });
+
+    console.log("got tab id", tab.id);
     switch (msg.type) {
         case "response":
-            console.log('response tab id', msg)
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
+        case "getAccounts":
+            // if already allowed getting accounts, don't show popup
+            const walletAddress = await getLocalStorage("activeWalletAddress");
+            const accountsAllowed =
+                (await getLocalStorage("accountsAllowed")) || {};
+
+            if (
+                accountsAllowed[walletAddress] &&
+                accountsAllowed[walletAddress].includes(msg.data.origin)
+            ) {
+                browser.tabs.sendMessage(Number(tab.id), {
+                    target: "soul",
+                    type: "response",
+                    action: "getAccounts",
+                    data: walletAddress,
+                    tabId: tab.id,
+                });
+            } else {
+                // if user never allowed access
+                browser.windows.create({
+                    url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}`,
+                    type: "popup",
+                    ...msg.pos,
+                });
+            }
+
+            break;
         case "sign":
-            const [tab] = await browser.tabs.query({active: true, currentWindow: true});
             browser.windows.create({
-                url: `${msg.url}&tabId=${tab.id}`,
+                url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}&data=${msg.data.data}&to=${msg.data.to}`,
                 type: "popup",
                 ...msg.pos,
             });

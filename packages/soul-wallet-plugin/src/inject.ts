@@ -1,5 +1,5 @@
 // @ts-nocheck
-import Web3 from 'web3'
+import Web3 from "web3";
 import config from "./config";
 import ProviderEngine from "web3-provider-engine";
 import CacheSubprovider from "web3-provider-engine/subproviders/cache.js";
@@ -10,10 +10,9 @@ import HookedWalletSubprovider from "web3-provider-engine/subproviders/hooked-wa
 import NonceSubprovider from "web3-provider-engine/subproviders/nonce-tracker.js";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc.js";
 
-
 var engine = new ProviderEngine();
 
-window.web3 = new Web3(config.provider)
+window.web3 = new Web3(config.provider);
 
 // static results
 engine.addProvider(
@@ -42,12 +41,13 @@ engine.addProvider(new VmSubprovider());
 engine.addProvider(
     new HookedWalletSubprovider({
         getAccounts: function (cb) {
-            console.log('TODO, add cache here')
             window.postMessage({
                 target: "soul",
-                type: "sign",
+                type: "getAccounts",
                 action: "getAccounts",
-                data: {},
+                data: {
+                    origin: location.origin,
+                },
             });
             window.addEventListener(
                 "message",
@@ -62,8 +62,18 @@ engine.addProvider(
                 false,
             );
         },
-        approveTransaction: function (cb) {
-            console.log("approve");
+        approveTransaction: function (msg) {
+            console.log("approve", msg);
+            window.postMessage({
+                target: "soul",
+                type: "sign",
+                action: "approveTransaction",
+                data: {
+                    origin: location.origin,
+                    data: msg.data,
+                    to: msg.to,
+                },
+            });
         },
         signTransaction: function (cb) {
             console.log("sign");
