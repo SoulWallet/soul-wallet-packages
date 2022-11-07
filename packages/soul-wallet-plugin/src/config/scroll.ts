@@ -18,17 +18,17 @@ export const assetsList = [
 
 export default {
     assetsList,
-    provider: "https://staging-prealpha.scroll.io/l2",
+    provider: "https://prealpha.scroll.io/l2",
     defaultSalt: 0,
     feeMultiplier: 1.5,
     defaultTip: 10 * 10 ** 9,
-    chainId: 5343541,
-    scanUrl: "https://prealpha.scroll.io/l2scan",
+    chainId: 534354,
+    scanUrl: "https://l2scan.scroll.io",
     bundlerUrl: "https://bundler-poc-scroll.soulwallets.me",
     contracts: {
-        entryPoint: "0x16c76A3526c5fC6888d30d77f7AFe17f21EBa1Da",
+        entryPoint: "0x894b1680F9ac975A2191fDD7d0Efbd6732152ac8",
         weth: wethAddress,
-        paymaster: "0x4e1655B667A2Edba56e3BBa21ED585B3D63B2a91",
+        paymaster: "0x073e8b06529a516331af88CB648adAdd4025DD16",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };
