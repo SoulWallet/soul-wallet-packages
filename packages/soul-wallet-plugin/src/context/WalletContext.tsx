@@ -123,6 +123,10 @@ export const WalletContextProvider = ({ children }: any) => {
         const res: any = await api.account.getWalletAddress({
             key: account,
         });
+        const walletAddress = res.data.wallet_address;
+        // console.log("ready to get", walletAddress);
+        await setLocalStorage("activeWalletAddress", walletAddress);
+
         setWalletAddress(res.data.wallet_address);
     };
 
@@ -130,8 +134,8 @@ export const WalletContextProvider = ({ children }: any) => {
         const res: any = await api.account.getWalletAddress({
             email,
         });
-        console.log("get wallet address", res, email);
-        return res.data.wallet_address;
+        const walletAddress = res.data.wallet_address;
+        return walletAddress;
     };
 
     const getWalletType = async () => {
@@ -220,7 +224,6 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.weth,
             currentFee,
             currentFee,
-            // currentFee,
             config.defaultSalt,
             config.contracts.create2Factory,
         );
