@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-19 16:32:02
+ * @LastEditTime: 2022-11-21 11:58:22
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -20,6 +20,7 @@ import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
 import { RPC } from '../utils/rpc';
+import { Converter } from "../utils/converter";
 
 export class EIP4337Lib {
 
