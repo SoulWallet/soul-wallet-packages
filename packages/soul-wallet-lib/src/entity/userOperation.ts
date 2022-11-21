@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-24 20:56:19
+ * @LastEditTime: 2022-11-18 15:27:59
  */
 
 import Web3 from 'web3';
@@ -22,13 +22,12 @@ class UserOperation {
     public nonce: number = 0;
     public initCode: string = '0x';
     public callData: string = '0x';
-    public callGas: number = 0;
-    public verificationGas: number = 0;
-    public preVerificationGas: number = 21000;
+    public callGasLimit: number = 0;
+    public verificationGasLimit: number = 0;
+    public preVerificationGas: number = 62000;
     public maxFeePerGas: number = 0;
     public maxPriorityFeePerGas: number = 0;
-    public paymaster: string = '0x';
-    public paymasterData: string = '0x';
+    public paymasterAndData: string = '0x';
     public signature: string = '0x';
 
     public clone(): UserOperation {
@@ -37,13 +36,12 @@ class UserOperation {
         clone.nonce = this.nonce;
         clone.initCode = this.initCode;
         clone.callData = this.callData;
-        clone.callGas = this.callGas;
-        clone.verificationGas = this.verificationGas;
+        clone.callGasLimit = this.callGasLimit;
+        clone.verificationGasLimit = this.verificationGasLimit;
         clone.preVerificationGas = this.preVerificationGas;
         clone.maxFeePerGas = this.maxFeePerGas;
         clone.maxPriorityFeePerGas = this.maxPriorityFeePerGas;
-        clone.paymaster = this.paymaster;
-        clone.paymasterData = this.paymasterData;
+        clone.paymasterAndData = this.paymasterAndData;
         clone.signature = this.signature;
         return clone;
     }
@@ -63,7 +61,7 @@ class UserOperation {
         bytes paymasterData;
         bytes signature;
         */
-        return `["${this.sender.toLocaleLowerCase()}","${this.nonce}","${this.initCode}","${this.callData}","${this.callGas}","${this.verificationGas}","${this.preVerificationGas}","${this.maxFeePerGas}","${this.maxPriorityFeePerGas}","${this.paymaster.toLocaleLowerCase()}","${this.paymasterData}","${this.signature}"]`;
+        return `["${this.sender.toLocaleLowerCase()}","${this.nonce}","${this.initCode}","${this.callData}","${this.callGasLimit}","${this.verificationGasLimit}","${this.preVerificationGas}","${this.maxFeePerGas}","${this.maxPriorityFeePerGas}","${this.paymasterAndData}","${this.signature}"]`;
     }
 
     /**
@@ -74,11 +72,11 @@ class UserOperation {
      */
     public async estimateGas(entryPointAddress: string, estimateGasFunc: (txInfo: TransactionInfo) => Promise<number>) {
         try {
-            this.verificationGas = 150000;
+            this.verificationGasLimit = 150000;
             if (this.initCode.length > 0) {
-                this.verificationGas += (3200 + 200 * this.initCode.length);
+                this.verificationGasLimit += (3200 + 200 * this.initCode.length);
             }
-            this.callGas = await estimateGasFunc({
+            this.callGasLimit = await estimateGasFunc({
                 from: entryPointAddress,
                 to: this.sender,
                 data: this.callData

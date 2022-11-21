@@ -7,3 +7,14 @@ yarn-error.log
 
 .DS_Store
 .zip
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+#Hardhat files
+cache
+artifacts
+

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-07 21:44:34
+ * @LastEditTime: 2022-11-21 11:58:22
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -14,11 +14,13 @@ import { Guard } from "../utils/guard";
 import { Web3Helper } from "../utils/web3Helper";
 import { IContract } from "../contracts/icontract";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
+import { WalletProxyContract } from "../contracts/walletProxy";
 import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
-import { Converter } from '../utils/converter';
+import { RPC } from '../utils/rpc';
+import { Converter } from "../utils/converter";
 
 export class EIP4337Lib {
 
@@ -46,33 +48,55 @@ export class EIP4337Lib {
         ETH: ETH,
     };
 
+    public static RPC = {
+        eth_sendUserOperation: RPC.eth_sendUserOperation,
+        eth_supportedEntryPoints: RPC.eth_supportedEntryPoints,
+        waitUserOperation: RPC.waitUserOperation,
+    }
+
+
+    /**
+     * 
+     * @param entryPointAddress the entryPoint address
+     * @param ownerAddress the owner address
+     * @param tokenAddress the WETH token address
+     * @param payMasterAddress the payMaster address
+     * @returns inithex
+     */
+    private static getInitializeData(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
+        // function initialize(IEntryPoint anEntryPoint, address anOwner,  IERC20 token,address paymaster)
+        // encodeFunctionData
+        const web3 = Web3Helper.new().web3;
+        const simpleWalletContract = new web3.eth.Contract(SimpleWalletContract.ABI);
+        const initializeData = simpleWalletContract.methods.initialize(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress).encodeABI();
+        return initializeData;
+    }
 
     /**
      * get wallet code
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address
      * @param tokenAddress the WETH token address
      * @param payMasterAddress the payMaster address
      * @returns the wallet code hex string  
      */
-    public static getWalletCode(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
+    public static getWalletCode(walletLogicAddress: string, entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
         //EntryPoint anEntryPoint, address anOwner, IERC20 token, address paymaster
-        Guard.address(entryPointAddress);
-        Guard.address(ownerAddress);
-        const simpleWalletBytecode = new (Web3Helper.new().web3).eth.Contract(SimpleWalletContract.ABI).deploy({
-            data: SimpleWalletContract.bytecode,
+        const initializeData = EIP4337Lib.getInitializeData(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
+        const walletBytecode = new (Web3Helper.new().web3).eth.Contract(WalletProxyContract.ABI).deploy({
+            data: WalletProxyContract.bytecode,
             arguments: [
-                entryPointAddress,
-                ownerAddress,
-                tokenAddress,
-                payMasterAddress
+                walletLogicAddress,
+                initializeData
             ]
         }).encodeABI();
-        return simpleWalletBytecode;
+        return walletBytecode;
     }
 
     /**
      * calculate wallet address by owner address
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress the entryPoint address
      * @param ownerAddress the owner address 
      * @param tokenAddress the WETH token address
@@ -82,21 +106,21 @@ export class EIP4337Lib {
      * @returns 
      */
     public static calculateWalletAddress(
+        walletLogicAddress: string,
         entryPointAddress: string,
         ownerAddress: string,
         tokenAddress: string, payMasterAddress: string,
         salt: number,
         create2Factory: string) {
-        return EIP4337Lib.calculateWalletAddressByCode(
-            SimpleWalletContract,
-            [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],
-            salt,
-            create2Factory
-        );
+        const initCodeWithArgs = EIP4337Lib.getWalletCode(walletLogicAddress, entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
+        const initCodeHash = keccak256(initCodeWithArgs);
+        const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
+        return walletAddress;
     }
 
     /**
      * get the userOperation for active (first time) the wallet
+     * @param walletLogicAddress the wallet logic contract address
      * @param entryPointAddress 
      * @param payMasterAddress 
      * @param ownerAddress 
@@ -107,6 +131,7 @@ export class EIP4337Lib {
      * @param create2Factory 
      */
     public static activateWalletOp(
+        walletLogicAddress: string,
         entryPointAddress: string,
         payMasterAddress: string,
         ownerAddress: string,
@@ -115,26 +140,34 @@ export class EIP4337Lib {
         maxPriorityFeePerGas: number,
         salt: number,
         create2Factory: string) {
-        const initCodeWithArgs = EIP4337Lib.getWalletCode(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
+        const initCodeWithArgs = EIP4337Lib.getWalletCode(walletLogicAddress, entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
         const initCodeHash = keccak256(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
         let userOperation: UserOperation = new EIP4337Lib.UserOperation();
-        userOperation.nonce = salt;//0;
+        userOperation.nonce = 0;
         userOperation.sender = walletAddress;
-        userOperation.paymaster = payMasterAddress;
+        userOperation.paymasterAndData = payMasterAddress;
         userOperation.maxFeePerGas = maxFeePerGas;
         userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        userOperation.initCode = initCodeWithArgs;
-        userOperation.verificationGas = 100000 + 3200 + 200 * userOperation.initCode.length;
-        userOperation.callGas = 0;
+        userOperation.initCode = EIP4337Lib.getPackedInitCode(create2Factory, initCodeWithArgs, salt);
+        userOperation.verificationGasLimit = 100000 + 3200 + 200 * userOperation.initCode.length;
+        userOperation.callGasLimit = 0;
         userOperation.callData = "0x";
         return userOperation;
+    }
+
+    private static getPackedInitCode(create2Factory: string, initCode: string, salt: number) {
+        //function deploy(bytes memory _initCode, bytes32 _salt)
+        const web3 = Web3Helper.new().web3;
+
+        return create2Factory.toLowerCase() + web3.eth.abi.encodeFunctionCall(
+            { "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" },
+            [initCode, EIP4337Lib.number2Bytes32(salt)]).substring(2);
     }
 
     /**
      * calculate EIP-4337 wallet address
      * @param initContract the init Contract
-     * @param jsonInterface the jsonInterface of the contract
      * @param initArgs the init args
      * @param salt the salt number
      * @param create2Factory create2factory address defined in EIP-2470
@@ -158,6 +191,10 @@ export class EIP4337Lib {
 
     }
 
+    public static number2Bytes32(num: number) {
+        return hexZeroPad(hexlify(num), 32);
+    }
+
     /**
      * calculate EIP-4337 wallet address
      * @param initCodeHash the init code after keccak256
@@ -174,8 +211,8 @@ export class EIP4337Lib {
         Guard.uint(salt);
         Guard.address(create2Factory);
 
-        const saltBytes32 = hexZeroPad(hexlify(salt), 32);
-        return getCreate2Address(create2Factory, saltBytes32, initCodeHash);
+
+        return getCreate2Address(create2Factory, EIP4337Lib.number2Bytes32(salt), initCodeHash);
     }
 
 

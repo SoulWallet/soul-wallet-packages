@@ -2,3 +2,4 @@ node_modules
 .DS_Store
 packages/soul-wallet-lib-test/test/.env
 .zip
+packages/soul-wallet-lib-test/solCache/

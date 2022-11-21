@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-23 17:59:53
+ * @LastEditTime: 2022-11-12 15:30:54
  */
 
 
@@ -16,6 +16,7 @@ import { arrayify, defaultAbiCoder, hexlify, hexZeroPad, keccak256 } from 'ether
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
 import { Ret_get, Ret_put } from './entity/bundler';
+const solc = require('solc');
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -32,6 +33,58 @@ export class Utils {
                 resolve(true);
             }, time);
         })
+    }
+
+    /**
+     * compile *.sol file
+     * @param solPath *.sol file path
+     * @param contractClassName contract class name
+     * @returns 
+     */
+    static async compileContract(solPath: string, contractClassName: string) {
+        if (!fs.existsSync('./solCache')) {
+            fs.mkdirSync('./solCache');
+        }
+        const solContent = fs.readFileSync(solPath, 'utf8');
+        const hash = keccak256_buffer(Buffer.from(solContent + '#' + contractClassName)).toString('hex');
+        const cachePath = `./solCache/${hash}.json`;
+        if (!fs.existsSync(cachePath)) {
+
+
+
+            const input = {
+                language: 'Solidity',
+                sources: {
+                    'contract.sol': {
+                        content: solContent
+                    }
+                },
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 1
+                    },
+                    outputSelection: {
+                        '*': {
+                            '*': ['*']
+                        }
+                    }
+                }
+            };
+            console.log(`solc version:${solc.version()}`);
+
+            const output = JSON.parse(solc.compile(JSON.stringify(input)));
+            const abi = output.contracts['contract.sol'][contractClassName].abi;
+            const bytecode: string = output.contracts['contract.sol'][contractClassName].evm.bytecode.object;
+
+            // return {
+            //     abi, bytecode
+            // }
+            fs.writeFileSync(cachePath, JSON.stringify({ abi, bytecode }));
+
+        }
+
+        return JSON.parse(fs.readFileSync(cachePath, 'utf8'));
     }
 
 
@@ -199,18 +252,18 @@ export class Utils {
             'uint', // preVerificationGas
             'uint256', // maxFeePerGas
             'uint256', // maxPriorityFeePerGas
-            'address', // paymaster
+            'bytes', // paymaster
         ], [
             op.sender,
             op.nonce,
             keccak256(op.initCode),
             keccak256(op.callData),
-            op.callGas,
-            op.verificationGas,
+            op.callGasLimit,
+            op.verificationGasLimit,
             op.preVerificationGas,
             op.maxFeePerGas,
             op.maxPriorityFeePerGas,
-            op.paymaster,
+            op.paymasterAndData,
         ]))
     }
 
@@ -359,13 +412,12 @@ export class Utils {
                     { type: 'uint256', name: 'nonce' },
                     { type: 'bytes', name: 'initCode' },
                     { type: 'bytes', name: 'callData' },
-                    { type: 'uint256', name: 'callGas' },
-                    { type: 'uint256', name: 'verificationGas' },
+                    { type: 'uint256', name: 'callGasLimit' },
+                    { type: 'uint256', name: 'verificationGasLimit' },
                     { type: 'uint256', name: 'preVerificationGas' },
                     { type: 'uint256', name: 'maxFeePerGas' },
                     { type: 'uint256', name: 'maxPriorityFeePerGas' },
-                    { type: 'address', name: 'paymaster' },
-                    { type: 'bytes', name: 'paymasterData' },
+                    { type: 'bytes', name: 'paymasterAndData' },
                     { type: 'bytes', name: 'signature' }
                 ],
                 name: 'userOp',
@@ -381,13 +433,12 @@ export class Utils {
             { type: 'uint256', val: op.nonce },
             { type: 'bytes', val: op.initCode },
             { type: 'bytes', val: op.callData },
-            { type: 'uint256', val: op.callGas },
-            { type: 'uint256', val: op.verificationGas },
+            { type: 'uint256', val: op.callGasLimit },
+            { type: 'uint256', val: op.verificationGasLimit },
             { type: 'uint256', val: op.preVerificationGas },
             { type: 'uint256', val: op.maxFeePerGas },
             { type: 'uint256', val: op.maxPriorityFeePerGas },
-            { type: 'address', val: op.paymaster },
-            { type: 'bytes', val: op.paymasterData }
+            { type: 'bytes', val: op.paymasterAndData }
         ]
         if (!forSignature) {
             // for the purpose of calculating gas cost, also hash signature

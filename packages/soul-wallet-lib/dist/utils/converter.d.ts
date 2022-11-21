@@ -7,5 +7,5 @@ export interface ITransaction {
     value: string;
 }
 export declare class Converter {
-    static fromTransaction(transcation: ITransaction, nonce?: number, maxFeePerGas?: number, maxPriorityFeePerGas?: number, paymaster?: string): UserOperation;
+    static fromTransaction(transcation: ITransaction, nonce?: number, maxFeePerGas?: number, maxPriorityFeePerGas?: number, paymasterAndData?: string): UserOperation;
 }

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-07 21:08:08
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-07 21:44:03
+ * @LastEditTime: 2022-11-21 11:57:46
  */
 
 import { UserOperation } from "../entity/userOperation";
@@ -26,17 +26,17 @@ export class Converter {
         nonce: number = 0,
         maxFeePerGas: number = 0,
         maxPriorityFeePerGas: number = 0,
-        paymaster: string = "0x"
+        paymasterAndData: string = "0x"
     ): UserOperation {
         const op = new UserOperation();
         const web3 = new Web3();
         op.sender = transcation.from;
-        op.verificationGas = 150000;
+        op.preVerificationGas = 150000;
         op.nonce = nonce;
-        op.paymaster = paymaster;
+        op.paymasterAndData = paymasterAndData;
         op.maxFeePerGas = maxFeePerGas;
         op.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        op.callGas = parseInt(transcation.gas, 16);
+        op.callGasLimit = parseInt(transcation.gas, 16);
         op.callData = web3.eth.abi.encodeFunctionCall(
             execFromEntryPoint,
             [

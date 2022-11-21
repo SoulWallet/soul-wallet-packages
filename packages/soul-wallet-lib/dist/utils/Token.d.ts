@@ -1,7 +1,7 @@
 import { UserOperation } from "../entity/userOperation";
 import Web3 from "web3";
 export declare class Token {
-    static createOp(web3: Web3, walletAddress: string, nonce: number, entryPointAddress: string, paymasterAddress: string, maxFeePerGas: number, maxPriorityFeePerGas: number, callContract: string, encodeABI: string, value?: string): Promise<UserOperation | null>;
+    static createOp(web3: Web3, walletAddress: string, nonce: number, entryPointAddress: string, paymasterAndData: string, maxFeePerGas: number, maxPriorityFeePerGas: number, callContract: string, encodeABI: string, value?: string): Promise<UserOperation | null>;
 }
 export declare class ERC20 {
     private static getContract;

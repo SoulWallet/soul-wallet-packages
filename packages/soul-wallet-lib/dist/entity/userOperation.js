@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-24 20:56:19
+ * @LastEditTime: 2022-11-18 15:27:59
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -29,13 +29,12 @@ class UserOperation {
         this.nonce = 0;
         this.initCode = '0x';
         this.callData = '0x';
-        this.callGas = 0;
-        this.verificationGas = 0;
-        this.preVerificationGas = 21000;
+        this.callGasLimit = 0;
+        this.verificationGasLimit = 0;
+        this.preVerificationGas = 62000;
         this.maxFeePerGas = 0;
         this.maxPriorityFeePerGas = 0;
-        this.paymaster = '0x';
-        this.paymasterData = '0x';
+        this.paymasterAndData = '0x';
         this.signature = '0x';
     }
     clone() {
@@ -44,13 +43,12 @@ class UserOperation {
         clone.nonce = this.nonce;
         clone.initCode = this.initCode;
         clone.callData = this.callData;
-        clone.callGas = this.callGas;
-        clone.verificationGas = this.verificationGas;
+        clone.callGasLimit = this.callGasLimit;
+        clone.verificationGasLimit = this.verificationGasLimit;
         clone.preVerificationGas = this.preVerificationGas;
         clone.maxFeePerGas = this.maxFeePerGas;
         clone.maxPriorityFeePerGas = this.maxPriorityFeePerGas;
-        clone.paymaster = this.paymaster;
-        clone.paymasterData = this.paymasterData;
+        clone.paymasterAndData = this.paymasterAndData;
         clone.signature = this.signature;
         return clone;
     }
@@ -69,7 +67,7 @@ class UserOperation {
         bytes paymasterData;
         bytes signature;
         */
-        return `["${this.sender.toLocaleLowerCase()}","${this.nonce}","${this.initCode}","${this.callData}","${this.callGas}","${this.verificationGas}","${this.preVerificationGas}","${this.maxFeePerGas}","${this.maxPriorityFeePerGas}","${this.paymaster.toLocaleLowerCase()}","${this.paymasterData}","${this.signature}"]`;
+        return `["${this.sender.toLocaleLowerCase()}","${this.nonce}","${this.initCode}","${this.callData}","${this.callGasLimit}","${this.verificationGasLimit}","${this.preVerificationGas}","${this.maxFeePerGas}","${this.maxPriorityFeePerGas}","${this.paymasterAndData}","${this.signature}"]`;
     }
     /**
      * estimate the gas
@@ -80,11 +78,11 @@ class UserOperation {
     estimateGas(entryPointAddress, estimateGasFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.verificationGas = 150000;
+                this.verificationGasLimit = 150000;
                 if (this.initCode.length > 0) {
-                    this.verificationGas += (3200 + 200 * this.initCode.length);
+                    this.verificationGasLimit += (3200 + 200 * this.initCode.length);
                 }
-                this.callGas = yield estimateGasFunc({
+                this.callGasLimit = yield estimateGasFunc({
                     from: entryPointAddress,
                     to: this.sender,
                     data: this.callData
