@@ -522,12 +522,7 @@ async function main() {
 
         }
 
-        {
-            const arr = await WalletLib.EIP4337.RPC.waitUserOperation(web3 as any, EntryPointAddress, requestId, 1000 * 60 * 1, (await web3.eth.getBlockNumber() - 500));
-
-            console.log('==');
-
-        }
+       
 
 
 
@@ -579,20 +574,13 @@ curl --location --request POST '35.89.2.9:3000/rpc/' \
             );
             if (resp && resp.data && typeof (resp.data.result) === 'string' && resp.data.result === requestId) {
                 console.log('requestId: ' + resp.data.result);
-                // wait for requestid to be mined
-                entrypointContract.once('UserOperationEvent',
-                    {
-                        filter: {
-                            requestId: requestId,
-                        },
-                        fromBlock: 7980010
-                    }, (error, event) => {
-                        if (error) {
-                            console.log(error);
-                        }
-                        console.log('UserOperationEvent', event);
-                    }
-                );
+               
+                 {
+                    const arr = await WalletLib.EIP4337.RPC.waitUserOperation(web3 as any, EntryPointAddress, requestId, 1000 * 60 * 1, (await web3.eth.getBlockNumber() - 500));
+
+                    console.log('==');
+
+                }
 
 
             } else {
