@@ -30,7 +30,8 @@ export class EIP4337Lib {
 
     public static Utils = {
         getNonce: EIP4337Lib.getNonce,
-        DecodeCallData: DecodeCallData
+        DecodeCallData: DecodeCallData,
+        fromTransaction: Converter.fromTransaction,
     }
 
     public static Defines = {

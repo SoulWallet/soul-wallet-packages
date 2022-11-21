@@ -191,7 +191,8 @@ exports.EIP4337Lib = EIP4337Lib;
 EIP4337Lib.UserOperation = userOperation_1.UserOperation;
 EIP4337Lib.Utils = {
     getNonce: EIP4337Lib.getNonce,
-    DecodeCallData: decodeCallData_1.DecodeCallData
+    DecodeCallData: decodeCallData_1.DecodeCallData,
+    fromTransaction: converter_1.Converter.fromTransaction,
 };
 EIP4337Lib.Defines = {
     AddressZero: address_1.AddressZero

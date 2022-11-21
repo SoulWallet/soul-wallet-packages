@@ -12,6 +12,7 @@ export declare class EIP4337Lib {
     static Utils: {
         getNonce: typeof EIP4337Lib.getNonce;
         DecodeCallData: typeof DecodeCallData;
+        fromTransaction: typeof Converter.fromTransaction;
     };
     static Defines: {
         AddressZero: string;
