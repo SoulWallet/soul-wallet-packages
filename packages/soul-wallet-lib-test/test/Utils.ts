@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-05 16:49:12
+ * @LastEditTime: 2022-11-12 15:30:54
  */
 
 
@@ -42,34 +42,49 @@ export class Utils {
      * @returns 
      */
     static async compileContract(solPath: string, contractClassName: string) {
-        const input = {
-            language: 'Solidity',
-            sources: {
-                'contract.sol': {
-                    content: fs.readFileSync(solPath, 'utf8')
-                }
-            },
-            settings: {
-                optimizer: {
-                    enabled: true,
-                    runs: 1
+        if (!fs.existsSync('./solCache')) {
+            fs.mkdirSync('./solCache');
+        }
+        const solContent = fs.readFileSync(solPath, 'utf8');
+        const hash = keccak256_buffer(Buffer.from(solContent + '#' + contractClassName)).toString('hex');
+        const cachePath = `./solCache/${hash}.json`;
+        if (!fs.existsSync(cachePath)) {
+
+
+
+            const input = {
+                language: 'Solidity',
+                sources: {
+                    'contract.sol': {
+                        content: solContent
+                    }
                 },
-                outputSelection: {
-                    '*': {
-                        '*': ['*']
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 1
+                    },
+                    outputSelection: {
+                        '*': {
+                            '*': ['*']
+                        }
                     }
                 }
-            }
-        };
-        console.log(`solc version:${solc.version()}`);
+            };
+            console.log(`solc version:${solc.version()}`);
 
-        const output = JSON.parse(solc.compile(JSON.stringify(input)));
-        const abi = output.contracts['contract.sol'][contractClassName].abi;
-        const bytecode: string = output.contracts['contract.sol'][contractClassName].evm.bytecode.object;
+            const output = JSON.parse(solc.compile(JSON.stringify(input)));
+            const abi = output.contracts['contract.sol'][contractClassName].abi;
+            const bytecode: string = output.contracts['contract.sol'][contractClassName].evm.bytecode.object;
 
-        return {
-            abi, bytecode
+            // return {
+            //     abi, bytecode
+            // }
+            fs.writeFileSync(cachePath, JSON.stringify({ abi, bytecode }));
+
         }
+
+        return JSON.parse(fs.readFileSync(cachePath, 'utf8'));
     }
 
 
@@ -401,7 +416,7 @@ export class Utils {
                     { type: 'uint256', name: 'verificationGasLimit' },
                     { type: 'uint256', name: 'preVerificationGas' },
                     { type: 'uint256', name: 'maxFeePerGas' },
-                    { type: 'uint256', name: 'maxPriorityFeePerGas' }, 
+                    { type: 'uint256', name: 'maxPriorityFeePerGas' },
                     { type: 'bytes', name: 'paymasterAndData' },
                     { type: 'bytes', name: 'signature' }
                 ],
@@ -422,7 +437,7 @@ export class Utils {
             { type: 'uint256', val: op.verificationGasLimit },
             { type: 'uint256', val: op.preVerificationGas },
             { type: 'uint256', val: op.maxFeePerGas },
-            { type: 'uint256', val: op.maxPriorityFeePerGas }, 
+            { type: 'uint256', val: op.maxPriorityFeePerGas },
             { type: 'bytes', val: op.paymasterAndData }
         ]
         if (!forSignature) {

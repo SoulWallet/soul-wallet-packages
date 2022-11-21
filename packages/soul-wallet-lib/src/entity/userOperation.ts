@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-05 00:25:10
+ * @LastEditTime: 2022-11-18 15:27:59
  */
 
 import Web3 from 'web3';
@@ -24,7 +24,7 @@ class UserOperation {
     public callData: string = '0x';
     public callGasLimit: number = 0;
     public verificationGasLimit: number = 0;
-    public preVerificationGas: number = 21000;
+    public preVerificationGas: number = 62000;
     public maxFeePerGas: number = 0;
     public maxPriorityFeePerGas: number = 0;
     public paymasterAndData: string = '0x';

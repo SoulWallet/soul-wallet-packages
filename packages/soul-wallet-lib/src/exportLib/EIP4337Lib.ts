@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-06 14:22:28
+ * @LastEditTime: 2022-11-19 16:32:02
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -19,6 +19,7 @@ import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
+import { RPC } from '../utils/rpc';
 
 export class EIP4337Lib {
 
@@ -44,6 +45,12 @@ export class EIP4337Lib {
         ERC1155: ERC1155,
         ETH: ETH,
     };
+
+    public static RPC = {
+        eth_sendUserOperation: RPC.eth_sendUserOperation,
+        eth_supportedEntryPoints: RPC.eth_supportedEntryPoints,
+        waitUserOperation: RPC.waitUserOperation,
+    }
 
 
     /**
@@ -182,7 +189,7 @@ export class EIP4337Lib {
 
     }
 
-    private static number2Bytes32(num: number) {
+    public static number2Bytes32(num: number) {
         return hexZeroPad(hexlify(num), 32);
     }
 

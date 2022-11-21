@@ -3,6 +3,7 @@ import { IContract } from "../contracts/icontract";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
+import { RPC } from '../utils/rpc';
 export declare class EIP4337Lib {
     /**
      * User Operation
@@ -21,6 +22,11 @@ export declare class EIP4337Lib {
         ERC721: typeof ERC721;
         ERC1155: typeof ERC1155;
         ETH: typeof ETH;
+    };
+    static RPC: {
+        eth_sendUserOperation: typeof RPC.eth_sendUserOperation;
+        eth_supportedEntryPoints: typeof RPC.eth_supportedEntryPoints;
+        waitUserOperation: typeof RPC.waitUserOperation;
     };
     /**
      *
@@ -76,7 +82,7 @@ export declare class EIP4337Lib {
      * @returns
      */
     static calculateWalletAddressByCode(initContract: IContract, initArgs: any[] | undefined, salt: number, create2Factory: string): string;
-    private static number2Bytes32;
+    static number2Bytes32(num: number): string;
     /**
      * calculate EIP-4337 wallet address
      * @param initCodeHash the init code after keccak256

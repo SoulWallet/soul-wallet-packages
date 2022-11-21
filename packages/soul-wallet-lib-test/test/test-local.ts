@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-06 14:57:15
+ * @LastEditTime: 2022-11-17 19:49:33
  */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
@@ -28,7 +28,7 @@ async function main() {
     const entryPointPath = './test/contracts/EntryPoint.sol';
     const smartWalletPath = './test/contracts/SmartWallet.sol';
     const wethPaymasterPath = './test/contracts/WETHPaymaster.sol';
-
+    const bundlerHelperPath = './test/contracts/BundlerHelper.sol';
 
     const chainId = await web3.eth.getChainId();
 
@@ -517,7 +517,7 @@ async function main() {
     const depositReceipt = await web3.eth.sendTransaction(depositTx);
     //console.log('addStakeReceipt: ' + JSON.stringify(addStakeReceipt));
 
-    5    //#endregion
+    //#endregion
 
     //#region calculate wallet address
 
@@ -557,6 +557,38 @@ async function main() {
     console.log('Wallet wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
     //#endregion
 
+    //#region deploy bundler helper
+
+    let BundlerHelperCompile = await Utils.compileContract(bundlerHelperPath, 'BundlerHelper');
+    // deploy bytecode
+    let BundlerHelperAddress = '';
+    var BundlerHelperContract = new web3.eth.Contract(BundlerHelperCompile.abi);
+    BundlerHelperContract.deploy({
+        data: '0x' + BundlerHelperCompile.bytecode,
+        arguments: [
+        ]
+    }).send({
+        from: accounts[0],
+        gas: 10000000,
+    }).on('receipt', async (receipt) => {
+        //console.log('entrypointContract deployed at: ' + receipt.contractAddress);
+        if (receipt.contractAddress) {
+            BundlerHelperAddress = receipt.contractAddress;
+        }
+
+    }).on('error', (error) => {
+        console.log(error);
+    });
+    while (BundlerHelperAddress === '') {
+        await Utils.sleep(1000);
+        console.log('waiting for BundlerHelper to be deployed');
+    }
+    BundlerHelperContract.options.address = BundlerHelperAddress;
+    console.log('BundlerHelperAddress: ' + BundlerHelperAddress);
+
+
+    //#endregion
+
     //#region deploy wallet
 
     const activateOp = WalletLib.EIP4337.activateWalletOp(
@@ -570,7 +602,35 @@ async function main() {
         0,
         SingletonFactory
     );
+    {
+        // calculate create2 cost
+        const singletonFactoryContract = new web3.eth.Contract([{ "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" }], SingletonFactory);
+        const _initCode = WalletLib.EIP4337.getWalletCode(SmartWalletLogicAddress, EntryPointAddress, walletUser.address, WEthAddress, WETHPaymasterAddress);
+        const _salt = web3.utils.soliditySha3(WalletLib.EIP4337.number2Bytes32(0));
+        const create2Cost = await singletonFactoryContract.methods.deploy(_initCode, _salt).estimateGas({
+            from: WalletLib.EIP4337.Defines.AddressZero,
+            gas: Math.pow(10, 18),
+        });
+        console.log('create2Cost: ' + create2Cost);
+    }
+    {
+        // get preOpGas prefund
+
+    }
+    //
     //console.log(activateOp);
+    {
+        // get maxFeePerGas and PriorityFeePerGas
+        const gasPrice = await web3.eth.getGasPrice();
+        const maxFeePerGas = parseInt(gasPrice) * 100;
+        const PriorityFeePerGas = parseInt(gasPrice) * 10;
+
+
+        // test gas
+        // activateOp.callGasLimit = 0;
+        // activateOp.maxFeePerGas
+    }
+
     const requestId = activateOp.getRequestId(EntryPointAddress, chainId);
     {
         //  function getRequestId(UserOperation calldata userOp) public view returns (bytes32) 
@@ -593,6 +653,16 @@ async function main() {
 
     } catch (error) {
         throw error;
+    }
+
+    {
+        // simulate via bundlerHelper
+        // function handleOps(uint expectedPaymentGas, EntryPoint ep, UserOperation[] calldata ops, address payable beneficiary)
+        const re = await BundlerHelperContract.methods.handleOps(0, EntryPointAddress, [activateOp], accounts[0]).call({
+            from: WalletLib.EIP4337.Defines.AddressZero
+        });
+        console.log('handleOps result: ', re);
+
     }
 
     // deploy wallet
@@ -621,7 +691,7 @@ async function main() {
         parseInt(web3.utils.toWei('10', 'gwei')),
         WEthAddress, walletAddress, accounts[1], web3.utils.toWei('0.1', 'ether')
     );
-    if(!sendErc20Op){
+    if (!sendErc20Op) {
         throw new Error('sendErc20Op is null');
     }
     const sendErc20RequestId = sendErc20Op.getRequestId(EntryPointAddress, chainId);

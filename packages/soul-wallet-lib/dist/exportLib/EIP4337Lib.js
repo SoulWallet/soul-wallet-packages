@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-06 14:22:28
+ * @LastEditTime: 2022-11-19 16:32:02
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -28,6 +28,7 @@ const walletProxy_1 = require("../contracts/walletProxy");
 const decodeCallData_1 = require("../utils/decodeCallData");
 const Guardian_1 = require("../utils/Guardian");
 const Token_1 = require("../utils/Token");
+const rpc_1 = require("../utils/rpc");
 class EIP4337Lib {
     /**
      *
@@ -201,6 +202,11 @@ EIP4337Lib.Tokens = {
     ERC721: Token_1.ERC721,
     ERC1155: Token_1.ERC1155,
     ETH: Token_1.ETH,
+};
+EIP4337Lib.RPC = {
+    eth_sendUserOperation: rpc_1.RPC.eth_sendUserOperation,
+    eth_supportedEntryPoints: rpc_1.RPC.eth_supportedEntryPoints,
+    waitUserOperation: rpc_1.RPC.waitUserOperation,
 };
 var userOperation_2 = require("../entity/userOperation");
 Object.defineProperty(exports, "UserOperation", { enumerable: true, get: function () { return userOperation_2.UserOperation; } });
