@@ -4,11 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-31 20:05:46
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-31 20:34:16
+ * @LastEditTime: 2022-11-23 18:55:41
  */
 
-import Web3 from "web3";
-// import { ethers } from "ethers";
+import { ethers } from "ethers";
+import * as ethUtil from 'ethereumjs-util';
+
 import {
     setLocalStorage,
     getLocalStorage,
@@ -27,13 +28,9 @@ import {
 
 export default class KeyStore {
     private static instance: KeyStore;
-
-    private web3: Web3;
-
     private _privateKey: string | null = null;
 
     private constructor() {
-        this.web3 = new Web3();
     }
 
     public static getInstance() {
@@ -54,7 +51,7 @@ export default class KeyStore {
     public async getAddress(): Promise<string> {
         const val = await getLocalStorage(this.keyStoreKey);
         if (val && val.address) {
-            return this.web3.utils.toChecksumAddress(val.address);
+            return ethers.utils.getAddress(val.address);
         }
         return "";
     }
@@ -69,11 +66,8 @@ export default class KeyStore {
         saveKey: boolean,
     ): Promise<string> {
         try {
-            const account = this.web3.eth.accounts.create();
-            const KeystoreV3 = this.web3.eth.accounts.encrypt(
-                account.privateKey,
-                password,
-            );
+            const account = ethers.Wallet.createRandom();
+            const KeystoreV3 = await account.encrypt(password);
             if (saveKey) {
                 await setLocalStorage(this.keyStoreKey, KeystoreV3);
                 await setSessionStorage("pw", password);
@@ -102,7 +96,7 @@ export default class KeyStore {
         if (await this.getAddress()) {
             const val = await getLocalStorage(this.keyStoreKey);
             if (val && val.address && val.crypto) {
-                const account = this.web3.eth.accounts.decrypt(val, password);
+                const account = await ethers.Wallet.fromEncryptedJson(val, password);
                 this._privateKey = account.privateKey;
                 await setSessionStorage("pw", password);
                 return account.address;
@@ -154,11 +148,12 @@ export default class KeyStore {
         if (!this._privateKey) {
             return null;
         }
-        const web3 = new Web3();
 
-        // const sig = web3.eth.accounts.sign(message, _privateKey);
-        const sig = web3.eth.accounts.sign(message, this._privateKey);
-
-        return sig.signature;
+        const messageHex = Buffer.from(message).toString('hex');
+        const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
+        var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
+        const signature1 = ethUtil.ecsign(personalMessage, privateKey);
+        const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
+        return sigHex;
     }
 }
