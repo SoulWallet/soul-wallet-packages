@@ -8,6 +8,7 @@
  */
 import { ethers } from "ethers";
 import ky from "ky";
+import { WalletAbi, EntryPointAbi } from "./abi";
 import config from "./config";
 import { hexlify, hexZeroPad } from "ethers/lib/utils";
 import { UserOperation } from "soul-wallet-lib/dist/entity/userOperation";
@@ -19,46 +20,6 @@ export interface ITransaction {
     to: string;
     value: string;
 }
-
-const WalletAbi = [
-    {
-        inputs: [],
-        name: "nonce",
-        outputs: [
-            {
-                internalType: "uint256",
-                name: "",
-                type: "uint256",
-            },
-        ],
-        stateMutability: "view",
-        type: "function",
-    },
-];
-
-const EntryPointAbi = {
-    inputs: [
-        {
-            internalType: "address",
-            name: "dest",
-            type: "address",
-        },
-        {
-            internalType: "uint256",
-            name: "value",
-            type: "uint256",
-        },
-        {
-            internalType: "bytes",
-            name: "func",
-            type: "bytes",
-        },
-    ],
-    name: "execFromEntryPoint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-};
 
 const provider = new ethers.providers.JsonRpcProvider(config.provider);
 
@@ -84,20 +45,17 @@ export class Utils {
         defaultBlock = "latest",
     ): Promise<number> {
         try {
-            // const code = await web3.eth.getCode(walletAddress, defaultBlock);
             const code = await provider.getCode(walletAddress, defaultBlock);
 
             // check contract is exist
             if (code === "0x") {
                 return 0;
             } else {
-                // const contract = new web3.eth.Contract([{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], walletAddress);
                 const contract = new ethers.Contract(
                     walletAddress,
                     WalletAbi,
                     provider,
                 );
-                // const nonce = await contract.methods.nonce().call();
                 const nonce = await contract.nonce();
                 // try parse to number
                 const nextNonce = parseInt(nonce, 10);
@@ -118,14 +76,13 @@ export class Utils {
         maxPriorityFeePerGas: number = 0,
         paymasterAndData: string = "0x",
     ) {
+        const iface = new ethers.utils.Interface(EntryPointAbi);
 
-        const iface = new ethers.utils.Interface([EntryPointAbi])
-
-        const callData = iface.encodeFunctionData('execFromEntryPoint', [
+        const callData = iface.encodeFunctionData("execFromEntryPoint", [
             transcation.to,
             transcation.value,
             transcation.data,
-        ])
+        ]);
 
         const op = new UserOperation();
         op.sender = transcation.from;
@@ -135,7 +92,7 @@ export class Utils {
         op.maxFeePerGas = maxFeePerGas;
         op.maxPriorityFeePerGas = maxPriorityFeePerGas;
         op.callGasLimit = parseInt(transcation.gas, 16);
-        op.callData = callData
+        op.callData = callData;
         return op;
     }
 

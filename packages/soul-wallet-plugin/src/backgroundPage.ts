@@ -6,7 +6,6 @@
  */
 
 import browser from "webextension-polyfill";
-import { ethers } from "ethers";
 // import ky from "ky";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 // import { WalletLib } from "soul-wallet-lib";
