@@ -7,7 +7,6 @@
  * @LastEditTime: 2022-11-18 15:27:59
  */
 
-import Web3 from 'web3';
 import { Guard } from '../utils/guard';
 import { signUserOp, payMasterSignHash, getRequestId, signUserOpWithPersonalSign } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';

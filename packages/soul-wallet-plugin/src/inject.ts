@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Web3 from "web3";
+import Bus from "./lib/bus";
 import config from "./config";
 import ProviderEngine from "web3-provider-engine";
 import CacheSubprovider from "web3-provider-engine/subproviders/cache.js";
@@ -40,43 +41,22 @@ engine.addProvider(new VmSubprovider());
 // id mgmt
 engine.addProvider(
     new HookedWalletSubprovider({
-        getAccounts: function (cb) {
-            window.postMessage({
-                target: "soul",
-                type: "getAccounts",
-                action: "getAccounts",
-                data: {
-                    origin: location.origin,
-                },
-            });
-            window.addEventListener(
-                "message",
-                (msg) => {
-                    if (
-                        msg.data.type === "response" &&
-                        msg.data.action === "getAccounts"
-                    ) {
-                        cb(null, [msg.data.data]);
-                    }
-                },
-                false,
-            );
+        getAccounts: async function (cb) {
+            const res = await Bus.send("getAccounts", "getAccounts");
+            cb(null, [res]);
         },
-        approveTransaction: function (msg) {
-            console.log("approve", msg);
-            window.postMessage({
-                target: "soul",
-                type: "sign",
-                action: "approveTransaction",
-                data: {
-                    origin: location.origin,
-                    data: msg.data,
-                    to: msg.to,
-                },
-            });
+        approveTransaction: async function (txData, cb) {
+            await Bus.send("approve", "approveTransaction");
+            cb(null, [txData]);
         },
-        signTransaction: function (cb) {
-            console.log("sign");
+        sendTransaction: async function (txData, cb) {
+            console.log("sendTransaction");
+            cb(null, txData);
+        },
+        signTransaction: async function (txData, cb) {
+            console.log("tx data", txData);
+            const res = await Bus.send("signTx", "signTransaction", txData);
+            cb(null, res);
         },
     }),
 );

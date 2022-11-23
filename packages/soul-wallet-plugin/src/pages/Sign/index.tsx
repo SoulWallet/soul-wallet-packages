@@ -1,6 +1,8 @@
 import React, { createRef, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
+import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { WalletLib } from "soul-wallet-lib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
@@ -8,7 +10,7 @@ import SignTransaction from "@src/components/SignTransaction";
 export default function Sign() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { walletAddress } = useWalletContext();
+    const { walletAddress, executeOperation, web3 } = useWalletContext();
     const signModal = createRef<any>();
 
     useEffect(() => {
@@ -18,7 +20,12 @@ export default function Sign() {
             tabId: param.get("tabId"),
             origin: param.get("origin"),
             data: param.get("data"),
+            from: param.get("from"),
             to: param.get("to"),
+            value: param.get("value"),
+            gas: param.get("gas"),
+            maxFeePerGas: param.get("maxFeePerGas"),
+            maxPriorityFeePerGas: param.get("maxPriorityFeePerGas"),
         });
     }, [params[0]]);
 
@@ -58,12 +65,54 @@ export default function Sign() {
         } else if (searchParams.actionType === "approveTransaction") {
             try {
                 await signModal.current.show("", searchParams.actionType);
-                console.log("ready to execute", searchParams);
+                await browser.runtime.sendMessage({
+                    target: "soul",
+                    type: "response",
+                    action: "approveTransaction",
+                    tabId: searchParams.tabId,
+                });
                 // execute action
                 window.close();
             } catch (err) {
                 console.log(err);
                 window.close();
+            }
+        } else if (searchParams.actionType === "signTransaction") {
+            // TODO, move this to background
+            try {
+                const nonce = await WalletLib.EIP4337.Utils.getNonce(
+                    walletAddress,
+                    web3,
+                );
+
+                const {
+                    data,
+                    gas,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                    from,
+                    to,
+                    value,
+                } = searchParams;
+
+                // create op
+                const op = WalletLib.EIP4337.Utils.fromTransaction(
+                    {
+                        data,
+                        from,
+                        gas,
+                        to,
+                        value,
+                    },
+                    nonce,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                    config.contracts.paymaster,
+                );
+
+                await executeOperation(op, "", searchParams.tabId);
+            } catch (err) {
+                console.log("sign tx error", err);
             }
         }
     };

@@ -45,7 +45,6 @@ export default function Welcome() {
     };
 
     useEffect(() => {
-        console.log("deter");
         determineDefaultRoute();
     }, []);
 

@@ -36,8 +36,9 @@ export default function AccountInfo({ account, action }: IProps) {
         setLoading(true);
         try {
             await activateWallet();
-            getWalletType();
-            toast.success("Account activated");
+            // TODO, listen to activated wallet event, then call the following
+            // getWalletType();
+            // toast.success("Account activated");
         } catch (err) {
             toast.error("Failed to activate account");
             console.log("activate error", err);
@@ -87,7 +88,9 @@ export default function AccountInfo({ account, action }: IProps) {
                         {account.slice(0, 4)}...{account.slice(-4)}
                     </span>
                 </div>
-            ) : <div className="h-6"></div>}
+            ) : (
+                <div className="h-6"></div>
+            )}
 
             {action === "activate" && walletType === "eoa" && (
                 <Button

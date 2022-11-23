@@ -33,6 +33,7 @@ window.addEventListener(
     false,
 );
 
+//receive message from background
 browser.runtime.onMessage.addListener((msg) => {
     if (msg.target === "soul" && msg.type === "response") {
         window.postMessage(msg);

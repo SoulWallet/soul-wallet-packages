@@ -1,5 +1,5 @@
 const path = require("path");
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -12,9 +12,7 @@ module.exports = {
         path: path.join(__dirname, "dist/js"),
         filename: "[name].js",
     },
-    plugins: [
-        new NodePolyfillPlugin()
-    ],
+    plugins: [new NodePolyfillPlugin()],
     module: {
         rules: [
             {
@@ -54,8 +52,8 @@ module.exports = {
         alias: {
             "@src": path.resolve(__dirname, "src/"),
         },
-        fallback:{
-            fs: false
-        }
+        fallback: {
+            fs: false,
+        },
     },
 };

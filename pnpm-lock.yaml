@@ -14,7 +14,7 @@ importers:
       axios: ^0.27.2
       dotenv: 8.6.0
       ethereumjs-util: ^7.1.5
-      ethers: ^5.6.9
+      ethers: ^5.7.1
       ts-node: ^10.9.1
       typescript: ^4.7.4
       web3: ^1.7.5
@@ -98,10 +98,11 @@ importers:
       eth-json-rpc-infura: ^5.1.0
       eth-json-rpc-middleware: ^9.0.1
       ethereumjs-util: ^7.1.5
-      ethers: ^5.6.9
+      ethers: ^5.7.1
       jest: ^26.5.3
       jest-css-modules: ^2.1.0
       json-rpc-engine: ^6.1.0
+      ky: ^0.32.2
       material-react-toastify: ^1.0.1
       node-polyfill-webpack-plugin: ^2.0.1
       postcss: ^8.4.5
@@ -139,6 +140,7 @@ importers:
       ethereumjs-util: 7.1.5
       ethers: 5.7.1
       json-rpc-engine: 6.1.0
+      ky: 0.32.2
       material-react-toastify: 1.0.1_sfoxds7t5ydpegc3knd667wn6m
       node-polyfill-webpack-plugin: 2.0.1_webpack@5.74.0
       qrcode: 1.5.1
@@ -12521,6 +12523,11 @@ packages:
     resolution: {integrity: sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==}
     engines: {node: '>= 8'}
     dev: true
+
+  /ky/0.32.2:
+    resolution: {integrity: sha512-eBJeF6IXNwX5rksdwBrE2rIJrU2d84GoTvdM7OmmTIwUVXEMd72wIwvT+nyhrqtv7AzbSNsWz7yRsHgVhj1uog==}
+    engines: {node: '>=14.16'}
+    dev: false
 
   /labeled-stream-splicer/2.0.2:
     resolution: {integrity: sha512-Ca4LSXFFZUjPScRaqOcFxneA0VpKZr4MMYCljyQr4LIewTLb3Y0IUTIsnBBsVubIeEfxeSZpSjSsRM8APEQaAw==}

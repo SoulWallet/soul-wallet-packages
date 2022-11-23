@@ -35,6 +35,8 @@ interface IWalletContext {
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
     getAccount: () => Promise<void>;
+    signTransaction: (txData: any) => Promise<any>;
+    executeOperation: (operation: any, actionName?: string, tabId?: number) => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
     removeGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
@@ -60,6 +62,8 @@ export const WalletContext = createContext<IWalletContext>({
     },
     getWalletType: async () => {},
     getAccount: async () => {},
+    signTransaction: async () => {},
+    executeOperation: async () => {},
     getEthBalance: async () => {
         return "";
     },
@@ -94,10 +98,14 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getGasPrice = async () => {
-        return 1000 * 10 ** 9;
-        // const gas = await web3.eth.getGasPrice();
-        // const gasMultiplied = new BN(gas).times(config.feeMultiplier).integerValue().toNumber();
+        const gas = await web3.eth.getGasPrice();
+        const gasMultiplied = new BN(gas)
+            .times(config.feeMultiplier)
+            .integerValue()
+            .toNumber();
+        console.log("gas mul", gasMultiplied);
         // return Number(gas);
+        return 50 * 10 ** 9;
     };
 
     const getAccount = async () => {
@@ -105,8 +113,13 @@ export const WalletContextProvider = ({ children }: any) => {
         setAccount(res);
     };
 
+    const signTransaction = async (txData: any) => {
+        return await keyStore.sign(txData);
+    };
+
     const generateWalletAddress = (address: string) => {
         const walletAddress = WalletLib.EIP4337.calculateWalletAddress(
+            config.contracts.logic,
             config.contracts.entryPoint,
             address,
             config.contracts.weth,
@@ -143,11 +156,18 @@ export const WalletContextProvider = ({ children }: any) => {
         setWalletType(contractCode !== "0x" ? "contract" : "eoa");
     };
 
-    const executeOperation = async (operation: any, actionName?: string) => {
-        try {
-            await signModal.current.show(operation, actionName);
-        } catch (err) {
-            throw Error("User rejected");
+    const executeOperation = async (
+        operation: any,
+        // no actionName means no need to sign
+        actionName?: string,
+        tabId?: number,
+    ) => {
+        if (actionName) {
+            try {
+                await signModal.current.show(operation, actionName);
+            } catch (err) {
+                throw Error("User rejected");
+            }
         }
 
         const requestId = operation.getRequestId(
@@ -156,8 +176,10 @@ export const WalletContextProvider = ({ children }: any) => {
         );
 
         const signature = await keyStore.sign(requestId);
+
         if (signature) {
             operation.signWithSignature(account, signature || "");
+
             const entryPointContract = new web3.eth.Contract(
                 EntryPointABI,
                 config.contracts.entryPoint,
@@ -170,39 +192,20 @@ export const WalletContextProvider = ({ children }: any) => {
                 });
 
             // IMPORTANT TODO, catch errors
-            console.log(`recoverOp simulateValidation result:`, result);
-
-            const txHash = await Utils.sendOPWait(
-                web3,
-                operation,
-                config.contracts.entryPoint,
-                config.chainId,
-            );
-
-            console.log("send op wait res", txHash);
-
-            if (!txHash) {
-                throw Error("Failed to execute contract");
-            }
-
-            // save to activity history
-            await saveActivityHistory({
-                actionName,
-                txHash: txHash,
-            });
+            console.log(`SimulateValidation:`, result);
 
             browser.runtime.sendMessage({
-                type: "notify",
+                type: "execute",
+                data: {
+                    actionName,
+                    operation: JSON.stringify(operation),
+                    requestId,
+                    tabId,
+                },
             });
 
-            return txHash;
+            return;
         }
-    };
-
-    const saveActivityHistory = async (history: any) => {
-        let prev = (await getLocalStorage("activityHistory")) || [];
-        prev.unshift(history);
-        await setLocalStorage("activityHistory", prev);
     };
 
     const deleteWallet = async () => {
@@ -218,6 +221,7 @@ export const WalletContextProvider = ({ children }: any) => {
         const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const activateOp = WalletLib.EIP4337.activateWalletOp(
+            config.contracts.logic,
             config.contracts.entryPoint,
             config.contracts.paymaster,
             account,
@@ -260,15 +264,16 @@ export const WalletContextProvider = ({ children }: any) => {
         console.log(`recoverOp simulateValidation result:`, result);
 
         await Utils.sendOPWait(
-            web3,
+            // web3,
             recoveryOp,
             config.contracts.entryPoint,
             config.chainId,
+            requestId,
         );
         // recovery now
-        browser.runtime.sendMessage({
-            type: "notify",
-        });
+        // browser.runtime.sendMessage({
+        //     type: "notify",
+        // });
     };
     const addGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
@@ -426,6 +431,8 @@ export const WalletContextProvider = ({ children }: any) => {
                 getWalletAddressByEmail,
                 getRecoverId,
                 getAccount,
+                signTransaction,
+                executeOperation,
                 recoverWallet,
                 addGuardian,
                 removeGuardian,

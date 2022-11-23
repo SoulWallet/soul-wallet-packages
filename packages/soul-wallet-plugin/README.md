@@ -51,6 +51,4 @@ soul-wallet-extension
 
 ## TODO
 1. add hash to contentScript and background
-2. activity
-3. remove guardian, call contract
-4. sign transaction modal
+2. optimize activity

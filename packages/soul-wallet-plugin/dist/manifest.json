@@ -12,7 +12,8 @@
         "default_popup": "popup.html"
     },
     "background": {
-        "service_worker": "js/backgroundPage.js"
+        "service_worker": "js/backgroundPage.js",
+        "type": "module"
     },
     "content_scripts": [
         {

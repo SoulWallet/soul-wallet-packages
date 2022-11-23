@@ -33,7 +33,7 @@
     "axios": "^0.27.2",
     "dotenv": "8.6.0",
     "ethereumjs-util": "^7.1.5",
-    "ethers": "^5.6.9",
+    "ethers": "^5.7.1",
     "web3": "^1.7.5",
     "web3-utils": "^1.7.5"
   }

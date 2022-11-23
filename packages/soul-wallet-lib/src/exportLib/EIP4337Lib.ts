@@ -15,7 +15,6 @@ import { Web3Helper } from "../utils/web3Helper";
 import { IContract } from "../contracts/icontract";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import { WalletProxyContract } from "../contracts/walletProxy";
-import Web3 from "web3";
 import { DecodeCallData } from '../utils/decodeCallData';
 import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
@@ -223,16 +222,22 @@ export class EIP4337Lib {
      * @param defaultBlock "earliest", "latest" and "pending"
      * @returns the next nonce number
      */
-    private static async getNonce(walletAddress: string, web3: Web3, defaultBlock = 'latest'): Promise<number> {
+    private static async getNonce(walletAddress: string, ethers: any, defaultBlock = 'latest'): Promise<number> {
         Guard.address(walletAddress);
         try {
-            const code = await web3.eth.getCode(walletAddress, defaultBlock);
+            // const code = await web3.eth.getCode(walletAddress, defaultBlock);
+            const code = await ethers.getCode(walletAddress, defaultBlock);
+
             // check contract is exist
             if (code === '0x') {
                 return 0;
             } else {
-                const contract = new web3.eth.Contract([{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], walletAddress);
-                const nonce = await contract.methods.nonce().call();
+                // const contract = new web3.eth.Contract([{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], walletAddress);
+                const contract = new ethers.Contract(walletAddress, [{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }])
+                // const nonce = await contract.methods.nonce().call();
+                const nonce = await contract.nonce();
+
+                console.log('Nonce is', nonce);
                 // try parse to number
                 const nextNonce = parseInt(nonce, 10);
                 if (isNaN(nextNonce)) {
