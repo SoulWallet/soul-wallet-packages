@@ -5,9 +5,7 @@ monorepo management with pnpm workspace
 
 ## Quick start
 
-### Install pnpm
 
-`npm i -g pnpm`
 
 ### Install dependencies for all repos
 
@@ -29,10 +27,6 @@ monorepo management with pnpm workspace
 
 `pnpm i ${dependencyName} -W`
 
-### Add sub packages
-
-`cd packages && git clone ${repoUrl}`
-
 ## Dev Guide
 
 ### Import sibling package
@@ -44,6 +38,11 @@ Link package as dependency first, which is already done in the repo:
 Import package like what you did before, take `soul-wallet-lib` for example:
 
 `import { WalletLib } from "soul-wallet-lib";`
+
+## Notice
+
+### Install pnpm if you did't have it installed yet
+`npm i -g pnpm`
 
 ## TODO
 [ ] chrome.storage.session requires chrome version >= 102, add polyfill.
