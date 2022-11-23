@@ -4,11 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-21 11:24:34
+ * @LastEditTime: 2022-11-23 12:30:13
  */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
 import Web3 from 'web3';
+import { ethers } from "ethers";
 import fs from 'fs';
 import { Utils } from './Utils';
 import { WalletLib } from 'soul-wallet-lib';
@@ -19,6 +20,11 @@ async function main() {
 
     // infura key for test
     const web3 = new Web3('https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18');
+    const ethersProvider = new ethers.providers.JsonRpcProvider('https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18');
+
+
+
+
     const bundlerEndpoint = 'http://35.89.2.9:3000/rpc/';
 
 
@@ -522,7 +528,7 @@ async function main() {
 
         }
 
-       
+
 
 
 
@@ -574,11 +580,11 @@ curl --location --request POST '35.89.2.9:3000/rpc/' \
             );
             if (resp && resp.data && typeof (resp.data.result) === 'string' && resp.data.result === requestId) {
                 console.log('requestId: ' + resp.data.result);
-               
-                 {
-                    const arr = await WalletLib.EIP4337.RPC.waitUserOperation(web3 as any, EntryPointAddress, requestId, 1000 * 60 * 1, (await web3.eth.getBlockNumber() - 500));
 
-                    console.log('==');
+                {
+                    const arr1 = await WalletLib.EIP4337.RPC.waitUserOperationEther(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
+                    const arr2 = await WalletLib.EIP4337.RPC.waitUserOperationWeb3(web3 as any, EntryPointAddress, requestId, 1000 * 5);
+                    console.log('waitUserOperation result: ', arr1, arr2);
 
                 }
 
