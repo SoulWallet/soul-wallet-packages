@@ -2,14 +2,14 @@
 import Web3 from "web3";
 import Bus from "./lib/bus";
 import config from "./config";
-import ProviderEngine from "web3-provider-engine";
-import CacheSubprovider from "web3-provider-engine/subproviders/cache.js";
-import FixtureSubprovider from "web3-provider-engine/subproviders/fixture.js";
-import FilterSubprovider from "web3-provider-engine/subproviders/filters.js";
-import VmSubprovider from "web3-provider-engine/subproviders/vm.js";
-import HookedWalletSubprovider from "web3-provider-engine/subproviders/hooked-wallet.js";
-import NonceSubprovider from "web3-provider-engine/subproviders/nonce-tracker.js";
-import RpcSubprovider from "web3-provider-engine/subproviders/rpc.js";
+import ProviderEngine from "soul-wallet-provider";
+import CacheSubprovider from "soul-wallet-provider/subproviders/cache.js";
+import FixtureSubprovider from "soul-wallet-provider/subproviders/fixture.js";
+import FilterSubprovider from "soul-wallet-provider/subproviders/filters.js";
+import VmSubprovider from "soul-wallet-provider/subproviders/vm.js";
+import HookedWalletSubprovider from "soul-wallet-provider/subproviders/hooked-wallet.js";
+import NonceSubprovider from "soul-wallet-provider/subproviders/nonce-tracker.js";
+import RpcSubprovider from "soul-wallet-provider/subproviders/rpc.js";
 
 var engine = new ProviderEngine();
 
