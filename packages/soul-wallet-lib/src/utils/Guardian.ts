@@ -4,25 +4,24 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-05 09:19:52
+ * @LastEditTime: 2022-11-23 16:35:29
  */
 
 import { UserOperation } from "../entity/userOperation";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
-import Web3 from "web3";
+import { ethers } from "ethers";
 import { packGuardiansSignByRequestId } from "../utils/userOp";
 
 
 export class Guaridian {
-    private static walletContract(web3: Web3, walletAddress: string) {
-        return new web3.eth.Contract(SimpleWalletContract.ABI, walletAddress);
+    private static walletContract(etherProvider: ethers.providers.BaseProvider, walletAddress: string) {
+        return new ethers.Contract(walletAddress, SimpleWalletContract.ABI, etherProvider);
     }
-    private static async _guardian(web3: Web3, walletAddress: string, nonce: number,
+    private static async _guardian(etherProvider: ethers.providers.BaseProvider, walletAddress: string, nonce: number,
         entryPointAddress: string, paymasterAndData: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number, callData: string) {
 
-        walletAddress = web3.utils.toChecksumAddress(walletAddress);
-        
+        walletAddress = ethers.utils.getAddress(walletAddress);
         let userOperation: UserOperation = new UserOperation();
         userOperation.nonce = nonce;
         userOperation.sender = walletAddress;
@@ -30,7 +29,7 @@ export class Guaridian {
         userOperation.maxFeePerGas = maxFeePerGas;
         userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
         userOperation.callData = callData;
-        let gasEstimated = await userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+        let gasEstimated = await userOperation.estimateGas(entryPointAddress, etherProvider);
         if (!gasEstimated) {
             return null;
         }
@@ -50,14 +49,15 @@ export class Guaridian {
      * @param maxPriorityFeePerGas 
      * @returns unsigned UserOperation
      */
-    static async grantGuardianRequest(web3: Web3, walletAddress: string,
+    static async grantGuardianRequest(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
 
-        guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianRequest(guardianAddress).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        guardianAddress = ethers.utils.getAddress(guardianAddress);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).grantGuardianRequest(guardianAddress).encodeABI()
+
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
@@ -74,13 +74,13 @@ export class Guaridian {
      * @param maxPriorityFeePerGas 
      * @returns  unsigned UserOperation
      */
-    static async revokeGuardianRequest(web3: Web3, walletAddress: string,
+    static async revokeGuardianRequest(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
-        guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianRequest(guardianAddress).encodeABI()
+        guardianAddress = ethers.utils.getAddress(guardianAddress);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).revokeGuardianRequest(guardianAddress).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
@@ -97,13 +97,13 @@ export class Guaridian {
      * @param maxPriorityFeePerGas 
      * @returns  unsigned UserOperation
      */
-    static async deleteGuardianRequest(web3: Web3, walletAddress: string,
+    static async deleteGuardianRequest(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
-        guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.deleteGuardianRequest(guardianAddress).encodeABI()
+        guardianAddress = ethers.utils.getAddress(guardianAddress);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).deleteGuardianRequest(guardianAddress).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
@@ -119,13 +119,13 @@ export class Guaridian {
      * @param maxPriorityFeePerGas 
      * @returns  unsigned UserOperation
      */
-    static async revokeGuardianConfirmation(web3: Web3, walletAddress: string,
+    static async revokeGuardianConfirmation(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
-        guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.revokeGuardianConfirmation(guardianAddress).encodeABI()
+        guardianAddress = ethers.utils.getAddress(guardianAddress);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).revokeGuardianConfirmation(guardianAddress).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
@@ -141,29 +141,29 @@ export class Guaridian {
      * @param maxPriorityFeePerGas 
      * @returns  unsigned UserOperation
      */
-    static async grantGuardianConfirmation(web3: Web3, walletAddress: string,
+    static async grantGuardianConfirmation(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, guardianAddress: string, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number) {
-        guardianAddress = web3.utils.toChecksumAddress(guardianAddress);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.grantGuardianConfirmation(guardianAddress).encodeABI()
+        guardianAddress = ethers.utils.getAddress(guardianAddress);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).grantGuardianConfirmation(guardianAddress).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
 
-    static async transferOwner(web3: Web3, walletAddress: string,
+    static async transferOwner(etherProvider: ethers.providers.BaseProvider, walletAddress: string,
         nonce: number, entryPointAddress: string, paymasterAddress: string,
         maxFeePerGas: number, maxPriorityFeePerGas: number, newOwner: string) {
-        newOwner = web3.utils.toChecksumAddress(newOwner);
-        const calldata = Guaridian.walletContract(web3, walletAddress).methods.transferOwner(newOwner).encodeABI()
+        newOwner = ethers.utils.getAddress(newOwner);
+        const calldata = Guaridian.walletContract(etherProvider, walletAddress).transferOwner(newOwner).encodeABI()
 
-        return await this._guardian(web3, walletAddress, nonce, entryPointAddress, paymasterAddress,
+        return await this._guardian(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress,
             maxFeePerGas, maxPriorityFeePerGas, calldata);
     }
 
 
- 
+
     static packGuardiansSignByRequestId = packGuardiansSignByRequestId;
 
 

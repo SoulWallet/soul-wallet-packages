@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-18 15:27:59
+ * @LastEditTime: 2022-11-23 16:31:28
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -75,18 +75,22 @@ class UserOperation {
      * @param estimateGasFunc the estimate gas function
      * @returns false if failed
      */
-    estimateGas(entryPointAddress, estimateGasFunc) {
+    estimateGas(entryPointAddress, etherProvider
+    // estimateGasFunc: (txInfo: ethers.utils.Deferrable<ethers.providers.TransactionRequest>) => Promise<BigNumber> //(transaction:ethers.providers.TransactionRequest):Promise<number>
+    // (transaction: ethers.utils.Deferrable<ethers.providers.TransactionRequest>): Promise<ether.BigNumber>
+    ) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 this.verificationGasLimit = 150000;
                 if (this.initCode.length > 0) {
                     this.verificationGasLimit += (3200 + 200 * this.initCode.length);
                 }
-                this.callGasLimit = yield estimateGasFunc({
+                const estimateGasRe = yield etherProvider.estimateGas({
                     from: entryPointAddress,
                     to: this.sender,
                     data: this.callData
                 });
+                this.callGasLimit = estimateGasRe.toNumber();
                 return true;
             }
             catch (error) {

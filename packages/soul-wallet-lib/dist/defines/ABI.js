@@ -5,33 +5,34 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-19 17:38:12
  * @LastEditors: cejay
- * @LastEditTime: 2022-09-22 11:29:49
+ * @LastEditTime: 2022-11-22 23:34:02
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ERC1155 = exports.ERC721 = exports.ERC20 = exports.execFromEntryPoint = void 0;
-const execFromEntryPoint = {
-    "inputs": [
-        {
-            "internalType": "address",
-            "name": "dest",
-            "type": "address"
-        },
-        {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
-        },
-        {
-            "internalType": "bytes",
-            "name": "func",
-            "type": "bytes"
-        }
-    ],
-    "name": "execFromEntryPoint",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-};
+// const execFromEntryPoint: AbiItem = {
+//     "inputs": [
+//         {
+//             "internalType": "address",
+//             "name": "dest",
+//             "type": "address"
+//         },
+//         {
+//             "internalType": "uint256",
+//             "name": "value",
+//             "type": "uint256"
+//         },
+//         {
+//             "internalType": "bytes",
+//             "name": "func",
+//             "type": "bytes"
+//         }
+//     ],
+//     "name": "execFromEntryPoint",
+//     "outputs": [],
+//     "stateMutability": "nonpayable",
+//     "type": "function"
+// };
+const execFromEntryPoint = ["function execFromEntryPoint(address dest,uint256 value,bytes func)"];
 exports.execFromEntryPoint = execFromEntryPoint;
 const ERC20 = [
     {

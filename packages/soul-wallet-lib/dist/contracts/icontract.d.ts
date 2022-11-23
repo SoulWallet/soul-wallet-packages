@@ -1,5 +1,5 @@
-import { AbiItem } from 'web3-utils';
+import { JsonFragment, Fragment } from '@ethersproject/abi';
 export interface IContract {
-    ABI: AbiItem[] | AbiItem;
+    ABI: ReadonlyArray<Fragment | JsonFragment | string>;
     bytecode: string;
 }

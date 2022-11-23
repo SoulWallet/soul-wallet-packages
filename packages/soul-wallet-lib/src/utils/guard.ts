@@ -1,30 +1,21 @@
-import Web3 from "web3";
-import { Web3Helper } from "./web3Helper";
-
 /*
  * @Description: 
  * @Version: 1.0
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 20:12:45
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-05 22:44:14
+ * @LastEditTime: 2022-11-22 23:01:36
  */
+
+import { ethers } from "ethers";
 export class Guard {
-
-    private static _web3: Web3;
-    private static get web3() {
-        Guard._web3 = Web3Helper.new().web3;
-        return Guard._web3;
-    }
-
 
     /**
      * check if the address is valid
      */
     public static address(address: string) {
-        if (!Guard.web3.utils.isAddress(address)) {
-            throw new Error('Invalid address');
-        }
+        // ethereum address is 20 bytes
+        ethers.utils.getAddress(address);
     }
 
     /**
@@ -32,7 +23,7 @@ export class Guard {
      */
     public static uint(value: string | number) {
         if (typeof (value) === 'string') {
-            if (Guard.web3.utils.toBN(value).lt(Guard.web3.utils.toBN(0))) {
+            if (ethers.BigNumber.from(value).lt( ethers.BigNumber.from(0))) {
                 throw new Error('Invalid uint');
             }
         } else {
@@ -48,7 +39,7 @@ export class Guard {
      * check if the value is 0x....
      */
     public static hex(value: string) {
-        if (!Guard.web3.utils.isHexStrict(value)) {
+        if (!ethers.utils.isHexString(value)) {
             throw new Error('Invalid Strict hex');
         }
     }

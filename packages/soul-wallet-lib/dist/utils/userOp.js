@@ -12,14 +12,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.payMasterSignHash = exports.packGuardiansSignByRequestId = exports.signUserOpWithPersonalSign = exports.signUserOp = exports.getRequestId = exports.packUserOp = void 0;
 const utils_1 = require("ethers/lib/utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
-const web3_1 = __importDefault(require("web3"));
 const ethers_1 = require("ethers");
 const simpleWallet_1 = require("../contracts/simpleWallet");
 function encode(typevalues, forSignature) {
@@ -107,7 +103,7 @@ function _signReuestId(requestId, privateKey) {
  */
 function signUserOp(op, entryPointAddress, chainId, privateKey) {
     const sign = _signUserOp(op, entryPointAddress, chainId, privateKey);
-    return signUserOpWithPersonalSign(new web3_1.default().eth.accounts.privateKeyToAccount(privateKey).address, sign);
+    return signUserOpWithPersonalSign(ethers_1.ethers.utils.computeAddress(privateKey), sign);
 }
 exports.signUserOp = signUserOp;
 /**
@@ -137,7 +133,7 @@ exports.signUserOpWithPersonalSign = signUserOpWithPersonalSign;
  * @param web3 if web3 and walletAddress is not null, will check the signer on chain
  * @returns
  */
-function packGuardiansSignByRequestId(requestId, signatures, walletAddress = null, web3 = null) {
+function packGuardiansSignByRequestId(requestId, signatures, walletAddress = null, etherProvider = null) {
     return __awaiter(this, void 0, void 0, function* () {
         const msg = (0, ethereumjs_util_1.keccak256)(Buffer.concat([
             Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
@@ -164,10 +160,10 @@ function packGuardiansSignByRequestId(requestId, signatures, walletAddress = nul
                 throw new Error(`invalid signature: ${signature}`);
             }
         }
-        if (web3 && walletAddress) {
+        if (etherProvider && walletAddress) {
             // function isGuardian(address account) public view returns (bool)
-            const contract = new web3.eth.Contract(simpleWallet_1.SimpleWalletContract.ABI, walletAddress);
-            const guardiansCount = parseInt(yield contract.methods.getGuardiansCount().call());
+            const contract = new ethers_1.ethers.Contract(walletAddress, simpleWallet_1.SimpleWalletContract.ABI, etherProvider);
+            const guardiansCount = parseInt(yield contract.getGuardiansCount().call());
             if (guardiansCount < 2) {
                 throw new Error(`guardians count must >= 2`);
             }
@@ -177,7 +173,7 @@ function packGuardiansSignByRequestId(requestId, signatures, walletAddress = nul
             }
             for (let index = 0; index < signList.length; index++) {
                 const sign = signList[index];
-                const isGuardian = yield contract.methods.isGuardian(sign.signer).call();
+                const isGuardian = yield contract.isGuardian(sign.signer).call();
                 if (!isGuardian) {
                     throw new Error(`signer ${sign.signer} is not a guardian`);
                 }

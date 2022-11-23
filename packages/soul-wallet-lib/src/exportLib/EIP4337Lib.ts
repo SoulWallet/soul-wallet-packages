@@ -4,14 +4,13 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-23 10:49:25
+ * @LastEditTime: 2022-11-22 23:24:00
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
 import { AddressZero } from "../defines/address";
 import { UserOperation } from "../entity/userOperation";
 import { Guard } from "../utils/guard";
-import { Web3Helper } from "../utils/web3Helper";
 import { IContract } from "../contracts/icontract";
 import { SimpleWalletContract } from "../contracts/simpleWallet";
 import { WalletProxyContract } from "../contracts/walletProxy";
@@ -20,6 +19,7 @@ import { Guaridian } from "../utils/Guardian";
 import { ERC1155, ERC20, ERC721, ETH } from "../utils/Token";
 import { RPC } from '../utils/rpc';
 import { Converter } from "../utils/converter";
+import { ethers } from "ethers";
 
 export class EIP4337Lib {
 
@@ -50,8 +50,7 @@ export class EIP4337Lib {
     public static RPC = {
         eth_sendUserOperation: RPC.eth_sendUserOperation,
         eth_supportedEntryPoints: RPC.eth_supportedEntryPoints,
-        waitUserOperationWeb3: RPC.waitUserOperationWeb3,
-        waitUserOperationEther: RPC.waitUserOperationEther,
+        waitUserOperation: RPC.waitUserOperation,
     }
 
 
@@ -66,9 +65,8 @@ export class EIP4337Lib {
     private static getInitializeData(entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
         // function initialize(IEntryPoint anEntryPoint, address anOwner,  IERC20 token,address paymaster)
         // encodeFunctionData
-        const web3 = Web3Helper.new().web3;
-        const simpleWalletContract = new web3.eth.Contract(SimpleWalletContract.ABI);
-        const initializeData = simpleWalletContract.methods.initialize(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress).encodeABI();
+        let iface = new ethers.utils.Interface(SimpleWalletContract.ABI);
+        let initializeData = iface.encodeFunctionData("initialize", [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress]);
         return initializeData;
     }
 
@@ -81,17 +79,19 @@ export class EIP4337Lib {
      * @param payMasterAddress the payMaster address
      * @returns the wallet code hex string  
      */
-    public static getWalletCode(walletLogicAddress: string, entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string) {
+    public static getWalletCode(walletLogicAddress: string, entryPointAddress: string, ownerAddress: string, tokenAddress: string, payMasterAddress: string): string {
         //EntryPoint anEntryPoint, address anOwner, IERC20 token, address paymaster
         const initializeData = EIP4337Lib.getInitializeData(entryPointAddress, ownerAddress, tokenAddress, payMasterAddress);
-        const walletBytecode = new (Web3Helper.new().web3).eth.Contract(WalletProxyContract.ABI).deploy({
-            data: WalletProxyContract.bytecode,
-            arguments: [
-                walletLogicAddress,
-                initializeData
-            ]
-        }).encodeABI();
-        return walletBytecode;
+        // const walletBytecode = new (Web3Helper.new().web3).eth.Contract(WalletProxyContract.ABI).deploy({
+        //     data: WalletProxyContract.bytecode,
+        //     arguments: [
+        //         walletLogicAddress,
+        //         initializeData
+        //     ]
+        // }).encodeABI();
+        const factory = new ethers.ContractFactory(WalletProxyContract.ABI, WalletProxyContract.bytecode);
+        const walletBytecode = factory.getDeployTransaction(walletLogicAddress, initializeData).data;
+        return walletBytecode as string;
     }
 
     /**
@@ -158,11 +158,10 @@ export class EIP4337Lib {
 
     private static getPackedInitCode(create2Factory: string, initCode: string, salt: number) {
         //function deploy(bytes memory _initCode, bytes32 _salt)
-        const web3 = Web3Helper.new().web3;
-
-        return create2Factory.toLowerCase() + web3.eth.abi.encodeFunctionCall(
-            { "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" },
-            [initCode, EIP4337Lib.number2Bytes32(salt)]).substring(2);
+        const abi = { "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" };
+        let iface = new ethers.utils.Interface([abi]);
+        let packedInitCode = iface.encodeFunctionData("deploy", [initCode, EIP4337Lib.number2Bytes32(salt)]).substring(2);
+        return create2Factory.toLowerCase() + packedInitCode;
     }
 
     /**
@@ -180,12 +179,8 @@ export class EIP4337Lib {
         create2Factory: string): string {
 
         Guard.hex(initContract.bytecode);
-
-        const web3 = Web3Helper.new().web3;
-        const initCodeWithArgs = new web3.eth.Contract(initContract.ABI).deploy({
-            data: initContract.bytecode,
-            arguments: initArgs
-        }).encodeABI();
+        const factory = new ethers.ContractFactory(initContract.ABI, initContract.bytecode);
+        const initCodeWithArgs = factory.getDeployTransaction(initArgs).data as string;
         const initCodeHash = keccak256(initCodeWithArgs);
         return EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
 
@@ -223,22 +218,16 @@ export class EIP4337Lib {
      * @param defaultBlock "earliest", "latest" and "pending"
      * @returns the next nonce number
      */
-    private static async getNonce(walletAddress: string, ethers: any, defaultBlock = 'latest'): Promise<number> {
+    private static async getNonce(walletAddress: string, etherProvider: ethers.providers.BaseProvider, defaultBlock = 'latest'): Promise<number> {
         Guard.address(walletAddress);
         try {
-            // const code = await web3.eth.getCode(walletAddress, defaultBlock);
-            const code = await ethers.getCode(walletAddress, defaultBlock);
-
+            const code = await etherProvider.getCode(walletAddress, defaultBlock);
             // check contract is exist
             if (code === '0x') {
                 return 0;
             } else {
-                // const contract = new web3.eth.Contract([{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], walletAddress);
-                const contract = new ethers.Contract(walletAddress, [{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }])
-                // const nonce = await contract.methods.nonce().call();
+                const contract = new ethers.Contract(walletAddress, [{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], etherProvider);
                 const nonce = await contract.nonce();
-
-                console.log('Nonce is', nonce);
                 // try parse to number
                 const nextNonce = parseInt(nonce, 10);
                 if (isNaN(nextNonce)) {

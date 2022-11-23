@@ -28,8 +28,7 @@ export declare class EIP4337Lib {
     static RPC: {
         eth_sendUserOperation: typeof RPC.eth_sendUserOperation;
         eth_supportedEntryPoints: typeof RPC.eth_supportedEntryPoints;
-        waitUserOperationWeb3: typeof RPC.waitUserOperationWeb3;
-        waitUserOperationEther: typeof RPC.waitUserOperationEther;
+        waitUserOperation: typeof RPC.waitUserOperation;
     };
     /**
      *

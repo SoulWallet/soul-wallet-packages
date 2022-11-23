@@ -16,26 +16,24 @@ exports.ETH = exports.ERC1155 = exports.ERC721 = exports.ERC20 = exports.Token =
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 21:45:49
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-05 09:20:15
+ * @LastEditTime: 2022-11-23 16:35:07
  */
 const userOperation_1 = require("../entity/userOperation");
 const ABI_1 = require("../defines/ABI");
+const ethers_1 = require("ethers");
 class Token {
-    static createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAndData, maxFeePerGas, maxPriorityFeePerGas, callContract, encodeABI, value = '0') {
+    static createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAndData, maxFeePerGas, maxPriorityFeePerGas, callContract, encodeABI, value = '0') {
         return __awaiter(this, void 0, void 0, function* () {
-            walletAddress = web3.utils.toChecksumAddress(walletAddress);
+            walletAddress = ethers_1.ethers.utils.getAddress(walletAddress);
             let userOperation = new userOperation_1.UserOperation();
             userOperation.nonce = nonce;
             userOperation.sender = walletAddress;
             userOperation.paymasterAndData = paymasterAndData;
             userOperation.maxFeePerGas = maxFeePerGas;
             userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
-            userOperation.callData = web3.eth.abi.encodeFunctionCall(ABI_1.execFromEntryPoint, [
-                callContract,
-                web3.utils.toHex(value),
-                encodeABI
-            ]);
-            let gasEstimated = yield userOperation.estimateGas(entryPointAddress, web3.eth.estimateGas);
+            userOperation.callData = new ethers_1.ethers.utils.Interface(ABI_1.execFromEntryPoint)
+                .encodeFunctionData("execFromEntryPoint", [callContract, value, encodeABI]);
+            let gasEstimated = yield userOperation.estimateGas(entryPointAddress, etherProvider);
             if (!gasEstimated) {
                 return null;
             }
@@ -45,104 +43,93 @@ class Token {
 }
 exports.Token = Token;
 class ERC20 {
-    static getContract(web3, contractAddress) {
-        return new web3.eth.Contract(ABI_1.ERC20, contractAddress);
+    static getContract(etherProvider, contractAddress) {
+        return new ethers_1.ethers.Contract(contractAddress, ABI_1.ERC20, etherProvider);
     }
-    static approve(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _spender, _value) {
+    static approve(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _spender, _value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC20.getContract(web3, token);
-            let encodeABI = contract.methods.approve(_spender, _value).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC20).encodeFunctionData("approve", [_spender, _value]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static transferFrom(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _value) {
+    static transferFrom(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC20.getContract(web3, token);
-            let encodeABI = contract.methods.transferFrom(_from, _to, _value).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC20).encodeFunctionData("transferFrom", [_from, _to, _value]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static transfer(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _to, _value) {
+    static transfer(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _to, _value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC20.getContract(web3, token);
-            let encodeABI = contract.methods.transfer(_to, _value).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC20).encodeFunctionData("transfer", [_to, _value]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
 }
 exports.ERC20 = ERC20;
 class ERC721 {
-    static getContract(web3, contractAddress) {
-        return new web3.eth.Contract(ABI_1.ERC721, contractAddress);
+    static getContract(etherProvider, contractAddress) {
+        return new ethers_1.ethers.Contract(contractAddress, ABI_1.ERC721, etherProvider);
     }
-    static approve(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _spender, _tokenId) {
+    static approve(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _spender, _tokenId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC721.getContract(web3, token);
-            let encodeABI = contract.methods.approve(_spender, _tokenId).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC721).encodeFunctionData("approve", [_spender, _tokenId]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static transferFrom(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _tokenId) {
+    static transferFrom(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _tokenId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC721.getContract(web3, token);
-            let encodeABI = contract.methods.transferFrom(_from, _to, _tokenId).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC721).encodeFunctionData("transferFrom", [_from, _to, _tokenId]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static transfer(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _to, _tokenId) {
+    static transfer(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _to, _tokenId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC721.getContract(web3, token);
-            let encodeABI = contract.methods.transfer(_to, _tokenId).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC721).encodeFunctionData("transfer", [_to, _tokenId]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static safeTransferFrom(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _tokenId) {
+    static safeTransferFrom(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _tokenId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC721.getContract(web3, token);
-            let encodeABI = contract.methods.safeTransferFrom(_from, _to, _tokenId).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC721).encodeFunctionData("safeTransferFrom", [_from, _to, _tokenId]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static setApprovalForAll(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _operator, _approved) {
+    static setApprovalForAll(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _operator, _approved) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC721.getContract(web3, token);
-            let encodeABI = contract.methods.setApprovalForAll(_operator, _approved).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC721).encodeFunctionData("setApprovalForAll", [_operator, _approved]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
 }
 exports.ERC721 = ERC721;
 class ERC1155 {
-    static getContract(web3, contractAddress) {
-        return new web3.eth.Contract(ABI_1.ERC1155, contractAddress);
+    static getContract(etherProvider, contractAddress) {
+        return new ethers_1.ethers.Contract(contractAddress, ABI_1.ERC1155, etherProvider);
     }
-    static safeTransferFrom(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _id, _value, _data) {
+    static safeTransferFrom(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _id, _value, _data) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC1155.getContract(web3, token);
-            let encodeABI = contract.methods.safeTransferFrom(_from, _to, _id, _value, _data).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC1155).encodeFunctionData("safeTransferFrom", [_from, _to, _id, _value, _data]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static safeBatchTransferFrom(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _ids, _values, _data) {
+    static safeBatchTransferFrom(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _from, _to, _ids, _values, _data) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC1155.getContract(web3, token);
-            let encodeABI = contract.methods.safeBatchTransferFrom(_from, _to, _ids, _values, _data).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC1155).encodeFunctionData("safeBatchTransferFrom", [_from, _to, _ids, _values, _data]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
-    static setApprovalForAll(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _operator, _approved) {
+    static setApprovalForAll(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, _operator, _approved) {
         return __awaiter(this, void 0, void 0, function* () {
-            let contract = ERC1155.getContract(web3, token);
-            let encodeABI = contract.methods.setApprovalForAll(_operator, _approved).encodeABI();
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
+            let encodeABI = new ethers_1.ethers.utils.Interface(ABI_1.ERC1155).encodeFunctionData("setApprovalForAll", [_operator, _approved]);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, token, encodeABI);
         });
     }
 }
 exports.ERC1155 = ERC1155;
 class ETH {
-    static transfer(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, to, value) {
+    static transfer(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, to, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield Token.createOp(web3, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, to, '0x', value);
+            return yield Token.createOp(etherProvider, walletAddress, nonce, entryPointAddress, paymasterAddress, maxFeePerGas, maxPriorityFeePerGas, to, '0x', value);
         });
     }
 }

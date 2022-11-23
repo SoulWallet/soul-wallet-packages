@@ -1,6 +1,6 @@
-import { AbiItem } from 'web3-utils';
-declare const execFromEntryPoint: AbiItem;
-declare const ERC20: AbiItem[];
-declare const ERC721: AbiItem[];
-declare const ERC1155: AbiItem[];
+import { JsonFragment } from '@ethersproject/abi';
+declare const execFromEntryPoint: string[];
+declare const ERC20: JsonFragment[];
+declare const ERC721: JsonFragment[];
+declare const ERC1155: JsonFragment[];
 export { execFromEntryPoint, ERC20, ERC721, ERC1155 };

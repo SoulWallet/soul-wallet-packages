@@ -1,4 +1,4 @@
-import { TransactionInfo } from './transactionInfo';
+import { ethers } from "ethers";
 /**
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/UserOperation.sol
  */
@@ -22,7 +22,7 @@ declare class UserOperation {
      * @param estimateGasFunc the estimate gas function
      * @returns false if failed
      */
-    estimateGas(entryPointAddress: string, estimateGasFunc: (txInfo: TransactionInfo) => Promise<number>): Promise<boolean>;
+    estimateGas(entryPointAddress: string, etherProvider: ethers.providers.BaseProvider): Promise<boolean>;
     /**
      * get the paymaster sign hash
      * @returns

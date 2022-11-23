@@ -6,8 +6,7 @@
 import { arrayify, defaultAbiCoder, keccak256, recoverAddress } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, fromRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
 import { UserOperation } from '../entity/userOperation'
-import Web3 from 'web3'
-import { BigNumber } from 'ethers'
+import { ethers,BigNumber } from "ethers";
 import { SimpleWalletContract } from '../contracts/simpleWallet'
 
 function encode(typevalues: Array<{ type: string, val: any }>, forSignature: boolean): string {
@@ -102,7 +101,7 @@ function _signReuestId(requestId: string, privateKey: string): string {
  */
 export function signUserOp(op: UserOperation, entryPointAddress: string, chainId: number, privateKey: string): string {
   const sign = _signUserOp(op, entryPointAddress, chainId, privateKey);
-  return signUserOpWithPersonalSign(new Web3().eth.accounts.privateKeyToAccount(privateKey).address, sign);
+  return signUserOpWithPersonalSign( ethers.utils.computeAddress(privateKey), sign);
 }
 
 /**
@@ -135,7 +134,7 @@ export function signUserOpWithPersonalSign(signAddress: string, signature: strin
  * @returns 
  */
 export async function packGuardiansSignByRequestId(requestId: string, signatures: string[],
-  walletAddress: string | null = null, web3: Web3 | null = null): Promise<string> {
+  walletAddress: string | null = null, etherProvider: ethers.providers.BaseProvider | null = null): Promise<string> {
   const msg = keccak256_buffer(Buffer.concat([
     Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
     Buffer.from(arrayify(requestId))
@@ -160,10 +159,10 @@ export async function packGuardiansSignByRequestId(requestId: string, signatures
     }
   }
 
-  if (web3 && walletAddress) {
+  if (etherProvider && walletAddress) {
     // function isGuardian(address account) public view returns (bool)
-    const contract = new web3.eth.Contract(SimpleWalletContract.ABI, walletAddress);
-    const guardiansCount: number = parseInt(await contract.methods.getGuardiansCount().call());
+    const contract = new ethers.Contract(walletAddress, SimpleWalletContract.ABI, etherProvider);
+    const guardiansCount: number = parseInt(await contract.getGuardiansCount().call());
     if (guardiansCount < 2) {
       throw new Error(`guardians count must >= 2`);
     }
@@ -173,7 +172,7 @@ export async function packGuardiansSignByRequestId(requestId: string, signatures
     }
     for (let index = 0; index < signList.length; index++) {
       const sign = signList[index];
-      const isGuardian = await contract.methods.isGuardian(sign.signer).call();
+      const isGuardian = await contract.isGuardian(sign.signer).call();
       if (!isGuardian) {
         throw new Error(`signer ${sign.signer} is not a guardian`);
       }
