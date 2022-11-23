@@ -4,9 +4,11 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-18 15:27:59
+ * @LastEditTime: 2022-11-23 16:31:28
  */
 
+import { ethers, BigNumber } from "ethers";
+import { Deferrable } from "ethers/lib/utils";
 import { Guard } from '../utils/guard';
 import { signUserOp, payMasterSignHash, getRequestId, signUserOpWithPersonalSign } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';
@@ -69,17 +71,24 @@ class UserOperation {
      * @param estimateGasFunc the estimate gas function
      * @returns false if failed
      */
-    public async estimateGas(entryPointAddress: string, estimateGasFunc: (txInfo: TransactionInfo) => Promise<number>) {
+    public async estimateGas(
+        entryPointAddress: string,
+        etherProvider: ethers.providers.BaseProvider
+        // estimateGasFunc: (txInfo: ethers.utils.Deferrable<ethers.providers.TransactionRequest>) => Promise<BigNumber> //(transaction:ethers.providers.TransactionRequest):Promise<number>
+        // (transaction: ethers.utils.Deferrable<ethers.providers.TransactionRequest>): Promise<ether.BigNumber>
+    ) {
         try {
             this.verificationGasLimit = 150000;
             if (this.initCode.length > 0) {
                 this.verificationGasLimit += (3200 + 200 * this.initCode.length);
             }
-            this.callGasLimit = await estimateGasFunc({
+            const estimateGasRe = await etherProvider.estimateGas({
                 from: entryPointAddress,
                 to: this.sender,
                 data: this.callData
             });
+
+            this.callGasLimit = estimateGasRe.toNumber();
             return true;
         } catch (error) {
             console.log(error);

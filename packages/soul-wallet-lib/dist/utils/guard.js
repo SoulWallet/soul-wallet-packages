@@ -1,34 +1,29 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Guard = void 0;
-const web3Helper_1 = require("./web3Helper");
 /*
  * @Description:
  * @Version: 1.0
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 20:12:45
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-05 22:44:14
+ * @LastEditTime: 2022-11-22 23:01:36
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Guard = void 0;
+const ethers_1 = require("ethers");
 class Guard {
-    static get web3() {
-        Guard._web3 = web3Helper_1.Web3Helper.new().web3;
-        return Guard._web3;
-    }
     /**
      * check if the address is valid
      */
     static address(address) {
-        if (!Guard.web3.utils.isAddress(address)) {
-            throw new Error('Invalid address');
-        }
+        // ethereum address is 20 bytes
+        ethers_1.ethers.utils.getAddress(address);
     }
     /**
      * check if the value is Uint
      */
     static uint(value) {
         if (typeof (value) === 'string') {
-            if (Guard.web3.utils.toBN(value).lt(Guard.web3.utils.toBN(0))) {
+            if (ethers_1.ethers.BigNumber.from(value).lt(ethers_1.ethers.BigNumber.from(0))) {
                 throw new Error('Invalid uint');
             }
         }
@@ -45,7 +40,7 @@ class Guard {
      * check if the value is 0x....
      */
     static hex(value) {
-        if (!Guard.web3.utils.isHexStrict(value)) {
+        if (!ethers_1.ethers.utils.isHexString(value)) {
             throw new Error('Invalid Strict hex');
         }
     }

@@ -1,6 +1,4 @@
 export declare class Guard {
-    private static _web3;
-    private static get web3();
     /**
      * check if the address is valid
      */

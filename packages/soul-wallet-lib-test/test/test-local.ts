@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-23 11:29:22
+ * @LastEditTime: 2022-11-23 16:26:23
  */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
@@ -661,19 +661,29 @@ async function main() {
     {
         // simulate via bundlerHelper
         // function handleOps(uint expectedPaymentGas, EntryPoint ep, UserOperation[] calldata ops, address payable beneficiary)
+        {
+            const re = await BundlerHelperContract.methods.handleOps(0, EntryPointAddress, [activateOp], accounts[0]).encodeABI();
+            console.log('handleOps: ' + re);
+            let tx = {
+                from: WalletLib.EIP4337.Defines.AddressZero,
+                to: BundlerHelperAddress,
+                data: re,
+            };
+            const ggg = await ethersProvider.estimateGas(tx);
+            console.log('ggg: ' + ggg);
+        }
         const re = await BundlerHelperContract.methods.handleOps(0, EntryPointAddress, [activateOp], accounts[0]).call({
             from: WalletLib.EIP4337.Defines.AddressZero
         });
         console.log('handleOps result: ', re);
         // get tx info
-        
+
 
 
     }
     {
-        const arr1 = await WalletLib.EIP4337.RPC.waitUserOperationEther(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
-        const arr2 = await WalletLib.EIP4337.RPC.waitUserOperationWeb3(web3 as any, EntryPointAddress, requestId, 1000 * 5);
-        console.log('waitUserOperation result: ', arr1, arr2);
+        const arr1 = await WalletLib.EIP4337.RPC.waitUserOperation(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
+        console.log('waitUserOperation result: ', arr1);
 
     }
 
@@ -695,9 +705,10 @@ async function main() {
 
     //#region send weth from eip4337 wallet
     // get nonce
-    const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+    const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider);
+
     const sendErc20Op = await WalletLib.EIP4337.Tokens.ERC20.transferFrom(
-        web3 as any, walletAddress,
+        ethersProvider, walletAddress,
         nonce, EntryPointAddress, WETHPaymasterAddress,
         parseInt(web3.utils.toWei('100', 'gwei')),
         parseInt(web3.utils.toWei('10', 'gwei')),

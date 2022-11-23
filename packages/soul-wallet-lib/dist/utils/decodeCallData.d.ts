@@ -3,7 +3,6 @@ export declare class DecodeCallData {
     private bytes4Methods;
     private _saveToStorage;
     private _readFromStorage;
-    private web3;
     private constructor();
     static new(): DecodeCallData;
     /**

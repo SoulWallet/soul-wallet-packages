@@ -19,16 +19,15 @@ exports.DecodeCallData = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-10-14 18:31:39
+ * @LastEditTime: 2022-11-22 23:01:23
  */
 const axios_1 = __importDefault(require("axios"));
-const web3_1 = __importDefault(require("web3"));
+const ethers_1 = require("ethers");
 class DecodeCallData {
     constructor() {
         this.bytes4Methods = new Map();
         this._saveToStorage = null;
         this._readFromStorage = null;
-        this.web3 = new web3_1.default();
         /*
      0xa9059cbb	transfer(address,uint256)
      0x095ea7b3	approve(address,uint256)
@@ -178,7 +177,8 @@ class DecodeCallData {
             const method = this.bytes4Methods.get(bytes4);
             if (method) {
                 const typesArray = method.typesArray;
-                const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
+                //const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
+                const params = ethers_1.ethers.utils.defaultAbiCoder.decode(typesArray, callData.slice(10));
                 //  functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
                 if (method.functionSignature === 'execFromEntryPoint(address,uint256,bytes)') {
                     const address = params[0];

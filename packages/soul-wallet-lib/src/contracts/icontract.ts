@@ -4,12 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 21:02:15
  * @LastEditors: cejay
- * @LastEditTime: 2022-08-30 11:50:18
+ * @LastEditTime: 2022-11-22 23:11:19
  */
 
-import { AbiItem } from 'web3-utils';
+import { JsonFragment, Fragment } from '@ethersproject/abi'
 
 export interface IContract {
-    ABI: AbiItem[] | AbiItem;
+    ABI: ReadonlyArray<Fragment | JsonFragment | string>;
     bytecode: string;
 }

@@ -4,18 +4,16 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-10-14 18:31:39
+ * @LastEditTime: 2022-11-22 23:01:23
  */
 import axios from 'axios';
-import { readFileSync } from 'fs';
-import Web3 from 'web3';
+import { ethers } from "ethers";
 
 export class DecodeCallData {
     private static instance: DecodeCallData;
     private bytes4Methods = new Map<string, IByte4Method>();
     private _saveToStorage: ((key: string, value: string) => any) | null = null;
     private _readFromStorage: ((key: string) => string | null) | null = null;
-    private web3 = new Web3();
     private constructor() {
         /*  
      0xa9059cbb	transfer(address,uint256)
@@ -51,7 +49,7 @@ export class DecodeCallData {
             functionName: 'safeTransferFrom',
             functionSignature: 'safeTransferFrom(address,address,uint256)',
             typesArray: ['address', 'address', 'uint256']
-        }); 
+        });
         this.bytes4Methods.set('0xa22cb465', {
             functionName: 'setApprovalForAll',
             functionSignature: 'setApprovalForAll(address,bool)',
@@ -66,7 +64,7 @@ export class DecodeCallData {
             functionName: 'safeBatchTransferFrom',
             functionSignature: 'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)',
             typesArray: ['address', 'address', 'uint256[]', 'uint256[]', 'bytes']
-        }); 
+        });
         this.bytes4Methods.set('0x80c5c7d0', {
             functionName: 'execFromEntryPoint',
             functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
@@ -169,7 +167,8 @@ export class DecodeCallData {
         const method = this.bytes4Methods.get(bytes4);
         if (method) {
             const typesArray = method.typesArray;
-            const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
+            //const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
+            const params = ethers.utils.defaultAbiCoder.decode(typesArray, callData.slice(10));
             //  functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
             if (method.functionSignature === 'execFromEntryPoint(address,uint256,bytes)') {
                 const address = params[0];
