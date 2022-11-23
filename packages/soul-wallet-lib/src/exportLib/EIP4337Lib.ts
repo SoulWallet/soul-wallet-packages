@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-21 11:58:22
+ * @LastEditTime: 2022-11-23 10:49:25
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -51,7 +51,8 @@ export class EIP4337Lib {
     public static RPC = {
         eth_sendUserOperation: RPC.eth_sendUserOperation,
         eth_supportedEntryPoints: RPC.eth_supportedEntryPoints,
-        waitUserOperation: RPC.waitUserOperation,
+        waitUserOperationWeb3: RPC.waitUserOperationWeb3,
+        waitUserOperationEther: RPC.waitUserOperationEther,
     }
 
 
