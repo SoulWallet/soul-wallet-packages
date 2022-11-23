@@ -4,11 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-17 19:49:33
+ * @LastEditTime: 2022-11-23 11:29:22
  */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
 import Web3 from 'web3';
+import { ethers } from "ethers";
 import fs from 'fs';
 import { Utils } from './Utils';
 import { WalletLib } from 'soul-wallet-lib';
@@ -23,6 +24,8 @@ async function main() {
      2 run:     ganache
      */
     const web3 = new Web3('http://127.0.0.1:8545');
+    const ethersProvider = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545');
+    const num = await ethersProvider.getBlockNumber();
 
 
     const entryPointPath = './test/contracts/EntryPoint.sol';
@@ -662,6 +665,15 @@ async function main() {
             from: WalletLib.EIP4337.Defines.AddressZero
         });
         console.log('handleOps result: ', re);
+        // get tx info
+        
+
+
+    }
+    {
+        const arr1 = await WalletLib.EIP4337.RPC.waitUserOperationEther(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
+        const arr2 = await WalletLib.EIP4337.RPC.waitUserOperationWeb3(web3 as any, EntryPointAddress, requestId, 1000 * 5);
+        console.log('waitUserOperation result: ', arr1, arr2);
 
     }
 
