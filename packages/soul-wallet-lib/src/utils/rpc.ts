@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-22 22:44:55
+ * @LastEditTime: 2022-11-24 15:52:44
  */
 import { ethers } from "ethers";
 import { EntryPointContract } from "../contracts/entryPoint";
@@ -63,19 +63,8 @@ export class RPC {
         }
         const entryPoint = new ethers.Contract(entryPointAddress, EntryPointContract.ABI, etherProvider);
         while (true) {
-            // get event
-            //  event UserOperationEvent(bytes32 indexed requestId, address indexed sender, address indexed paymaster, uint256 nonce, uint256 actualGasCost, uint256 actualGasPrice, bool success);
-           
-            const pastEvent:Array<ethers.Event> = await entryPoint.queryFilter('UserOperationEvent', _fromBlock);
-            // const postEvent = await entryPoint.getPastEvents('UserOperationEvent',
-            //     {
-            //         filter: {
-            //             requestId: requestId,
-            //         },
-            //         fromBlock: _fromBlock,
-            //         toBlock: 'latest'
-            //     }
-            // );
+            const filter = entryPoint.filters.UserOperationEvent(requestId);
+            const pastEvent = await entryPoint.queryFilter(filter, _fromBlock);
             if (pastEvent && pastEvent.length > 0) {
                 return pastEvent;
             }
