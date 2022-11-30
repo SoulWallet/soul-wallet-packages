@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-07 21:08:08
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-22 22:38:52
+ * @LastEditTime: 2022-11-30 14:42:08
  */
 
 import { UserOperation } from "../entity/userOperation";
@@ -21,13 +21,15 @@ export interface ITransaction {
 
 export class Converter {
 
-    public static fromTransaction(
+    public static async fromTransaction(
+        etherProvider: ethers.providers.BaseProvider,
+        entryPointAddress: string,
         transcation: ITransaction,
         nonce: number = 0,
         maxFeePerGas: number = 0,
         maxPriorityFeePerGas: number = 0,
         paymasterAndData: string = "0x"
-    ): UserOperation {
+    ): Promise<UserOperation | null> {
         const op = new UserOperation();
         op.sender = transcation.from;
         op.preVerificationGas = 150000;
@@ -40,6 +42,12 @@ export class Converter {
         op.callData = new ethers.utils.Interface(execFromEntryPoint)
             .encodeFunctionData("execFromEntryPoint",
                 [transcation.to, transcation.value, transcation.data]);
+        let gasEstimated = await op.estimateGas(entryPointAddress,
+            etherProvider
+        );
+        if (!gasEstimated) {
+            return null;
+        }
 
         return op;
     }
