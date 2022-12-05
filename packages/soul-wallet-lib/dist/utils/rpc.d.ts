@@ -10,9 +10,10 @@ export declare class RPC {
      * @param requestId the requestId
      * @param timeOut the time out, default:1000 * 60 * 10 ( 10 minutes)
      * @param fromBlock the fromBlock, default: latest - 5
+     * @param toBlock the toBlock, default: pending
      * @returns the userOp event array
      */
-    static waitUserOperation(etherProvider: ethers.providers.BaseProvider, entryPointAddress: string, requestId: string, timeOut?: number, fromBlock?: number): Promise<Array<ethers.Event>>;
+    static waitUserOperation(etherProvider: ethers.providers.BaseProvider, entryPointAddress: string, requestId: string, timeOut?: number, fromBlock?: number, toBlock?: number | string): Promise<Array<ethers.Event>>;
 }
 export interface EventData {
     returnValues: {

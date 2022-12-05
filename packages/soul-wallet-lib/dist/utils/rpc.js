@@ -16,7 +16,7 @@ exports.RPC = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-24 15:52:44
+ * @LastEditTime: 2022-12-05 21:47:55
  */
 const ethers_1 = require("ethers");
 const entryPoint_1 = require("../contracts/entryPoint");
@@ -48,9 +48,10 @@ class RPC {
      * @param requestId the requestId
      * @param timeOut the time out, default:1000 * 60 * 10 ( 10 minutes)
      * @param fromBlock the fromBlock, default: latest - 5
+     * @param toBlock the toBlock, default: pending
      * @returns the userOp event array
      */
-    static waitUserOperation(etherProvider, entryPointAddress, requestId, timeOut = 1000 * 60 * 10, fromBlock) {
+    static waitUserOperation(etherProvider, entryPointAddress, requestId, timeOut = 1000 * 60 * 10, fromBlock = 0, toBlock = 'pending') {
         return __awaiter(this, void 0, void 0, function* () {
             const interval = 1000 * 10;
             const startTime = Date.now();
@@ -64,14 +65,12 @@ class RPC {
             }
             const entryPoint = new ethers_1.ethers.Contract(entryPointAddress, entryPoint_1.EntryPointContract.ABI, etherProvider);
             while (true) {
-                const filter = entryPoint.filters.UserOperationEvent(requestId);
-                const pastEvent = yield entryPoint.queryFilter(filter, _fromBlock);
+                const pastEvent = yield entryPoint.queryFilter('UserOperationEvent', _fromBlock, toBlock);
                 if (pastEvent && pastEvent.length > 0) {
                     return pastEvent;
                 }
                 if (Date.now() - startTime > timeOut) {
                     return [];
-                    //throw new Error('requestId timeout');
                 }
                 yield new Promise((resolve) => setTimeout(resolve, interval));
             }
