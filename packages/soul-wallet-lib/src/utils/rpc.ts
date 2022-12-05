@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-24 15:52:44
+ * @LastEditTime: 2022-12-05 21:47:55
  */
 import { ethers } from "ethers";
 import { EntryPointContract } from "../contracts/entryPoint";
@@ -43,14 +43,16 @@ export class RPC {
      * @param requestId the requestId
      * @param timeOut the time out, default:1000 * 60 * 10 ( 10 minutes)
      * @param fromBlock the fromBlock, default: latest - 5
+     * @param toBlock the toBlock, default: pending
      * @returns the userOp event array
      */
-    static async waitUserOperation(
+     static async waitUserOperation(
         etherProvider: ethers.providers.BaseProvider,
         entryPointAddress: string,
         requestId: string,
         timeOut: number = 1000 * 60 * 10,
-        fromBlock?: number
+        fromBlock: number = 0,
+        toBlock: number | string = 'pending'
     ): Promise<Array<ethers.Event>> {
         const interval = 1000 * 10;
         const startTime = Date.now();
@@ -63,14 +65,13 @@ export class RPC {
         }
         const entryPoint = new ethers.Contract(entryPointAddress, EntryPointContract.ABI, etherProvider);
         while (true) {
-            const filter = entryPoint.filters.UserOperationEvent(requestId);
-            const pastEvent = await entryPoint.queryFilter(filter, _fromBlock);
+            const pastEvent: Array<ethers.Event> = await entryPoint.queryFilter('UserOperationEvent', _fromBlock, toBlock);
+
             if (pastEvent && pastEvent.length > 0) {
                 return pastEvent;
             }
             if (Date.now() - startTime > timeOut) {
                 return [];
-                //throw new Error('requestId timeout');
             }
             await new Promise((resolve) => setTimeout(resolve, interval));
         }
