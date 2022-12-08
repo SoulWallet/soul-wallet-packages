@@ -1,28 +1,24 @@
-import React, {
-    createContext,
-    useState,
-    useEffect,
-    useRef,
-    createRef,
-} from "react";
+import React, { createContext, useState, useEffect, createRef } from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
+import { ethers } from "ethers";
 import api from "@src/lib/api";
-import { Utils } from "@src/Utils";
 import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
-import EntryPointABI from "../contract/abi/EntryPoint.json";
 import browser from "webextension-polyfill";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { setLocalStorage } from "@src/lib/tools";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
 const web3 = new Web3(config.provider);
 
+const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
+
 interface IWalletContext {
     web3: Web3;
+    ethersProvider: ethers.providers.JsonRpcProvider;
     account: string;
     // eoa, contract
     walletType: string;
@@ -36,7 +32,11 @@ interface IWalletContext {
     activateWallet: () => Promise<void>;
     getAccount: () => Promise<void>;
     signTransaction: (txData: any) => Promise<any>;
-    executeOperation: (operation: any, actionName?: string, tabId?: number) => Promise<void>;
+    executeOperation: (
+        operation: any,
+        actionName?: string,
+        tabId?: number,
+    ) => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
     removeGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
@@ -53,6 +53,7 @@ interface IWalletContext {
 
 export const WalletContext = createContext<IWalletContext>({
     web3,
+    ethersProvider,
     account: "",
     walletType: "",
     walletAddress: "",
@@ -180,20 +181,7 @@ export const WalletContextProvider = ({ children }: any) => {
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
-            const entryPointContract = new web3.eth.Contract(
-                EntryPointABI,
-                config.contracts.entryPoint,
-            );
-
-            const result = await entryPointContract.methods
-                .simulateValidation(operation)
-                .call({
-                    from: WalletLib.EIP4337.Defines.AddressZero,
-                });
-
-            // IMPORTANT TODO, catch errors
-            console.log(`SimulateValidation:`, result);
-
+            // TODO, should wait for complete
             browser.runtime.sendMessage({
                 type: "execute",
                 data: {
@@ -220,14 +208,17 @@ export const WalletContextProvider = ({ children }: any) => {
     const activateWallet = async () => {
         const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
+
         const activateOp = WalletLib.EIP4337.activateWalletOp(
             config.contracts.logic,
             config.contracts.entryPoint,
             config.contracts.paymaster,
             account,
             config.contracts.weth,
-            currentFee,
-            currentFee,
+            // currentFee,
+            // currentFee,
+            parseInt(web3.utils.toWei("10", "gwei")),
+            parseInt(web3.utils.toWei("3", "gwei")),
             config.defaultSalt,
             config.contracts.create2Factory,
         );
@@ -236,14 +227,11 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
+        const actionName = "Recover Wallet";
+
         const { requestId, recoveryOp } = await getRecoverId(
             newOwner,
             walletAddress,
-        );
-
-        const entryPointContract = new web3.eth.Contract(
-            EntryPointABI,
-            config.contracts.entryPoint,
         );
 
         const signPack =
@@ -256,24 +244,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
         recoveryOp.signature = signPack;
 
-        const result = await entryPointContract.methods
-            .simulateValidation(recoveryOp)
-            .call({
-                from: WalletLib.EIP4337.Defines.AddressZero,
-            });
-        console.log(`recoverOp simulateValidation result:`, result);
-
-        await Utils.sendOPWait(
-            // web3,
-            recoveryOp,
-            config.contracts.entryPoint,
-            config.chainId,
-            requestId,
-        );
-        // recovery now
-        // browser.runtime.sendMessage({
-        //     type: "notify",
-        // });
+        await executeOperation(recoveryOp, actionName);
     };
     const addGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
@@ -357,10 +328,10 @@ export const WalletContextProvider = ({ children }: any) => {
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const op = await WalletLib.EIP4337.Tokens.ETH.transfer(
-            web3,
+            ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
@@ -384,10 +355,10 @@ export const WalletContextProvider = ({ children }: any) => {
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const op = await WalletLib.EIP4337.Tokens.ERC20.transfer(
-            web3,
+            ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
@@ -424,6 +395,7 @@ export const WalletContextProvider = ({ children }: any) => {
         <WalletContext.Provider
             value={{
                 web3,
+                ethersProvider,
                 account,
                 walletType,
                 walletAddress,

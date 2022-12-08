@@ -19,12 +19,7 @@ import {
     removeLocalStorage,
     clearLocalStorage,
 } from "@src/lib/tools";
-// import { arrayify } from "ethers/lib/utils";
-// import {
-//     ecsign,
-//     toRpcSig,
-//     keccak256 as keccak256_buffer,
-// } from "ethereumjs-util";
+
 
 export default class KeyStore {
     private static instance: KeyStore;
@@ -69,7 +64,7 @@ export default class KeyStore {
             const account = ethers.Wallet.createRandom();
             const KeystoreV3 = await account.encrypt(password);
             if (saveKey) {
-                await setLocalStorage(this.keyStoreKey, KeystoreV3);
+                await setLocalStorage(this.keyStoreKey, JSON.parse(KeystoreV3));
                 await setSessionStorage("pw", password);
             } else {
                 await setLocalStorage("stagingAccount", account.address);
@@ -96,8 +91,9 @@ export default class KeyStore {
         if (await this.getAddress()) {
             const val = await getLocalStorage(this.keyStoreKey);
             if (val && val.address && val.crypto) {
-                const account = await ethers.Wallet.fromEncryptedJson(val, password);
+                const account = await ethers.Wallet.fromEncryptedJson(JSON.stringify(val), password);
                 this._privateKey = account.privateKey;
+                // console.log('pk', this._privateKey)
                 await setSessionStorage("pw", password);
                 return account.address;
             }
@@ -139,6 +135,14 @@ export default class KeyStore {
         );
     }
 
+    public async getSigner(provider: any){
+        if(!this._privateKey){
+            return
+        }
+        const signer = new ethers.Wallet(this._privateKey);
+        return signer.connect(provider);
+    }
+
     /**
      * sign a message
      * @param message
@@ -148,12 +152,13 @@ export default class KeyStore {
         if (!this._privateKey) {
             return null;
         }
-
-        const messageHex = Buffer.from(message).toString('hex');
-        const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
-        var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
-        const signature1 = ethUtil.ecsign(personalMessage, privateKey);
-        const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
-        return sigHex;
+        // const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
+        // const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
+        // var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
+        // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
+        // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
+        const signer = new ethers.Wallet(this._privateKey);
+        return await signer.signMessage(ethers.utils.arrayify(message));
     }
 }
+

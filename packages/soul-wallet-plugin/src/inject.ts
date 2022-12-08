@@ -46,17 +46,32 @@ engine.addProvider(
             cb(null, [res]);
         },
         approveTransaction: async function (txData, cb) {
-            await Bus.send("approve", "approveTransaction");
-            cb(null, [txData]);
+            const opData = await Bus.send(
+                "approve",
+                "approveTransaction",
+                txData,
+            );
+            cb(null, opData);
+        },
+        signTransaction: async function (opData, cb) {
+            // console.log("execute opData", opData);
+            // TODO, name it
+            opData.actionName = "Transaction";
+
+            try {
+                // pass signed requestId as well
+                const res = await Bus.send(
+                    "execute",
+                    "signTransaction",
+                    opData,
+                );
+                cb(null, res);
+            } catch (err) {
+                cb("Failed to execute");
+            }
         },
         sendTransaction: async function (txData, cb) {
-            console.log("sendTransaction");
             cb(null, txData);
-        },
-        signTransaction: async function (txData, cb) {
-            console.log("tx data", txData);
-            const res = await Bus.send("signTx", "signTransaction", txData);
-            cb(null, res);
         },
     }),
 );

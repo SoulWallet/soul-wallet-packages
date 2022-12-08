@@ -4,6 +4,7 @@ storybook-static/*
 /node_modules
 npm-debug.log
 yarn-error.log
+play.ts
 
 .DS_Store
 .zip

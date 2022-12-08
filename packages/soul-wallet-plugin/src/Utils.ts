@@ -40,62 +40,6 @@ export class Utils {
         return hexZeroPad(hexlify(number), 32);
     }
 
-    static async getNonce(
-        walletAddress: string,
-        defaultBlock = "latest",
-    ): Promise<number> {
-        try {
-            const code = await provider.getCode(walletAddress, defaultBlock);
-
-            // check contract is exist
-            if (code === "0x") {
-                return 0;
-            } else {
-                const contract = new ethers.Contract(
-                    walletAddress,
-                    WalletAbi,
-                    provider,
-                );
-                const nonce = await contract.nonce();
-                // try parse to number
-                const nextNonce = parseInt(nonce, 10);
-                if (isNaN(nextNonce)) {
-                    throw new Error("nonce is not a number");
-                }
-                return nextNonce;
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    public static fromTransaction(
-        transcation: ITransaction,
-        nonce: number = 0,
-        maxFeePerGas: number = 0,
-        maxPriorityFeePerGas: number = 0,
-        paymasterAndData: string = "0x",
-    ) {
-        const iface = new ethers.utils.Interface(EntryPointAbi);
-
-        const callData = iface.encodeFunctionData("execFromEntryPoint", [
-            transcation.to,
-            transcation.value,
-            transcation.data,
-        ]);
-
-        const op = new UserOperation();
-        op.sender = transcation.from;
-        op.preVerificationGas = 150000;
-        op.nonce = nonce;
-        op.paymasterAndData = paymasterAndData;
-        op.maxFeePerGas = maxFeePerGas;
-        op.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        op.callGasLimit = parseInt(transcation.gas, 16);
-        op.callData = callData;
-        return op;
-    }
-
     // add /
     static bundlerUrl = `${config.bundlerUrl}/`;
 

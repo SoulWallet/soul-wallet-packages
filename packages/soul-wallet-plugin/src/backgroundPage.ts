@@ -6,12 +6,14 @@
  */
 
 import browser from "webextension-polyfill";
-// import ky from "ky";
+import ky from "ky";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-// import { WalletLib } from "soul-wallet-lib";
-import { Utils } from "./Utils";
+import { WalletLib } from "soul-wallet-lib";
+import { ethers } from "ethers";
 import config from "@src/config";
+import { EntryPointAbi } from "./abi";
 
+const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const saveActivityHistory = async (history: any) => {
     let prev = (await getLocalStorage("activityHistory")) || [];
@@ -19,46 +21,99 @@ const saveActivityHistory = async (history: any) => {
     await setLocalStorage("activityHistory", prev);
 };
 
+const simulateValidation = async (userOp) => {
+    console.log("User OP", userOp);
+
+    const result = await ethersProvider.call({
+        from: ethers.constants.AddressZero,
+        to: config.contracts.entryPoint,
+        data: new ethers.utils.Interface(EntryPointAbi).encodeFunctionData(
+            "simulateValidation",
+            [userOp, false],
+        ),
+    });
+
+    // const decoded = new ethers.utils.Interface(
+    //     EntryPointAbi,
+    // ).decodeFunctionResult("simulateValidation", result);
+    // console.log("decode simulate", decoded);
+
+    return result;
+};
+
 const executeTransaction = async (operation, requestId, actionName, tabId) => {
+    const result = await simulateValidation(operation);
+    // // IMPORTANT TODO, catch errors and return
+    console.log(`SimulateValidation:`, result);
+
+    // failed to simulate
+    if (!result) {
+        return;
+    }
+
     // create raw_data for bundler api
-    // const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(
-    //     operation,
-    //     config.contracts.entryPoint,
-    // );
-    // // send to bundler
-    // const res = await ky.post(config.bundlerUrl, { json: raw_data }).json();
+    const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(
+        operation,
+        config.contracts.entryPoint,
+    );
+    // send to bundler
+
+    const res = await ky
+        .post(config.bundlerUrl, { json: JSON.parse(raw_data) })
+        .json();
+
     // // sent to bundler
-    // if (res.data && res.data.result === requestId) {
-    //     const arr = await WalletLib.EIP4337.RPC.waitUserOperation(
-    //         web3 as any,
-    //         config.contracts.entryPoint,
-    //         requestId,
-    //         1000 * 60 * 1,
-    //         (await web3.eth.getBlockNumber()) - 500,
-    //     );
-    //     console.log("event list", arr);
-    //     console.log("send back tabId", Number(tabId), arr);
-    //     // save to activity history
-    //     await saveActivityHistory({
-    //         actionName,
-    //         txHash: txHash,
-    //     });
-    //     browser.tabs.sendMessage(Number(tabId), {
-    //         target: "soul",
-    //         type: "response",
-    //         action: "signTransaction",
-    //         data: arr[0],
-    //         tabId,
-    //     });
-    //     // TODO, what if fail, add error hint
-    //     const notifyId = Math.ceil(Math.random() * 1000).toString();
-    //     browser.notifications.create(notifyId, {
-    //         type: "basic",
-    //         iconUrl: "../icon-48.png",
-    //         title: "Trsanction success",
-    //         message: "Your transaction was confirmed on chain",
-    //     });
-    // }
+    if (res.result && res.result === requestId) {
+        // get pending
+        const pendingArr = await WalletLib.EIP4337.RPC.waitUserOperation(
+            ethersProvider,
+            config.contracts.entryPoint,
+            requestId,
+        );
+
+        console.log('pending arr', pendingArr)
+
+        // if op is triggered by user and need a feedback. todo, what if 0
+        if (tabId && pendingArr) {
+            browser.tabs.sendMessage(Number(tabId), {
+                target: "soul",
+                type: "response",
+                action: "signTransaction",
+                // TODO, must 0?
+                data: pendingArr[0].transactionHash,
+                tabId,
+            });
+        }
+
+        // get done
+        const doneArr = await WalletLib.EIP4337.RPC.waitUserOperation(
+            ethersProvider,
+            config.contracts.entryPoint,
+            requestId,
+            null,
+            null,
+            "latest",
+        );
+
+        console.log('done', doneArr)
+
+        if (doneArr) {
+            // save to activity history
+            await saveActivityHistory({
+                actionName,
+                txHash: doneArr[0].transactionHash,
+            });
+
+            // TODO, what if fail, add error hint
+            const notifyId = Math.ceil(Math.random() * 1000).toString();
+            browser.notifications.create(notifyId, {
+                type: "basic",
+                iconUrl: "../icon-48.png",
+                title: "Trsanction success",
+                message: "Your transaction was confirmed on chain",
+            });
+        }
+    }
 };
 
 browser.runtime.onMessage.addListener(async (msg) => {
@@ -120,7 +175,6 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
         case "execute":
             const { actionName, operation, requestId, tabId } = msg.data;
-
             const parsedOperation = JSON.parse(operation);
 
             await executeTransaction(
@@ -129,70 +183,5 @@ browser.runtime.onMessage.addListener(async (msg) => {
                 actionName,
                 tabId,
             );
-
-        // format data then execute tx
-        case "signTx":
-
-        const {
-            data,
-            gas,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            from,
-            to,
-            value,
-        } = msg.data;
-
-        const nonce = await Utils.getNonce(from);
-
-        console.log('before from tx')
-
-        const operation = Utils.fromTransaction(
-            {
-                data,
-                from,
-                gas,
-                to,
-                value,
-            },
-            nonce,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            config.contracts.paymaster,
-        );
-
-        // const requestId = operation.getRequestId(
-        //     config.contracts.entryPoint,
-        //     config.chainId,
-        // );
-
-        // const signature = await keyStore.sign(requestId);
-
-        // console.log("signed signature", signature);
-
-        // if (!signature) {
-        //     return;
-        // }
-
-        // operation.signWithSignature(account, signature || "");
-
-        // const entryPointContract = new web3.eth.Contract(
-        //     EntryPointABI,
-        //     config.contracts.entryPoint,
-        // );
-
-        // const result = await entryPointContract.methods
-        //     .simulateValidation(operation)
-        //     .call({
-        //         from: WalletLib.EIP4337.Defines.AddressZero,
-        //     });
-
-        // IMPORTANT TODO, catch errors
-        // console.log(`SimulateValidation:`, result);
-
-        // todo
-        // const actionName = "Transaction";
-
-        // await executeTransaction(operation, requestId, actionName, tab.id);
     }
 });

@@ -18,7 +18,8 @@ export const assetsList = [
 
 export default {
     assetsList,
-    provider: "https://goerli.infura.io/v3/10e7994fd33346e9b339dcde4b20c3c6",
+    provider: "https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18",
+    // provider: "https://eth-mainnet.g.alchemy.com/v2/K9UhC2MV5uPm_j7WIRSWCrSJyaKg6Ggm",
     defaultSalt: 0,
     feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,

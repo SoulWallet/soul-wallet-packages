@@ -52,3 +52,4 @@ soul-wallet-extension
 ## TODO
 1. add hash to contentScript and background
 2. optimize activity
+3. cannot open popup on big screen

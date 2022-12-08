@@ -332,8 +332,8 @@ HookedWalletSubprovider.prototype.processTransaction = function(txParams, cb) {
   const self = this
   waterfall([
     (cb) => self.approveTransaction(txParams, cb),
-    (didApprove, cb) => self.checkApproval('transaction', didApprove, cb),
-    (cb) => self.finalizeAndSubmitTx(txParams, cb),
+    (opData, cb) => self.checkApproval('transaction', opData, cb),
+    (opData, cb) => self.finalizeAndSubmitTx(opData, cb),
   ], cb)
 }
 
@@ -401,7 +401,7 @@ HookedWalletSubprovider.prototype.autoApprove = function(txParams, cb) {
 }
 
 HookedWalletSubprovider.prototype.checkApproval = function(type, didApprove, cb) {
-  cb( didApprove ? null : new Error('User denied '+type+' signature.') )
+  cb( didApprove ? null : new Error('User denied '+type+' signature.'), didApprove )
 }
 
 //
