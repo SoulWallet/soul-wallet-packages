@@ -5,7 +5,8 @@ import { getLocalStorage } from "@src/lib/tools";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@src/components/Input";
 import KeyStore from "@src/lib/keystore";
-import browser from "webextension-polyfill";
+import Button from "@src/components/Button";
+// import browser from "webextension-polyfill";
 
 const keyStore = KeyStore.getInstance();
 
@@ -13,17 +14,21 @@ export default function Welcome() {
     const [password, setPassword] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
     const [isLocked, setIsLocked] = useState<boolean>(false);
+    const [unlocking, setUnlocking] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
     const doUnlock = async () => {
         try {
+            setUnlocking(true);
             const address = await keyStore.unlock(password);
             if (address) {
                 navigate("/wallet");
             }
         } catch (err) {
             setPasswordError("Wrong password. Try again.");
+        } finally {
+            setUnlocking(false);
         }
     };
 
@@ -68,12 +73,13 @@ export default function Welcome() {
                             }}
                             error={passwordError}
                         />
-                        <a
-                            className="btn btn-blue w-full my-4"
+                        <Button
                             onClick={doUnlock}
+                            loading={unlocking}
+                            classNames="btn-blue my-4"
                         >
                             Unlock
-                        </a>
+                        </Button>
                     </>
                 ) : (
                     <Link
