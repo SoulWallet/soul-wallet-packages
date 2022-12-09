@@ -30,30 +30,30 @@ export default forwardRef<any>((props, ref) => {
             setKeepModalVisible(keepVisible || false);
 
             // todo, there's a problem when sendETH
-            // if (operation) {
-            //     console.log("op", operation);
+            if (operation) {
+                console.log("op", operation);
 
-            //     const tmpMap = new Map<string, string>();
-            //     WalletLib.EIP4337.Utils.DecodeCallData.new().setStorage(
-            //         (key, value) => {
-            //             tmpMap.set(key, value);
-            //         },
-            //         (key) => {
-            //             const v = tmpMap.get(key);
-            //             if (typeof v === "string") {
-            //                 return v;
-            //             }
-            //             return null;
-            //         },
-            //     );
+                const tmpMap = new Map<string, string>();
+                WalletLib.EIP4337.Utils.DecodeCallData.new().setStorage(
+                    (key, value) => {
+                        tmpMap.set(key, value);
+                    },
+                    (key) => {
+                        const v = tmpMap.get(key);
+                        if (typeof v === "string") {
+                            return v;
+                        }
+                        return null;
+                    },
+                );
 
-            //     const callDataDecode =
-            //         await WalletLib.EIP4337.Utils.DecodeCallData.new().decode(
-            //             operation.callData,
-            //         );
-            //     console.log(`callDataDecode:`, callDataDecode);
-            //     setDecodedData(callDataDecode);
-            // }
+                const callDataDecode =
+                    await WalletLib.EIP4337.Utils.DecodeCallData.new().decode(
+                        operation.callData,
+                    );
+                console.log(`callDataDecode:`, callDataDecode);
+                setDecodedData(callDataDecode);
+            }
 
             return new Promise((resolve, reject) => {
                 setPromiseInfo({

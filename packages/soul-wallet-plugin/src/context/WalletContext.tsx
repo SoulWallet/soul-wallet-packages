@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
+import Bus from "@src/lib/bus";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
 import SignTransaction from "@src/components/SignTransaction";
@@ -105,7 +106,6 @@ export const WalletContextProvider = ({ children }: any) => {
             .integerValue()
             .toNumber();
         console.log("gas mul", gasMultiplied);
-        // return Number(gas);
         return 10 * 10 ** 9;
     };
 
@@ -186,6 +186,8 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.entryPoint,
             config.chainId,
         );
+
+        console.log('approved', requestId)
 
         const signature = await keyStore.sign(requestId);
 

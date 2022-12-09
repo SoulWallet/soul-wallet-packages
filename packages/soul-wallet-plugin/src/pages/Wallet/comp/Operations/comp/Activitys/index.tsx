@@ -53,7 +53,7 @@ export default function Activities() {
                     <div className="flex items-center gap-2">
                         <img
                             src={getIconMapping(item.actionName)}
-                            className="w-10"
+                            className="h-8 w-8"
                         />
                         <div className="flex flex-col">
                             <div>{item.actionName}</div>

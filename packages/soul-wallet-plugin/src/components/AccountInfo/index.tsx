@@ -65,9 +65,9 @@ export default function AccountInfo({ account, action }: IProps) {
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
             {account ? (
-                <AddressIcon width={72} address={account} />
+                <AddressIcon width={64} address={account} />
             ) : (
-                <div className="w-[72px] h-[72px] block bg-white" />
+                <div className="w-[64px] h-[64px] block bg-white" />
             )}
 
             {action === "remove" ? (

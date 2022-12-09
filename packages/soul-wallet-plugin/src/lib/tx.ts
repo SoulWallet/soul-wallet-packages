@@ -40,69 +40,75 @@ export const executeTransaction = async (
     actionName: any,
     tabId: any,
 ) => {
-    const result = await simulateValidation(operation);
-    // // IMPORTANT TODO, catch errors and return
-    console.log(`SimulateValidation:`, result);
+    return new Promise(async (resolve, reject) => {
+        const result = await simulateValidation(operation);
+        // // IMPORTANT TODO, catch errors and return
+        console.log(`SimulateValidation:`, result);
 
-    // failed to simulate
-    if (!result) {
-        return;
-    }
-
-    // create raw_data for bundler api
-    const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(
-        operation,
-        config.contracts.entryPoint,
-    );
-    // send to bundler
-
-    const res: any = await ky
-        .post(config.bundlerUrl, { json: JSON.parse(raw_data) })
-        .json();
-
-    // // sent to bundler
-    if (res.result && res.result === requestId) {
-        // get pending
-        const pendingArr = await WalletLib.EIP4337.RPC.waitUserOperation(
-            ethersProvider,
-            config.contracts.entryPoint,
-            requestId,
-        );
-
-        // if op is triggered by user and need a feedback. todo, what if 0
-        if (tabId && pendingArr) {
-            browser.tabs.sendMessage(Number(tabId), {
-                target: "soul",
-                type: "response",
-                action: "signTransaction",
-                // TODO, must 0?
-                data: pendingArr[0].transactionHash,
-                tabId,
-            });
+        // failed to simulate
+        if (!result) {
+            return;
         }
 
-        // get done
-        const doneArr = await WalletLib.EIP4337.RPC.waitUserOperation(
-            ethersProvider,
+        // create raw_data for bundler api
+        const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(
+            operation,
             config.contracts.entryPoint,
-            requestId,
-            1000 * 60 * 10,
-            0,
-            "latest",
         );
+        // send to bundler
 
-        if (doneArr) {
-            // save to activity history
-            await saveActivityHistory({
-                actionName,
-                txHash: doneArr[0].transactionHash,
-            });
+        const res: any = await ky
+            .post(config.bundlerUrl, { json: JSON.parse(raw_data) })
+            .json();
 
-            // TODO, what if fail, add error hint
-            notify(
-                "Trsanction success",
-                "Your transaction was confirmed on chain",
+        // // sent to bundler
+        if (res.result && res.result === requestId) {
+            // get pending
+            const pendingArr = await WalletLib.EIP4337.RPC.waitUserOperation(
+                ethersProvider,
+                config.contracts.entryPoint,
+                requestId,
             );
+
+            // if op is triggered by user and need a feedback. todo, what if 0
+            if (tabId && pendingArr) {
+                browser.tabs.sendMessage(Number(tabId), {
+                    target: "soul",
+                    type: "response",
+                    action: "signTransaction",
+                    // TODO, must 0?
+                    data: pendingArr[0].transactionHash,
+                    tabId,
+                });
+            }
+
+            // get done
+            const doneArr = await WalletLib.EIP4337.RPC.waitUserOperation(
+                ethersProvider,
+                config.contracts.entryPoint,
+                requestId,
+                1000 * 60 * 10,
+                0,
+                "latest",
+            );
+
+            if (doneArr) {
+                // save to activity history
+                await saveActivityHistory({
+                    actionName,
+                    txHash: doneArr[0].transactionHash,
+                });
+
+                // TODO, what if fail, add error hint
+                notify(
+                    "Trsanction success",
+                    "Your transaction was confirmed on chain",
+                );
+
+                resolve(doneArr[0]);
+            } else {
+                // TODO, what if error
+            }
         }
-    }
+    });
 };
