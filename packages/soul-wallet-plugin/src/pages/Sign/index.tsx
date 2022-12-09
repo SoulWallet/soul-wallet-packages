@@ -53,9 +53,9 @@ export default function Sign() {
                     config.contracts.paymaster,
                 );
 
-            // if (!operation) {
-            //     throw new Error("Failed to format tx");
-            // }
+            if (!operation) {
+                throw new Error("Failed to format tx");
+            }
 
             const requestId = operation.getRequestId(
                 config.contracts.entryPoint,
@@ -120,7 +120,7 @@ export default function Sign() {
         // TODO, 1. need to check if account is locked.
         if (searchParams.actionType === "getAccounts") {
             try {
-                await signModal.current.show("", searchParams.actionType);
+                await signModal.current.show("", searchParams.actionType, true);
                 await saveAccountsAllowed(searchParams.origin || "");
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -136,9 +136,10 @@ export default function Sign() {
             }
         } else if (searchParams.actionType === "approveTransaction") {
             try {
-                console.log("11111111");
-                await signModal.current.show("", searchParams.actionType);
                 // format signature of userOP
+
+                await signModal.current.show("", searchParams.actionType, true);
+
                 const { operation, requestId, tabId } = await signUserTx();
 
                 await browser.runtime.sendMessage({
@@ -164,13 +165,8 @@ export default function Sign() {
         if (!searchParams.actionType || !signModal.current || !walletAddress) {
             return;
         }
-        console.log('before')
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 
-    return (
-        <div>
-            <SignTransaction ref={signModal} />
-        </div>
-    );
+    return <SignTransaction ref={signModal} />;
 }

@@ -7,20 +7,23 @@ import Button from "../Button";
 
 export default forwardRef<any>((props, ref) => {
     const { account, getEthBalance } = useWalletContext();
-    const [ethBalance, setEthBalance] = useState<string>('');
+    const [ethBalance, setEthBalance] = useState<string>("");
+    const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [actionName, setActionName] = useState<string>("");
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});
+    const [signing, setSigning] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
-        async show(operation: any, _actionName: string) {
+        async show(operation: any, _actionName: string, keepVisible: boolean) {
             setActionName(_actionName);
             const balance = await getEthBalance();
             setEthBalance(balance);
+            setKeepModalVisible(keepVisible || false);
 
             // todo, there's a problem when sendETH
-            if(operation){
+            if (operation) {
                 const tmpMap = new Map<string, string>();
                 WalletLib.EIP4337.Utils.DecodeCallData.new().setStorage(
                     (key, value) => {
@@ -34,7 +37,7 @@ export default forwardRef<any>((props, ref) => {
                         return null;
                     },
                 );
-    
+
                 const callDataDecode =
                     await WalletLib.EIP4337.Utils.DecodeCallData.new().decode(
                         operation.callData,
@@ -55,12 +58,17 @@ export default forwardRef<any>((props, ref) => {
 
     const onReject = async () => {
         promiseInfo.reject();
-        setVisible(false);
+        if (!keepModalVisible) {
+            setVisible(false);
+        }
     };
 
     const onConfirm = async () => {
+        setSigning(true);
         promiseInfo.resolve();
-        setVisible(false);
+        if (!keepModalVisible) {
+            setVisible(false);
+        }
     };
 
     return (
@@ -107,7 +115,11 @@ export default forwardRef<any>((props, ref) => {
                 <Button classNames="w-1/2" onClick={onReject}>
                     Cancel
                 </Button>
-                <Button classNames="btn-blue w-1/2" onClick={onConfirm}>
+                <Button
+                    classNames="btn-blue w-1/2"
+                    onClick={onConfirm}
+                    loading={signing}
+                >
                     Sign
                 </Button>
             </div>
