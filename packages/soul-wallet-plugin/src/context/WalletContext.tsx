@@ -106,7 +106,7 @@ export const WalletContextProvider = ({ children }: any) => {
             .toNumber();
         console.log("gas mul", gasMultiplied);
         // return Number(gas);
-        return 50 * 10 ** 9;
+        return 10 * 10 ** 9;
     };
 
     const getAccount = async () => {
@@ -172,7 +172,11 @@ export const WalletContextProvider = ({ children }: any) => {
     ) => {
         if (actionName) {
             try {
-                await signModal.current.show(operation, actionName);
+                await signModal.current.show(
+                    operation,
+                    actionName,
+                    "Soul Wallet",
+                );
             } catch (err) {
                 throw Error("User rejected");
             }
@@ -222,15 +226,43 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             account,
             config.contracts.weth,
-            // currentFee,
-            // currentFee,
-            parseInt(web3.utils.toWei("10", "gwei")),
-            parseInt(web3.utils.toWei("3", "gwei")),
+            currentFee,
+            currentFee,
+            // parseInt(web3.utils.toWei("10", "gwei")),
+            // parseInt(web3.utils.toWei("3", "gwei")),
             config.defaultSalt,
             config.contracts.create2Factory,
         );
 
         await executeOperation(activateOp, actionName);
+    };
+
+    const sendErc20 = async (
+        tokenAddress: string,
+        to: string,
+        amount: string,
+    ) => {
+        const actionName = "Send Assets";
+        const currentFee = (await getGasPrice()) * config.feeMultiplier;
+        const amountInWei = new BN(amount).shiftedBy(18).toString();
+        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+            walletAddress,
+            ethersProvider,
+        );
+        const op = await WalletLib.EIP4337.Tokens.ERC20.transfer(
+            ethersProvider,
+            walletAddress,
+            nonce,
+            config.contracts.entryPoint,
+            config.contracts.paymaster,
+            currentFee,
+            currentFee,
+            tokenAddress,
+            to,
+            amountInWei,
+        );
+
+        await executeOperation(op, actionName);
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
@@ -345,34 +377,6 @@ export const WalletContextProvider = ({ children }: any) => {
             config.contracts.paymaster,
             currentFee,
             currentFee,
-            to,
-            amountInWei,
-        );
-
-        await executeOperation(op, actionName);
-    };
-
-    const sendErc20 = async (
-        tokenAddress: string,
-        to: string,
-        amount: string,
-    ) => {
-        const actionName = "Send Assets";
-        const currentFee = (await getGasPrice()) * config.feeMultiplier;
-        const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
-        const op = await WalletLib.EIP4337.Tokens.ERC20.transfer(
-            ethersProvider,
-            walletAddress,
-            nonce,
-            config.contracts.entryPoint,
-            config.contracts.paymaster,
-            currentFee,
-            currentFee,
-            tokenAddress,
             to,
             amountInWei,
         );

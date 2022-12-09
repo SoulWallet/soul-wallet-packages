@@ -8,7 +8,7 @@
  */
 
 import { ethers } from "ethers";
-import * as ethUtil from 'ethereumjs-util';
+// import * as ethUtil from 'ethereumjs-util';
 
 import {
     setLocalStorage,

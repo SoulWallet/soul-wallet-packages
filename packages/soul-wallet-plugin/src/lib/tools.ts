@@ -1,3 +1,16 @@
+import browser from "webextension-polyfill";
+
+export function notify(title: string, message: string) {
+    const notifyId = Math.ceil(Math.random() * 1000).toString();
+
+    browser.notifications.create(notifyId, {
+        type: "basic",
+        iconUrl: "../icon-48.png",
+        title,
+        message,
+    });
+}
+
 export function copyText(value: string) {
     const copied = document.createElement("input");
     copied.setAttribute("value", value);
@@ -5,7 +18,6 @@ export function copyText(value: string) {
     copied.select();
     document.execCommand("copy");
     document.body.removeChild(copied);
-    // message.success('Copied')
 }
 
 /**
@@ -51,7 +63,7 @@ export async function removeLocalStorage(key: string) {
  * clear local storage
  */
 
- export async function clearLocalStorage() {
+export async function clearLocalStorage() {
     return new Promise((resolve, _) => {
         chrome.storage.local.clear(function () {
             resolve(true);

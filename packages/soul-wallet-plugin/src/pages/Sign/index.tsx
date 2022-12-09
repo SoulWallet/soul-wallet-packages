@@ -117,10 +117,12 @@ export default function Sign() {
      * Determine what data user want
      */
     const determineAction = async () => {
+        const { actionType, origin } = searchParams;
+
         // TODO, 1. need to check if account is locked.
-        if (searchParams.actionType === "getAccounts") {
+        if (actionType === "getAccounts") {
             try {
-                await signModal.current.show("", searchParams.actionType, true);
+                await signModal.current.show("", actionType, origin, true);
                 await saveAccountsAllowed(searchParams.origin || "");
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -134,11 +136,11 @@ export default function Sign() {
             } finally {
                 window.close();
             }
-        } else if (searchParams.actionType === "approveTransaction") {
+        } else if (actionType === "approveTransaction") {
             try {
                 // format signature of userOP
 
-                await signModal.current.show("", searchParams.actionType, true);
+                await signModal.current.show("", actionType, origin, true);
 
                 const { operation, requestId, tabId } = await signUserTx();
 
