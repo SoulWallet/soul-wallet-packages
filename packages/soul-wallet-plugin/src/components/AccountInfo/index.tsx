@@ -37,8 +37,8 @@ export default function AccountInfo({ account, action }: IProps) {
         try {
             await activateWallet();
             // TODO, listen to activated wallet event, then call the following
-            // getWalletType();
-            // toast.success("Account activated");
+            getWalletType();
+            toast.success("Account activated");
         } catch (err) {
             toast.error("Failed to activate account");
             console.log("activate error", err);
