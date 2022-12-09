@@ -1,14 +1,13 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import { WalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
-import Bus from "@src/lib/bus";
+import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
 import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
-import browser from "webextension-polyfill";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 // init global instances
@@ -33,11 +32,7 @@ interface IWalletContext {
     activateWallet: () => Promise<void>;
     getAccount: () => Promise<void>;
     signTransaction: (txData: any) => Promise<any>;
-    executeOperation: (
-        operation: any,
-        actionName?: string,
-        tabId?: number,
-    ) => Promise<void>;
+    executeOperation: (operation: any, actionName?: string) => Promise<void>;
     addGuardian: (guardianAddress: string) => Promise<void>;
     removeGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
@@ -168,7 +163,6 @@ export const WalletContextProvider = ({ children }: any) => {
         operation: any,
         // no actionName means no need to sign
         actionName?: string,
-        tabId?: number,
     ) => {
         if (actionName) {
             try {
@@ -187,22 +181,16 @@ export const WalletContextProvider = ({ children }: any) => {
             config.chainId,
         );
 
-        console.log('approved', requestId)
-
         const signature = await keyStore.sign(requestId);
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
             // TODO, should wait for complete
-            browser.runtime.sendMessage({
-                type: "execute",
-                data: {
-                    actionName,
-                    operation: JSON.stringify(operation),
-                    requestId,
-                    tabId,
-                },
+            await Runtime.send("execute", {
+                actionName,
+                operation: JSON.stringify(operation),
+                requestId,
             });
 
             return;

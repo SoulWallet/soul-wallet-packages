@@ -1,6 +1,6 @@
 // @ts-nocheck
 import Web3 from "web3";
-import Bus from "./lib/bus";
+import Bus from "./lib/Bus";
 import config from "./config";
 import ProviderEngine from "soul-wallet-provider";
 import CacheSubprovider from "soul-wallet-provider/subproviders/cache.js";

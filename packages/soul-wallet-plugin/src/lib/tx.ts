@@ -61,6 +61,12 @@ export const executeTransaction = async (
             .post(config.bundlerUrl, { json: JSON.parse(raw_data) })
             .json();
 
+        console.log('bundler res', res)
+
+        if (!res) {
+            notify("Error", "Failed to send to bundler");
+        }
+
         // // sent to bundler
         if (res.result && res.result === requestId) {
             // get pending

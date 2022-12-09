@@ -69,6 +69,7 @@ export default forwardRef<any>((props, ref) => {
         promiseInfo.reject();
         if (!keepModalVisible) {
             setVisible(false);
+            setSigning(false);
         }
     };
 
@@ -77,6 +78,7 @@ export default forwardRef<any>((props, ref) => {
         promiseInfo.resolve();
         if (!keepModalVisible) {
             setVisible(false);
+            setSigning(false);
         }
     };
 

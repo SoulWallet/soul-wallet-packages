@@ -76,5 +76,11 @@ browser.runtime.onMessage.addListener(async (msg) => {
                 actionName,
                 tabId,
             );
+
+            // send msg back
+            browser.runtime.sendMessage({
+                target: "soul",
+                data: requestId,
+            });
     }
 });
