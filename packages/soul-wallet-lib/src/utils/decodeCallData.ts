@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-22 23:01:23
+ * @LastEditTime: 2022-12-09 15:35:00
  */
 import axios from 'axios';
 import { ethers } from "ethers";
@@ -168,7 +168,7 @@ export class DecodeCallData {
         if (method) {
             const typesArray = method.typesArray;
             //const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
-            const params = ethers.utils.defaultAbiCoder.decode(typesArray, callData.slice(10));
+            const params = ethers.utils.defaultAbiCoder.decode(typesArray, '0x' + callData.slice(10));
             //  functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
             if (method.functionSignature === 'execFromEntryPoint(address,uint256,bytes)') {
                 const address = params[0];
