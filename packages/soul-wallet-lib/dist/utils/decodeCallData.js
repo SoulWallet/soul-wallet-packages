@@ -19,7 +19,7 @@ exports.DecodeCallData = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-02 22:38:58
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-22 23:01:23
+ * @LastEditTime: 2022-12-09 15:35:00
  */
 const axios_1 = __importDefault(require("axios"));
 const ethers_1 = require("ethers");
@@ -178,7 +178,7 @@ class DecodeCallData {
             if (method) {
                 const typesArray = method.typesArray;
                 //const params = this.web3.eth.abi.decodeParameters(typesArray, callData.slice(10));
-                const params = ethers_1.ethers.utils.defaultAbiCoder.decode(typesArray, callData.slice(10));
+                const params = ethers_1.ethers.utils.defaultAbiCoder.decode(typesArray, '0x' + callData.slice(10));
                 //  functionSignature: 'execFromEntryPoint(address,uint256,bytes)',
                 if (method.functionSignature === 'execFromEntryPoint(address,uint256,bytes)') {
                     const address = params[0];
