@@ -71,7 +71,7 @@ const executeTransaction = async (operation, requestId, actionName, tabId) => {
             requestId,
         );
 
-        console.log('pending arr', pendingArr)
+        console.log("pending arr", pendingArr);
 
         // if op is triggered by user and need a feedback. todo, what if 0
         if (tabId && pendingArr) {
@@ -90,12 +90,12 @@ const executeTransaction = async (operation, requestId, actionName, tabId) => {
             ethersProvider,
             config.contracts.entryPoint,
             requestId,
-            null,
-            null,
+            1000 * 60 * 10,
+            0,
             "latest",
         );
 
-        console.log('done', doneArr)
+        console.log("done", doneArr);
 
         if (doneArr) {
             // save to activity history

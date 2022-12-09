@@ -42,15 +42,14 @@ export default function Sign() {
                         data: data,
                         from: fromAddress,
                         gas,
-                        // gas: `0x5208`,
                         to,
                         value,
                     },
                     nonce,
-                    // parseInt(maxFeePerGas),
-                    // parseInt(maxPriorityFeePerGas),
-                    parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                    parseInt(ethers.utils.parseUnits("2", 9).toString()),
+                    parseInt(maxFeePerGas),
+                    parseInt(maxPriorityFeePerGas),
+                    // parseInt(ethers.utils.parseUnits("30", 9).toString()),
+                    // parseInt(ethers.utils.parseUnits("2", 9).toString()),
                     config.contracts.paymaster,
                 );
 
@@ -130,15 +129,15 @@ export default function Sign() {
                     data: walletAddress,
                     tabId: searchParams.tabId,
                 });
-                window.close();
             } catch (err) {
                 console.log(err);
+            } finally {
                 window.close();
             }
         } else if (searchParams.actionType === "approveTransaction") {
             try {
+                console.log("11111111");
                 await signModal.current.show("", searchParams.actionType);
-
                 // format signature of userOP
                 const { operation, requestId, tabId } = await signUserTx();
 
@@ -153,10 +152,9 @@ export default function Sign() {
                         tabId,
                     },
                 });
-                // execute action
-                // window.close();
             } catch (err) {
                 console.log(err);
+            } finally {
                 window.close();
             }
         }
@@ -166,6 +164,7 @@ export default function Sign() {
         if (!searchParams.actionType || !signModal.current || !walletAddress) {
             return;
         }
+        console.log('before')
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 

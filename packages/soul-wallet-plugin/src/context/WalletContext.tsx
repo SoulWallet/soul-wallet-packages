@@ -8,7 +8,7 @@ import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
 import browser from "webextension-polyfill";
-import { setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 // init global instances
 const keyStore = KeyStore.getInstance();
@@ -134,14 +134,21 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getWalletAddress = async () => {
-        const res: any = await api.account.getWalletAddress({
-            key: account,
-        });
-        const walletAddress = res.data.wallet_address;
-        // console.log("ready to get", walletAddress);
-        await setLocalStorage("activeWalletAddress", walletAddress);
+        const cachedWalletAddress = await getLocalStorage(
+            "activeWalletAddress",
+        );
+        if (cachedWalletAddress) {
+            setWalletAddress(cachedWalletAddress);
+        } else {
+            const walletAddress: string = (
+                await api.account.getWalletAddress({
+                    key: account,
+                })
+            ).data.wallet_address;
+            await setLocalStorage("activeWalletAddress", walletAddress);
 
-        setWalletAddress(res.data.wallet_address);
+            setWalletAddress(walletAddress);
+        }
     };
 
     const getWalletAddressByEmail = async (email: string) => {
