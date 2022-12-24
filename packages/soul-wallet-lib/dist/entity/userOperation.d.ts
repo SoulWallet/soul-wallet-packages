@@ -1,4 +1,6 @@
 import { ethers } from "ethers";
+import { NumberLike } from "../defines/numberLike";
+import { guardianSignature } from "../utils/guardian";
 /**
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/UserOperation.sol
  */
@@ -7,14 +9,13 @@ declare class UserOperation {
     nonce: number;
     initCode: string;
     callData: string;
-    callGasLimit: number;
-    verificationGasLimit: number;
-    preVerificationGas: number;
-    maxFeePerGas: number;
-    maxPriorityFeePerGas: number;
+    callGasLimit: NumberLike;
+    verificationGasLimit: NumberLike;
+    preVerificationGas: NumberLike;
+    maxFeePerGas: NumberLike;
+    maxPriorityFeePerGas: NumberLike;
     paymasterAndData: string;
     signature: string;
-    clone(): UserOperation;
     toTuple(): string;
     /**
      * estimate the gas
@@ -41,6 +42,13 @@ declare class UserOperation {
      * @param signature the signature of the requestId
      */
     signWithSignature(signAddress: string, signature: string): void;
+    /**
+     * sign the user operation with guardians sign
+     * @param guardianAddress guardian address
+     * @param signature guardians signature
+     * @param initCode guardian contract init code
+     */
+    signWithGuardiansSign(guardianAddress: string, signature: guardianSignature[], initCode?: string): void;
     /**
      * get the request id (userOp hash)
      * @param entryPointAddress the entry point address

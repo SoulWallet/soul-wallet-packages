@@ -1,7 +1,7 @@
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.12;
 
 
-// : GPL-3.0
+//  GPL-3.0
 /* solhint-disable no-inline-assembly */
 /**
      * User Operation struct
@@ -79,7 +79,7 @@ library UserOperationLib {
     }
 }
 
-// : GPL-3.0
+//  GPL-3.0
 interface IWallet {
 
     /**
@@ -100,7 +100,7 @@ interface IWallet {
     function validateUserOp(UserOperation calldata userOp, bytes32 requestId, address aggregator, uint256 missingWalletFunds) external;
 }
 
-// : GPL-3.0
+//  GPL-3.0
 /**
  * the interface exposed by a paymaster contract, who agrees to pay the gas for user's operations.
  * a paymaster must hold a stake to cover the required entrypoint stake and also the gas for the transaction.
@@ -141,7 +141,7 @@ interface IPaymaster {
     }
 }
 
-// : GPL-3.0
+//  GPL-3.0
 /**
  * Aggregated Signatures validator.
  */
@@ -177,7 +177,7 @@ interface IAggregator {
     function aggregateSignatures(bytes[] calldata sigsForAggregation) external view returns (bytes memory aggregatesSignature);
 }
 
-// : GPL-3.0
+//  GPL-3.0
 /**
  * Aggregated wallet, that support IAggregator.
  * - the validateUserOp will be called only after the aggregator validated this wallet (with all other wallets of this aggregator).
@@ -191,7 +191,7 @@ interface IAggregatedWallet is IWallet {
     function getAggregator() external view returns (address);
 }
 
-// : GPL-3.0-only
+//  GPL-3.0-only
 /**
  * manage deposits and stakes.
  * deposit is just a balance used to pay for UserOperations (either by a paymaster or a wallet)
@@ -301,7 +301,7 @@ interface IStakeManager {
  ** Account-Abstraction (EIP-4337) singleton EntryPoint implementation.
  ** Only one instance required on each chain.
  **/
-// : GPL-3.0
+//  GPL-3.0
 /* solhint-disable avoid-low-level-calls */
 /* solhint-disable no-inline-assembly */
 /* solhint-disable reason-string */
@@ -418,7 +418,7 @@ interface IEntryPoint is IStakeManager {
     function getSenderStorage(address sender) external view returns (uint256[] memory senderStorageCells);
 }
 
-// : GPL-3.0
+//  GPL-3.0
 /**
  * create2-based deployer (eip-2470)
  */
@@ -426,7 +426,7 @@ interface ICreate2Deployer {
     function deploy(bytes memory initCode, bytes32 salt) external returns (address);
 }
 
-// : LGPL-3.0-only
+//  LGPL-3.0-only
 // solhint-disable no-inline-assembly
 library Exec {
 
@@ -487,7 +487,7 @@ library Exec {
     }
 }
 
-// : GPL-3.0-only
+//  GPL-3.0-only
 /* solhint-disable avoid-low-level-calls */
 /* solhint-disable not-rely-on-time */
 /**
@@ -615,7 +615,7 @@ abstract contract StakeManager is IStakeManager {
     }
 }
 
-// : GPL-3.0
+//  GPL-3.0
 /**
  * helper contract for EntryPoint, to call userOp.initCode from a "neutral" address,
  * which is explicitly not the entryPoint itself.
@@ -646,7 +646,7 @@ contract SenderCreator {
  ** Account-Abstraction (EIP-4337) singleton EntryPoint implementation.
  ** Only one instance required on each chain.
  **/
-// : GPL-3.0
+//  GPL-3.0
 /* solhint-disable avoid-low-level-calls */
 /* solhint-disable no-inline-assembly */
 /* solhint-disable reason-string */
@@ -880,6 +880,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
         UserOpInfo memory outOpInfo;
 
         actualAggregator = _validatePrepayment(0, userOp, outOpInfo, SIMULATE_NO_AGGREGATOR);
+
         prefund = outOpInfo.prefund;
         preOpGas = preGas - gasleft() + userOp.preVerificationGas;
 

@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-23 12:30:13
+ * @LastEditTime: 2022-12-23 19:20:20
  */
 
 import { execFromEntryPoint } from './ABI/execFromEntryPoint';
@@ -15,14 +15,23 @@ import { Utils } from './Utils';
 import { WalletLib } from 'soul-wallet-lib';
 import { AbiItem } from 'web3-utils';
 import axios from 'axios';
+import * as ethUtil from 'ethereumjs-util';
+import {
+    arrayify,
+    defaultAbiCoder,
+    getCreate2Address,
+    hexDataSlice,
+    keccak256
+} from 'ethers/lib/utils'
 
 async function main() {
 
     // infura key for test
     const web3 = new Web3('https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18');
     const ethersProvider = new ethers.providers.JsonRpcProvider('https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18');
-
-
+ 
+    // get contract code
+    const code1 = await web3.eth.getCode('0x1a42F5B5Fb0332EC6d8dE685Ffe690c78D33cCB9');
 
 
     const bundlerEndpoint = 'http://35.89.2.9:3000/rpc/';
@@ -39,10 +48,10 @@ async function main() {
     // let accounts = await web3.eth.personal.getAccounts();
 
     // new account
-    //const walletUser = await web3.eth.accounts.create();
-    //console.log(walletUser.privateKey);
+    // const walletUser = await web3.eth.accounts.create();
+    // console.log(walletUser.privateKey);
 
-    const walletUser = web3.eth.accounts.privateKeyToAccount('0xce2bf1cf06ba5ed8e744bd9849b7e59f0550524a24c39087acfe53fb74aab82c');
+    const walletUser = web3.eth.accounts.privateKeyToAccount('0xab8b37dc7b125e52c0af16402c15099871664ce616fd6090afd6264daa3dff59');
 
     //#region  deploy eip-2470
 
@@ -71,6 +80,8 @@ async function main() {
 
     //#endregion
 
+
+
     //#region check bundle status
 
     const resp = await axios.post(bundlerEndpoint, WalletLib.EIP4337.RPC.eth_supportedEntryPoints(),
@@ -97,7 +108,7 @@ async function main() {
 
     let walletLogicCompile = await Utils.compileContract(smartWalletPath, 'SmartWallet');
     // deploy bytecode
-    let SmartWalletLogicAddress = '0x0097e367385aD9215576019b4d311ca12c984049';
+    let SmartWalletLogicAddress = '0xf6185eE2c8cF989Df23260e1D30b6587e423471c';
 
     var walletLogicContract = new web3.eth.Contract(walletLogicCompile.abi);
 
@@ -438,11 +449,86 @@ async function main() {
 
     //#region calculate wallet address
 
+
+    // guardian address
+    let guardianAddress = '0x0000000000000000000000000000000000000001';//WalletLib.EIP4337.Defines.AddressZero;
+
     let walletAddress = await WalletLib.EIP4337.calculateWalletAddress(
-        SmartWalletLogicAddress, EntryPointAddress, walletUser.address, WEthAddress, WETHPaymasterAddress, 0, SingletonFactory
+        SmartWalletLogicAddress, EntryPointAddress, walletUser.address, guardianAddress, WEthAddress, WETHPaymasterAddress, 0, SingletonFactory
     );
     console.log('walletAddress: ' + walletAddress);
     //#endregion
+    {
+        // let op1 = await WalletLib.EIP4337.Utils.fromTransaction(
+        //     ethersProvider, EntryPointAddress,
+        //     {
+        //         from: walletAddress,
+        //         to: WEthAddress,
+        //         value: '0x0',
+        //         gas: '0x5208',
+        //         data: new ethers.utils.Interface(
+        //             '[ { "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }]'
+        //         ).encodeFunctionData("transfer", ['0x00000000000d3b4EA88f9B3fE809D386B86F5898', web3.utils.toWei('0.18', 'ether')])
+        //     },
+        //     await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider),
+        //     parseInt(web3.utils.toWei('30', 'Gwei')),
+        //     parseInt(web3.utils.toWei('2', 'Gwei')),
+        //     WETHPaymasterAddress
+        // );
+        // if (!op1) {
+        //     throw new Error('op1 failed');
+        // }
+
+
+
+        // const requestId = op1.getRequestId(EntryPointAddress, chainId);
+        // const signature = await web3.eth.accounts.sign(requestId, walletUser.privateKey).signature;
+
+        //  op1.signWithSignature(walletUser.address, signature);
+        // try {
+        //     const result = await entrypointContract.methods.simulateValidation(op1, false).call({
+        //         from: WalletLib.EIP4337.Defines.AddressZero
+        //     });
+        //     console.log(`simulateValidation result:`, result);
+
+        // } catch (error) {
+        //     throw error;
+        // }
+    }
+    {
+        // let op1 = await WalletLib.EIP4337.Tokens.ERC20.transfer(ethersProvider, walletAddress,
+        //     await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider),
+        //     EntryPointAddress, WETHPaymasterAddress, parseInt(web3.utils.toWei('30', 'Gwei')),
+        //     parseInt(web3.utils.toWei('2', 'Gwei')), WEthAddress,
+        //     '0x00000000000d3b4EA88f9B3fE809D386B86F5898', web3.utils.toWei('0.18', 'ether'));
+        // if (!op1) {
+        //     throw new Error('op1 failed');
+        // }
+        // const requestId = op1.getRequestId(EntryPointAddress, chainId);
+        // const signature = await web3.eth.accounts.sign(requestId, walletUser.privateKey);
+        // op1.signWithSignature(walletUser.address, signature.signature);
+        // try {
+        //     const result = await entrypointContract.methods.simulateValidation(op1, false).call({
+        //         from: WalletLib.EIP4337.Defines.AddressZero
+        //     });
+        //     console.log(`simulateValidation result:`, result);
+
+        // } catch (error) {
+        //     throw error;
+        // }
+
+        // const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(op1, EntryPointAddress);
+
+        // const resp = await axios.post(bundlerEndpoint, raw_data,
+        //     {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     }
+        // );
+        // console.log('resp: ' + JSON.stringify(resp.data));
+
+    }
 
     //#region swap eth to weth
     // account[0] send 1 eth to WEthAddress
@@ -483,6 +569,7 @@ async function main() {
             EntryPointAddress,
             WETHPaymasterAddress,
             walletUser.address,
+            guardianAddress,
             WEthAddress,
             parseInt(web3.utils.toWei('10', 'gwei')),
             parseInt(web3.utils.toWei('3', 'gwei')),
@@ -491,14 +578,14 @@ async function main() {
         );
         {
             // calculate create2 cost
-            const singletonFactoryContract = new web3.eth.Contract([{ "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" }], SingletonFactory);
-            const _initCode = WalletLib.EIP4337.getWalletCode(SmartWalletLogicAddress, EntryPointAddress, walletUser.address, WEthAddress, WETHPaymasterAddress);
-            const _salt = web3.utils.soliditySha3(WalletLib.EIP4337.number2Bytes32(0));
-            const create2Cost = await singletonFactoryContract.methods.deploy(_initCode, _salt).estimateGas({
-                from: WalletLib.EIP4337.Defines.AddressZero,
-                gas: Math.pow(10, 18),
-            });
-            console.log('create2Cost: ' + create2Cost);
+            // const singletonFactoryContract = new web3.eth.Contract([{ "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" }], SingletonFactory);
+            // const _initCode = WalletLib.EIP4337.getWalletCode(SmartWalletLogicAddress, EntryPointAddress, walletUser.address, WEthAddress, WETHPaymasterAddress);
+            // const _salt = web3.utils.soliditySha3(WalletLib.EIP4337.number2Bytes32(0));
+            // const create2Cost = await singletonFactoryContract.methods.deploy(_initCode, _salt).estimateGas({
+            //     from: WalletLib.EIP4337.Defines.AddressZero,
+            //     gas: Math.pow(10, 18),
+            // });
+            // console.log('create2Cost: ' + create2Cost);
         }
         {
             // get preOpGas prefund
@@ -529,22 +616,21 @@ async function main() {
         }
 
 
-
-
-
-
         const signature = await web3.eth.accounts.sign(requestId, walletUser.privateKey);
-        activateOp.signWithSignature(walletUser.address, signature.signature);
-        await Utils.sleep(1000);
-        try {
-            const result = await entrypointContract.methods.simulateValidation(activateOp, false).call({
-                from: WalletLib.EIP4337.Defines.AddressZero
-            });
-            console.log(`simulateValidation result:`, result);
 
-        } catch (error) {
-            throw error;
-        }
+        activateOp.signWithSignature(walletUser.address, signature.signature);
+        // await Utils.sleep(1000);
+        // try {
+        //     const result = await ethersProvider.call({
+        //         from: WalletLib.EIP4337.Defines.AddressZero,
+        //         to: EntryPointAddress,
+        //         data: new ethers.utils.Interface(entrypointCompile.abi).encodeFunctionData("simulateValidation", [activateOp, false]),
+        //     });
+        //     const decoded = new ethers.utils.Interface(entrypointCompile.abi).decodeFunctionResult("simulateValidation", result);
+        //     console.log(`simulateValidation result:`, decoded);
+        // } catch (error) {
+        //     throw error;
+        // }
 
         /* 
         curl --location --request POST 'localhost:8545/' \
@@ -571,32 +657,34 @@ curl --location --request POST '35.89.2.9:3000/rpc/' \
 --header 'Content-Type: application/json' \
 --data-raw '{}'
             */
-            const resp = await axios.post(bundlerEndpoint, raw_data,
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            if (resp && resp.data && typeof (resp.data.result) === 'string' && resp.data.result === requestId) {
-                console.log('requestId: ' + resp.data.result);
+            // const resp = await axios.post(bundlerEndpoint, raw_data,
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         }
+            //     }
+            // );
+            // if (resp && resp.data && typeof (resp.data.result) === 'string' && resp.data.result === requestId) {
+            //     console.log('requestId: ' + resp.data.result);
 
-                {
-                    const arr1 = await WalletLib.EIP4337.RPC.waitUserOperationEther(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
-                    const arr2 = await WalletLib.EIP4337.RPC.waitUserOperationWeb3(web3 as any, EntryPointAddress, requestId, 1000 * 5);
-                    console.log('waitUserOperation result: ', arr1, arr2);
+            //     {
+            //         const arr1 = await WalletLib.EIP4337.RPC.waitUserOperation(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
+            //         console.log('waitUserOperation result: ', arr1);
 
-                }
+            //     }
 
 
-            } else {
-                throw new Error('error');
-            }
+            // } else {
+            //     throw new Error('error');
+            // }
         }
+
+        // private key to address
+        console.log(new ethers.Wallet('0xfa1c00427235e07d0c33a3d25fb1a94021ea830594f486f9ee406955a2f76ff2').address);
 
 
         // deploy wallet
-        if (false) {
+        if (true) {
             const handleOpsCallData = entrypointContract.methods.handleOps(
                 [activateOp],
                 '0x8422F18f3F17cDc06aF677e9DbfBE19999999999'
@@ -633,7 +721,7 @@ curl --location --request POST '35.89.2.9:3000/rpc/' \
 
 
         // wethBalance = parseInt(await wethContract.methods.balanceOf(walletAddress).call()) - Math.pow(10, 16);
-        // const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+        // const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider);
         // const sendErc20Op = await WalletLib.EIP4337.Tokens.ERC20.transferFrom(
         //     web3 as any, walletAddress,
         //     nonce, EntryPointAddress, WETHPaymasterAddress,

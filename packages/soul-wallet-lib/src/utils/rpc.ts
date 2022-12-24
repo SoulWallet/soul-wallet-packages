@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-05 21:47:55
+ * @LastEditTime: 2022-12-23 19:16:57
  */
 import { ethers } from "ethers";
 import { EntryPointContract } from "../contracts/entryPoint";
@@ -46,7 +46,7 @@ export class RPC {
      * @param toBlock the toBlock, default: pending
      * @returns the userOp event array
      */
-     static async waitUserOperation(
+    static async waitUserOperation(
         etherProvider: ethers.providers.BaseProvider,
         entryPointAddress: string,
         requestId: string,
@@ -64,8 +64,16 @@ export class RPC {
             _fromBlock = await etherProvider.getBlockNumber() - 5;
         }
         const entryPoint = new ethers.Contract(entryPointAddress, EntryPointContract.ABI, etherProvider);
+
+        const UserOperationEventTopic = entryPoint.interface.getEventTopic('UserOperationEvent');
+
         while (true) {
-            const pastEvent: Array<ethers.Event> = await entryPoint.queryFilter('UserOperationEvent', _fromBlock, toBlock);
+            const pastEvent: Array<ethers.Event> = await entryPoint.queryFilter({
+                topics: [
+                    UserOperationEventTopic,
+                    requestId
+                ]
+            }, _fromBlock, toBlock);
 
             if (pastEvent && pastEvent.length > 0) {
                 return pastEvent;

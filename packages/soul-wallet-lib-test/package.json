@@ -2,7 +2,7 @@
   "name": "soul-wallet-lib-list",
   "version": "0.0.1",
   "scripts": {
-    "start": "ts-node test/test.ts"
+    "start": "ts-node test/test-local.ts"
   },
   "author": "soul",
   "license": "SEE LICENSE IN LICENSE",

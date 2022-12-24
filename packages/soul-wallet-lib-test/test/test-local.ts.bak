@@ -2,18 +2,33 @@
  * @Description: 
  * @Version: 1.0
  * @Autor: z.cejay@gmail.com
+ * @Date: 2022-12-13 22:39:54
+ * @LastEditors: cejay
+ * @LastEditTime: 2022-12-13 22:39:55
+ */
+/*
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-04 21:46:05
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 20:44:29
+ * @LastEditTime: 2022-12-13 21:43:19
  */
+
+import { execFromEntryPoint } from './ABI/execFromEntryPoint';
 import Web3 from 'web3';
 import { BigNumber, ethers } from "ethers";
+import fs from 'fs';
 import { Utils } from './Utils';
-import EIP4337Lib from 'soul-wallet-lib';
+import { WalletLib } from 'soul-wallet-lib';
 import { AbiItem } from 'web3-utils';
-import { defaultAbiCoder, keccak256 } from 'ethers/lib/utils';
-import * as ethUtil from 'ethereumjs-util';
-import assert from 'assert';
+import { arrayify, defaultAbiCoder } from 'ethers/lib/utils';
+
+import {
+    ecsign,
+    toRpcSig,
+    keccak256 as keccak256_buffer,
+} from "ethereumjs-util";
 
 async function main() {
 
@@ -35,15 +50,6 @@ async function main() {
     const bundlerHelperPath = './test/contracts/BundlerHelper.sol';
     const soulWalletProxyPath = './test/contracts/SoulWalletProxy.sol';
 
-    const optimizerMap = new Map<string, number>();
-    optimizerMap.set(entryPointPath, 200);
-    optimizerMap.set(smartWalletPath, 20000);
-    optimizerMap.set(GuardianMultiSigWalletpath, 200);
-    optimizerMap.set(wethPaymasterPath, 2000);
-    optimizerMap.set(bundlerHelperPath, 1);
-    optimizerMap.set(soulWalletProxyPath, 1);
-
-
     const chainId = await web3.eth.getChainId();
 
     const accounts = [
@@ -53,7 +59,6 @@ async function main() {
         web3.eth.accounts.create(),
         web3.eth.accounts.create(),
     ];
-
     // send 10 ether to accounts
     let _accounts = await web3.eth.personal.getAccounts();
     for (let i = 0; i < accounts.length; i++) {
@@ -117,7 +122,7 @@ async function main() {
     //#endregion
 
     //#region deploy entrypoint
-    let entrypointCompile = await Utils.compileContract(entryPointPath, 'EntryPoint', optimizerMap.get(entryPointPath));
+    let entrypointCompile = await Utils.compileContract(entryPointPath, 'EntryPoint');
     // deploy bytecode
     let EntryPointAddress = '';
     var _paymasterStake = web3.utils.toWei('1', 'ether');
@@ -152,7 +157,7 @@ async function main() {
 
     //#region deploy wallet logic
 
-    let walletLogicCompile = await Utils.compileContract(smartWalletPath, 'SmartWallet', optimizerMap.get(smartWalletPath));
+    let walletLogicCompile = await Utils.compileContract(smartWalletPath, 'SmartWallet');
     // deploy bytecode
     let SmartWalletLogicAddress = '';
 
@@ -182,7 +187,7 @@ async function main() {
 
     //#region deploy guardian logic
 
-    let GuardianLogicCompile = await Utils.compileContract(GuardianMultiSigWalletpath, 'GuardianMultiSigWallet', optimizerMap.get(GuardianMultiSigWalletpath));
+    let GuardianLogicCompile = await Utils.compileContract(GuardianMultiSigWalletpath, 'GuardianMultiSigWallet');
     // deploy bytecode
     let GuardianLogicAddress = '';
 
@@ -521,7 +526,7 @@ async function main() {
 
     //#region deploy wethpaymaster
 
-    let wethPaymasterCompile = await Utils.compileContract(wethPaymasterPath, 'WETHTokenPaymaster', optimizerMap.get(wethPaymasterPath));
+    let wethPaymasterCompile = await Utils.compileContract(wethPaymasterPath, 'WETHTokenPaymaster');
     // deploy bytecode
     let WETHPaymasterAddress = '';
     var WETHPaymasterContract = new web3.eth.Contract(wethPaymasterCompile.abi);
@@ -585,139 +590,16 @@ async function main() {
     //#region calculate wallet address
 
 
-    const guardians: string[] = [];
-    for (let i = 0; i < accounts.length; i++) {
-        guardians.push(accounts[i].address);
-    }
-    const guardianSalt = 'saltText' + Math.random();
-    const gurdianAddressAndInitCode = EIP4337Lib.Guaridian.calculateGuardianAndInitCode(GuardianLogicAddress, guardians, Math.round(guardians.length / 2), guardianSalt, SingletonFactory);
-    console.log('guardian address ==> ' + gurdianAddressAndInitCode.address);
-
-    {
-        //#region deploy guardian contract
-        // call SingletonFactory function deploy
-        // function deploy(bytes memory _initCode, bytes32 _salt) public returns (address payable createdContract)
-
-        // read ABI from file
-        const singletonFactoryABI = JSON.parse(
-            '[ { "inputs": [ { "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" } ], "name": "deploy", "outputs": [ { "internalType": "address payable", "name": "createdContract", "type": "address" } ], "stateMutability": "nonpayable", "type": "function" }]'
-        );
-        const singletonFactoryContract = new web3.eth.Contract(singletonFactoryABI, SingletonFactory);
-        // get address  
-        const abi = { "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" };
-        let iface = new ethers.utils.Interface([abi]);
-        let packedInitCode = iface.decodeFunctionData("deploy", '0x' + gurdianAddressAndInitCode.initCode.substring(42));
-        const cAddress = await singletonFactoryContract.methods.deploy(packedInitCode[0], packedInitCode[1]).call();
-        let code = await web3.eth.getCode(gurdianAddressAndInitCode.address);
-        if (code !== '0x') {
-            throw new Error('guardian contract deployed');
-        }
-        const switchTag: number = 2;
-        if (switchTag === 0) {
-            const tx = await singletonFactoryContract.methods.deploy(packedInitCode[0], packedInitCode[1]).send({
-                from: accounts[0].address,
-                gas: 10000000,
-            });
-        } else if (switchTag === 1) {
-            const sendTx = {
-                from: accounts[0].address,
-                to: SingletonFactory,
-                data: gurdianAddressAndInitCode.initCode.substring(42),
-                gas: 10000000,
-                value: 0
-            };
-            const sendEthReceipt = await web3.eth.sendTransaction(sendTx);
-            console.log('sendEthReceipt: ' + JSON.stringify(sendEthReceipt));
-        } else if (switchTag === 2) {
-            // deploy CreateTest.sol
-            const createTestPath = './test/contracts/CreateTest.sol';
-            let createTestCompile = await Utils.compileContract(createTestPath, 'CreatorTest');
-            // deploy bytecode
-            let createTestAddress = '';
-            var createTestContract = new web3.eth.Contract(createTestCompile.abi);
-            createTestContract.deploy({
-                data: '0x' + createTestCompile.bytecode,
-                arguments: []
-            }).send({
-                from: accounts[0].address,
-                gas: 10000000,
-            }).on('receipt', async (receipt) => {
-                //console.log('entrypointContract deployed at: ' + receipt.contractAddress);
-                if (receipt.contractAddress) {
-                    createTestAddress = receipt.contractAddress;
-                }
-
-            }).on('error', (error) => {
-                console.log(error);
-            });
-            while (createTestAddress === '') {
-                await Utils.sleep(500);
-                console.log('waiting for sreateTest deployed');
-            }
-            createTestContract.options.address = createTestAddress;
-            console.log('createTestAddress: ' + createTestAddress);
-            //function deployB(bytes memory _calldata) public returns (address) {
-            let data = await createTestContract.methods.deployB(gurdianAddressAndInitCode.initCode).send({
-                from: accounts[0].address,
-                gas: 10000000,
-            });
-            console.log('data: ' + JSON.stringify(data));
-
-            if (true) {
-                const msg = '0x809356b590a1fe4d3d4243b86f7ab44ba10c04dda893e4dc1018ea483c42854b';
-                const guardianSignArr: any[] = [];
-                for (let index = 0; index < Math.round(guardians.length / 2); index++) {
-                    const account = accounts[index];
-                    const sig1 = await web3.eth.accounts.sign(msg, account.privateKey).signature;
-
-                    {
-                        const messageHex = Buffer.from(ethers.utils.arrayify(msg)).toString('hex');
-                        const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
-                        var privateKey = Buffer.from(account.privateKey.substring(2), "hex");
-                        const signature1 = ethUtil.ecsign(personalMessage, privateKey);
-                        const sig2 = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
-                        assert(sig1 === sig2, 'sig1 !== sig2');
-                    }
-                    guardianSignArr.push(
-                        {
-                            contract: false,
-                            address: account.address,
-                            signature: sig1
-                        }
-                    );
-                }
-
-                const guardianSign = EIP4337Lib.Guaridian.guardianSign(guardianSignArr);
-
-                GuardianLogicContract.options.address = gurdianAddressAndInitCode.address;
-
-                //   function checkNSignatures2(  bytes32 dataHash,  bytes memory signatures,   uint16 requiredSignatures) 
-                const re = await GuardianLogicContract.methods.checkNSignatures2(
-                    msg,
-                    guardianSign,
-                    Math.round(guardians.length / 2)
-                ).call();
-                assert(re, 'checkNSignatures2 failed');
-
-            }
-        }
-        code = await web3.eth.getCode(gurdianAddressAndInitCode.address);
-        if (code === '0x') {
-            throw new Error('guardian contract not deployed');
-        }
-
-
-        //#endregion
-    }
-
+    // guardian address
+    let guardianAddress = '0x0000000000000000000000000000000000000001';//WalletLib.EIP4337.Defines.AddressZero;
     const upgradeDelay = 5;
-    const guardianDelay = 2;
+    const guardianDelay = 5;
 
 
-    let walletAddress = await EIP4337Lib.calculateWalletAddress(
+    let walletAddress = await WalletLib.EIP4337.calculateWalletAddress(
         SmartWalletLogicAddress, EntryPointAddress, walletUser.address,
-        upgradeDelay, guardianDelay, gurdianAddressAndInitCode.address,
-        WEthAddress, WETHPaymasterAddress, 0, SingletonFactory
+        upgradeDelay, guardianDelay, guardianAddress, WEthAddress,
+        WETHPaymasterAddress, 0, SingletonFactory
     );
 
 
@@ -785,31 +667,50 @@ async function main() {
 
     //#endregion
 
-
-    //#region gas price
-    // get maxFeePerGas and PriorityFeePerGas
-    const gasPrice = await web3.eth.getGasPrice();
-    const maxFeePerGas = parseInt(gasPrice) * 10;
-    const PriorityFeePerGas = parseInt(gasPrice) * 2;
-    //#endregion
-
     //#region deploy wallet
 
-    const activateOp = EIP4337Lib.activateWalletOp(
+    const activateOp = WalletLib.EIP4337.activateWalletOp(
         SmartWalletLogicAddress,
         EntryPointAddress,
         WETHPaymasterAddress,
         walletUser.address,
         upgradeDelay,
         guardianDelay,
-        gurdianAddressAndInitCode.address,
+        guardianAddress,
         WEthAddress,
-        maxFeePerGas,// parseInt(web3.utils.toWei('100', 'gwei')),
-        PriorityFeePerGas,//parseInt(web3.utils.toWei('10', 'gwei')),
+        parseInt(web3.utils.toWei('100', 'gwei')),
+        parseInt(web3.utils.toWei('10', 'gwei')),
         0,
         SingletonFactory
     );
+    {
+        // // calculate create2 cost
+        // const singletonFactoryContract = new web3.eth.Contract([{ "inputs": [{ "internalType": "bytes", "name": "_initCode", "type": "bytes" }, { "internalType": "bytes32", "name": "_salt", "type": "bytes32" }], "name": "deploy", "outputs": [{ "internalType": "address payable", "name": "createdContract", "type": "address" }], "stateMutability": "nonpayable", "type": "function" }], SingletonFactory);
+        // const _initCode = WalletLib.EIP4337.getWalletCode(SmartWalletLogicAddress, EntryPointAddress, walletUser.address, guardianAddress, WEthAddress, WETHPaymasterAddress);
+        // const _salt = web3.utils.soliditySha3(WalletLib.EIP4337.number2Bytes32(0));
+        // const create2Cost = await singletonFactoryContract.methods.deploy(_initCode, _salt).estimateGas({
+        //     from: WalletLib.EIP4337.Defines.AddressZero,
+        //     gas: Math.pow(10, 18),
+        // });
+        // console.log('create2Cost: ' + create2Cost);
+    }
+    {
+        // get preOpGas prefund
 
+    }
+    //
+    //console.log(activateOp);
+    {
+        // get maxFeePerGas and PriorityFeePerGas
+        const gasPrice = await web3.eth.getGasPrice();
+        const maxFeePerGas = parseInt(gasPrice) * 100;
+        const PriorityFeePerGas = parseInt(gasPrice) * 10;
+
+
+        // test gas
+        // activateOp.callGasLimit = 0;
+        // activateOp.maxFeePerGas
+    }
 
     const requestId = activateOp.getRequestId(EntryPointAddress, chainId);
     {
@@ -818,25 +719,48 @@ async function main() {
         if (_requestid !== requestId) {
             throw new Error('requestId mismatch');
         }
+
     }
 
-    activateOp.signWithSignature(
-        walletUser.address,
-        await web3.eth.accounts.sign(requestId, walletUser.privateKey).signature
-    );
-    const simulate = await Utils.simulateValidation(entrypointContract, activateOp);
-    console.log(`simulateValidation result:`, simulate);
+
+    const signature = await web3.eth.accounts.sign(requestId, walletUser.privateKey);
+    activateOp.signWithSignature(walletUser.address, signature.signature);
+    try {
+        const result = await entrypointContract.methods.simulateValidation(activateOp, false).call({
+            from: WalletLib.EIP4337.Defines.AddressZero
+        });
+        console.log(`simulateValidation result:`, result);
+
+    } catch (error) {
+        throw error;
+    }
 
     wethBalance = await wethContract.methods.balanceOf(walletAddress).call();
     console.log('Wallet wethBalance: before deploy\t' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
 
     {
-        const re = await BundlerHelperContract.methods.handleOps(0, EntryPointAddress, [activateOp], accounts[0].address).call({
-            from: EIP4337Lib.Defines.AddressZero,
-            gas: Math.pow(10, 16),
-        });
-        console.log('handleOps: ' + re);
+        // simulate via bundlerHelper
+        // function handleOps(uint expectedPaymentGas, EntryPoint ep, UserOperation[] calldata ops, address payable beneficiary)
+        {
+            const re = await BundlerHelperContract.methods.handleOps(0, EntryPointAddress, [activateOp], accounts[0].address).call({
+                from: WalletLib.EIP4337.Defines.AddressZero,
+                gas: Math.pow(10, 16),
+            });
+            console.log('handleOps: ' + re);
+
+        }
+        // get tx info
+
+
+
     }
+    {
+        // const arr1 = await WalletLib.EIP4337.RPC.waitUserOperation(ethersProvider, EntryPointAddress, requestId, 1000 * 5);
+        // console.log('waitUserOperation result: ', arr1);
+
+
+    }
+
     wethBalance = await wethContract.methods.balanceOf(walletAddress).call();
     console.log('Wallet wethBalance: after deploy\t' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
 
@@ -853,22 +777,18 @@ async function main() {
     }
     console.log('wallet deployed');
 
-    const guardianInfo = await EIP4337Lib.Guaridian.getGuardian(ethersProvider, walletAddress);
+    const guardianInfo = await WalletLib.EIP4337.Guaridian.getGuardian(ethersProvider, walletAddress);
     console.log('guardianInfo: ', guardianInfo);
 
     // set guardian
-    const newGuardianSalt = 'newSaltText';
-    const newGurdianAddressAndInitCode = EIP4337Lib.Guaridian.calculateGuardianAndInitCode(GuardianLogicAddress, guardians, Math.round(guardians.length / 2), newGuardianSalt, SingletonFactory);
-    console.log('guardian address ==> ' + newGurdianAddressAndInitCode.address);
-
     {
-        const newGuardian = newGurdianAddressAndInitCode.address;
-        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
+        const newGuardian = accounts[3].address;
+        const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider);
         const gasPrice = await web3.eth.getGasPrice();
         const maxFeePerGas = parseInt(gasPrice) * 100;
         const PriorityFeePerGas = parseInt(gasPrice) * 10;
 
-        const setGuardianOP = await EIP4337Lib.Guaridian.setGuardian(ethersProvider, walletAddress,
+        const setGuardianOP = await WalletLib.EIP4337.Guaridian.setGuardian(ethersProvider, walletAddress,
             newGuardian, nonce, EntryPointAddress, WETHPaymasterAddress, maxFeePerGas, PriorityFeePerGas);
         if (!setGuardianOP) {
             throw new Error('setGuardianOP is null');
@@ -880,117 +800,20 @@ async function main() {
             from: accounts[0].address,
             gas: 10000000,
         });
-        let guardianInfo = await EIP4337Lib.Guaridian.getGuardian(ethersProvider, walletAddress);
+        let guardianInfo = await WalletLib.EIP4337.Guaridian.getGuardian(ethersProvider, walletAddress);
         console.log('guardianInfo: ', guardianInfo);
-        if (true) {
-            await Utils.sleep(guardianDelay * 1000);
-            guardianInfo = await EIP4337Lib.Guaridian.getGuardian(ethersProvider, walletAddress);
-            if (guardianInfo && guardianInfo.currentGuardian === newGuardian) {
-                console.log('guardianInfo set :' + newGuardian);
-            } else {
-                throw new Error('guardianInfo set failed');
-            }
-        }
+        await Utils.sleep(guardianDelay * 1000);
+        guardianInfo = await WalletLib.EIP4337.Guaridian.getGuardian(ethersProvider, walletAddress);
+        console.log('guardianInfo: ', guardianInfo);
+
+
     }
 
 
     //#endregion
 
 
-
-    // //#region send weth from eip4337 wallet
-    // // get nonce
-    // const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
-
-    // const sendErc20Op = await EIP4337Lib.Tokens.ERC20.transferFrom(
-    //     ethersProvider, walletAddress,
-    //     nonce, EntryPointAddress, WETHPaymasterAddress,
-    //     parseInt(web3.utils.toWei('100', 'gwei')),
-    //     parseInt(web3.utils.toWei('10', 'gwei')),
-    //     WEthAddress, walletAddress, accounts[1].address, web3.utils.toWei('0.001', 'ether')
-    // );
-    // if (!sendErc20Op) {
-    //     throw new Error('sendErc20Op is null');
-    // }
-    // const sendErc20RequestId = sendErc20Op.getRequestId(EntryPointAddress, chainId);
-    // const sendErc20Signature = await web3.eth.accounts.sign(sendErc20RequestId, walletUser.privateKey);
-    // sendErc20Op.signWithSignature(walletUser.address, sendErc20Signature.signature);
-
-    // const dcd = EIP4337Lib.Utils.DecodeCallData.new();
-    // const dc = await dcd.decode(sendErc20Op.callData);
-
-    // wethBalance = await wethContract.methods.balanceOf(accounts[1].address).call();
-    // console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
-
-    // console.log(`simulateValidation result:`, await Utils.simulateValidation(entrypointContract, sendErc20Op));
-    // await entrypointContract.methods.handleOps([sendErc20Op], accounts[0].address).send({
-    //     from: accounts[0].address,
-    //     gas: 10000000,
-    // });
-
-    // wethBalance = await wethContract.methods.balanceOf(accounts[1].address).call();
-    // console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
-
-
-
-
-    // //#endregion
-
-
-    //#region guardian recover
-    {
-        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
-        const transferOwnerOP = await EIP4337Lib.Guaridian.transferOwner(ethersProvider, walletAddress, nonce, EntryPointAddress, WETHPaymasterAddress, maxFeePerGas, PriorityFeePerGas, accounts[0].address);
-        if (!transferOwnerOP) {
-            throw new Error('transferOwnerOP is null');
-        } 
-
-        const transferOwnerOPRequestId = transferOwnerOP.getRequestId(EntryPointAddress, chainId);
-
-        const guardianSignArr: any[] = [];
-        for (let index = 0; index < Math.round(guardians.length / 2); index++) {
-            const account = accounts[index];
-            const sig1 = await web3.eth.accounts.sign(transferOwnerOPRequestId, account.privateKey).signature;
-
-            {
-                const messageHex = Buffer.from(ethers.utils.arrayify(transferOwnerOPRequestId)).toString('hex');
-                const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
-                var privateKey = Buffer.from(account.privateKey.substring(2), "hex");
-                const signature1 = ethUtil.ecsign(personalMessage, privateKey);
-                const sig2 = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
-                assert(sig1 === sig2, 'sig1 !== sig2');
-            }
-            guardianSignArr.push(
-                {
-                    contract: false,
-                    address: account.address,
-                    signature: sig1
-                }
-            );
-        }
-        transferOwnerOP.signWithGuardiansSign(newGurdianAddressAndInitCode.address, guardianSignArr, newGurdianAddressAndInitCode.initCode);
-        //transferOwnerOP.verificationGasLimit =  658000; 
-        const simulate = await Utils.simulateValidation(entrypointContract, transferOwnerOP);
-        console.log(`simulateValidation result:`, simulate);
-        // isOwner(address)
-        walletLogicContract.options.address = walletAddress;
-        if (!await walletLogicContract.methods.isOwner(walletUser.address).call()) {
-            throw new Error('isOwner failed');
-        }
-        await entrypointContract.methods.handleOps([transferOwnerOP], accounts[0].address).send({
-            from: accounts[0].address,
-            gas: 10000000,
-        });
-        const isOldOwnerUnset = await walletLogicContract.methods.isOwner(walletUser.address).call();
-        const isNewOwnerSet = await walletLogicContract.methods.isOwner(accounts[0].address).call();
-        if (!isOldOwnerUnset && isNewOwnerSet) {
-            console.log('recover owner success');
-        } else {
-            throw new Error('recover owner failed');
-        }
-
-    }
-
+    //#region test guardian wallet
 
 
 
@@ -1004,7 +827,7 @@ async function main() {
         ]);
 
         // deploy soulwalletproxy.sol
-        let soulWalletProxyCompile = await Utils.compileContract(soulWalletProxyPath, 'SoulWalletProxy', optimizerMap.get(soulWalletProxyPath));
+        let soulWalletProxyCompile = await Utils.compileContract(soulWalletProxyPath, 'SoulWalletProxy');
         // deploy bytecode
         let SoulWalletProxyAddress = '';
         var soulWalletProxyContract = new web3.eth.Contract(soulWalletProxyCompile.abi);
@@ -1033,6 +856,60 @@ async function main() {
         console.log('SoulWalletProxyAddress: ' + SoulWalletProxyAddress);
         GuardianLogicContract.options.address = SoulWalletProxyAddress;
 
+        // test guardian signatures
+        {
+
+
+
+            const sig0 = Utils.signMessage(requestId, accounts[0].privateKey);
+            const sig1 = Utils.signMessage(requestId, accounts[1].privateKey);
+            const sig2 = Utils.signMessage(requestId, walletUser.privateKey);
+            // {
+            //     const signature = Utils.signMessage(requestId, walletUser.privateKey);
+            //     walletLogicContract.options.address = walletAddress;
+            //     let re = await walletLogicContract.methods.isValidSignature(requestId, signature).call();
+            //     console.log('isValidSignature: ' + re);
+
+            // }
+            console.log('account0: ' + accounts[0].address);
+            console.log('account1: ' + accounts[1].address);
+            console.log('account2: ' + accounts[2].address);
+
+
+
+
+            const guardianSign = signSmartContractGuardianOp(
+                [
+                    {
+                        contract: false,
+                        address: accounts[0].address,
+                        signature: sig0
+                    },
+                    {
+                        contract: false,
+                        address: accounts[1].address,
+                        signature: sig1
+                    },
+                    {
+                        contract: true,
+                        address: walletAddress,
+                        signature: sig2
+                    }
+                ]
+            );
+
+            const re = await GuardianLogicContract.methods.isValidSignature(requestId, guardianSign).call();
+
+            console.log('isValidSignature: ' + re);
+
+
+        }
+
+
+
+
+
+
 
     }
 
@@ -1040,6 +917,42 @@ async function main() {
     //#endregion
 
 
+
+    //#region send weth from eip4337 wallet
+    // get nonce
+    const nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, ethersProvider);
+
+    const sendErc20Op = await WalletLib.EIP4337.Tokens.ERC20.transferFrom(
+        ethersProvider, walletAddress,
+        nonce, EntryPointAddress, WETHPaymasterAddress,
+        parseInt(web3.utils.toWei('100', 'gwei')),
+        parseInt(web3.utils.toWei('10', 'gwei')),
+        WEthAddress, walletAddress, accounts[1].address, web3.utils.toWei('0.1', 'ether')
+    );
+    if (!sendErc20Op) {
+        throw new Error('sendErc20Op is null');
+    }
+    const sendErc20RequestId = sendErc20Op.getRequestId(EntryPointAddress, chainId);
+    const sendErc20Signature = await web3.eth.accounts.sign(sendErc20RequestId, walletUser.privateKey);
+    sendErc20Op.signWithSignature(walletUser.address, sendErc20Signature.signature);
+
+    const dcd = WalletLib.EIP4337.Utils.DecodeCallData.new();
+    const dc = await dcd.decode(sendErc20Op.callData);
+
+    wethBalance = await wethContract.methods.balanceOf(accounts[1].address).call();
+    console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+    await entrypointContract.methods.handleOps([sendErc20Op], accounts[0].address).send({
+        from: accounts[0].address,
+        gas: 10000000,
+    });
+
+    wethBalance = await wethContract.methods.balanceOf(accounts[1].address).call();
+    console.log(' accounts[1] wethBalance: ' + web3.utils.fromWei(wethBalance, 'ether'), 'WETH');
+
+
+
+
+    //#endregion
 
 
 

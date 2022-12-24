@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-23 16:31:28
+ * @LastEditTime: 2022-12-23 20:30:07
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -18,7 +18,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserOperation = void 0;
-const guard_1 = require("../utils/guard");
 const userOp_1 = require("../utils/userOp");
 /**
  * @link https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/UserOperation.sol
@@ -30,27 +29,12 @@ class UserOperation {
         this.initCode = '0x';
         this.callData = '0x';
         this.callGasLimit = 0;
-        this.verificationGasLimit = 0;
-        this.preVerificationGas = 62000;
+        this.verificationGasLimit = 60000;
+        this.preVerificationGas = 2100;
         this.maxFeePerGas = 0;
         this.maxPriorityFeePerGas = 0;
         this.paymasterAndData = '0x';
         this.signature = '0x';
-    }
-    clone() {
-        const clone = new UserOperation();
-        clone.sender = this.sender;
-        clone.nonce = this.nonce;
-        clone.initCode = this.initCode;
-        clone.callData = this.callData;
-        clone.callGasLimit = this.callGasLimit;
-        clone.verificationGasLimit = this.verificationGasLimit;
-        clone.preVerificationGas = this.preVerificationGas;
-        clone.maxFeePerGas = this.maxFeePerGas;
-        clone.maxPriorityFeePerGas = this.maxPriorityFeePerGas;
-        clone.paymasterAndData = this.paymasterAndData;
-        clone.signature = this.signature;
-        return clone;
     }
     toTuple() {
         /*
@@ -81,10 +65,11 @@ class UserOperation {
     ) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.verificationGasLimit = 150000;
-                if (this.initCode.length > 0) {
-                    this.verificationGasLimit += (3200 + 200 * this.initCode.length);
-                }
+                // //  // Single signer 385000,
+                // this.verificationGasLimit = 60000;
+                // if (this.initCode.length > 0) {
+                //     this.verificationGasLimit += (3200 + 200 * this.initCode.length);
+                // }
                 const estimateGasRe = yield etherProvider.estimateGas({
                     from: entryPointAddress,
                     to: this.sender,
@@ -113,8 +98,6 @@ class UserOperation {
      * @param privateKey the private key
      */
     sign(entryPoint, chainId, privateKey) {
-        guard_1.Guard.uint(chainId);
-        guard_1.Guard.address(entryPoint);
         this.signature = (0, userOp_1.signUserOp)(this, entryPoint, chainId, privateKey);
     }
     /**
@@ -124,6 +107,15 @@ class UserOperation {
      */
     signWithSignature(signAddress, signature) {
         this.signature = (0, userOp_1.signUserOpWithPersonalSign)(signAddress, signature);
+    }
+    /**
+     * sign the user operation with guardians sign
+     * @param guardianAddress guardian address
+     * @param signature guardians signature
+     * @param initCode guardian contract init code
+     */
+    signWithGuardiansSign(guardianAddress, signature, initCode = '0x') {
+        this.signature = (0, userOp_1.packGuardiansSignByInitCode)(guardianAddress, signature, initCode);
     }
     /**
      * get the request id (userOp hash)

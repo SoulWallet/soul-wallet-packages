@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-05 18:56:10
  * @LastEditors: cejay
- * @LastEditTime: 2022-11-12 15:30:54
+ * @LastEditTime: 2022-12-23 20:26:46
  */
 
 
@@ -14,11 +14,14 @@ import Web3 from 'web3';
 import axios from 'axios';
 import { arrayify, defaultAbiCoder, hexlify, hexZeroPad, keccak256 } from 'ethers/lib/utils'
 import { ecsign, toRpcSig, keccak256 as keccak256_buffer } from 'ethereumjs-util'
-import { UserOperation } from 'soul-wallet-lib/dist/entity/userOperation';
-import { Ret_get, Ret_put } from './entity/bundler';
+import * as ethUtil from 'ethereumjs-util';
+
 const solc = require('solc');
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { ethers } from 'ethers';
+import EIP4337Lib from 'soul-wallet-lib';
+import { UserOperation } from 'soul-wallet-lib/dist/exportLib/EIP4337Lib';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 export class Utils {
 
@@ -39,9 +42,10 @@ export class Utils {
      * compile *.sol file
      * @param solPath *.sol file path
      * @param contractClassName contract class name
+     * @param optimizer optimizer level
      * @returns 
      */
-    static async compileContract(solPath: string, contractClassName: string) {
+    static async compileContract(solPath: string, contractClassName: string, optimizer?: number) {
         if (!fs.existsSync('./solCache')) {
             fs.mkdirSync('./solCache');
         }
@@ -62,7 +66,7 @@ export class Utils {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 1
+                        runs: optimizer ? optimizer : 1
                     },
                     outputSelection: {
                         '*': {
@@ -267,120 +271,6 @@ export class Utils {
         ]))
     }
 
-    // static bundlerUrl = 'http://127.0.0.1/'; 
-    static bundlerUrl = 'https://bundler-poc.soulwallets.me/'
-
-    static async sendOp(op: UserOperation) {
-        const proxyOptions = `socks5://127.0.0.1:1086`; // your sock5 host and port;
-        const httpsAgent = new SocksProxyAgent(proxyOptions);
-        try {
-            // post or put 
-            const result = await axios({
-                httpsAgent,
-                method: 'PUT',//post or put
-                url: Utils.bundlerUrl,
-                data: op,
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            return result.data as Ret_put;
-
-        } catch (error) {
-            console.log(error);
-        }
-        return null;
-    }
-    static async getOpStateByUserOperation(op: UserOperation, entryPointAddress: string, chainId: number) {
-        return Utils.getOpStateByReqeustId(op.getRequestId(entryPointAddress, chainId));
-    }
-    static async getOpStateByReqeustId(requestId: string) {
-        try {
-            const proxyOptions = `socks5://127.0.0.1:1086`; // your sock5 host and port;
-            const httpsAgent = new SocksProxyAgent(proxyOptions);
-
-            const result = await axios({
-                httpsAgent,
-                method: 'GET',
-                url: `${Utils.bundlerUrl}${requestId}`,
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            return result.data as Ret_get;
-        } catch (error) {
-            console.log(error);
-        }
-        return null;
-    }
-
-
-    static async sendOPWait(web3: Web3, op: UserOperation, entryPointAddress: string, chainId: number) {
-        let ret: Ret_put | null = null;
-        try {
-            ret = await Utils.sendOp(op);
-        } catch (e) {
-            console.log(e);
-        }
-        if (!ret) {
-            throw new Error('sendOp failed');
-        }
-        if (ret.code === 0) {
-            console.log(`activateOp success`);
-            console.log('wait for 60s to wait for the transaction ');
-            for (let index = 0; index < 60; index++) {
-                await Utils.sleep(1000);
-                let ret: Ret_get | null = null;
-                try {
-                    ret = await Utils.getOpStateByUserOperation(op, entryPointAddress, chainId);
-                } catch (error) {
-                    console.log(error);
-                }
-
-                if (!ret) {
-                    throw new Error('getOpStateByUserOperation failed');
-                }
-                if (ret.code === 0) {
-                    console.log(`pending...`);
-                } else if (ret.code === 1) {
-                    console.log(`replaced with request id:${ret.requestId}`);
-                    break;
-                } else if (ret.code === 2) {
-                    console.log(`processing...`);
-                } else if (ret.code === 3) {
-                    console.log(`success,tx:${ret.txHash}`);
-                    // check tx status
-                    for (let index = 0; index < 60; index++) {
-                        await Utils.sleep(1000);
-                        const receipt = await web3.eth.getTransactionReceipt(ret.txHash);
-                        if (receipt) {
-                            if (receipt.status === true) {
-                                console.log(`tx:${ret.txHash} has been confirmed`);
-                                break;
-                            } else {
-                                throw new Error('transaction failed');
-                            }
-                        }
-                    }
-                    break;
-                } else if (ret.code === 4) {
-                    console.log(`failed`);
-                    console.log(ret);
-                    break;
-                } else if (ret.code === 5) {
-                    console.log(`notfound`);
-                    break;
-                }
-            }
-        } else {
-            console.log(ret);
-            throw new Error('activateOp failed');
-        }
-    }
 
 
     static signPayMasterHash(message: string, privateKey: string): string {
@@ -447,6 +337,15 @@ export class Utils {
         return Utils.encode(typevalues, forSignature)
     }
 
+    static signMessage(message: string, privateKey: string): string {
+        const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
+        const personalMessage = ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex));
+        const _privateKey = Buffer.from(privateKey.substring(2), "hex");
+        const signature1 = ethUtil.ecsign(personalMessage, _privateKey);
+        const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
+        return sigHex;
+    }
+
     // static getRequestId(op: UserOperation, entryPointAddress: string, chainId: number): string {
     //     const userOpHash = keccak256(Utils.packUserOp(op, true))
     //     const enc = defaultAbiCoder.encode(
@@ -454,5 +353,28 @@ export class Utils {
     //         [userOpHash, entryPointAddress, chainId])
     //     return keccak256(enc)
     // }
+
+    static async simulateValidation(entrypointContract: any, op: UserOperation) {
+        try {
+            const result = await entrypointContract.methods.simulateValidation(op, false).call({
+                from: EIP4337Lib.Defines.AddressZero
+            });
+            console.log(`simulateValidation result:`, result);
+            return result;
+        } catch (error) {
+            // decode FailedOp(uint256,address,string)
+            let data = (<any>error).data as string;
+            if (data.startsWith("0x00fa072b")) {
+                // FailedOp(uint256,address,string)
+                const re = defaultAbiCoder.decode(
+                    ['uint256', 'address', 'string'],
+                    '0x' + data.substring(10)
+                );
+                throw new Error(`FailedOp(${re[0]},${re[1]},${re[2]})`);
+            } else {
+                throw error
+            }
+        }
+    }
 
 }

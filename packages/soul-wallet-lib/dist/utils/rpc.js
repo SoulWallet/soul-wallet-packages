@@ -16,7 +16,7 @@ exports.RPC = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-05 21:47:55
+ * @LastEditTime: 2022-12-23 19:16:57
  */
 const ethers_1 = require("ethers");
 const entryPoint_1 = require("../contracts/entryPoint");
@@ -64,8 +64,14 @@ class RPC {
                 _fromBlock = (yield etherProvider.getBlockNumber()) - 5;
             }
             const entryPoint = new ethers_1.ethers.Contract(entryPointAddress, entryPoint_1.EntryPointContract.ABI, etherProvider);
+            const UserOperationEventTopic = entryPoint.interface.getEventTopic('UserOperationEvent');
             while (true) {
-                const pastEvent = yield entryPoint.queryFilter('UserOperationEvent', _fromBlock, toBlock);
+                const pastEvent = yield entryPoint.queryFilter({
+                    topics: [
+                        UserOperationEventTopic,
+                        requestId
+                    ]
+                }, _fromBlock, toBlock);
                 if (pastEvent && pastEvent.length > 0) {
                     return pastEvent;
                 }
