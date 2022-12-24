@@ -42,21 +42,20 @@ export default function Sign() {
                         data: data,
                         from: fromAddress,
                         gas,
-                        // gas: `0x5208`,
                         to,
                         value,
                     },
                     nonce,
-                    // parseInt(maxFeePerGas),
-                    // parseInt(maxPriorityFeePerGas),
-                    parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                    parseInt(ethers.utils.parseUnits("2", 9).toString()),
+                    parseInt(maxFeePerGas),
+                    parseInt(maxPriorityFeePerGas),
+                    // parseInt(ethers.utils.parseUnits("30", 9).toString()),
+                    // parseInt(ethers.utils.parseUnits("2", 9).toString()),
                     config.contracts.paymaster,
                 );
 
-            // if (!operation) {
-            //     throw new Error("Failed to format tx");
-            // }
+            if (!operation) {
+                throw new Error("Failed to format tx");
+            }
 
             const requestId = operation.getRequestId(
                 config.contracts.entryPoint,
@@ -118,10 +117,12 @@ export default function Sign() {
      * Determine what data user want
      */
     const determineAction = async () => {
+        const { actionType, origin } = searchParams;
+
         // TODO, 1. need to check if account is locked.
-        if (searchParams.actionType === "getAccounts") {
+        if (actionType === "getAccounts") {
             try {
-                await signModal.current.show("", searchParams.actionType);
+                await signModal.current.show("", actionType, origin, true);
                 await saveAccountsAllowed(searchParams.origin || "");
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -130,16 +131,17 @@ export default function Sign() {
                     data: walletAddress,
                     tabId: searchParams.tabId,
                 });
-                window.close();
             } catch (err) {
                 console.log(err);
+            } finally {
                 window.close();
             }
-        } else if (searchParams.actionType === "approveTransaction") {
+        } else if (actionType === "approveTransaction") {
             try {
-                await signModal.current.show("", searchParams.actionType);
-
                 // format signature of userOP
+
+                await signModal.current.show("", actionType, origin, true);
+
                 const { operation, requestId, tabId } = await signUserTx();
 
                 await browser.runtime.sendMessage({
@@ -153,10 +155,9 @@ export default function Sign() {
                         tabId,
                     },
                 });
-                // execute action
-                // window.close();
             } catch (err) {
                 console.log(err);
+            } finally {
                 window.close();
             }
         }
@@ -169,9 +170,5 @@ export default function Sign() {
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 
-    return (
-        <div>
-            <SignTransaction ref={signModal} />
-        </div>
-    );
+    return <SignTransaction ref={signModal} />;
 }

@@ -4,7 +4,7 @@ import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useErc20Contract from "@src/contract/useErc20Contract";
 // import IconETH from "@src/assets/tokens/eth.svg";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Input } from "../Input";
 import { toast } from "material-react-toastify";
 
@@ -35,6 +35,7 @@ interface ISendAssets {
 }
 
 export default function SendAssets({ tokenAddress }: ISendAssets) {
+    const navigate = useNavigate();
     const [step, setStep] = useState<number>(0);
     const [sending, setSending] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>("");
@@ -199,14 +200,12 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                     </Button>
                 )}
                 {step === 2 && (
-                    <Link to="/wallet">
-                        <Button
-                            classNames="btn-blue"
-                            onClick={() => setStep(2)}
-                        >
-                            Done
-                        </Button>
-                    </Link>
+                    <Button
+                        classNames="btn-blue"
+                        onClick={() => navigate("/wallet")}
+                    >
+                        Done
+                    </Button>
                 )}
             </div>
         </div>
