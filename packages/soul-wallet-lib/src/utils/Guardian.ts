@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 20:44:05
+ * @LastEditTime: 2022-12-24 22:48:04
  */
 
 import { UserOperation } from "../entity/userOperation";
@@ -74,9 +74,10 @@ export class Guaridian {
      * get guardian info
      * @param etherProvider 
      * @param walletAddress EIP4337 wallet address
+     * @param now current timestamp ( 0: use current timestamp, >0:unix timestamp  )
      * @returns (currentGuardian, guardianDelay)
      */
-    public static async getGuardian(etherProvider: ethers.providers.BaseProvider, walletAddress: string) {
+    public static async getGuardian(etherProvider: ethers.providers.BaseProvider, walletAddress: string, now: number = 0) {
         const walletContract = Guaridian.walletContract(etherProvider, walletAddress);
 
         const result = await etherProvider.call({
@@ -97,13 +98,14 @@ export class Guaridian {
         }
         const activateTime = decoded[2].toNumber();
         let currentGuardian = decoded[0];
-        const tsNow = Math.round(new Date().getTime() / 1000);
+        const tsNow = now > 0 ? now : Math.round(new Date().getTime() / 1000);
         if (activateTime > 0 && activateTime <= tsNow) {
             currentGuardian = decoded[1];
         }
-        currentGuardian = ethers.utils.getAddress(currentGuardian);
         return {
-            currentGuardian,
+            currentGuardian: ethers.utils.getAddress(currentGuardian),
+            nextGuardian: ethers.utils.getAddress(decoded[1]),
+            nextGuardianActivateTime: activateTime,
             guardianDelay: parseInt(decoded[3]),
         }
     }
@@ -165,7 +167,7 @@ export class Guaridian {
             maxFeePerGas, maxPriorityFeePerGas, calldata);
 
         if (op) op.verificationGasLimit = 500000;
-        
+
         return op;
     }
 

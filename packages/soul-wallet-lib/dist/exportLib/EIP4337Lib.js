@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 19:56:43
+ * @LastEditTime: 2022-12-24 23:01:46
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -103,7 +103,7 @@ class EIP4337Lib {
         const initCodeWithArgs = EIP4337Lib.getWalletCode(walletLogicAddress, entryPointAddress, ownerAddress, upgradeDelay, guardianDelay, guardianAddress, tokenAddress, payMasterAddress);
         const initCodeHash = (0, utils_1.keccak256)(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
-        let userOperation = new EIP4337Lib.UserOperation();
+        let userOperation = new userOperation_1.UserOperation();
         userOperation.nonce = 0;
         userOperation.sender = walletAddress;
         userOperation.paymasterAndData = payMasterAddress;
@@ -181,10 +181,6 @@ class EIP4337Lib {
     }
 }
 exports.EIP4337Lib = EIP4337Lib;
-/**
- * User Operation
- */
-EIP4337Lib.UserOperation = userOperation_1.UserOperation;
 EIP4337Lib.Utils = {
     getNonce: EIP4337Lib.getNonce,
     DecodeCallData: decodeCallData_1.DecodeCallData,

@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-09-21 20:28:54
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 20:44:05
+ * @LastEditTime: 2022-12-24 22:48:04
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -75,9 +75,10 @@ class Guaridian {
      * get guardian info
      * @param etherProvider
      * @param walletAddress EIP4337 wallet address
+     * @param now current timestamp ( 0: use current timestamp, >0:unix timestamp  )
      * @returns (currentGuardian, guardianDelay)
      */
-    static getGuardian(etherProvider, walletAddress) {
+    static getGuardian(etherProvider, walletAddress, now = 0) {
         return __awaiter(this, void 0, void 0, function* () {
             const walletContract = Guaridian.walletContract(etherProvider, walletAddress);
             const result = yield etherProvider.call({
@@ -98,13 +99,14 @@ class Guaridian {
             }
             const activateTime = decoded[2].toNumber();
             let currentGuardian = decoded[0];
-            const tsNow = Math.round(new Date().getTime() / 1000);
+            const tsNow = now > 0 ? now : Math.round(new Date().getTime() / 1000);
             if (activateTime > 0 && activateTime <= tsNow) {
                 currentGuardian = decoded[1];
             }
-            currentGuardian = ethers_1.ethers.utils.getAddress(currentGuardian);
             return {
-                currentGuardian,
+                currentGuardian: ethers_1.ethers.utils.getAddress(currentGuardian),
+                nextGuardian: ethers_1.ethers.utils.getAddress(decoded[1]),
+                nextGuardianActivateTime: activateTime,
                 guardianDelay: parseInt(decoded[3]),
             };
         });

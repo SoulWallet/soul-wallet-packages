@@ -7,10 +7,6 @@ import { RPC } from '../utils/rpc';
 import { Converter } from "../utils/converter";
 import { NumberLike } from "../defines/numberLike";
 export declare class EIP4337Lib {
-    /**
-     * User Operation
-     */
-    static UserOperation: typeof UserOperation;
     static Utils: {
         getNonce: typeof EIP4337Lib.getNonce;
         DecodeCallData: typeof DecodeCallData;

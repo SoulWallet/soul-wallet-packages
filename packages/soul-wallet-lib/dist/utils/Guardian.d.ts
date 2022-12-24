@@ -23,10 +23,13 @@ export declare class Guaridian {
      * get guardian info
      * @param etherProvider
      * @param walletAddress EIP4337 wallet address
+     * @param now current timestamp ( 0: use current timestamp, >0:unix timestamp  )
      * @returns (currentGuardian, guardianDelay)
      */
-    static getGuardian(etherProvider: ethers.providers.BaseProvider, walletAddress: string): Promise<{
-        currentGuardian: any;
+    static getGuardian(etherProvider: ethers.providers.BaseProvider, walletAddress: string, now?: number): Promise<{
+        currentGuardian: string;
+        nextGuardian: string;
+        nextGuardianActivateTime: any;
         guardianDelay: number;
     } | null>;
     private static _guardian;

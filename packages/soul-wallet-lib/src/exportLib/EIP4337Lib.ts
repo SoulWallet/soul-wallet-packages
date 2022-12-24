@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 16:08:23
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 19:56:43
+ * @LastEditTime: 2022-12-24 23:01:46
  */
 
 import { getCreate2Address, hexlify, hexZeroPad, keccak256 } from "ethers/lib/utils";
@@ -22,11 +22,6 @@ import { ethers } from "ethers";
 import { NumberLike } from "../defines/numberLike";
 
 export class EIP4337Lib {
-
-    /**
-     * User Operation
-     */
-    public static UserOperation = UserOperation;
 
     public static Utils = {
         getNonce: EIP4337Lib.getNonce,
@@ -158,7 +153,7 @@ export class EIP4337Lib {
         const initCodeWithArgs = EIP4337Lib.getWalletCode(walletLogicAddress, entryPointAddress, ownerAddress, upgradeDelay, guardianDelay, guardianAddress, tokenAddress, payMasterAddress);
         const initCodeHash = keccak256(initCodeWithArgs);
         const walletAddress = EIP4337Lib.calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
-        let userOperation: UserOperation = new EIP4337Lib.UserOperation();
+        let userOperation: UserOperation = new UserOperation();
         userOperation.nonce = 0;
         userOperation.sender = walletAddress;
         userOperation.paymasterAndData = payMasterAddress;
