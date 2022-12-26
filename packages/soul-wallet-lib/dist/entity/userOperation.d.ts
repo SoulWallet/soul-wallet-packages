@@ -17,6 +17,7 @@ declare class UserOperation {
     paymasterAndData: string;
     signature: string;
     toTuple(): string;
+    toJSON(): string;
     /**
      * estimate the gas
      * @param entryPointAddress the entry point address

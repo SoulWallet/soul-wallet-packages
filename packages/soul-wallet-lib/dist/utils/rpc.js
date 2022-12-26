@@ -16,13 +16,13 @@ exports.RPC = void 0;
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-11-16 15:50:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 19:16:57
+ * @LastEditTime: 2022-12-26 11:02:52
  */
 const ethers_1 = require("ethers");
 const entryPoint_1 = require("../contracts/entryPoint");
 class RPC {
     static eth_sendUserOperation(op, entryPointAddress) {
-        const op_str = JSON.stringify(op);
+        const op_str = op.toJSON();
         return '{\
             "jsonrpc": "2.0",\
             "method": "eth_sendUserOperation",\

@@ -4,12 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-23 20:30:07
+ * @LastEditTime: 2022-12-26 11:02:23
  */
 
 import { ethers, BigNumber } from "ethers";
 import { Deferrable } from "ethers/lib/utils";
-import { NumberLike } from "../defines/numberLike";
+import { NumberLike, toDecString } from "../defines/numberLike";
 import { guardianSignature } from "../utils/guardian";
 import { signUserOp, payMasterSignHash, getRequestId, signUserOpWithPersonalSign, packGuardiansSignByInitCode } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';
@@ -48,6 +48,22 @@ class UserOperation {
         bytes signature;
         */
         return `["${this.sender.toLocaleLowerCase()}","${this.nonce}","${this.initCode}","${this.callData}","${this.callGasLimit}","${this.verificationGasLimit}","${this.preVerificationGas}","${this.maxFeePerGas}","${this.maxPriorityFeePerGas}","${this.paymasterAndData}","${this.signature}"]`;
+    }
+
+    public toJSON(): string {
+        return JSON.stringify({
+            sender: this.sender,
+            nonce: this.nonce,
+            initCode: this.initCode,
+            callData: this.callData,
+            callGasLimit: toDecString(this.callGasLimit),
+            verificationGasLimit: toDecString(this.verificationGasLimit),
+            preVerificationGas: toDecString(this.preVerificationGas),
+            maxFeePerGas: toDecString(this.maxFeePerGas),
+            maxPriorityFeePerGas: toDecString(this.maxPriorityFeePerGas),
+            paymasterAndData: this.paymasterAndData,
+            signature: this.signature
+        });
     }
 
     /**
