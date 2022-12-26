@@ -40,22 +40,23 @@ declare class UserOperation {
     /**
      * sign the user operation with personal sign
      * @param signAddress the sign address
-     * @param signature the signature of the requestId
+     * @param signature the signature of the UserOpHash
      */
     signWithSignature(signAddress: string, signature: string): void;
     /**
      * sign the user operation with guardians sign
      * @param guardianAddress guardian address
      * @param signature guardians signature
+     * @param deadline deadline (block timestamp)
      * @param initCode guardian contract init code
      */
-    signWithGuardiansSign(guardianAddress: string, signature: guardianSignature[], initCode?: string): void;
+    signWithGuardiansSign(guardianAddress: string, signature: guardianSignature[], deadline?: number, initCode?: string): void;
     /**
-     * get the request id (userOp hash)
+     * get the UserOpHash (userOp hash)
      * @param entryPointAddress the entry point address
      * @param chainId the chain id
      * @returns hex string
      */
-    getRequestId(entryPointAddress: string, chainId: number): string;
+    getUserOpHash(entryPointAddress: string, chainId: number): string;
 }
 export { UserOperation };

@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-26 11:02:23
+ * @LastEditTime: 2022-12-26 22:31:57
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -119,7 +119,7 @@ class UserOperation {
     /**
      * sign the user operation with personal sign
      * @param signAddress the sign address
-     * @param signature the signature of the requestId
+     * @param signature the signature of the UserOpHash
      */
     signWithSignature(signAddress, signature) {
         this.signature = (0, userOp_1.signUserOpWithPersonalSign)(signAddress, signature);
@@ -128,19 +128,20 @@ class UserOperation {
      * sign the user operation with guardians sign
      * @param guardianAddress guardian address
      * @param signature guardians signature
+     * @param deadline deadline (block timestamp)
      * @param initCode guardian contract init code
      */
-    signWithGuardiansSign(guardianAddress, signature, initCode = '0x') {
-        this.signature = (0, userOp_1.packGuardiansSignByInitCode)(guardianAddress, signature, initCode);
+    signWithGuardiansSign(guardianAddress, signature, deadline = 0, initCode = '0x') {
+        this.signature = (0, userOp_1.packGuardiansSignByInitCode)(guardianAddress, signature, deadline, initCode);
     }
     /**
-     * get the request id (userOp hash)
+     * get the UserOpHash (userOp hash)
      * @param entryPointAddress the entry point address
      * @param chainId the chain id
      * @returns hex string
      */
-    getRequestId(entryPointAddress, chainId) {
-        return (0, userOp_1.getRequestId)(this, entryPointAddress, chainId);
+    getUserOpHash(entryPointAddress, chainId) {
+        return (0, userOp_1.getUserOpHash)(this, entryPointAddress, chainId);
     }
 }
 exports.UserOperation = UserOperation;
