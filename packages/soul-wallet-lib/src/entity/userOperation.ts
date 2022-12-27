@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2022-12-27 13:15:43
+ * @LastEditTime: 2022-12-27 19:12:59
  */
 
 import { ethers, BigNumber } from "ethers";
@@ -160,7 +160,7 @@ class UserOperation {
      * @returns bytes32 hash
      */
     public getUserOpHashWithDeadline(entryPointAddress: string, chainId: number, deadline: number): string {
-        const _hash = getUserOpHash(this, entryPointAddress, chainId);
+        const _hash = this.getUserOpHash(entryPointAddress, chainId);
         return ethers.utils.solidityKeccak256(['bytes32', 'uint64'], [_hash, deadline]);
     }
 
