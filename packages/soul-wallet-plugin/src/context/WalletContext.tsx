@@ -280,7 +280,7 @@ export const WalletContextProvider = ({ children }: any) => {
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const addGuardianOp =
             await WalletLib.EIP4337.Guaridian.grantGuardianRequest(
@@ -305,7 +305,7 @@ export const WalletContextProvider = ({ children }: any) => {
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const removeGuardianOp =
             await WalletLib.EIP4337.Guaridian.revokeGuardianRequest(
@@ -326,7 +326,10 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+        let nonce = await WalletLib.EIP4337.Utils.getNonce(
+            walletAddress,
+            ethersProvider,
+        );
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
         const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(

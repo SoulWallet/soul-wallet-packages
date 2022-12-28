@@ -4,7 +4,7 @@
         "paths": {
             "@src/*": ["src/*"]
         },
-        "target": "es5",
+        "target": "ESNext",
         "module": "commonjs",
         "moduleResolution": "node",
         // "rootDir": "./src",

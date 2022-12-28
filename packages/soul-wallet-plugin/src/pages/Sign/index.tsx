@@ -117,6 +117,7 @@ export default function Sign() {
      * Determine what data user want
      */
     const determineAction = async () => {
+        console.log("s params", searchParams);
         const { actionType, origin } = searchParams;
 
         // TODO, 1. need to check if account is locked.

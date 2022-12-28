@@ -38,5 +38,5 @@
         "scripts": ["js/backgroundPage.js"],
         "persistent": true
     },
-    "web_accessible_resources": ["js/inject.js"]
+    "web_accessible_resources": ["js/inpage.js"]
 }
