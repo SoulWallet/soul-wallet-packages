@@ -20,7 +20,7 @@ const sendTransaction = async (params: any) => {
         param.value = "0x0";
     }
 
-    console.log("params", param);
+    console.log("tx params", param);
 
     const opData: any = await Bus.send("approve", "approveTransaction", param);
 
@@ -34,10 +34,7 @@ const sendTransaction = async (params: any) => {
 };
 
 const estimateGas = async (params: any) => {
-    const res = (await ethersProvider.estimateGas(params[0]))._hex;
-    console.log("estimate gas", res);
-
-    return res;
+    return (await ethersProvider.estimateGas(params[0]))._hex;
 };
 
 const gasPrice = async () => {
@@ -49,7 +46,9 @@ const getTransactionReceipt = async (params: any) => {
 };
 
 const getTransactionByHash = async (params: any) => {
-    return await ethersProvider.getTransaction(params[0]);
+    const tx = await ethersProvider.getTransaction(params[0]);
+    console.log('tx to return', tx)
+    return tx;
 };
 
 const chainId = async () => {
@@ -61,9 +60,7 @@ const blockNumber = async () => {
 };
 
 const ethCall = async (params: any) => {
-    const res = await ethersProvider.call(params[0], params[1]);
-    console.log("call res", res);
-    return res;
+    return await ethersProvider.call(params[0], params[1]);
 };
 
 export default async function handleRequests(call: any) {
