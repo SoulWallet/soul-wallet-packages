@@ -4,13 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-08-05 21:13:10
  * @LastEditors: cejay
- * @LastEditTime: 2023-01-02 22:40:38
+ * @LastEditTime: 2023-01-03 09:29:12
  */
 
 import { IContract } from './icontract';
 
 const ABI: any = 
-
 
 [
 	{
@@ -24,7 +23,7 @@ const ABI: any =
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "Account",
+				"name": "account",
 				"type": "address"
 			},
 			{
