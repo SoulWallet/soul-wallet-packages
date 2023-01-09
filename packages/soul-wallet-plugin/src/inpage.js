@@ -53,6 +53,10 @@ if (shouldInjectProvider()) {
         request: async (call) => {
             return await handleRequests(call);
         },
+        enable: async () => {
+            const res = await Bus.send("getAccounts", "getAccounts");
+            return [res];
+        },
         ...provider,
     };
 }
