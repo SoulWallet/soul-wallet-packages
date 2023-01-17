@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2023-01-01 21:54:56
+ * @LastEditTime: 2023-01-17 15:02:21
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -19,6 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserOperation = void 0;
 const ethers_1 = require("ethers");
+const address_1 = require("../defines/address");
 const numberLike_1 = require("../defines/numberLike");
 const userOp_1 = require("../utils/userOp");
 /**
@@ -31,7 +32,7 @@ class UserOperation {
         this.initCode = '0x';
         this.callData = '0x';
         this.callGasLimit = 0;
-        this.verificationGasLimit = 60000;
+        this.verificationGasLimit = 80000;
         this.preVerificationGas = 2100;
         this.maxFeePerGas = 0;
         this.maxPriorityFeePerGas = 0;
@@ -58,7 +59,7 @@ class UserOperation {
     toJSON() {
         return JSON.stringify({
             sender: this.sender,
-            nonce: this.nonce,
+            nonce: this.nonce.toString(16),
             initCode: this.initCode,
             callData: this.callData,
             callGasLimit: (0, numberLike_1.toDecString)(this.callGasLimit),
@@ -66,7 +67,7 @@ class UserOperation {
             preVerificationGas: (0, numberLike_1.toDecString)(this.preVerificationGas),
             maxFeePerGas: (0, numberLike_1.toDecString)(this.maxFeePerGas),
             maxPriorityFeePerGas: (0, numberLike_1.toDecString)(this.maxPriorityFeePerGas),
-            paymasterAndData: this.paymasterAndData,
+            paymasterAndData: this.paymasterAndData === address_1.AddressZero ? '0x' : this.paymasterAndData,
             signature: this.signature
         });
     }

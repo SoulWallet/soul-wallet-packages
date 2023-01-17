@@ -4,11 +4,12 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2023-01-01 21:54:56
+ * @LastEditTime: 2023-01-17 15:02:21
  */
 
 import { ethers, BigNumber } from "ethers";
 import { Deferrable } from "ethers/lib/utils";
+import { AddressZero } from "../defines/address";
 import { NumberLike, toDecString } from "../defines/numberLike";
 import { guardianSignature } from "../utils/Guardian";
 import { signUserOp, payMasterSignHash, getUserOpHash, signUserOpWithPersonalSign, packGuardiansSignByInitCode } from '../utils/userOp';
@@ -25,7 +26,7 @@ class UserOperation {
     public initCode: string = '0x';
     public callData: string = '0x';
     public callGasLimit: NumberLike = 0;
-    public verificationGasLimit: NumberLike = 60000;
+    public verificationGasLimit: NumberLike = 80000;
     public preVerificationGas: NumberLike = 2100;
     public maxFeePerGas: NumberLike = 0;
     public maxPriorityFeePerGas: NumberLike = 0;
@@ -53,7 +54,7 @@ class UserOperation {
     public toJSON(): string {
         return JSON.stringify({
             sender: this.sender,
-            nonce: this.nonce,
+            nonce: this.nonce.toString(16),
             initCode: this.initCode,
             callData: this.callData,
             callGasLimit: toDecString(this.callGasLimit),
@@ -61,7 +62,7 @@ class UserOperation {
             preVerificationGas: toDecString(this.preVerificationGas),
             maxFeePerGas: toDecString(this.maxFeePerGas),
             maxPriorityFeePerGas: toDecString(this.maxPriorityFeePerGas),
-            paymasterAndData: this.paymasterAndData,
+            paymasterAndData: this.paymasterAndData === AddressZero ? '0x' : this.paymasterAndData,
             signature: this.signature
         });
     }
