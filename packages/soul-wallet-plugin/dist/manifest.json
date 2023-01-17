@@ -24,7 +24,7 @@
     "web_accessible_resources": [
         {
             "matches": ["<all_urls>"],
-            "resources": ["js/inject.js"]
+            "resources": ["js/inpage.js"]
         }
     ],
     "icons": {

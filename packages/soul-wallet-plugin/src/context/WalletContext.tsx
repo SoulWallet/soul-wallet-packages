@@ -268,7 +268,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 requestId,
                 signatures,
                 walletAddress,
-                web3 as any,
+                ethersProvider,
             );
 
         recoveryOp.signature = signPack;
@@ -280,11 +280,11 @@ export const WalletContextProvider = ({ children }: any) => {
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const addGuardianOp =
             await WalletLib.EIP4337.Guaridian.grantGuardianRequest(
-                web3 as any,
+                ethersProvider,
                 walletAddress,
                 nonce,
                 guardianAddress,
@@ -305,11 +305,11 @@ export const WalletContextProvider = ({ children }: any) => {
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const nonce = await WalletLib.EIP4337.Utils.getNonce(
             walletAddress,
-            web3,
+            ethersProvider,
         );
         const removeGuardianOp =
             await WalletLib.EIP4337.Guaridian.revokeGuardianRequest(
-                web3 as any,
+                ethersProvider,
                 walletAddress,
                 nonce,
                 guardianAddress,
@@ -326,11 +326,14 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await WalletLib.EIP4337.Utils.getNonce(walletAddress, web3);
+        let nonce = await WalletLib.EIP4337.Utils.getNonce(
+            walletAddress,
+            ethersProvider,
+        );
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
         const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(
-            web3 as any,
+            ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,

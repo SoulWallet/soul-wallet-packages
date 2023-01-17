@@ -1,7 +1,11 @@
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconWETH from "@src/assets/tokens/weth.png";
 
-const wethAddress = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6"
+export const wethAddress = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";
+
+// export const infuraId = "63e8c3efacf140ea90dbbe0604e6e0b7";
+
+export const infuraId = "36edb4e805524ba696b5b83b3e23ad18";
 
 export const assetsList = [
     {
@@ -17,8 +21,9 @@ export const assetsList = [
 ];
 
 export default {
+    infuraId,
     assetsList,
-    provider: "https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18",
+    provider: `https://goerli.infura.io/v3/${infuraId}`,
     // provider: "https://eth-mainnet.g.alchemy.com/v2/K9UhC2MV5uPm_j7WIRSWCrSJyaKg6Ggm",
     defaultSalt: 0,
     feeMultiplier: 3,
@@ -28,7 +33,7 @@ export default {
     // bundlerUrl: "https://bundler-poc.soulwallets.me",
     bundlerUrl: "http://35.89.2.9:3000/rpc/",
     contracts: {
-        logic: '0x0097e367385aD9215576019b4d311ca12c984049',
+        logic: "0x0097e367385aD9215576019b4d311ca12c984049",
         entryPoint: "0x5C8b3e2232768d991Ea02ac8bEACaf824aEF0b7d",
         weth: wethAddress,
         paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",

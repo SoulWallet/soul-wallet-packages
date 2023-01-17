@@ -1,5 +1,5 @@
 export default {
-    send(actionType: string, actionName: string, data: any) {
+    send(actionType: string, actionName: string, data?: any) {
         return new Promise((resolve, reject) => {
             try {
                 window.postMessage({
