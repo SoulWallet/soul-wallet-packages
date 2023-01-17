@@ -5,7 +5,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2023-01-17 15:02:21
+ * @LastEditTime: 2023-01-17 15:18:41
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -62,11 +62,11 @@ class UserOperation {
             nonce: this.nonce.toString(16),
             initCode: this.initCode,
             callData: this.callData,
-            callGasLimit: (0, numberLike_1.toDecString)(this.callGasLimit),
-            verificationGasLimit: (0, numberLike_1.toDecString)(this.verificationGasLimit),
-            preVerificationGas: (0, numberLike_1.toDecString)(this.preVerificationGas),
-            maxFeePerGas: (0, numberLike_1.toDecString)(this.maxFeePerGas),
-            maxPriorityFeePerGas: (0, numberLike_1.toDecString)(this.maxPriorityFeePerGas),
+            callGasLimit: (0, numberLike_1.toHexString)(this.callGasLimit),
+            verificationGasLimit: (0, numberLike_1.toHexString)(this.verificationGasLimit),
+            preVerificationGas: (0, numberLike_1.toHexString)(this.preVerificationGas),
+            maxFeePerGas: (0, numberLike_1.toHexString)(this.maxFeePerGas),
+            maxPriorityFeePerGas: (0, numberLike_1.toHexString)(this.maxPriorityFeePerGas),
             paymasterAndData: this.paymasterAndData === address_1.AddressZero ? '0x' : this.paymasterAndData,
             signature: this.signature
         });

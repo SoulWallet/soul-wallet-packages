@@ -4,13 +4,13 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2022-07-25 10:53:52
  * @LastEditors: cejay
- * @LastEditTime: 2023-01-17 15:02:21
+ * @LastEditTime: 2023-01-17 15:18:41
  */
 
 import { ethers, BigNumber } from "ethers";
 import { Deferrable } from "ethers/lib/utils";
 import { AddressZero } from "../defines/address";
-import { NumberLike, toDecString } from "../defines/numberLike";
+import { NumberLike, toHexString } from "../defines/numberLike";
 import { guardianSignature } from "../utils/Guardian";
 import { signUserOp, payMasterSignHash, getUserOpHash, signUserOpWithPersonalSign, packGuardiansSignByInitCode } from '../utils/userOp';
 import { TransactionInfo } from './transactionInfo';
@@ -57,11 +57,11 @@ class UserOperation {
             nonce: this.nonce.toString(16),
             initCode: this.initCode,
             callData: this.callData,
-            callGasLimit: toDecString(this.callGasLimit),
-            verificationGasLimit: toDecString(this.verificationGasLimit),
-            preVerificationGas: toDecString(this.preVerificationGas),
-            maxFeePerGas: toDecString(this.maxFeePerGas),
-            maxPriorityFeePerGas: toDecString(this.maxPriorityFeePerGas),
+            callGasLimit: toHexString(this.callGasLimit),
+            verificationGasLimit: toHexString(this.verificationGasLimit),
+            preVerificationGas: toHexString(this.preVerificationGas),
+            maxFeePerGas: toHexString(this.maxFeePerGas),
+            maxPriorityFeePerGas: toHexString(this.maxPriorityFeePerGas),
             paymasterAndData: this.paymasterAndData === AddressZero ? '0x' : this.paymasterAndData,
             signature: this.signature
         });
