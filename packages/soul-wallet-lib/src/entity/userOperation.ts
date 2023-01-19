@@ -54,7 +54,7 @@ class UserOperation {
     public toJSON(): string {
         return JSON.stringify({
             sender: this.sender,
-            nonce: this.nonce.toString(16),
+            nonce: toHexString(this.nonce),
             initCode: this.initCode,
             callData: this.callData,
             callGasLimit: toHexString(this.callGasLimit),
