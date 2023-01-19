@@ -59,7 +59,7 @@ class UserOperation {
     toJSON() {
         return JSON.stringify({
             sender: this.sender,
-            nonce: this.nonce.toString(16),
+            nonce: (0, numberLike_1.toHexString)(this.nonce),
             initCode: this.initCode,
             callData: this.callData,
             callGasLimit: (0, numberLike_1.toHexString)(this.callGasLimit),
