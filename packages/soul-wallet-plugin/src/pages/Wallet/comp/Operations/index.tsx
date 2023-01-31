@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import cn from "classnames";
 import Assets from "./comp/Assets";
 import Activitys from "./comp/Activitys";
-import Guardians from "./comp/Guardians";
 const tabs = ["assets", "activity", "guardians"];
 
 export default function Operations() {
@@ -28,7 +27,6 @@ export default function Operations() {
 
                 {activeTabIndex === 0 && <Assets />}
                 {activeTabIndex === 1 && <Activitys />}
-                {activeTabIndex === 2 && <Guardians />}
             </div>
         </>
     );

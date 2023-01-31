@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-import { WalletLib } from "soul-wallet-lib";
+import { EIP4337Lib } from "soul-wallet-lib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
@@ -29,13 +29,13 @@ export default function Sign() {
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+        const nonce = await EIP4337Lib.Utils.getNonce(
             fromAddress,
             ethersProvider,
         );
         try {
             const operation: any =
-                await WalletLib.EIP4337.Utils.fromTransaction(
+                await EIP4337Lib.Utils.fromTransaction(
                     ethersProvider,
                     config.contracts.entryPoint,
                     {
@@ -57,12 +57,10 @@ export default function Sign() {
                 throw new Error("Failed to format tx");
             }
 
-            const requestId = operation.getRequestId(
+            const requestId = operation.getUserOpHash(
                 config.contracts.entryPoint,
                 config.chainId,
             );
-
-            console.log("r id", requestId);
 
             // TODO, this function should be renamed
             const signature = await signTransaction(requestId);

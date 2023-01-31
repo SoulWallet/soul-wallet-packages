@@ -27,7 +27,7 @@ export function CreatePassword({
     onCreatedEoaAddress,
     saveKey = false,
 }: CreatePasswordProps) {
-    const { generateWalletAddress } = useWalletContext();
+    const { calculateWalletAddress } = useWalletContext();
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(errorDefaultValues);
@@ -74,7 +74,7 @@ export function CreatePassword({
             }
 
             if (onCreatedWalletAddress) {
-                const walletAddress: string = generateWalletAddress(address);
+                const walletAddress: string = calculateWalletAddress(address);
                 onCreatedWalletAddress(walletAddress, address);
             }
         }

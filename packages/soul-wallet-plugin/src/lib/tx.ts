@@ -1,4 +1,4 @@
-import { WalletLib } from "soul-wallet-lib";
+import { EIP4337Lib } from "soul-wallet-lib";
 import { ethers } from "ethers";
 import ky from "ky";
 import browser from "webextension-polyfill";
@@ -52,7 +52,7 @@ export const executeTransaction = async (
             }
 
             // create raw_data for bundler api
-            const raw_data = WalletLib.EIP4337.RPC.eth_sendUserOperation(
+            const raw_data = EIP4337Lib.RPC.eth_sendUserOperation(
                 operation,
                 config.contracts.entryPoint,
             );
@@ -66,7 +66,7 @@ export const executeTransaction = async (
             if (res.result && res.result === requestId) {
                 // get pending
                 const pendingArr =
-                    await WalletLib.EIP4337.RPC.waitUserOperation(
+                    await EIP4337Lib.RPC.waitUserOperation(
                         ethersProvider,
                         config.contracts.entryPoint,
                         requestId,
@@ -85,7 +85,7 @@ export const executeTransaction = async (
                 }
 
                 // get done
-                const doneArr = await WalletLib.EIP4337.RPC.waitUserOperation(
+                const doneArr = await EIP4337Lib.RPC.waitUserOperation(
                     ethersProvider,
                     config.contracts.entryPoint,
                     requestId,

@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import cn from "classnames";
-import { WalletLib } from "soul-wallet-lib";
+import { EIP4337Lib } from "soul-wallet-lib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
@@ -34,7 +34,7 @@ export default forwardRef<any>((props, ref) => {
                 console.log("op", operation);
 
                 const tmpMap = new Map<string, string>();
-                WalletLib.EIP4337.Utils.DecodeCallData.new().setStorage(
+                EIP4337Lib.Utils.DecodeCallData.new().setStorage(
                     (key, value) => {
                         tmpMap.set(key, value);
                     },
@@ -48,7 +48,7 @@ export default forwardRef<any>((props, ref) => {
                 );
 
                 const callDataDecode =
-                    await WalletLib.EIP4337.Utils.DecodeCallData.new().decode(
+                    await EIP4337Lib.Utils.DecodeCallData.new().decode(
                         operation.callData,
                     );
                 console.log(`callDataDecode:`, callDataDecode);

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import { useNavigate } from "react-router-dom";
-import api from "@src/lib/api";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AddressIcon from "../AddressIcon";
-import { copyText, getLocalStorage } from "@src/lib/tools";
+import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
 
@@ -15,17 +14,9 @@ interface IProps {
 
 // todo, add loading for whole page before get account
 export default function AccountInfo({ account, action }: IProps) {
-    const navigate = useNavigate();
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const {
-        account: userAddress,
-        walletAddress,
-        walletType,
-        getWalletType,
-        activateWallet,
-        removeGuardian,
-    } = useWalletContext();
+    const { walletType, getWalletType, activateWallet } = useWalletContext();
 
     const doCopy = () => {
         copyText(account);
@@ -47,21 +38,6 @@ export default function AccountInfo({ account, action }: IProps) {
         }
     };
 
-    const doRemoveGuardian = async () => {
-        setLoading(true);
-        await removeGuardian(account);
-        const res: any = await api.guardian.remove({
-            wallet_address: walletAddress,
-            guardian: account,
-        });
-
-        if (res.code === 200) {
-            toast.success("Removed guardian");
-            setLoading(false);
-            navigate("/wallet");
-        }
-    };
-
     return (
         <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
             {account ? (
@@ -70,11 +46,7 @@ export default function AccountInfo({ account, action }: IProps) {
                 <div className="w-[64px] h-[64px] block bg-white" />
             )}
 
-            {action === "remove" ? (
-                <div className="text-lg mt-1 mb-2">Remove Guardian</div>
-            ) : (
-                <div className="text-lg mt-1 mb-2">Soul Wallet</div>
-            )}
+            <div className="text-lg mt-1 mb-2">Soul Wallet</div>
 
             {account ? (
                 <div
@@ -99,15 +71,6 @@ export default function AccountInfo({ account, action }: IProps) {
                     loading={loading}
                 >
                     Activate wallet
-                </Button>
-            )}
-            {action === "remove" && (
-                <Button
-                    classNames="btn-red mt-6"
-                    onClick={doRemoveGuardian}
-                    loading={loading}
-                >
-                    Remove
                 </Button>
             )}
         </div>

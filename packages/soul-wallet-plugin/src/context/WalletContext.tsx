@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
-import { WalletLib } from "soul-wallet-lib";
+import { EIP4337Lib } from "soul-wallet-lib";
+import { guardianList } from "@src/config/mock";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
@@ -27,14 +28,13 @@ interface IWalletContext {
     getWalletAddressByEmail: (email: string) => Promise<string>;
     getWalletType: () => Promise<void>;
     getEthBalance: () => Promise<string>;
-    generateWalletAddress: (val: string) => string;
+    calculateWalletAddress: (val: string) => string;
     getGasPrice: () => Promise<number>;
     activateWallet: () => Promise<void>;
     getAccount: () => Promise<void>;
     signTransaction: (txData: any) => Promise<any>;
     executeOperation: (operation: any, actionName?: string) => Promise<void>;
-    addGuardian: (guardianAddress: string) => Promise<void>;
-    removeGuardian: (guardianAddress: string) => Promise<void>;
+    updateGuardian: (guardianAddress: string) => Promise<void>;
     getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
     recoverWallet: (newOwner: string, signatures: string[]) => Promise<void>;
     deleteWallet: () => Promise<void>;
@@ -64,13 +64,12 @@ export const WalletContext = createContext<IWalletContext>({
     getEthBalance: async () => {
         return "";
     },
-    addGuardian: async () => {},
-    removeGuardian: async () => {},
+    updateGuardian: async () => {},
     getRecoverId: async () => {
         return {};
     },
     recoverWallet: async () => {},
-    generateWalletAddress: () => {
+    calculateWalletAddress: () => {
         return "";
     },
     getGasPrice: async () => {
@@ -85,6 +84,7 @@ export const WalletContext = createContext<IWalletContext>({
 
 export const WalletContextProvider = ({ children }: any) => {
     const [account, setAccount] = useState<string>("");
+    const [guardianInitCode, setGuardianInitCode] = useState<any>({});
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
     const signModal = createRef<any>();
@@ -113,19 +113,18 @@ export const WalletContextProvider = ({ children }: any) => {
         return await keyStore.sign(txData);
     };
 
-    const generateWalletAddress = (address: string) => {
-        const walletAddress = WalletLib.EIP4337.calculateWalletAddress(
+    const calculateWalletAddress = (address: string) => {
+        return EIP4337Lib.calculateWalletAddress(
             config.contracts.logic,
             config.contracts.entryPoint,
             address,
-            config.contracts.weth,
-            config.contracts.paymaster,
-            config.defaultSalt,
-            config.contracts.create2Factory,
+            config.upgradeDelay,
+            config.guardianDelay,
+            guardianInitCode.address,
+            "0x",
+            0,
+            config.contracts.singletonFactory,
         );
-
-        console.log("generated wallet address", walletAddress);
-        return walletAddress;
     };
 
     const getWalletAddress = async () => {
@@ -176,7 +175,7 @@ export const WalletContextProvider = ({ children }: any) => {
             }
         }
 
-        const requestId = operation.getRequestId(
+        const requestId = operation.getUserOpHash(
             config.contracts.entryPoint,
             config.chainId,
         );
@@ -210,18 +209,19 @@ export const WalletContextProvider = ({ children }: any) => {
         const actionName = "Activate Wallet";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
-        const activateOp = WalletLib.EIP4337.activateWalletOp(
+        const activateOp = EIP4337Lib.activateWalletOp(
             config.contracts.logic,
             config.contracts.entryPoint,
-            config.contracts.paymaster,
             account,
-            config.contracts.weth,
+            config.upgradeDelay,
+            config.guardianDelay,
+            guardianInitCode.address,
+            "0x",
+            "0x",
+            0,
+            config.contracts.singletonFactory,
             currentFee,
             currentFee,
-            // parseInt(web3.utils.toWei("10", "gwei")),
-            // parseInt(web3.utils.toWei("3", "gwei")),
-            config.defaultSalt,
-            config.contracts.create2Factory,
         );
 
         await executeOperation(activateOp, actionName);
@@ -235,11 +235,11 @@ export const WalletContextProvider = ({ children }: any) => {
         const actionName = "Send Assets";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+        const nonce = await EIP4337Lib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
-        const op = await WalletLib.EIP4337.Tokens.ERC20.transfer(
+        const op = await EIP4337Lib.Tokens.ERC20.transfer(
             ethersProvider,
             walletAddress,
             nonce,
@@ -263,76 +263,46 @@ export const WalletContextProvider = ({ children }: any) => {
             walletAddress,
         );
 
-        const signPack =
-            await WalletLib.EIP4337.Guaridian.packGuardiansSignByRequestId(
-                requestId,
-                signatures,
-                walletAddress,
-                ethersProvider,
-            );
+        // TODO, add guardian signatures here
+        const signPack = ''
 
         recoveryOp.signature = signPack;
 
         await executeOperation(recoveryOp, actionName);
     };
-    const addGuardian = async (guardianAddress: string) => {
+    const updateGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+        const nonce = await EIP4337Lib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
-        const addGuardianOp =
-            await WalletLib.EIP4337.Guaridian.grantGuardianRequest(
-                ethersProvider,
-                walletAddress,
-                nonce,
-                guardianAddress,
-                config.contracts.entryPoint,
-                config.contracts.paymaster,
-                currentFee,
-                currentFee,
-            );
-        if (!addGuardianOp) {
-            throw new Error("addGuardianOp is null");
-        }
-
-        await executeOperation(addGuardianOp, actionName);
-    };
-
-    const removeGuardian = async (guardianAddress: string) => {
-        const actionName = "Remove Guardian";
-        const currentFee = (await getGasPrice()) * config.feeMultiplier;
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
-            walletAddress,
+        // TODO, need new guardianInitCode here
+        const setGuardianOp = await EIP4337Lib.Guaridian.setGuardian(
             ethersProvider,
+            walletAddress,
+            guardianInitCode.address,
+            nonce,
+            config.contracts.entryPoint,
+            config.contracts.paymaster,
+            currentFee,
+            currentFee,
         );
-        const removeGuardianOp =
-            await WalletLib.EIP4337.Guaridian.revokeGuardianRequest(
-                ethersProvider,
-                walletAddress,
-                nonce,
-                guardianAddress,
-                config.contracts.entryPoint,
-                config.contracts.paymaster,
-                currentFee,
-                currentFee,
-            );
-        if (!removeGuardianOp) {
-            throw new Error("removeGuardianOp is null");
+        if (!setGuardianOp) {
+            throw new Error("setGuardianOp is null");
         }
 
-        await executeOperation(removeGuardianOp, actionName);
+        await executeOperation(setGuardianOp, actionName);
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await WalletLib.EIP4337.Utils.getNonce(
+        let nonce = await EIP4337Lib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
-        const recoveryOp = await WalletLib.EIP4337.Guaridian.transferOwner(
+        const recoveryOp = await EIP4337Lib.Guaridian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
@@ -346,7 +316,7 @@ export const WalletContextProvider = ({ children }: any) => {
             throw new Error("recoveryOp is null");
         }
         // get requestId
-        const requestId = recoveryOp.getRequestId(
+        const requestId = recoveryOp.getUserOpHash(
             config.contracts.entryPoint,
             config.chainId,
         );
@@ -358,11 +328,11 @@ export const WalletContextProvider = ({ children }: any) => {
         const actionName = "Send ETH";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await WalletLib.EIP4337.Utils.getNonce(
+        const nonce = await EIP4337Lib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
-        const op = await WalletLib.EIP4337.Tokens.ETH.transfer(
+        const op = await EIP4337Lib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
             nonce,
@@ -375,6 +345,17 @@ export const WalletContextProvider = ({ children }: any) => {
         );
 
         await executeOperation(op, actionName);
+    };
+
+    const getGuardianInitCode = () => {
+        const res = EIP4337Lib.Guaridian.calculateGuardianAndInitCode(
+            config.contracts.guardianLogic,
+            guardianList,
+            Math.round(guardianList.length / 2),
+            config.guardianSalt,
+            config.contracts.singletonFactory,
+        );
+        setGuardianInitCode(res);
     };
 
     useEffect(() => {
@@ -393,6 +374,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     useEffect(() => {
         getAccount();
+        getGuardianInitCode();
     }, []);
 
     return (
@@ -410,11 +392,10 @@ export const WalletContextProvider = ({ children }: any) => {
                 signTransaction,
                 executeOperation,
                 recoverWallet,
-                addGuardian,
-                removeGuardian,
+                updateGuardian,
                 getWalletType,
                 getEthBalance,
-                generateWalletAddress,
+                calculateWalletAddress,
                 getGasPrice,
                 activateWallet,
                 deleteWallet,

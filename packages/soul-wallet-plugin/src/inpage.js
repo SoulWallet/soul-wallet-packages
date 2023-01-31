@@ -47,7 +47,7 @@ engine.push(
 const provider = providerFromEngine(engine);
 
 if (shouldInjectProvider()) {
-    window.ethereum = {
+    const providerToInject = {
         chainId: "0x5",
         isMetamask: true,
         request: async (call) => {
@@ -59,4 +59,7 @@ if (shouldInjectProvider()) {
         },
         ...provider,
     };
+
+    window.ethereum = providerToInject;
+    window.soul = providerToInject;
 }

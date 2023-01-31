@@ -93,7 +93,7 @@ importers:
       react-jazzicon: ^1.0.4
       react-router-dom: ^6.3.0
       react-test-renderer: ^17.0.2
-      soul-wallet-lib: workspace:^0.0.1
+      soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.0.1
       svg-inline-loader: ^0.8.2
       tailwindcss: ^3.0.8
       ts-jest: ^26.4.1
@@ -135,7 +135,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
       react-router-dom: 6.4.2_sfoxds7t5ydpegc3knd667wn6m
-      soul-wallet-lib: link:../soul-wallet-lib
+      soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/006e42707e7bcfa0661f1a31b36bc115cb6ac237
       svg-inline-loader: 0.8.2
       util: 0.12.4
       web3: 1.8.0
@@ -176,7 +176,7 @@ importers:
       postcss-loader: 6.2.1_igyeriywjd4lwzfk4socqbj2qi
       prettier: 2.7.1
       react-test-renderer: 17.0.2_react@17.0.2
-      tailwindcss: 3.1.8_postcss@8.4.18
+      tailwindcss: 3.1.8
       ts-jest: 26.5.6_we2p4sglclq5bmc4orivof3sv4
       ts-loader: 8.4.0_qqxisngxjbp7lstdk7boexbu3e
       typescript: 4.8.4
@@ -7160,7 +7160,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.18
       postcss-js: 4.0.0_postcss@8.4.18
-      tailwindcss: 3.1.8_postcss@8.4.18
+      tailwindcss: 3.1.8
     transitivePeerDependencies:
       - ts-node
     dev: false
@@ -14258,12 +14258,10 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
-  /tailwindcss/3.1.8_postcss@8.4.18:
+  /tailwindcss/3.1.8:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -16056,10 +16054,25 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:
       bn.js: 4.12.0
       ethereumjs-util: 6.2.1
+    dev: false
+
+  github.com/proofofsoulprotocol/soulwalletlib/006e42707e7bcfa0661f1a31b36bc115cb6ac237:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/006e42707e7bcfa0661f1a31b36bc115cb6ac237}
+    name: soul-wallet-lib
+    version: 0.0.1
+    dependencies:
+      axios: 0.27.2
+      dotenv: 8.6.0
+      ethereumjs-util: 7.1.5
+      ethers: 5.7.1
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
     dev: false

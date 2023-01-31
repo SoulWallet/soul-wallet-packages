@@ -3,8 +3,6 @@ import IconWETH from "@src/assets/tokens/weth.png";
 
 export const wethAddress = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";
 
-// export const infuraId = "63e8c3efacf140ea90dbbe0604e6e0b7";
-
 export const infuraId = "36edb4e805524ba696b5b83b3e23ad18";
 
 export const assetsList = [
@@ -28,12 +26,18 @@ export default {
     defaultSalt: 0,
     feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,
+    // TODO,
+    upgradeDelay: 10,
+    guardianDelay: 100,
+    guardianSalt: '',
     chainId: 5,
     scanUrl: "https://goerli.etherscan.io",
     // bundlerUrl: "https://bundler-poc.soulwallets.me",
     bundlerUrl: "http://35.89.2.9:3000/rpc/",
     contracts: {
         logic: "0x0097e367385aD9215576019b4d311ca12c984049",
+        guardianLogic: "",
+        singletonFactory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
         entryPoint: "0x5C8b3e2232768d991Ea02ac8bEACaf824aEF0b7d",
         weth: wethAddress,
         paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",

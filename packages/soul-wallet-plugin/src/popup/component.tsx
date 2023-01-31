@@ -11,8 +11,6 @@ import { CreateWallet } from "@src/pages/CreateWallet";
 import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import { getLocalStorage } from "@src/lib/tools";
-import GuardianDetail from "@src/pages/Guardian/detail";
-import GuardianAdd from "@src/pages/Guardian/add";
 import Send from "@src/pages/Send";
 import Sign from "@src/pages/Sign";
 
@@ -59,11 +57,6 @@ export function Popup() {
                         <Route
                             path="/recover-wallet"
                             element={<RecoverWallet />}
-                        />
-                        <Route path="/guardian/add" element={<GuardianAdd />} />
-                        <Route
-                            path="/guardian/:address"
-                            element={<GuardianDetail />}
                         />
                         {!loading && (
                             <Route
