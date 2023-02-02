@@ -1,48 +1,51 @@
-# Soul Wallet Packages
-+ We will debug at any time, not a stable version~! 🚧
+# Soul Wallet Plugin
 
-monorepo management with pnpm workspace
++ We will debug at any time, not a stable version~! 🚧
 
 ## Quick start
 
+### Install pnpm
 
+`npm i -g pnpm`
 
-### Install dependencies for all repos
+### Install dependencies
 
 `pnpm i`
 
 
 ### Start Plugin
 
-`pnpm dev:wallet`
+`pnpm dev`
 
 
-## Useful commands
+## Code Structure
 
-### Install dependency for specific repo
+```
+soul-wallet-extension
+│
+│
+└───components
+│
+│
+└───css (global css)
+│
+│
+└───lib (global libraries)
+│
+│
+└───pages
+│
+│
+└───popup(extension entrance)
+│
+│
+└───sdk(contract related actions)
+```
 
-`pnpm i ${dependencyName} --filter ${packageName}`
+## Resources
 
-### Install dependency for root (common)
-
-`pnpm i ${dependencyName} -W`
-
-## Dev Guide
-
-### Import sibling package
-
-Link package as dependency first, which is already done in the repo:
-
-`pnpm add ${dependencyPackage} --filter ${packageName}`
-
-Import package like what you did before, take `soul-wallet-lib` for example:
-
-`import { WalletLib } from "soul-wallet-lib";`
-
-## Notice
-
-### Install pnpm if you did't have it installed yet
-`npm i -g pnpm`
+(figma)[https://www.figma.com/file/pLBiwLUILaudvLxVmo7Msd/Untitled?node-id=0%3A1]
+(heroicons)[https://heroicons.com/]
 
 ## TODO
 [ ] chrome.storage.session requires chrome version >= 102, add polyfill.

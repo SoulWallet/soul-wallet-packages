@@ -42,29 +42,34 @@ export function Popup() {
 
     // Renders the component tree
     return (
-        <div className="artboard phone-1 phone bg-white text-base flex flex-col">
+        <div className="  ">
             <WalletContextProvider>
                 <Router>
-                    <Routes>
-                        <Route path="/welcome" element={<Welcome />} />
-                        <Route path="/wallet" element={<Wallet />} />
-                        <Route path="/send/:tokenAddress" element={<Send />} />
-                        <Route path="/sign" element={<Sign />} />
-                        <Route
-                            path="/create-wallet"
-                            element={<CreateWallet />}
-                        />
-                        <Route
-                            path="/recover-wallet"
-                            element={<RecoverWallet />}
-                        />
-                        {!loading && (
+                    <div className="artboard phone-1 bg-white text-base flex flex-col mx-auto">
+                        <Routes>
+                            <Route path="/welcome" element={<Welcome />} />
+                            <Route path="/wallet" element={<Wallet />} />
                             <Route
-                                path="*"
-                                element={account ? <Wallet /> : <Welcome />}
+                                path="/send/:tokenAddress"
+                                element={<Send />}
                             />
-                        )}
-                    </Routes>
+                            <Route path="/sign" element={<Sign />} />
+                            <Route
+                                path="/create-wallet"
+                                element={<CreateWallet />}
+                            />
+                            <Route
+                                path="/recover-wallet"
+                                element={<RecoverWallet />}
+                            />
+                            {!loading && (
+                                <Route
+                                    path="*"
+                                    element={account ? <Wallet /> : <Welcome />}
+                                />
+                            )}
+                        </Routes>
+                    </div>
                 </Router>
             </WalletContextProvider>
             <ToastContainer position="bottom-center" />

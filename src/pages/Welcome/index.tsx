@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@src/components/Input";
 import KeyStore from "@src/lib/keystore";
 import Button from "@src/components/Button";
-// import browser from "webextension-polyfill";
 
 const keyStore = KeyStore.getInstance();
 

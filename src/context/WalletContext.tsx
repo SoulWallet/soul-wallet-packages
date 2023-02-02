@@ -10,7 +10,7 @@ import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-
+console.log("aasdfasdfasdfasdfadsf");
 // init global instances
 const keyStore = KeyStore.getInstance();
 const web3 = new Web3(config.provider);
@@ -121,13 +121,13 @@ export const WalletContextProvider = ({ children }: any) => {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            "0x",
             0,
-            config.contracts.singletonFactory,
+            config.contracts.create2Factory,
         );
     };
 
     const getWalletAddress = async () => {
+        console.log("aaaaa");
         const cachedWalletAddress = await getLocalStorage(
             "activeWalletAddress",
         );
@@ -216,10 +216,9 @@ export const WalletContextProvider = ({ children }: any) => {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            "0x",
-            "0x",
+            config.zeroAddress,
             0,
-            config.contracts.singletonFactory,
+            config.contracts.create2Factory,
             currentFee,
             currentFee,
         );
@@ -264,7 +263,7 @@ export const WalletContextProvider = ({ children }: any) => {
         );
 
         // TODO, add guardian signatures here
-        const signPack = ''
+        const signPack = "";
 
         recoveryOp.signature = signPack;
 
@@ -278,7 +277,7 @@ export const WalletContextProvider = ({ children }: any) => {
             ethersProvider,
         );
         // TODO, need new guardianInitCode here
-        const setGuardianOp = await EIP4337Lib.Guaridian.setGuardian(
+        const setGuardianOp = await EIP4337Lib.Guardian.setGuardian(
             ethersProvider,
             walletAddress,
             guardianInitCode.address,
@@ -302,7 +301,7 @@ export const WalletContextProvider = ({ children }: any) => {
         );
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
-        const recoveryOp = await EIP4337Lib.Guaridian.transferOwner(
+        const recoveryOp = await EIP4337Lib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
@@ -348,12 +347,12 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getGuardianInitCode = () => {
-        const res = EIP4337Lib.Guaridian.calculateGuardianAndInitCode(
+        const res = EIP4337Lib.Guardian.calculateGuardianAndInitCode(
             config.contracts.guardianLogic,
             guardianList,
             Math.round(guardianList.length / 2),
             config.guardianSalt,
-            config.contracts.singletonFactory,
+            config.contracts.create2Factory,
         );
         setGuardianInitCode(res);
     };

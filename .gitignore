@@ -1,5 +1,8 @@
 node_modules
+dist/js/*
+storybook-static/*
+npm-debug.log
+yarn-error.log
+play.ts
 .DS_Store
-packages/soul-wallet-lib-test/test/.env
 .zip
-packages/soul-wallet-lib-test/solCache/

@@ -3,7 +3,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
     entry: {
-        backgroundPage: path.join(__dirname, "src/backgroundPage.ts"),
+        background: path.join(__dirname, "src/background.ts"),
         contentScripts: path.join(__dirname, "src/contentScripts.ts"),
         inpage: path.join(__dirname, "src/inpage.js"),
         // inject2: path.join(__dirname, "src/inject2.ts"),
