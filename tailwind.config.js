@@ -1,6 +1,24 @@
+const gen =
+    (valueProcessor = (v) => v, keyProcessor = (v) => v) =>
+    (l) =>
+        l
+            .map((i) => [keyProcessor(i), valueProcessor(i)])
+            .reduce((acc, [i, v]) => {
+                acc[i] = v;
+                return acc;
+            }, {});
+
+const ALL_SIZE = [...Array(1025).keys()];
+const PERCENT_SIZE = [...Array(101).keys()];
+
 module.exports = {
     purge: ["./src/**/*.{js,jsx,ts,tsx}", "./dist/popup.html"],
-    content: ["./src/**/*.{html,js,tsx}"],
+    content: [
+        "./src/components/**/*.{html,js,tsx}",
+        "./src/fullscreen/**/*.{html,js,tsx}",
+        "./src/popup/**/*.{html,js,tsx}",
+        "./src/pages/**/*.{html,js,tsx}",
+    ],
     theme: {
         extend: {
             colors: {
@@ -9,8 +27,30 @@ module.exports = {
                 blueDeep: "#514DF5",
                 gray10: "rgba(0,0,0,.1)",
                 gray30: "#d9d9d9",
-                gray40: 'rgba(217, 217, 217, .2)',
-                green: '#48BE93',
+                gray40: "rgba(217, 217, 217, .2)",
+                green: "#48BE93",
+            },
+            spacing: {
+                ...gen((v) => `${v}px`)(ALL_SIZE),
+                ...gen(
+                    (v) => `${v}%`,
+                    (k) => `${k}p`,
+                )(PERCENT_SIZE),
+            },
+            width: (theme) => ({
+                ...theme("spacing"),
+            }),
+            height: (theme) => ({
+                ...theme("spacing"),
+            }),
+            margin: (theme) => ({
+                ...theme("spacing"),
+            }),
+            borderRadius: {
+                ...gen((v) => `${v}px`)(PERCENT_SIZE),
+            },
+            backgroundImage: {
+                "web-bg": "url('/src/assets/bg.svg')",
             },
         },
     },

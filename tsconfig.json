@@ -2,7 +2,9 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
-            "@src/*": ["src/*"]
+            "@src/*": ["src/*"],
+            "@components": ["src/components/*"],
+            "@assets": ["src/assets/*"]
         },
         "target": "ESNext",
         "module": "commonjs",

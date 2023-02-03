@@ -8,6 +8,7 @@ module.exports = {
         inpage: path.join(__dirname, "src/inpage.js"),
         // inject2: path.join(__dirname, "src/inject2.ts"),
         popup: path.join(__dirname, "src/popup/index.tsx"),
+        fullscreen: path.join(__dirname, "src/fullscreen/index.tsx"),
     },
     output: {
         path: path.join(__dirname, "dist/js"),

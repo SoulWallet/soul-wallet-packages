@@ -13,6 +13,7 @@ import { Wallet } from "@src/pages/Wallet";
 import { getLocalStorage } from "@src/lib/tools";
 import Send from "@src/pages/Send";
 import Sign from "@src/pages/Sign";
+import StartPage from "@src/pages/Start";
 
 const keyStore = KeyStore.getInstance();
 
@@ -68,6 +69,8 @@ export function Popup() {
                                     element={account ? <Wallet /> : <Welcome />}
                                 />
                             )}
+
+                            {/* <Route path="/start" element={<StartPage />} /> */}
                         </Routes>
                     </div>
                 </Router>

@@ -81,3 +81,9 @@ body {
 .Toastify__toast {
     border-radius: 0;
 }
+
+.progress-window-shadow{
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3);
+    backdrop-filter: blur(20px);
+}

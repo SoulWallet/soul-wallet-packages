@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@src/components/Input";
 import KeyStore from "@src/lib/keystore";
 import Button from "@src/components/Button";
+import browser from "webextension-polyfill";
 
 const keyStore = KeyStore.getInstance();
 
@@ -92,6 +93,23 @@ export default function Welcome() {
                 <Link to="/recover-wallet" className="text-blueDeep text-sm">
                     Recover Wallet
                 </Link>
+
+                {/* <Link to="/start" className="text-blueDeep text-sm">
+                    Go to Start Page {"(for test use)"}
+                </Link> */}
+
+                <div
+                    className="mt-8 text-slate-500 text-sm cursor-pointer"
+                    onClick={() => {
+                        browser.tabs.create({
+                            url: browser.runtime.getURL(
+                                "fullscreen.html#/start",
+                            ),
+                        });
+                    }}
+                >
+                    Go to Start Page {"(for test use)"}
+                </div>
             </div>
         </div>
     );
