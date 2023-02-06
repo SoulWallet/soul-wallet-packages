@@ -1,6 +1,6 @@
 # Soul Wallet Plugin
 
-+ We will debug at any time, not a stable version~! 🚧
+-   We will debug at any time, not a stable version~! 🚧
 
 ## Quick start
 
@@ -12,11 +12,9 @@
 
 `pnpm i`
 
-
 ### Start Plugin
 
 `pnpm dev`
-
 
 ## Code Structure
 
@@ -48,4 +46,6 @@ soul-wallet-extension
 (heroicons)[https://heroicons.com/]
 
 ## TODO
+
 [ ] chrome.storage.session requires chrome version >= 102, add polyfill.
+[ ] bundler trace

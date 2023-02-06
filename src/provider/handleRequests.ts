@@ -47,7 +47,6 @@ const getTransactionReceipt = async (params: any) => {
 
 const getTransactionByHash = async (params: any) => {
     const tx = await ethersProvider.getTransaction(params[0]);
-    console.log('tx to return', tx)
     return tx;
 };
 
@@ -87,5 +86,6 @@ export default async function handleRequests(call: any) {
             return await getTransactionReceipt(params);
         case "eth_getTransactionByHash":
             return await getTransactionByHash(params);
+        // TODO, signature
     }
 }

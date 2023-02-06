@@ -1,4 +1,4 @@
-// todo, chain should be direved from .env
+// TODO, chain should be direved from .env
 import envConf from "./goerli";
 
 export default {
