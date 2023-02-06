@@ -14,6 +14,7 @@ export const saveActivityHistory = async (history: any) => {
     await setLocalStorage("activityHistory", prev);
 };
 
+// IMPORTANT TODO: simulate handle
 export const simulateValidation = async (userOp: any) => {
     console.log("User OP", userOp);
 
@@ -65,12 +66,11 @@ export const executeTransaction = async (
             // // sent to bundler
             if (res.result && res.result === requestId) {
                 // get pending
-                const pendingArr =
-                    await EIP4337Lib.RPC.waitUserOperation(
-                        ethersProvider,
-                        config.contracts.entryPoint,
-                        requestId,
-                    );
+                const pendingArr = await EIP4337Lib.RPC.waitUserOperation(
+                    ethersProvider,
+                    config.contracts.entryPoint,
+                    requestId,
+                );
 
                 // if op is triggered by user and need a feedback. todo, what if 0
                 if (tabId && pendingArr) {
