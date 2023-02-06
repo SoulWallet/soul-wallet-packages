@@ -9,7 +9,9 @@ export function Popup() {
     return (
         <div>
             <WalletContextProvider>
-                <PluginRouter />
+                <Router>
+                    <PluginRouter />
+                </Router>
             </WalletContextProvider>
             <ToastContainer position="bottom-center" />
         </div>

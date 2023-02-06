@@ -10,7 +10,6 @@ import config from "@src/config";
 import BN from "bignumber.js";
 import KeyStore from "@src/lib/keystore";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-console.log("aasdfasdfasdfasdfadsf");
 // init global instances
 const keyStore = KeyStore.getInstance();
 const web3 = new Web3(config.provider);
