@@ -2,11 +2,13 @@ import React, { useState, forwardRef, useImperativeHandle } from "react";
 import cn from "classnames";
 import { EIP4337Lib } from "soul-wallet-lib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import useQuery from "@src/hooks/useQuery";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
 
 export default forwardRef<any>((props, ref) => {
-    const { account, getEthBalance } = useWalletContext();
+    const { account } = useWalletContext();
+    const { getEthBalance } = useQuery();
     const [ethBalance, setEthBalance] = useState<string>("");
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);

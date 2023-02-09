@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import IconEnter from "@src/assets/enter.svg";
+import useWallet from "@src/hooks/useWallet";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import KeyStore from "@src/lib/keystore";
 import { Input } from "../Input";
@@ -7,7 +8,10 @@ import { Input } from "../Input";
 const keyStore = KeyStore.getInstance();
 
 interface CreatePasswordProps {
-    onCreatedWalletAddress?: (address: string | null, eoaAddress: string | null) => void;
+    onCreatedWalletAddress?: (
+        address: string | null,
+        eoaAddress: string | null,
+    ) => void;
     onCreatedEoaAddress?: (address: string | null) => void;
     saveKey?: boolean;
 }
@@ -27,7 +31,7 @@ export function CreatePassword({
     onCreatedEoaAddress,
     saveKey = false,
 }: CreatePasswordProps) {
-    const { calculateWalletAddress } = useWalletContext();
+    const { calculateWalletAddress } = useWallet();
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(errorDefaultValues);

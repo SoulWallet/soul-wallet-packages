@@ -7,12 +7,13 @@ import { EIP4337Lib } from "soul-wallet-lib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
+import useTransaction from "@src/hooks/useTransaction";
 
 export default function Sign() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { walletAddress, ethersProvider, signTransaction, account } =
-        useWalletContext();
+    const { walletAddress, ethersProvider, account } = useWalletContext();
+    const { signTransaction } = useTransaction();
     const signModal = createRef<any>();
 
     const signUserTx: any = async () => {
@@ -34,24 +35,23 @@ export default function Sign() {
             ethersProvider,
         );
         try {
-            const operation: any =
-                await EIP4337Lib.Utils.fromTransaction(
-                    ethersProvider,
-                    config.contracts.entryPoint,
-                    {
-                        data: data,
-                        from: fromAddress,
-                        gas,
-                        to,
-                        value,
-                    },
-                    nonce,
-                    parseInt(maxFeePerGas),
-                    parseInt(maxPriorityFeePerGas),
-                    // parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                    // parseInt(ethers.utils.parseUnits("2", 9).toString()),
-                    config.contracts.paymaster,
-                );
+            const operation: any = await EIP4337Lib.Utils.fromTransaction(
+                ethersProvider,
+                config.contracts.entryPoint,
+                {
+                    data: data,
+                    from: fromAddress,
+                    gas,
+                    to,
+                    value,
+                },
+                nonce,
+                parseInt(maxFeePerGas),
+                parseInt(maxPriorityFeePerGas),
+                // parseInt(ethers.utils.parseUnits("30", 9).toString()),
+                // parseInt(ethers.utils.parseUnits("2", 9).toString()),
+                config.contracts.paymaster,
+            );
 
             if (!operation) {
                 throw new Error("Failed to format tx");

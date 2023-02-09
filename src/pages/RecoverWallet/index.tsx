@@ -3,6 +3,7 @@ import Logo from "@src/components/Logo";
 import BN from "bignumber.js";
 import Button from "@src/components/Button";
 import { Link } from "react-router-dom";
+import useWallet from "@src/hooks/useWallet";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
@@ -17,14 +18,8 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const {
-        account,
-        replaceAddress,
-        getRecoverId,
-        getWalletAddressByEmail,
-        recoverWallet,
-        deleteWallet,
-    } = useWalletContext();
+    const { account, replaceAddress } = useWalletContext();
+    const { recoverWallet, deleteWallet, getRecoverId } = useWallet();
     const [progress, setProgress] = useState<number>();
     const navigate = useNavigate();
     const [cachedEmail, setCachedEmail] = useState<string>("");
@@ -43,8 +38,8 @@ export function RecoverWallet() {
         const new_key =
             newOwnerAddress || (await getLocalStorage("stagingAccount"));
 
-        // get wallet address by email
-        const walletAddress = await getWalletAddressByEmail(email);
+        // todo, get by calculating
+        const walletAddress = "0x000";
 
         const { requestId }: any = await getRecoverId(new_key, walletAddress);
 
@@ -134,8 +129,13 @@ export function RecoverWallet() {
                             saveKey={false}
                         />
                         <div className="text-xs">
-                        Setting a new password will delete the signing key from your current device.<br/><br/>
-You will be able to access the wallet after &gt;50% of your guardians sign their signatures for your recovery request.
+                            Setting a new password will delete the signing key
+                            from your current device.
+                            <br />
+                            <br />
+                            You will be able to access the wallet after &gt;50%
+                            of your guardians sign their signatures for your
+                            recovery request.
                         </div>
                     </>
                 )}

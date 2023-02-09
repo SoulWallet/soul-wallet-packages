@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
-import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AddressIcon from "../AddressIcon";
+import useWallet from "@src/hooks/useWallet";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
@@ -16,7 +16,8 @@ interface IProps {
 export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const { walletType, getWalletType, activateWallet } = useWalletContext();
+    const { walletType, getWalletType } = useWalletContext();
+    const { activateWallet } = useWallet();
 
     const doCopy = () => {
         copyText(account);

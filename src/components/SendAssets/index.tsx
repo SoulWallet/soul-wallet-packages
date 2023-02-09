@@ -3,7 +3,8 @@ import Button from "../Button";
 import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useErc20Contract from "@src/contract/useErc20Contract";
-// import IconETH from "@src/assets/tokens/eth.svg";
+import useTransaction from "@src/hooks/useTransaction";
+import useQuery from "@src/hooks/useQuery";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../Input";
 import { toast } from "material-react-toastify";
@@ -42,7 +43,10 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     const [balance, setBalance] = useState<string>("");
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
-    const { sendErc20, sendEth, getEthBalance, web3 } = useWalletContext();
+    const { web3 } = useWalletContext();
+    const { getEthBalance } = useQuery();
+
+    const { sendErc20, sendEth } = useTransaction();
     const erc20Contract = useErc20Contract();
 
     const tokenInfo = config.assetsList.filter(

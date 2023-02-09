@@ -1,61 +1,21 @@
-import React, { useState, useEffect } from "react";
-import api from "@src/lib/api";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Logo from "@src/components/Logo";
-import { SendEmail } from "@src/components/SendEmail";
 import { CreatePassword } from "@src/components/CreatePassword";
 
 export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
-    const [cachedEmail, setCachedEmail] = useState<string>("");
     const { getAccount } = useWalletContext();
-
-    const [email, setEmail] = useState<string>("");
-
-    const onReceiveCode = async (email: string, code: string) => {
-        setEmail(email);
-        // todo, extract ts
-        const res: any = await api.account.add({
-            email,
-            code,
-        });
-        if (res.code === 200) {
-            await setLocalStorage("authorization", res.data.jwtToken);
-            setStep(1);
-        }
-    };
 
     const onCreatedWalletAddress: any = async (
         address: string,
         eoaAddress: string,
     ) => {
-        //eoa address
-
-        const res = await api.account.update({
-            email,
-            wallet_address: address,
-            key: eoaAddress,
-        });
-        if (res) {
-            // get latest wallet address
-            await getAccount();
-
-            setStep(2);
-        }
+        console.log("created ", address, eoaAddress);
+        await getAccount();
+        setStep(1);
     };
-
-    const getCachedProcess = async () => {
-        const storageCachedEmail = await getLocalStorage("cachedEmail");
-        if (storageCachedEmail) {
-            setCachedEmail(storageCachedEmail);
-        }
-    };
-
-    useEffect(() => {
-        getCachedProcess();
-    }, []);
 
     return (
         <>
@@ -63,18 +23,6 @@ export function CreateWallet() {
                 <Logo />
                 <div>
                     {step === 0 && (
-                        <>
-                            <div className="page-title mb-4">
-                                Email verification
-                            </div>
-                            <SendEmail
-                                source="/create-wallet"
-                                onReceiveCode={onReceiveCode}
-                                cachedEmail={cachedEmail}
-                            />
-                        </>
-                    )}
-                    {step === 1 && (
                         <>
                             <div className="page-title mb-4">
                                 Create password
@@ -85,7 +33,7 @@ export function CreateWallet() {
                             />
                         </>
                     )}
-                    {step === 2 && (
+                    {step === 1 && (
                         <>
                             <div className="page-title mb-8">
                                 Congratulations
