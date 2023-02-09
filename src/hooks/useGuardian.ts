@@ -42,6 +42,32 @@ export default function useGuardian() {
         await executeOperation(setGuardianOp, actionName);
     };
 
+    const loadLocalGuardian = async (walletAddress: string) => {
+        const localGuardianConfig = null;
+        // todo coding
+        return localGuardianConfig;
+    };
+    const loadFileGuardian = async (fileObj: File) => {
+        const localGuardianConfig = null;
+        // todo coding
+        return localGuardianConfig;
+    };
+    const setGuardianConfig = async (fileObj: File) => {
+        const localGuardianConfig = null;
+        // todo coding
+        return localGuardianConfig;
+    };
+    const _checkGuardianConfig = async (fileObj: File) => {
+        const localGuardianConfig = null;
+        // todo coding
+        return localGuardianConfig;
+    };
+    const saveLocalGuardian = async (fileObj: File) => {
+        const localGuardianConfig = null;
+        // todo coding
+        return localGuardianConfig;
+    };
+
     return {
         updateGuardian,
     };
