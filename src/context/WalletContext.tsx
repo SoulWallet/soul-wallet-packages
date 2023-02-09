@@ -77,24 +77,21 @@ export const WalletContextProvider = ({ children }: any) => {
             }
         }
 
-        const requestId = operation.getUserOpHash(
+        const userOpHash = operation.getUserOpHash(
             config.contracts.entryPoint,
             config.chainId,
         );
 
-        const signature = await keyStore.sign(requestId);
+        const signature = await keyStore.sign(userOpHash);
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
-            // TODO, should wait for complete
             await Runtime.send("execute", {
                 actionName,
                 operation: JSON.stringify(operation),
-                requestId,
+                requestId: userOpHash,
             });
-
-            return;
         }
     };
 

@@ -9,14 +9,15 @@
         "test": "jest --config=jest.config.js",
         "lint": "eslint --fix -c ./.eslintrc.js \"src/**/*.ts*\"",
         "prettify": "prettier --write \"src/**/*.ts*\"",
-        "storybook": "start-storybook -p 6006",
-        "build-storybook": "build-storybook"
+        "story": "start-storybook -p 6006",
+        "build-story": "build-storybook"
     },
     "keywords": [
-        "react",
+        "ERC-4337",
         "typescript",
         "chrome",
-        "extension"
+        "extension",
+        "react"
     ],
     "license": "MIT",
     "devDependencies": {

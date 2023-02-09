@@ -16,8 +16,6 @@ export const saveActivityHistory = async (history: any) => {
 
 // IMPORTANT TODO: simulate handle
 export const simulateValidation = async (userOp: any) => {
-    console.log("User OP", userOp);
-
     const result = await ethersProvider.call({
         from: ethers.constants.AddressZero,
         to: config.contracts.entryPoint,
@@ -26,6 +24,8 @@ export const simulateValidation = async (userOp: any) => {
             [userOp, false],
         ),
     });
+
+    console.log("simulate result", result);
 
     // const decoded = new ethers.utils.Interface(
     //     EntryPointAbi,
@@ -44,13 +44,15 @@ export const executeTransaction = async (
     return new Promise(async (resolve, reject) => {
         try {
             const result = await simulateValidation(operation);
-            // // IMPORTANT TODO, catch errors and return
+            // IMPORTANT TODO, catch errors and return
             console.log(`SimulateValidation:`, result);
 
             // failed to simulate
             if (!result) {
                 return;
             }
+
+            console.log("before send", operation);
 
             // create raw_data for bundler api
             const raw_data = EIP4337Lib.RPC.eth_sendUserOperation(

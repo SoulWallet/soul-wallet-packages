@@ -33,7 +33,7 @@ export default forwardRef<any>((props, ref) => {
 
             // todo, there's a problem when sendETH
             if (operation) {
-                console.log("op", operation);
+                console.log("sign op", operation);
 
                 const tmpMap = new Map<string, string>();
                 EIP4337Lib.Utils.DecodeCallData.new().setStorage(
