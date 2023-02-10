@@ -35,11 +35,11 @@ export default {
     scanUrl: "https://goerli.arbiscan.io",
     bundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
     contracts: {
-        logic: "0x868BbfB49762bfe2a1cF2f104b99D5c792c03d9C",
+        logic: "0xaD1021AD721cb98E682F51489b1aD84395F3e495",
         guardianLogic: "0xFeA560e88BfC3700A4d09F2bA337F4496D9a8ca5",
         entryPoint: "0x0f8425222890A6D2548e095102b4C0B9F4A08c82",
         paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",
-        create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
+        create2Factory: "0xb8EE53678Ffc1fcc1Bec87dEF082dB4Afc72c92B",
         weth: wethAddress,
     },
 };

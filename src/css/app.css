@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @layer components {
+
+
     .page-title {
         @apply text-black text-opacity-80 text-2xl;
     }
@@ -10,6 +12,11 @@
     .page-desc {
         @apply text-sm;
     }
+
+    .plugin-board {
+        @apply w-[360px] h-[640px] flex flex-col mx-auto rounded-xl;
+    }
+
 
     .btn {
         @apply font-normal text-base rounded-3xl;
@@ -31,16 +38,20 @@
         @apply bg-redLight brightness-90;
     }
 
+    .border-color {
+        border-color: #e6e6e6;
+    }
+
     .input {
         @apply rounded-full bg-black bg-opacity-5 border-transparent;
     }
 
-    .bg-actions {
-        background: rgba(217, 217, 217, .2);
-    }
-
     .add-guardian-shadow {
         box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-shadow {
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
     }
 
     .h-full-with-sidebar {
@@ -63,6 +74,12 @@
     font-family: 'Inter';
     font-weight: 600;
     src        : url('../assets/fonts/Inter/Inter-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-weight: 700;
+    src        : url('../assets/fonts/Inter/Inter-Bold.ttf');
 }
 
 body {

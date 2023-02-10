@@ -1,14 +1,14 @@
 import config from "@src/config";
-import { EIP4337Lib } from "soul-wallet-lib";
+import useLib from "./useLib";
 
 export default function useTools() {
+    const { soulWalletLib } = useLib();
     const getGuardianInitCode = (guardianList: any) => {
-        return EIP4337Lib.Guardian.calculateGuardianAndInitCode(
+        return soulWalletLib.Guardian.calculateGuardianAndInitCode(
             config.contracts.guardianLogic,
             guardianList,
             Math.round(guardianList.length / 2),
             config.guardianSalt,
-            config.contracts.create2Factory,
         );
     };
 

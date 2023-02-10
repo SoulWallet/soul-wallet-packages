@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
-import { EIP4337Lib } from "soul-wallet-lib";
+import { SoulWalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
@@ -89,7 +89,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
             await Runtime.send("execute", {
                 actionName,
-                operation: JSON.stringify(operation),
+                operation: operation.toJSON(),
                 requestId: userOpHash,
             });
         }

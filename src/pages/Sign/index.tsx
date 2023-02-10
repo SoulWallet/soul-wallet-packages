@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-import { EIP4337Lib } from "soul-wallet-lib";
+import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
@@ -14,6 +14,7 @@ export default function Sign() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { walletAddress, ethersProvider, account } = useWalletContext();
     const { signTransaction } = useTransaction();
+    const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
 
     const signUserTx: any = async () => {
@@ -30,12 +31,12 @@ export default function Sign() {
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
-        const nonce = await EIP4337Lib.Utils.getNonce(
+        const nonce = await soulWalletLib.Utils.getNonce(
             fromAddress,
             ethersProvider,
         );
         try {
-            const operation: any = await EIP4337Lib.Utils.fromTransaction(
+            const operation: any = await soulWalletLib.Utils.fromTransaction(
                 ethersProvider,
                 config.contracts.entryPoint,
                 {

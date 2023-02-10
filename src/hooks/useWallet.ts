@@ -1,8 +1,8 @@
 import useWalletContext from "../context/hooks/useWalletContext";
-import { EIP4337Lib } from "soul-wallet-lib";
 import { guardianList } from "@src/config/mock";
 import useKeystore from "./useKeystore";
 import useTools from "./useTools";
+import useLib from "./useLib";
 import useQuery from "./useQuery";
 import config from "@src/config";
 
@@ -12,23 +12,22 @@ export default function useWallet() {
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode } = useTools();
     const keyStore = useKeystore();
+    const { soulWalletLib } = useLib();
 
-    const activateWallet = async () => {
+    const activateWalletETH = async () => {
         const actionName = "Activate Wallet";
         const currentFee = await getGasPrice();
 
         const guardianInitCode = getGuardianInitCode(guardianList);
 
-        const activateOp = EIP4337Lib.activateWalletOp(
+        const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.logic,
             config.contracts.entryPoint,
             account,
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            config.zeroAddress,
-            0,
-            config.contracts.create2Factory,
+            "0x" || config.zeroAddress,
             currentFee,
             currentFee,
         );
@@ -36,29 +35,29 @@ export default function useWallet() {
         await executeOperation(activateOp, actionName);
     };
 
+    const activateWalletUSDC = async () => {};
+
     const calculateWalletAddress = (address: string) => {
         const guardianInitCode = getGuardianInitCode(guardianList);
 
-        return EIP4337Lib.calculateWalletAddress(
+        return soulWalletLib.calculateWalletAddress(
             config.contracts.logic,
             config.contracts.entryPoint,
             address,
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            0,
-            config.contracts.create2Factory,
         );
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await EIP4337Lib.Utils.getNonce(
+        let nonce = await soulWalletLib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
         const currentFee = await getGasPrice();
 
-        const recoveryOp = await EIP4337Lib.Guardian.transferOwner(
+        const recoveryOp = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
@@ -130,7 +129,8 @@ export default function useWallet() {
     // };
 
     return {
-        activateWallet,
+        activateWalletETH,
+        activateWalletUSDC,
         recoverWallet,
         calculateWalletAddress,
         deleteWallet,

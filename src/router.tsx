@@ -52,7 +52,7 @@ export default function PluginRouter() {
         <div
             className={cn(
                 "bg-white text-base",
-                mode !== "web" && "artboard phone-1 flex flex-col mx-auto",
+                mode !== "web" && "plugin-board",
             )}
         >
             <Routes>
