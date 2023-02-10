@@ -91,16 +91,12 @@ export default function Welcome() {
                     Recover Wallet
                 </Link>
 
-                {/* <Link to="/start" className="text-blueDeep text-sm">
-                    Go to Start Page {"(for test use)"}
-                </Link> */}
-
                 <div
                     className="mt-8 text-slate-500 text-sm cursor-pointer"
                     onClick={() => {
                         browser.tabs.create({
                             url: browser.runtime.getURL(
-                                "fullscreen.html#/start",
+                                "popup.html#/start?mode=web",
                             ),
                         });
                     }}

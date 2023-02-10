@@ -15,7 +15,6 @@ module.exports = {
     purge: ["./src/**/*.{js,jsx,ts,tsx}", "./dist/popup.html"],
     content: [
         "./src/components/**/*.{html,js,tsx}",
-        "./src/fullscreen/**/*.{html,js,tsx}",
         "./src/popup/**/*.{html,js,tsx}",
         "./src/pages/**/*.{html,js,tsx}",
     ],
@@ -23,12 +22,18 @@ module.exports = {
         extend: {
             colors: {
                 redLight: "#EB5858",
+                warnRed: "#FE7575",
+                alarmRed: "#FF4343",
                 blue: "#3840FF",
                 blueDeep: "#514DF5",
                 gray10: "rgba(0,0,0,.1)",
                 gray30: "#d9d9d9",
                 gray40: "rgba(217, 217, 217, .2)",
                 green: "#48BE93",
+                purple: "#7184FA",
+                gray70: "rgba(0,0,0,0.7)",
+                lightWhite: "#FAFAFA",
+                lightGray: "#E0E0E0",
             },
             spacing: {
                 ...gen((v) => `${v}px`)(ALL_SIZE),

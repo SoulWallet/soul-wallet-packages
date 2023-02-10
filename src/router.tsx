@@ -7,8 +7,6 @@ import {
     Routes,
     Route,
     useLocation,
-    useNavigation,
-    useSearchParams,
 } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { CreateWallet } from "@src/pages/CreateWallet";
@@ -18,6 +16,7 @@ import Send from "@src/pages/Send";
 import Sign from "@src/pages/Sign";
 
 import { getLocalStorage } from "@src/lib/tools";
+import StartPage from "./pages/Start";
 
 const keyStore = KeyStore.getInstance();
 
@@ -62,6 +61,7 @@ export default function PluginRouter() {
                 <Route path="/sign" element={<Sign />} />
                 <Route path="/create-wallet" element={<CreateWallet />} />
                 <Route path="/recover-wallet" element={<RecoverWallet />} />
+                <Route path="/start" element={<StartPage />} />
                 {!loading && (
                     <Route
                         path="*"

@@ -6,7 +6,7 @@
             "@components": ["src/components/*"],
             "@assets": ["src/assets/*"]
         },
-        "target": "ESNext",
+        "target": "ES2020",
         "module": "commonjs",
         "moduleResolution": "node",
         // "rootDir": "./src",
@@ -15,7 +15,7 @@
         "sourceMap": true,
         "jsx": "react",
         "esModuleInterop": true,
-        "lib": ["es2015", "dom"],
+        "lib": ["ES2020", "dom"],
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true
     }

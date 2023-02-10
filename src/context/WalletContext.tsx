@@ -34,14 +34,10 @@ interface IWalletContext {
     signTransaction: (txData: any) => Promise<any>;
     executeOperation: (operation: any, actionName?: string) => Promise<void>;
     updateGuardian: (guardianAddress: string) => Promise<void>;
-    getRecoverId: (newOwner: string, walletAddress: string) => Promise<object>;
+    getRecoverId: (newOwner: string, walletAddress: string) => Promise<Record<string, unknown>>;
     recoverWallet: (newOwner: string, signatures: string[]) => Promise<void>;
     deleteWallet: () => Promise<void>;
-    sendErc20: (
-        tokenAddress: string,
-        to: string,
-        amount: string,
-    ) => Promise<void>;
+    sendErc20: (tokenAddress: string, to: string, amount: string) => Promise<void>;
     sendEth: (to: string, amount: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
 }
@@ -95,10 +91,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const getGasPrice = async () => {
         const gas = await web3.eth.getGasPrice();
-        const gasMultiplied = new BN(gas)
-            .times(config.feeMultiplier)
-            .integerValue()
-            .toNumber();
+        const gasMultiplied = new BN(gas).times(config.feeMultiplier).integerValue().toNumber();
         console.log("gas mul", gasMultiplied);
         return 10 * 10 ** 9;
     };
@@ -127,9 +120,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const getWalletAddress = async () => {
         console.log("aaaaa");
-        const cachedWalletAddress = await getLocalStorage(
-            "activeWalletAddress",
-        );
+        const cachedWalletAddress = await getLocalStorage("activeWalletAddress");
         if (cachedWalletAddress) {
             setWalletAddress(cachedWalletAddress);
         } else {
@@ -164,20 +155,13 @@ export const WalletContextProvider = ({ children }: any) => {
     ) => {
         if (actionName) {
             try {
-                await signModal.current.show(
-                    operation,
-                    actionName,
-                    "Soul Wallet",
-                );
+                await signModal.current.show(operation, actionName, "Soul Wallet");
             } catch (err) {
                 throw Error("User rejected");
             }
         }
 
-        const requestId = operation.getUserOpHash(
-            config.contracts.entryPoint,
-            config.chainId,
-        );
+        const requestId = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
         const signature = await keyStore.sign(requestId);
 
@@ -225,18 +209,11 @@ export const WalletContextProvider = ({ children }: any) => {
         await executeOperation(activateOp, actionName);
     };
 
-    const sendErc20 = async (
-        tokenAddress: string,
-        to: string,
-        amount: string,
-    ) => {
+    const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
         const actionName = "Send Assets";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await EIP4337Lib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
         const op = await EIP4337Lib.Tokens.ERC20.transfer(
             ethersProvider,
             walletAddress,
@@ -256,10 +233,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const actionName = "Recover Wallet";
 
-        const { requestId, recoveryOp } = await getRecoverId(
-            newOwner,
-            walletAddress,
-        );
+        const { requestId, recoveryOp } = await getRecoverId(newOwner, walletAddress);
 
         // TODO, add guardian signatures here
         const signPack = "";
@@ -271,10 +245,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const updateGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
-        const nonce = await EIP4337Lib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
         // TODO, need new guardianInitCode here
         const setGuardianOp = await EIP4337Lib.Guardian.setGuardian(
             ethersProvider,
@@ -294,10 +265,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await EIP4337Lib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
 
         const recoveryOp = await EIP4337Lib.Guardian.transferOwner(
@@ -314,10 +282,7 @@ export const WalletContextProvider = ({ children }: any) => {
             throw new Error("recoveryOp is null");
         }
         // get requestId
-        const requestId = recoveryOp.getUserOpHash(
-            config.contracts.entryPoint,
-            config.chainId,
-        );
+        const requestId = recoveryOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
         return { requestId, recoveryOp };
     };
@@ -326,10 +291,7 @@ export const WalletContextProvider = ({ children }: any) => {
         const actionName = "Send ETH";
         const currentFee = (await getGasPrice()) * config.feeMultiplier;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await EIP4337Lib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await EIP4337Lib.Utils.getNonce(walletAddress, ethersProvider);
         const op = await EIP4337Lib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
