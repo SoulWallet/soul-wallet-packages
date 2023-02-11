@@ -39,7 +39,7 @@ export default {
         guardianLogic: "0xFeA560e88BfC3700A4d09F2bA337F4496D9a8ca5",
         entryPoint: "0x0f8425222890A6D2548e095102b4C0B9F4A08c82",
         paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",
-        create2Factory: "0xb8EE53678Ffc1fcc1Bec87dEF082dB4Afc72c92B",
+        create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
         weth: wethAddress,
     },
 };

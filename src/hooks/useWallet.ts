@@ -27,10 +27,12 @@ export default function useWallet() {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            "0x" || config.zeroAddress,
+            config.zeroAddress,
             currentFee,
             currentFee,
         );
+
+        // const requiredPrefund = activateOp.requiredPrefund(ethers.utils.parseUnits(eip1559GasFee.estimatedBaseFee, "gwei"));
 
         await executeOperation(activateOp, actionName);
     };

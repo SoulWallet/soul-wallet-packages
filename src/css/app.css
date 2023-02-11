@@ -13,10 +13,10 @@
         @apply text-sm;
     }
 
+    /** max width 800px, max height 600px */
     .plugin-board {
-        @apply w-[360px] h-[640px] flex flex-col mx-auto rounded-xl;
+        @apply w-[360px] h-[600px] flex flex-col mx-auto rounded-xl;
     }
-
 
     .btn {
         @apply font-normal text-base rounded-3xl;
@@ -52,6 +52,10 @@
 
     .navbar-shadow {
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .footer-shadow {
+        box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.04);
     }
 
     .h-full-with-sidebar {

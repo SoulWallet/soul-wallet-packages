@@ -1,6 +1,6 @@
 import { SoulWalletLib } from "soul-wallet-lib";
 import { ethers } from "ethers";
-import ky from "ky";
+// import ky from "ky";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
@@ -30,21 +30,28 @@ export const executeTransaction = async (
     return new Promise(async (resolve, reject) => {
         try {
             console.log("before simulate", operation);
-            const result = await bundler.simulateHandleOp(
-                config.contracts.entryPoint,
-                operation,
-            );
+            const simulateResult = await bundler.simulateValidation(operation);
 
             // IMPORTANT TODO, catch errors and return
-            console.log(`SimulateValidation:`, result);
+            console.log(`SimulateValidation:`, simulateResult);
 
             // failed to simulate
-            if (!result) {
-                return;
-            }
+            // if (result.status) {
+            //     throw Error(result.reason);
+            // }
 
-            const aaa = await bundler.sendUserOperation(operation);
+            const result = await bundler.sendUserOperation(operation);
 
+            result
+                .on("error", () => {
+                    console.log("error");
+                })
+                .on("send", () => {
+                    console.log("accepted");
+                })
+                .on("receipt", () => {
+                    console.log("receipt");
+                });
             // create raw_data for bundler api
             // const raw_data = soulWalletLib.RPC.eth_sendUserOperation(
             //     operation,

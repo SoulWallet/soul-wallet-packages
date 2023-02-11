@@ -21,7 +21,8 @@ export default function useQuery() {
             .integerValue()
             .toNumber();
         console.log("gas multiplied", gasMultiplied);
-        return gasMultiplied;
+        return 10 ** 9;
+        // return gasMultiplied;
     };
 
     return {

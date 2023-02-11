@@ -39,13 +39,15 @@ export default function Sign() {
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 ethersProvider,
                 config.contracts.entryPoint,
-                {
-                    data: data,
-                    from: fromAddress,
-                    gas,
-                    to,
-                    value,
-                },
+                [
+                    {
+                        data: data,
+                        from: fromAddress,
+                        gas,
+                        to,
+                        value,
+                    },
+                ],
                 nonce,
                 parseInt(maxFeePerGas),
                 parseInt(maxPriorityFeePerGas),

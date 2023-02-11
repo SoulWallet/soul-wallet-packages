@@ -166,6 +166,7 @@ export default class KeyStore {
         // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
         // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
         const signer = new ethers.Wallet(this._privateKey);
+
         return await signer.signMessage(ethers.utils.arrayify(message));
     }
 }
