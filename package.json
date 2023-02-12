@@ -80,6 +80,7 @@
         "eth-json-rpc-middleware": "^9.0.1",
         "ethereumjs-util": "^7.1.5",
         "ethers": "^5.7.1",
+        "immer": "^9.0.19",
         "json-rpc-engine": "^6.1.0",
         "json-rpc-middleware-stream": "^2.1.1",
         "ky": "^0.32.2",
