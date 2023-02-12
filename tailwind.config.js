@@ -44,6 +44,7 @@ module.exports = {
             },
             width: (theme) => ({
                 ...theme("spacing"),
+                base: "428px",
             }),
             height: (theme) => ({
                 ...theme("spacing"),

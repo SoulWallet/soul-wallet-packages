@@ -14,14 +14,14 @@ interface IProps {
     children: React.ReactNode;
     disable?: boolean;
     type?: ButtonType; // 不传使用旧button，传了代表使用淡紫色新button
-    classNames?: string;
+    className?: string;
     onClick: () => void;
     loading?: boolean;
 }
 
-export default function Button({ classNames, onClick, children, loading, disable, type }: IProps) {
+export default function Button({ className, onClick, children, loading, disable, type }: IProps) {
     const doClick = () => {
-        if (!loading) {
+        if (!loading && !disable) {
             onClick();
         }
     };
@@ -31,7 +31,7 @@ export default function Button({ classNames, onClick, children, loading, disable
             onClick={doClick}
             className={cn(
                 "btn w-full flex gap-2",
-                classNames,
+                className,
                 loading && "opacity-70  cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
                 disable && ButtonTypeStyleMap["disable"],

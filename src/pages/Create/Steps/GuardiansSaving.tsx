@@ -40,21 +40,21 @@ const GuardiansSaving = () => {
             </p>
 
             <div className="flex flex-row items-end">
-                <Button type="default" onClick={handleDownload} classNames="w-428">
+                <Button type="default" onClick={handleDownload} className="w-base">
                     Download
                 </Button>
 
                 <span className="mx-28 mb-12 text-base text-black">or</span>
 
                 <InputWrapper
-                    className="w-428"
+                    className="w-base"
                     label={"Back up via Email"}
                     value={email}
                     onChange={handleEmailChange}
                 />
             </div>
 
-            <Button classNames="w-428 mt-83 mx-auto" type="primary" disable={!hasSaved} onClick={handleNext}>
+            <Button className="w-base mt-83 mx-auto" type="primary" disable={!hasSaved} onClick={handleNext}>
                 Next
             </Button>
         </div>

@@ -33,7 +33,7 @@ export default function GuardiansSetting() {
 
             <div className="flex flex-col items-center gap-15">
                 <Button
-                    classNames="mt-32"
+                    className="mt-32"
                     type={"primary"}
                     disable={true}
                     onClick={() => handleJumpToTargetStep(CreateStepEn.SaveGuardianList)}

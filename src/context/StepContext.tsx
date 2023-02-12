@@ -1,7 +1,6 @@
 import React, { createContext, Dispatch, ReactNode, useContext, useReducer } from "react";
 
 export enum CreateStepEn {
-    Before,
     CreatePWD,
     SetupGuardians,
     SaveGuardianList,
@@ -9,18 +8,27 @@ export enum CreateStepEn {
     Completed,
 }
 
+export enum RecoverStepEn {
+    Start,
+    ResetPassword,
+    GuardiansInputting,
+    SignaturePending,
+}
+
+type StepEn = CreateStepEn | RecoverStepEn;
+
 export enum StepActionTypeEn {
     JumpToTargetStep = "JumpToTargetStep",
 }
 
 interface IStepAction {
     type: StepActionTypeEn;
-    payload: CreateStepEn;
+    payload: StepEn;
 }
 
 type StepState = {
-    current: CreateStepEn;
-    previous?: CreateStepEn;
+    current: CreateStepEn | RecoverStepEn;
+    previous?: StepEn;
 };
 
 interface IStepContext {
@@ -28,7 +36,7 @@ interface IStepContext {
 }
 
 const StepContext = createContext<IStepContext>({
-    step: { current: CreateStepEn.Before },
+    step: { current: CreateStepEn.CreatePWD },
 });
 
 const StepDispatchContext = createContext<Dispatch<IStepAction>>((value: IStepAction) => void 0);
@@ -54,7 +62,7 @@ const stepReducer: (prevStepState: StepState, action: IStepAction) => StepState 
 
 export const StepContextProvider = ({ children }: { children: ReactNode }) => {
     const [step, dispatch] = useReducer(stepReducer, {
-        current: CreateStepEn.Completed,
+        current: 2, // both 0 to start
     });
 
     return (

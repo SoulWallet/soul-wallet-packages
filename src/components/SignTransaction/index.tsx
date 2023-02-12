@@ -17,12 +17,7 @@ export default forwardRef<any>((props, ref) => {
     const [signing, setSigning] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
-        async show(
-            operation: any,
-            _actionName: string,
-            origin: string,
-            keepVisible: boolean,
-        ) {
+        async show(operation: any, _actionName: string, origin: string, keepVisible: boolean) {
             setActionName(_actionName);
             setOrigin(origin);
             const balance = await getEthBalance();
@@ -47,10 +42,7 @@ export default forwardRef<any>((props, ref) => {
                     },
                 );
 
-                const callDataDecode =
-                    await EIP4337Lib.Utils.DecodeCallData.new().decode(
-                        operation.callData,
-                    );
+                const callDataDecode = await EIP4337Lib.Utils.DecodeCallData.new().decode(operation.callData);
                 console.log(`callDataDecode:`, callDataDecode);
                 setDecodedData(callDataDecode);
             }
@@ -111,24 +103,16 @@ export default forwardRef<any>((props, ref) => {
                 <div>
                     <div className="mb-2">Message</div>
                     <div className="font-bold bg-gray40 p-3 rounded-lg">
-                        {actionName
-                            ? actionName
-                            : decodedData
-                            ? JSON.stringify(decodedData)
-                            : ""}
+                        {actionName ? actionName : decodedData ? JSON.stringify(decodedData) : ""}
                     </div>
                 </div>
             </div>
 
             <div className="flex gap-2">
-                <Button classNames="w-1/2" onClick={onReject}>
+                <Button className="w-1/2" onClick={onReject}>
                     Cancel
                 </Button>
-                <Button
-                    classNames="btn-blue w-1/2"
-                    onClick={onConfirm}
-                    loading={signing}
-                >
+                <Button className="btn-blue w-1/2" onClick={onConfirm} loading={signing}>
                     Sign
                 </Button>
             </div>

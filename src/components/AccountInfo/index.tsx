@@ -65,11 +65,7 @@ export default function AccountInfo({ account, action }: IProps) {
             )}
 
             {action === "activate" && walletType === "eoa" && (
-                <Button
-                    classNames="btn-blue mb-4 mt-6"
-                    onClick={doActivate}
-                    loading={loading}
-                >
+                <Button className="btn-blue mb-4 mt-6" onClick={doActivate} loading={loading}>
                     Activate wallet
                 </Button>
             )}

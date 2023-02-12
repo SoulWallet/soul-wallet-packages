@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "@src/lib/api";
 import Button from "@src/components/Button";
-import {
-    getLocalStorage,
-    removeLocalStorage,
-    setLocalStorage,
-} from "@src/lib/tools";
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from "@src/lib/tools";
 import IconEnter from "@src/assets/enter.svg";
 import { Input } from "../Input";
 
@@ -21,12 +17,7 @@ interface FormErrors {
     code: string;
 }
 
-export function SendEmail({
-    source,
-    emailLabel,
-    cachedEmail,
-    onReceiveCode,
-}: SendEmailProps) {
+export function SendEmail({ source, emailLabel, cachedEmail, onReceiveCode }: SendEmailProps) {
     const [email, setEmail] = useState<string>("");
     const [verifyCode, setVerifyCode] = useState<string>("");
     const [gapTime, setGapTime] = useState<any>(0);
@@ -42,9 +33,7 @@ export function SendEmail({
         let flag = true;
 
         // check email
-        const res = /^[/.a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
-            email,
-        );
+        const res = /^[/.a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(email);
         if (!res) {
             setErrors((prev) => ({
                 ...prev,
@@ -102,7 +91,7 @@ export function SendEmail({
             setEmailSending(false);
             setEmailSent(true);
             startCountdown();
-        }else{
+        } else {
             setEmailSending(false);
         }
     };
@@ -168,11 +157,7 @@ export function SendEmail({
                     />
                 </>
             ) : (
-                <Button
-                    loading={emailSending}
-                    classNames="font-normal btn-blue mt-2"
-                    onClick={doSend}
-                >
+                <Button loading={emailSending} className="font-normal btn-blue mt-2" onClick={doSend}>
                     Send verification code
                 </Button>
             )}

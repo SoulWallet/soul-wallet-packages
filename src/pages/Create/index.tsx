@@ -1,13 +1,12 @@
-import Launch from "@src/pages/Start/Steps/Launch";
-import PasswordSetting from "@src/pages/Start/Steps/PasswordSetting";
+import PasswordSetting from "@src/pages/Create/Steps/PasswordSetting";
 import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
 import React, { useMemo } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
-import GuardiansSetting from "./Steps/GuardiansSetting";
-import GuardiansSaving from "./Steps/GuardiansSaving";
+import GuardiansSetting from "../Create/Steps/GuardiansSetting";
+import GuardiansSaving from "../Create/Steps/GuardiansSaving";
 import ProgressNavBar from "@src/components/ProgressNavBar";
-import DefaultSetting from "./Steps/DefaultSetting";
-import Completion from "./Steps/Completion";
+import DefaultSetting from "../Create/Steps/DefaultSetting";
+import Completion from "../Create/Steps/Completion";
 
 type StepNodeInfo = {
     title: string;
@@ -15,9 +14,8 @@ type StepNodeInfo = {
 };
 
 const StepComponent = () => {
-    const stepNodeMap: Record<CreateStepEn, StepNodeInfo> = useMemo(() => {
+    const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
         return {
-            [CreateStepEn.Before]: { title: "", element: <Launch /> },
             [CreateStepEn.CreatePWD]: {
                 title: "Get Started",
                 element: <PasswordSetting />,
@@ -46,19 +44,17 @@ const StepComponent = () => {
     } = useStepContext();
 
     return (
-        <div className="border-white rounded-24 progress-window-shadow px-16 pt-16">
-            {current !== CreateStepEn.Before ? (
-                <ProgressNavBar
-                    title={stepNodeMap[current].title}
-                    percentage={Math.round((100 * current) / CreateStepEn.Completed)}
-                />
-            ) : null}
+        <div>
+            <ProgressNavBar
+                title={stepNodeMap[current].title}
+                percentage={Math.round((100 * current) / CreateStepEn.Completed)}
+            />
             {stepNodeMap[current].element}
         </div>
     );
 };
 
-export default function StartPage() {
+export default function CreatePage() {
     return (
         <FullscreenContainer>
             <StepContextProvider>

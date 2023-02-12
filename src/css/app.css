@@ -84,6 +84,8 @@
     .skip-text{
         @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
     }
+
+
 }
 
 @font-face {
@@ -119,4 +121,33 @@ body {
     background: rgba(255, 255, 255, 0.02);
     box-shadow: 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3);
     backdrop-filter: blur(20px);
+}
+
+.progress-bar {
+    width: 100%;
+    position: relative;
+    appearance: none;
+    overflow: hidden;
+    height: 0.5rem;
+    border-radius: var(--rounded-box, 1rem);
+    background: linear-gradient(90deg, #BA93FD 0%, #ACDDF8 100%);
+}
+
+@keyframes progress {
+    0%    { left: -40%; }
+    100%  { left: 140%;}
+  }
+
+.progress-bar::after {
+   background: white;
+   opacity: 0.2;
+   content: "";
+   position: absolute;
+   top: 0px;
+   bottom: 0px;
+   left: -40%;
+   width: 33.333333%;
+   border-radius: var(--rounded-box, 1rem);
+   animation: progress 3s infinite ease-in-out;
+   animation-direction: normal;
 }

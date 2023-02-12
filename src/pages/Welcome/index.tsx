@@ -73,11 +73,7 @@ export default function Welcome() {
                             }}
                             error={passwordError}
                         />
-                        <Button
-                            onClick={doUnlock}
-                            loading={unlocking}
-                            classNames="btn-blue my-4"
-                        >
+                        <Button onClick={doUnlock} loading={unlocking} className="btn-blue my-4">
                             Unlock
                         </Button>
                     </>
@@ -95,9 +91,7 @@ export default function Welcome() {
                     className="mt-8 text-slate-500 text-sm cursor-pointer"
                     onClick={() => {
                         browser.tabs.create({
-                            url: browser.runtime.getURL(
-                                "popup.html#/start?mode=web",
-                            ),
+                            url: browser.runtime.getURL("popup.html#/launch?mode=web"),
                         });
                     }}
                 >

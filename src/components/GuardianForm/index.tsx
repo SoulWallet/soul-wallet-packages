@@ -6,7 +6,7 @@ export default function GuardianForm() {
     const guardians = useGuardianContext((s) => s.guardians);
 
     return (
-        <div className="w-full flex flex-row flex-wrap justify-between gap-y-24">
+        <div className="w-full flex flex-row flex-wrap justify-between gap-y-24 max-h-213 overflow-y-scroll ">
             {guardians.map((item) => (
                 <GuardianInput key={item.id} {...item} />
             ))}

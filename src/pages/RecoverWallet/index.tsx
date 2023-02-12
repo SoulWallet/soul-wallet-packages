@@ -6,25 +6,15 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
-import {
-    setLocalStorage,
-    getLocalStorage,
-    removeLocalStorage,
-} from "@src/lib/tools";
+import { setLocalStorage, getLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import ImgSuccessCat from "@src/assets/success-cat.svg";
 import { CreatePassword } from "@src/components/CreatePassword";
 import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const {
-        account,
-        replaceAddress,
-        getRecoverId,
-        getWalletAddressByEmail,
-        recoverWallet,
-        deleteWallet,
-    } = useWalletContext();
+    const { account, replaceAddress, getRecoverId, getWalletAddressByEmail, recoverWallet, deleteWallet } =
+        useWalletContext();
     const [progress, setProgress] = useState<number>();
     const navigate = useNavigate();
     const [cachedEmail, setCachedEmail] = useState<string>("");
@@ -40,8 +30,7 @@ export function RecoverWallet() {
     };
 
     const onReceiveCode = async (email: string, code: string) => {
-        const new_key =
-            newOwnerAddress || (await getLocalStorage("stagingAccount"));
+        const new_key = newOwnerAddress || (await getLocalStorage("stagingAccount"));
 
         // get wallet address by email
         const walletAddress = await getWalletAddressByEmail(email);
@@ -84,12 +73,7 @@ export function RecoverWallet() {
 
             const require = res.data.requirements;
 
-            setProgress(
-                new BN(require.signedNum)
-                    .div(require.total)
-                    .times(100)
-                    .toNumber(),
-            );
+            setProgress(new BN(require.signedNum).div(require.total).times(100).toNumber());
 
             setDetail(res.data);
         }
@@ -129,13 +113,13 @@ export function RecoverWallet() {
                 {step === 0 && (
                     <>
                         <div className="page-title mb-4">Recover</div>
-                        <CreatePassword
-                            onCreatedEoaAddress={onCreatedEoaAddress}
-                            saveKey={false}
-                        />
+                        <CreatePassword onCreatedEoaAddress={onCreatedEoaAddress} saveKey={false} />
                         <div className="text-xs">
-                        Setting a new password will delete the signing key from your current device.<br/><br/>
-You will be able to access the wallet after &gt;50% of your guardians sign their signatures for your recovery request.
+                            Setting a new password will delete the signing key from your current device.
+                            <br />
+                            <br />
+                            You will be able to access the wallet after &gt;50% of your guardians sign their signatures
+                            for your recovery request.
                         </div>
                     </>
                 )}
@@ -158,52 +142,34 @@ You will be able to access the wallet after &gt;50% of your guardians sign their
                         <div className="page-title mb-4">Recovering</div>
                         <div className="page-desc">
                             <div>
-                                You can recover your wallet once more than 50%
-                                of your guardians have signed the transaction in
-                                the Security Center.
+                                You can recover your wallet once more than 50% of your guardians have signed the
+                                transaction in the Security Center.
                             </div>
                             <div className="flex items-center justify-center gap-6 mt-4 ">
                                 <div
                                     className="radial-progress bg-primary text-primary-content border-4 border-primary"
                                     style={progressStyle}
                                 >
-                                    {new BN(progress || "0")
-                                        .integerValue()
-                                        .toString()}
-                                    %
+                                    {new BN(progress || "0").integerValue().toString()}%
                                 </div>
                             </div>
                             <div className="divider mt-6">Guardian Address</div>
                             <div className="mt-2 pb-24">
                                 {detail.recoveryRecords &&
-                                    detail.recoveryRecords.recovery_records.map(
-                                        (item: any) => (
-                                            <div
-                                                className="flex justify-between py-1"
-                                                key={item.guardian_address}
-                                            >
-                                                <div className="font-mono">
-                                                    {item.guardian_address.slice(
-                                                        0,
-                                                        6,
-                                                    )}
-                                                    ...
-                                                    {item.guardian_address.slice(
-                                                        -6,
-                                                    )}
-                                                </div>
-                                                {item.signature ? (
-                                                    <div className="text-green">
-                                                        Signed
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-blue">
-                                                        Pending
-                                                    </div>
-                                                )}
+                                    detail.recoveryRecords.recovery_records.map((item: any) => (
+                                        <div className="flex justify-between py-1" key={item.guardian_address}>
+                                            <div className="font-mono">
+                                                {item.guardian_address.slice(0, 6)}
+                                                ...
+                                                {item.guardian_address.slice(-6)}
                                             </div>
-                                        ),
-                                    )}
+                                            {item.signature ? (
+                                                <div className="text-green">Signed</div>
+                                            ) : (
+                                                <div className="text-blue">Pending</div>
+                                            )}
+                                        </div>
+                                    ))}
                             </div>
                         </div>
 
@@ -211,16 +177,14 @@ You will be able to access the wallet after &gt;50% of your guardians sign their
                             {progress && progress > 50 ? (
                                 <Button
                                     loading={recoveringWallet}
-                                    classNames="btn btn-success text-white font-bold w-full"
+                                    className="btn btn-success text-white font-bold w-full"
                                     onClick={doRecover}
                                 >
                                     Recover
                                 </Button>
                             ) : (
-                                <a href={config.safeCenterURL} target="_blank">
-                                    <a className="btn btn-blue w-full">
-                                        Security Center
-                                    </a>
+                                <a href={config.safeCenterURL} target="_blank" rel="noreferrer">
+                                    <a className="btn btn-blue w-full">Security Center</a>
                                 </a>
                             )}
                             {/* <a onClick={doDeleteWallet}>
@@ -231,20 +195,11 @@ You will be able to access the wallet after &gt;50% of your guardians sign their
                 )}
                 {step === 3 && (
                     <>
-                        <img
-                            src={ImgSuccessCat}
-                            className="block mx-auto mb-12"
-                        />
+                        <img src={ImgSuccessCat} className="block mx-auto mb-12" />
                         <div className="page-title mb-3">Congratulation!</div>
-                        <div className="page-desc leading-6">
-                            Your wallet is recovered!
-                        </div>
+                        <div className="page-desc leading-6">Your wallet is recovered!</div>
                         <div className="fixed bottom-10 left-6 right-6">
-                            <Link
-                                to="/wallet"
-                                className="btn btn-blue w-full"
-                                onClick={() => setStep(3)}
-                            >
+                            <Link to="/wallet" className="btn btn-blue w-full" onClick={() => setStep(3)}>
                                 My Wallet
                             </Link>
                         </div>

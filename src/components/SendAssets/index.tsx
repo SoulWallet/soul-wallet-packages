@@ -45,9 +45,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     const { sendErc20, sendEth, getEthBalance, web3 } = useWalletContext();
     const erc20Contract = useErc20Contract();
 
-    const tokenInfo = config.assetsList.filter(
-        (item) => item.address === tokenAddress,
-    )[0];
+    const tokenInfo = config.assetsList.filter((item) => item.address === tokenAddress)[0];
 
     const confirmAddress = () => {
         if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
@@ -100,9 +98,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                 <div className="flex items-center gap-1">
                     {icon && <img src={icon} className="w-11 h-11" />}
                     <div className="flex flex-col">
-                        <div className="font-bold text-lg break-all">
-                            {title}
-                        </div>
+                        <div className="font-bold text-lg break-all">{title}</div>
                         {value && <div>{value}</div>}
                     </div>
                 </div>
@@ -114,9 +110,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
         return (
             <div className="flex w-full gap-3">
                 <div className="text-sm opacity-80 w-20 shrink-0">{title}</div>
-                <div className="text-base opacity-60 break-all max-w-xs text-left">
-                    {value}
-                </div>
+                <div className="text-base opacity-60 break-all max-w-xs text-left">{value}</div>
             </div>
         );
     };
@@ -169,16 +163,10 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
                         </div>
 
                         <div className="p-6 bg-gray40 flex flex-col gap-6">
-                            <InfoItem
-                                title="Receiver"
-                                value={receiverAddress}
-                            />
+                            <InfoItem title="Receiver" value={receiverAddress} />
                             {/** TODO, show tx id here */}
                             {/* <InfoItem title="Tx ID" value="0xcbe1...85049c" /> */}
-                            <InfoItem
-                                title="Date"
-                                value={new Date().toLocaleString()}
-                            />
+                            <InfoItem title="Date" value={new Date().toLocaleString()} />
                         </div>
                     </div>
                 )}
@@ -186,24 +174,17 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
             <div className="px-6 pb-12">
                 {step === 0 && (
-                    <Button classNames="btn-blue" onClick={confirmAddress}>
+                    <Button className="btn-blue" onClick={confirmAddress}>
                         Next
                     </Button>
                 )}
                 {step === 1 && (
-                    <Button
-                        classNames="btn-blue"
-                        onClick={() => doSend()}
-                        loading={sending}
-                    >
+                    <Button className="btn-blue" onClick={() => doSend()} loading={sending}>
                         Confirm
                     </Button>
                 )}
                 {step === 2 && (
-                    <Button
-                        classNames="btn-blue"
-                        onClick={() => navigate("/wallet")}
-                    >
+                    <Button className="btn-blue" onClick={() => navigate("/wallet")}>
                         Done
                     </Button>
                 )}
