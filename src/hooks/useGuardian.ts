@@ -6,6 +6,11 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
 import { EIP4337Lib } from "soul-wallet-lib";
 import useTools from "./useTools";
+import {
+    getLocalStorage,
+    removeLocalStorage,
+    setLocalStorage,
+} from "@src/lib/tools";
 import useQuery from "./useQuery";
 import { guardianList } from "@src/config/mock";
 
@@ -43,8 +48,9 @@ export default function useGuardian() {
     };
 
     const loadLocalGuardian = async (walletAddress: string) => {
-        const localGuardianConfig = null;
-        // todo coding
+        const localGuardianConfig =
+            (await getLocalStorage("localGuardianConfig")) || {};
+        console.log(loadLocalGuardian);
         return localGuardianConfig;
     };
     const loadFileGuardian = async (fileObj: File) => {
@@ -63,9 +69,10 @@ export default function useGuardian() {
         return localGuardianConfig;
     };
     const saveLocalGuardian = async (fileObj: File) => {
-        const localGuardianConfig = null;
-        // todo coding
-        return localGuardianConfig;
+        const localJson = JSON.parse(File);
+        await setLocalStorage("localGuardianConfig", localJson);
+        // to be discuss, store json str or obj kv?
+        return true;
     };
 
     return {
