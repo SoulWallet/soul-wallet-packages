@@ -9,7 +9,7 @@ export default function Send() {
     const tokenAddress = params.tokenAddress || config.zeroAddress;
     return (
         <>
-            <Navbar backUrl="/wallet" />
+            <Navbar />
             <SendAssets tokenAddress={tokenAddress} />
         </>
     );

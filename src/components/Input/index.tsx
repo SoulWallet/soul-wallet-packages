@@ -1,30 +1,21 @@
 import React from "react";
 import IconChecked from "@src/assets/checked.svg";
 import cn from "classnames";
-
-interface InputProps {
-    label?: string;
-    type?: string;
-    placeholder?: string;
-    verified?: boolean;
-    value: string;
-    error: string;
-    ExtraButton?: React.ReactNode;
-    onEnter?: () => void;
-    onChange: (value: string) => void;
-}
+import { IInputProps } from "@src/types/IInput";
 
 export function Input({
     value,
     error,
     placeholder,
+    className,
+    memo,
     type = "text",
     verified,
     label,
     ExtraButton,
     onEnter,
     onChange,
-}: InputProps) {
+}: IInputProps) {
     const onKeyDown = (e: any) => {
         const { keyCode } = e;
         if (keyCode === 13 && onEnter) {
@@ -36,7 +27,9 @@ export function Input({
         <div>
             {label && (
                 <label className="label">
-                    <span className="label-text">{label}</span>
+                    <span className="label-text text-gray60 text-base leading-none">
+                        {label}
+                    </span>
                 </label>
             )}
 
@@ -49,7 +42,11 @@ export function Input({
                     }}
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
-                    className={cn("input w-full", error && "input-error")}
+                    className={cn(
+                        "input w-full",
+                        error && "input-error",
+                        className,
+                    )}
                 />
                 {verified && (
                     <img
@@ -59,13 +56,20 @@ export function Input({
                 )}
                 <div className="absolute right-4 flex items-center top-0 bottom-0">
                     {ExtraButton}
-                    {/* <ExtraButton /> */}
                 </div>
             </div>
 
+            {!error && memo && (
+                <label className="label">
+                    <span className="label-text-alt text-sm">{memo}</span>
+                </label>
+            )}
+
             {error && (
                 <label className="label">
-                    <span className="label-text-alt text-red-500">{error}</span>
+                    <span className="label-text-alt text-sm text-red-500">
+                        {error}
+                    </span>
                 </label>
             )}
         </div>

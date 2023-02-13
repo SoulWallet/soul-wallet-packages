@@ -65,7 +65,7 @@ export default function PluginRouter() {
                 {!loading && (
                     <Route
                         path="*"
-                        element={account ? <Wallet /> : <Welcome />}
+                        element={account ? <Send /> : <Welcome />}
                     />
                 )}
             </Routes>
