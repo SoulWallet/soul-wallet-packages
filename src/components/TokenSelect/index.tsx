@@ -6,12 +6,12 @@ import config from "@src/config";
 const defaultToken = config.assetsList[0];
 
 export function TokenSelect({ label }: ITokenSelect) {
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     return (
         <div>
             <div className="mb-2 text-gray60">{label}</div>
             <div
-                onClick={() => setDropdownVisible(true)}
+                onClick={() => setModalVisible(true)}
                 className="token-select p-2 pr-3 flex items-center justify-between text-black cursor-pointer"
             >
                 <div className="flex items-center gap-1 ">
