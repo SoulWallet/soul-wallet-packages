@@ -78,7 +78,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
                 config.chainId,
             );
 
-            console.log("fffffffff", userOpHash);
+            console.log("after from json hash", userOpHash);
 
             await executeTransaction(
                 parsedOperation,

@@ -33,6 +33,9 @@ export default function useWallet() {
         );
 
         // const requiredPrefund = activateOp.requiredPrefund(ethers.utils.parseUnits(eip1559GasFee.estimatedBaseFee, "gwei"));
+        const requiredPrefund = activateOp.requiredPrefund();
+
+        console.log("requiredPrefund", requiredPrefund);
 
         await executeOperation(activateOp, actionName);
     };

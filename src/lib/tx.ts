@@ -1,4 +1,4 @@
-import { SoulWalletLib } from "soul-wallet-lib";
+import { SoulWalletLib, IUserOpReceipt } from "soul-wallet-lib";
 import { ethers } from "ethers";
 // import ky from "ky";
 import browser from "webextension-polyfill";
@@ -36,22 +36,26 @@ export const executeTransaction = async (
             console.log(`SimulateValidation:`, simulateResult);
 
             // failed to simulate
-            // if (result.status) {
-            //     throw Error(result.reason);
+            // if (simulateResult.status) {
+            //     throw Error(simulateResult?.result.reason);
             // }
 
-            const result = await bundler.sendUserOperation(operation);
-
-            result
-                .on("error", () => {
-                    console.log("error");
-                })
-                .on("send", () => {
-                    console.log("accepted");
-                })
-                .on("receipt", () => {
-                    console.log("receipt");
-                });
+            const bundlerEvent = bundler.sendUserOperation(
+                operation,
+                1000 * 60 * 3,
+            );
+            bundlerEvent.on("error", (err: any) => {
+                console.log(err);
+            });
+            bundlerEvent.on("send", (userOpHash: string) => {
+                console.log("send: " + userOpHash);
+            });
+            bundlerEvent.on("receipt", (receipt: IUserOpReceipt) => {
+                console.log("receipt: " + receipt);
+            });
+            bundlerEvent.on("timeout", () => {
+                console.log("timeout");
+            });
             // create raw_data for bundler api
             // const raw_data = soulWalletLib.RPC.eth_sendUserOperation(
             //     operation,

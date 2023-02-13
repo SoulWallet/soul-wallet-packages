@@ -37,8 +37,6 @@ export default function Sign() {
         );
         try {
             const operation: any = await soulWalletLib.Utils.fromTransaction(
-                ethersProvider,
-                config.contracts.entryPoint,
                 [
                     {
                         data: data,

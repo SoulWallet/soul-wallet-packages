@@ -65,7 +65,7 @@ specifiers:
   react-jazzicon: ^1.0.4
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
-  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.0.6
+  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.0.8
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
   tailwindcss: ^3.0.8
@@ -109,7 +109,7 @@ dependencies:
   react-dom: 17.0.2_react@17.0.2
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/ddd4c4730ed4eb2439407c3c5f81f77e10eb4c2d
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/f2ad9fa358450b06808f6ed866f9b105479b3587
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -16070,7 +16070,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:
@@ -16078,10 +16078,10 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/ddd4c4730ed4eb2439407c3c5f81f77e10eb4c2d:
-    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/ddd4c4730ed4eb2439407c3c5f81f77e10eb4c2d}
+  github.com/proofofsoulprotocol/soulwalletlib/f2ad9fa358450b06808f6ed866f9b105479b3587:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/f2ad9fa358450b06808f6ed866f9b105479b3587}
     name: soul-wallet-lib
-    version: 0.0.1
+    version: 0.0.8
     dependencies:
       dotenv: 8.6.0
       ethereumjs-util: 7.1.5
