@@ -12,6 +12,7 @@ export default {
                 });
 
                 browser.runtime.onMessage.addListener(async (msg) => {
+                    console.log("got mesg", msg);
                     if (msg.target === "soul" && msg.data === requestId) {
                         resolve(msg.data);
                     }

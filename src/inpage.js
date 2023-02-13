@@ -1,7 +1,6 @@
 // @ts-nocheck
 import Bus from "./lib/Bus";
 import { JsonRpcEngine } from "json-rpc-engine";
-
 import { providerFromEngine } from "eth-json-rpc-middleware";
 import createInfuraMiddleware from "eth-json-rpc-infura";
 import createSoulMiddleware from "./provider/createSoulMiddleware";

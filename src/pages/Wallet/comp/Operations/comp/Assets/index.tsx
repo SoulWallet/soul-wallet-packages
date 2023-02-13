@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import useQuery from "@src/hooks/useQuery";
 import IconChevronRight from "@src/assets/chevron-right.svg";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";
 
 export default function Assets() {
-    const { getEthBalance, walletAddress } = useWalletContext();
+    const { walletAddress } = useWalletContext();
+    const { getEthBalance } = useQuery();
     const [balanceMapping, setBalanceMapping] = useState<any>({});
     const erc20Contract = useErc20Contract();
 
@@ -30,8 +32,8 @@ export default function Assets() {
     };
 
     useEffect(() => {
-        if(!walletAddress){
-            return
+        if (!walletAddress) {
+            return;
         }
         getBalances();
     }, [walletAddress]);
@@ -42,7 +44,7 @@ export default function Assets() {
                 <Link
                     to={`/send/${item.address}`}
                     key={item.symbol}
-                    className="flex items-center justify-between py-5 px-3 cursor-pointer hover:bg-gray-100"
+                    className="flex items-center justify-between py-5 px-6 cursor-pointer hover:bg-gray-100"
                 >
                     <div className="flex items-center gap-2">
                         <img src={item.icon} className="w-10" />

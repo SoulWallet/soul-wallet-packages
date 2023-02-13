@@ -3,6 +3,9 @@ import envConf from "./goerli";
 
 export default {
     walletName: "Soul Wallet",
+    socials: {
+        telegram: "https://t.me/+XFUHusXFdTYyODQ9",
+    },
     safeCenterURL: "https://www.soulwallets.me/security-center",
     backendURL: "https://securecenter-poc.soulwallets.me",
     zeroAddress: "0x0000000000000000000000000000000000000000",

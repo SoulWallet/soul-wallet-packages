@@ -3,16 +3,18 @@ import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-import { EIP4337Lib } from "soul-wallet-lib";
+import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
+import useTransaction from "@src/hooks/useTransaction";
 
 export default function Sign() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { walletAddress, ethersProvider, signTransaction, account } =
-        useWalletContext();
+    const { walletAddress, ethersProvider, account } = useWalletContext();
+    const { signTransaction } = useTransaction();
+    const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
 
     const signUserTx: any = async () => {
@@ -29,15 +31,13 @@ export default function Sign() {
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
-        const nonce = await EIP4337Lib.Utils.getNonce(
+        const nonce = await soulWalletLib.Utils.getNonce(
             fromAddress,
             ethersProvider,
         );
         try {
-            const operation: any =
-                await EIP4337Lib.Utils.fromTransaction(
-                    ethersProvider,
-                    config.contracts.entryPoint,
+            const operation: any = await soulWalletLib.Utils.fromTransaction(
+                [
                     {
                         data: data,
                         from: fromAddress,
@@ -45,13 +45,14 @@ export default function Sign() {
                         to,
                         value,
                     },
-                    nonce,
-                    parseInt(maxFeePerGas),
-                    parseInt(maxPriorityFeePerGas),
-                    // parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                    // parseInt(ethers.utils.parseUnits("2", 9).toString()),
-                    config.contracts.paymaster,
-                );
+                ],
+                nonce,
+                parseInt(maxFeePerGas),
+                parseInt(maxPriorityFeePerGas),
+                // parseInt(ethers.utils.parseUnits("30", 9).toString()),
+                // parseInt(ethers.utils.parseUnits("2", 9).toString()),
+                config.contracts.paymaster,
+            );
 
             if (!operation) {
                 throw new Error("Failed to format tx");

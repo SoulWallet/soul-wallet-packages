@@ -46,7 +46,7 @@ export default function PluginRouter() {
 
     return (
         // <Router>
-        <div className={cn("bg-white text-base", mode !== "web" && "artboard phone-1 flex flex-col mx-auto")}>
+        <div className={cn("bg-white text-base", mode !== "web" && "plugin-board")}>
             <Routes>
                 <Route path="/welcome" element={<Welcome />} />
                 <Route path="/wallet" element={<Wallet />} />

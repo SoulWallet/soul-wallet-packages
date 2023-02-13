@@ -7,6 +7,8 @@
 
 import browser from "webextension-polyfill";
 import { getLocalStorage } from "@src/lib/tools";
+import { UserOperation } from "soul-wallet-lib";
+import config from "./config";
 import { executeTransaction } from "@src/lib/tx";
 
 browser.runtime.onMessage.addListener(async (msg) => {
@@ -68,7 +70,15 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
         case "execute":
             const { actionName, operation, requestId, tabId } = msg.data;
-            const parsedOperation = JSON.parse(operation);
+
+            const parsedOperation = UserOperation.fromJSON(operation);
+
+            const userOpHash = parsedOperation.getUserOpHash(
+                config.contracts.entryPoint,
+                config.chainId,
+            );
+
+            console.log("after from json hash", userOpHash);
 
             await executeTransaction(
                 parsedOperation,

@@ -3,6 +3,7 @@ import Logo from "@src/components/Logo";
 import BN from "bignumber.js";
 import Button from "@src/components/Button";
 import { Link } from "react-router-dom";
+import useWallet from "@src/hooks/useWallet";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
@@ -13,8 +14,8 @@ import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
-    const { account, replaceAddress, getRecoverId, getWalletAddressByEmail, recoverWallet, deleteWallet } =
-        useWalletContext();
+    const { account, replaceAddress } = useWalletContext();
+    const { recoverWallet, deleteWallet, getRecoverId } = useWallet();
     const [progress, setProgress] = useState<number>();
     const navigate = useNavigate();
     const [cachedEmail, setCachedEmail] = useState<string>("");
@@ -32,8 +33,8 @@ export function RecoverWallet() {
     const onReceiveCode = async (email: string, code: string) => {
         const new_key = newOwnerAddress || (await getLocalStorage("stagingAccount"));
 
-        // get wallet address by email
-        const walletAddress = await getWalletAddressByEmail(email);
+        // todo, get by calculating
+        const walletAddress = "0x000";
 
         const { requestId }: any = await getRecoverId(new_key, walletAddress);
 

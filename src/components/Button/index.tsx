@@ -30,7 +30,7 @@ export default function Button({ className, onClick, children, loading, disable,
         <a
             onClick={doClick}
             className={cn(
-                "btn w-full flex gap-2",
+                "btn w-full flex gap-2 font-bold text-xl py-3 leading-none",
                 className,
                 loading && "opacity-70  cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
