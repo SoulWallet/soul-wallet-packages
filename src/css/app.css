@@ -73,6 +73,10 @@
         box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.04);
     }
 
+    .dapp-item-shadow {
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
     .h-full-with-sidebar {
         height: calc(100% - 80px);
     }

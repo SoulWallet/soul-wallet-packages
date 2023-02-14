@@ -65,6 +65,7 @@ export default function Activities() {
                 <a
                     href={`${config.scanUrl}/tx/${item.txHash}`}
                     target="_blank"
+                    key={item.txhash}
                     className="flex flex-col py-3 px-6 cursor-pointer text-base hover:bg-gray-100"
                 >
                     <div className="flex items-center justify-between">
