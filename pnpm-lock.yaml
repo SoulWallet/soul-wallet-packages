@@ -67,7 +67,7 @@ specifiers:
   react-jazzicon: ^1.0.4
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
-   shortid: ^2.2.16
+  shortid: ^2.2.16
   soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.0.9
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
@@ -114,8 +114,9 @@ dependencies:
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
-  react-router-dom: 6.8.0_sfoxds7t5ydpegc3knd667wn6m
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/1bee435f6166088cdd04b064ba2e3451e40802ea
+  react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
+  shortid: 2.2.16
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/ff955a0399561835f77b07fe5635b59f7784975e
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -159,7 +160,7 @@ devDependencies:
   prettier: 2.8.4
   react-test-renderer: 17.0.2_react@17.0.2
   style-loader: 3.3.1_webpack@5.75.0
-  tailwindcss: 3.2.4
+  tailwindcss: 3.2.6
   ts-jest: 26.5.6_xuote2qreek47x2di7kesslrai
   ts-loader: 8.4.0_hhrrucqyg4eysmfpujvov2ym5u
   typescript: 4.9.5
@@ -7099,8 +7100,8 @@ packages:
       color: 4.2.3
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.21
-      postcss-js: 4.0.0_postcss@8.4.21
-      tailwindcss: 3.2.4
+      postcss-js: 4.0.1_postcss@8.4.21
+      tailwindcss: 3.2.6
     transitivePeerDependencies:
       - ts-node
     dev: false
@@ -14326,12 +14327,10 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
-  /tailwindcss/3.2.4:
-    resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
+  /tailwindcss/3.2.6:
+    resolution: {integrity: sha512-BfgQWZrtqowOQMC2bwaSNe7xcIjdDEgixWGYOd6AL0CbKHJlvhfdbINeAW76l1sO+1ov/MJ93ODJ9yluRituIw==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -14883,7 +14882,6 @@ packages:
   /unified/9.2.0:
     resolution: {integrity: sha512-vx2Z0vY+a3YoTj8+pttM3tiJHCwY5UFbYdiWrwBEbHmK8pvsPj2rtAX2BFfgXen8T39CJWblWRDT4L5WGXtDdg==}
     dependencies:
-      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5

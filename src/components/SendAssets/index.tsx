@@ -153,17 +153,17 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
             {step === 0 && (
                 <div className="absolute bottom-12 left-0 right-0 text-center px-6">
-                    <Button classNames="btn-blue" onClick={confirmAddress}>
+                    <Button className="btn-blue" onClick={confirmAddress}>
                         Confirm
                     </Button>
                 </div>
             )}
             {step === 1 && (
                 <div className="flex gap-4 px-6 py-4 footer-shadow fixed bottom-0 left-0 right-0 bg-white">
-                    <Button classNames="btn-red flex-1 w-full" onClick={goBack}>
+                    <Button className="btn-red flex-1 w-full" onClick={goBack}>
                         Reject
                     </Button>
-                    <Button classNames="btn-blue flex-1 w-full" onClick={() => doSend()} loading={sending}>
+                    <Button className="btn-blue flex-1 w-full" onClick={() => doSend()} loading={sending}>
                         Confirm
                     </Button>
                 </div>
