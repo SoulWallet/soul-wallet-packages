@@ -1,4 +1,4 @@
-import { SoulWalletLib, IUserOpReceipt } from "soul-wallet-lib";
+import { SoulWalletLib, IUserOpReceipt, IResult } from "soul-wallet-lib";
 import { ethers } from "ethers";
 // import ky from "ky";
 import browser from "webextension-polyfill";
@@ -30,15 +30,17 @@ export const executeTransaction = async (
     return new Promise(async (resolve, reject) => {
         try {
             console.log("before simulate", operation);
-            const simulateResult = await bundler.simulateValidation(operation);
+            const simulateResult: any = await bundler.simulateValidation(
+                operation,
+            );
 
             // IMPORTANT TODO, catch errors and return
             console.log(`SimulateValidation:`, simulateResult);
 
             // failed to simulate
-            // if (simulateResult.status) {
-            //     throw Error(simulateResult?.result.reason);
-            // }
+            if (simulateResult.status && simulateResult.result) {
+                throw Error(simulateResult.result.reason);
+            }
 
             const bundlerEvent = bundler.sendUserOperation(
                 operation,
@@ -50,22 +52,34 @@ export const executeTransaction = async (
             bundlerEvent.on("send", (userOpHash: string) => {
                 console.log("send: " + userOpHash);
             });
-            bundlerEvent.on("receipt", (receipt: IUserOpReceipt) => {
-                console.log("receipt: " + receipt);
+            bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
+                console.log("receipt: ", receipt);
+                const txHash: string = receipt.receipt.transactionHash;
+
+                browser.tabs.sendMessage(Number(tabId), {
+                    target: "soul",
+                    type: "response",
+                    action: "signTransaction",
+                    data: txHash,
+                    tabId,
+                });
+
+                await saveActivityHistory({
+                    actionName,
+                    txHash,
+                });
+
+                // TODO, what if fail, add error hint
+                notify(
+                    "Trsanction success",
+                    "Your transaction was confirmed on chain",
+                );
+
+                resolve(receipt.receipt);
             });
             bundlerEvent.on("timeout", () => {
                 console.log("timeout");
             });
-            // create raw_data for bundler api
-            // const raw_data = soulWalletLib.RPC.eth_sendUserOperation(
-            //     operation,
-            //     config.contracts.entryPoint,
-            // );
-            // send to bundler
-
-            // const res: any = await ky
-            //     .post(config.bundlerUrl, { json: JSON.parse(raw_data) })
-            //     .json();
 
             // // sent to bundler
             // if (res.result && res.result === requestId) {

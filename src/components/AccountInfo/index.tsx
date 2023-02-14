@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AddressIcon from "../AddressIcon";
+import IconETH from "@src/assets/tokens/eth.svg";
 import useWallet from "@src/hooks/useWallet";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
@@ -64,16 +65,25 @@ export default function AccountInfo({ account, action }: IProps) {
                 <AddressIcon width={48} address={account} />
             </div>
 
-            {action === "activate" && walletType === "eoa" && (
-                <div className="px-6 py-4 w-full">
-                    <Button
-                        classNames="btn-blue w-full"
-                        onClick={doActivate}
-                        loading={loading}
-                    >
-                        Activate wallet
-                    </Button>
-                </div>
+            {action === "activate" && (
+                <>
+                    {walletType === "eoa" ? (
+                        <div className="px-6 py-4 w-full">
+                            <Button
+                                classNames="btn-blue w-full"
+                                onClick={doActivate}
+                                loading={loading}
+                            >
+                                Activate wallet
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="px-6 py-3 h-[80px] flex flex-col gap-1 items-center justify-center w-full">
+                            <img src={IconETH} className="w-7 h-7" />
+                            <div className="text-lg font-bold">100 ETH</div>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

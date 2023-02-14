@@ -13,11 +13,11 @@ export const assetsList = [
         symbol: "ETH",
         address: "0x0000000000000000000000000000000000000000",
     },
-    {
-        icon: IconWETH,
-        symbol: "WETH",
-        address: wethAddress,
-    },
+    // {
+    //     icon: IconWETH,
+    //     symbol: "WETH",
+    //     address: wethAddress,
+    // },
 ];
 
 export default {
