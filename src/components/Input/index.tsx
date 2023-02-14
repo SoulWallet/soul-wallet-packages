@@ -15,7 +15,6 @@ export function Input({
     verified,
     label,
     ExtraButton,
-    inputType,
     labelColor,
     onEnter,
     onChange,
