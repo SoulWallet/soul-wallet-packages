@@ -24,8 +24,17 @@ export default function useQuery() {
         return gasMultiplied;
     };
 
+    const getWalletType = async (address: string) => {
+        if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
+            throw Error("Not a valid address");
+        }
+        const contractCode = await web3.eth.getCode(address);
+        return contractCode !== "0x" ? "contract" : "eoa";
+    };
+
     return {
         getEthBalance,
         getGasPrice,
+        getWalletType,
     };
 }
