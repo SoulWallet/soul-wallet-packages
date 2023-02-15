@@ -13,6 +13,7 @@ import {
 } from "@src/lib/tools";
 import useQuery from "./useQuery";
 import { guardianList } from "@src/config/mock";
+import { Json } from "json-rpc-engine";
 
 export default function useGuardian() {
     const { walletAddress, executeOperation, ethersProvider } =
@@ -44,7 +45,7 @@ export default function useGuardian() {
             throw new Error("setGuardianOp is null");
         }
 
-        await executeOperation(setGuardianOp, actionName);
+        await executeOperation(setGuardianOp, actionName); // do not need different actions?
     };
 
     const loadLocalGuardian = async (walletAddress: string) => {
@@ -68,14 +69,16 @@ export default function useGuardian() {
         // todo coding
         return localGuardianConfig;
     };
-    const saveLocalGuardian = async (fileObj: File) => {
-        const localJson = JSON.parse(File);
-        await setLocalStorage("localGuardianConfig", localJson);
-        // to be discuss, store json str or obj kv?
+    const saveLocalGuardian = async (jsonObj: Json) => {
+        const localGuardianConfig = JSON.stringify(jsonObj);
+        const configArray = [localGuardianConfig];
+        await removeLocalStorage("localGuardianConfig");
+        await setLocalStorage("localGuardianConfig", configArray);
         return true;
     };
 
     return {
         updateGuardian,
+        saveLocalGuardian,
     };
 }
