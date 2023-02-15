@@ -27,7 +27,7 @@ export default function AccountSettingModal({
     };
 
     return (
-        <Modal className="top-[150px] right-6 w-64">
+        <Modal className="top-[150px] right-6 w-64" onCancel={onCancel}>
             <ModalNavBar />
             {currentModalIndex === 0 && (
                 <SettingLinks onChange={setCurrentModalIndex} />

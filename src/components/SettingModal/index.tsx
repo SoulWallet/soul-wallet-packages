@@ -43,7 +43,7 @@ export default function SettingModal({ onCancel }: ISettingModal) {
     };
 
     return (
-        <Modal className=" top-0 left-0 right-0">
+        <Modal className=" top-0 left-0 right-0" onCancel={onCancel}>
             <ModalNavBar />
             {currentModalIndex === 0 && (
                 <SettingLinks onChange={setCurrentModalIndex} />
