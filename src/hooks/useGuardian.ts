@@ -22,7 +22,7 @@ export default function useGuardian() {
     const { walletAddress, executeOperation, ethersProvider } =
         useWalletContext();
     const { getGasPrice } = useQuery();
-    const { getGuardianInitCode } = useTools();
+    const { getGuardianInitCode, verifyAddressFormat } = useTools();
 
     const updateGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
@@ -66,8 +66,8 @@ export default function useGuardian() {
 
     const _checkGuardianConfig = async (guardianListObjArray: Array<Json>) => {
         // const localGuardianConfig = getLocalStorage("localGuardianConfig");
-        guardianListObjArray.forEach(element => {
-            if (!checkAddress(element["wallet_address"])) {
+        guardianListObjArray.forEach((element) => {
+            if (!verifyAddressFormat(element.wallet_address)) {
                 return false;
             }
         });
