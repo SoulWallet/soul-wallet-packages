@@ -5,17 +5,20 @@ import Button from "@src/components/Button";
 
 interface IResetPassword {
     onChange: (index: number) => void;
+    onCancel: () => void;
 }
 
-export default function ResetPassword({ onChange }: IResetPassword) {
+export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
     const [originalPassword, setOriginalPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const doReset = () => {
+    const doConfirm = () => {
         if (newPassword !== confirmPassword) {
             console.log("not match");
         }
+        onChange(0);
+        onCancel();
     };
 
     return (
@@ -57,7 +60,7 @@ export default function ResetPassword({ onChange }: IResetPassword) {
                     error=""
                 />
 
-                <Button onClick={doReset} classNames="btn-blue">
+                <Button onClick={doConfirm} classNames="btn-blue mt-1">
                     Confirm
                 </Button>
             </div>

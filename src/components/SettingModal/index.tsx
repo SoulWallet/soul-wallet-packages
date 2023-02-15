@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import useKeystore from "@src/hooks/useKeystore";
 import IconClose from "@src/assets/icons/close.svg";
 import { ISettingModal } from "@src/types/IModal";
-import config from "@src/config";
-import ResetPassword from "./comp/ResetPassword";
 import SettingLinks from "./comp/SettingLinks";
+import ResetPassword from "./comp/ResetPassword";
+import BundlerUrl from "./comp/BundlerUrl";
 
 export default function SettingModal({ onCancel }: ISettingModal) {
     const navigate = useNavigate();
@@ -25,10 +25,12 @@ export default function SettingModal({ onCancel }: ISettingModal) {
 
     const ModalNavBar = () => {
         return (
-            <div className="flex items-center justify-between px-6 py-5 border-b border-color w-full">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-color w-full">
                 <div className="font-bold text-black text-lg">Setting</div>
                 <div className="flex items-center gap-2">
-                    <a onClick={doLockWallet}>Lock</a>
+                    <a onClick={doLockWallet} className="btn-trans">
+                        Lock
+                    </a>
                     <img
                         src={IconClose}
                         className="w-6 h-6 cursor-pointer"
@@ -53,7 +55,16 @@ export default function SettingModal({ onCancel }: ISettingModal) {
                     <SettingLinks onChange={setCurrentModalIndex} />
                 )}
                 {currentModalIndex === 1 && (
-                    <ResetPassword onChange={setCurrentModalIndex} />
+                    <ResetPassword
+                        onCancel={onCancel}
+                        onChange={setCurrentModalIndex}
+                    />
+                )}
+                {currentModalIndex === 2 && (
+                    <BundlerUrl
+                        onCancel={onCancel}
+                        onChange={setCurrentModalIndex}
+                    />
                 )}
             </div>
         </div>

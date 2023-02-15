@@ -29,6 +29,14 @@
         @apply bg-blue brightness-90;
     }
 
+    .btn-trans {
+        @apply border border-blue text-blue rounded-3xl text-base font-bold py-1 px-4 cursor-pointer transition-all;
+    }
+
+    .btn-trans:hover {
+        @apply bg-blue text-white;
+    }
+
     .btn-red {
         @apply text-white bg-redLight border-0;
     }
