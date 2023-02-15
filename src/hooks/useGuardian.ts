@@ -14,6 +14,7 @@ import {
 import useQuery from "./useQuery";
 import { guardianList } from "@src/config/mock";
 import { Json } from "json-rpc-engine";
+import { each, range } from "lodash";
 
 export default function useGuardian() {
     const { walletAddress, executeOperation, ethersProvider } =
@@ -48,32 +49,34 @@ export default function useGuardian() {
         await executeOperation(setGuardianOp, actionName); // do not need different actions?
     };
 
-    const loadLocalGuardian = async (walletAddress: string) => {
+    const loadLocalGuardian = async () => {
         const localGuardianConfig =
-            (await getLocalStorage("localGuardianConfig")) || {};
+            (await getLocalStorage("localGuardianConfig-" + walletAddress)) ||
+            {};
         console.log(loadLocalGuardian);
-        return localGuardianConfig;
+        return JSON.parse(localGuardianConfig); //push? delete?
     };
-    const loadFileGuardian = async (fileObj: File) => {
-        const localGuardianConfig = null;
-        // todo coding
-        return localGuardianConfig;
+    // const loadFileGuardian = async (guardianListObjArray: Json) => {
+    //     const localGuardianConfig = null;
+    //     // todo coding
+    //     return localGuardianConfig;
+    // };
+
+    const _checkGuardianConfig = async (guardianListObjArray: Array<Json>) => {
+        // const localGuardianConfig = getLocalStorage("localGuardianConfig");
+        guardianListObjArray.forEach(element => {
+            if (!checkAddress(element["wallet_address"])) {
+                return false;
+            }
+        });
+        return true;
     };
-    const setGuardianConfig = async (fileObj: File) => {
-        const localGuardianConfig = null;
-        // todo coding
-        return localGuardianConfig;
-    };
-    const _checkGuardianConfig = async (fileObj: File) => {
-        const localGuardianConfig = null;
-        // todo coding
-        return localGuardianConfig;
-    };
-    const saveLocalGuardian = async (jsonObj: Json) => {
-        const localGuardianConfig = JSON.stringify(jsonObj);
-        const configArray = [localGuardianConfig];
-        await removeLocalStorage("localGuardianConfig");
-        await setLocalStorage("localGuardianConfig", configArray);
+    const saveLocalGuardian = async (guardianListObjArray: Array<Json>) => {
+        // const localGuardianConfig = JSON.stringify(jsonObj);
+        _checkGuardianConfig(guardianListObjArray);
+        const guardianListStringArray = JSON.stringify(guardianListObjArray);
+        await removeLocalStorage("localGuardianConfig-" + walletAddress); // to be discuss
+        await setLocalStorage("localGuardianConfig-", guardianListStringArray);
         return true;
     };
 
