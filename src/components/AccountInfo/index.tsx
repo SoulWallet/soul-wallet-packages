@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import AccountSettingModal from "../AccountSettingModal";
 import AddressIcon from "../AddressIcon";
+import cn from "classnames";
 import useWallet from "@src/hooks/useWallet";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
@@ -16,6 +18,8 @@ interface IProps {
 export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [accountSettingModalVisible, setAccountSettingModalVisible] =
+        useState<boolean>(false);
     const { walletType, getWalletType } = useWalletContext();
     const { activateWalletETH } = useWallet();
 
@@ -61,7 +65,19 @@ export default function AccountInfo({ account, action }: IProps) {
                     </div>
                 </div>
 
-                <AddressIcon width={48} address={account} />
+                <a
+                    className={cn(
+                        "cursor-pointer border-4 flex",
+                        accountSettingModalVisible
+                            ? "z-[100] rounded-full relative border-blue"
+                            : "border-transparent",
+                    )}
+                    onClick={() =>
+                        setAccountSettingModalVisible((prev) => !prev)
+                    }
+                >
+                    <AddressIcon width={48} address={account} />
+                </a>
             </div>
 
             {action === "activate" && walletType === "eoa" && (
@@ -74,6 +90,12 @@ export default function AccountInfo({ account, action }: IProps) {
                         Activate wallet
                     </Button>
                 </div>
+            )}
+
+            {accountSettingModalVisible && (
+                <AccountSettingModal
+                    onCancel={() => setAccountSettingModalVisible(false)}
+                />
             )}
         </div>
     );
