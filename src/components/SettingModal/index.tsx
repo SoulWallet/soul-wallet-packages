@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import useKeystore from "@src/hooks/useKeystore";
 import IconClose from "@src/assets/icons/close.svg";
 import { ISettingModal } from "@src/types/IModal";
+import Modal from "../Modal";
 import SettingLinks from "./comp/SettingLinks";
 import ResetPassword from "./comp/ResetPassword";
 import BundlerUrl from "./comp/BundlerUrl";
@@ -42,31 +43,23 @@ export default function SettingModal({ onCancel }: ISettingModal) {
     };
 
     return (
-        <div
-            className="bg-[rgba(0, 0, 0, .6)] backdrop-blur-[5px] absolute top-0 left-0 right-0 bottom-0 z-30"
-            onClick={onCancel}
-        >
-            <div
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white navbar-shadow rounded-b-2xl absolute top-0 left-0 right-0"
-            >
-                <ModalNavBar />
-                {currentModalIndex === 0 && (
-                    <SettingLinks onChange={setCurrentModalIndex} />
-                )}
-                {currentModalIndex === 1 && (
-                    <ResetPassword
-                        onCancel={onCancel}
-                        onChange={setCurrentModalIndex}
-                    />
-                )}
-                {currentModalIndex === 2 && (
-                    <BundlerUrl
-                        onCancel={onCancel}
-                        onChange={setCurrentModalIndex}
-                    />
-                )}
-            </div>
-        </div>
+        <Modal className=" top-0 left-0 right-0">
+            <ModalNavBar />
+            {currentModalIndex === 0 && (
+                <SettingLinks onChange={setCurrentModalIndex} />
+            )}
+            {currentModalIndex === 1 && (
+                <ResetPassword
+                    onCancel={onCancel}
+                    onChange={setCurrentModalIndex}
+                />
+            )}
+            {currentModalIndex === 2 && (
+                <BundlerUrl
+                    onCancel={onCancel}
+                    onChange={setCurrentModalIndex}
+                />
+            )}
+        </Modal>
     );
 }

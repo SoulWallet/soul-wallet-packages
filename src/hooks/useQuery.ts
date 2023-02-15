@@ -4,10 +4,12 @@
 
 import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
+import useTools from "./useTools";
 import config from "@src/config";
 
 export default function useQuery() {
     const { executeOperation, walletAddress, web3 } = useWalletContext();
+    const { verifyAddressFormat } = useTools();
 
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
@@ -25,8 +27,8 @@ export default function useQuery() {
     };
 
     const getWalletType = async (address: string) => {
-        if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
-            throw Error("Not a valid address");
+        if (!verifyAddressFormat(address)) {
+            return "";
         }
         const contractCode = await web3.eth.getCode(address);
         return contractCode !== "0x" ? "contract" : "eoa";

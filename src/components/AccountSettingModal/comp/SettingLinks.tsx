@@ -1,4 +1,6 @@
 import React from "react";
+import Switch from "@src/components/Switch";
+import cn from "classnames";
 import config from "@src/config";
 
 interface ISettingLinks {
@@ -22,6 +24,15 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
                 className={linksStyle}
             >
                 Download guardian list
+            </a>
+            <a className={cn(linksStyle, "flex justify-between items-center")}>
+                <div>
+                    <div>Approve Paymaster</div>
+                    <div className="text-sm text-gray60 mt-1">
+                        Use USD to pay for gas
+                    </div>
+                </div>
+                <Switch checked={true} onChange={() => {}} />
             </a>
             <a target="_blank" className={linksStyle}>
                 view on explorer

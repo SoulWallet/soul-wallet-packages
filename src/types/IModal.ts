@@ -5,3 +5,11 @@ export interface IModalProps {
 export interface ISettingModal {
     onCancel: () => void;
 }
+
+export interface IAccountSettingModal {
+    onCancel: () => void;
+}
+
+export interface ITokenSelectModal {
+    onCancel: () => void;
+}
