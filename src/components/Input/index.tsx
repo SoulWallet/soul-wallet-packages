@@ -1,30 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import IconChecked from "@src/assets/checked.svg";
+import IconEyeOpen from "@src/assets/icons/eye-open.svg";
+import IconEyeCLose from "@src/assets/icons/eye-close.svg";
 import cn from "classnames";
-
-interface InputProps {
-    label?: string;
-    type?: string;
-    placeholder?: string;
-    verified?: boolean;
-    value: string;
-    error: string;
-    ExtraButton?: React.ReactNode;
-    onEnter?: () => void;
-    onChange: (value: string) => void;
-}
+import { IInputProps } from "@src/types/IInput";
 
 export function Input({
     value,
     error,
     placeholder,
+    className,
+    memo,
     type = "text",
     verified,
     label,
     ExtraButton,
+    labelColor,
     onEnter,
     onChange,
-}: InputProps) {
+}: IInputProps) {
+    const [eyeOpen, setEyeOpen] = useState(false);
+
     const onKeyDown = (e: any) => {
         const { keyCode } = e;
         if (keyCode === 13 && onEnter) {
@@ -36,20 +32,31 @@ export function Input({
         <div>
             {label && (
                 <label className="label">
-                    <span className="label-text">{label}</span>
+                    <span
+                        className={cn(
+                            "label-text text-base leading-none",
+                            labelColor || "text-gray60",
+                        )}
+                    >
+                        {label}
+                    </span>
                 </label>
             )}
 
             <div className="relative">
                 <input
-                    type={type}
+                    type={type === "password" && eyeOpen ? "text" : type}
                     value={value}
                     onChange={(e) => {
                         onChange(e.target.value);
                     }}
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
-                    className={cn("input w-full", error && "input-error")}
+                    className={cn(
+                        "input w-full",
+                        error && "input-error",
+                        className,
+                    )}
                 />
                 {verified && (
                     <img
@@ -59,13 +66,28 @@ export function Input({
                 )}
                 <div className="absolute right-4 flex items-center top-0 bottom-0">
                     {ExtraButton}
-                    {/* <ExtraButton /> */}
                 </div>
+
+                {type === "password" && (
+                    <img
+                        src={eyeOpen ? IconEyeOpen : IconEyeCLose}
+                        onClick={() => setEyeOpen((prev) => !prev)}
+                        className="absolute right-4 top-0 bottom-0 my-auto cursor-pointer"
+                    />
+                )}
             </div>
+
+            {!error && memo && (
+                <label className="label">
+                    <span className="label-text-alt text-sm">{memo}</span>
+                </label>
+            )}
 
             {error && (
                 <label className="label">
-                    <span className="label-text-alt text-red-500">{error}</span>
+                    <span className="label-text-alt text-sm text-red-500">
+                        {error}
+                    </span>
                 </label>
             )}
         </div>

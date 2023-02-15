@@ -8,11 +8,7 @@ export function CreateWallet() {
     const [step, setStep] = useState<number>(0);
     const { getAccount } = useWalletContext();
 
-    const onCreatedWalletAddress: any = async (
-        address: string,
-        eoaAddress: string,
-    ) => {
-        console.log("created ", address, eoaAddress);
+    const onCreatedWalletAddress: any = async () => {
         await getAccount();
         setStep(1);
     };

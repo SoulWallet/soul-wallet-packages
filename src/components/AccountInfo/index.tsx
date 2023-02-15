@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import AccountSettingModal from "../AccountSettingModal";
 import AddressIcon from "../AddressIcon";
+import cn from "classnames";
 import useWallet from "@src/hooks/useWallet";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
@@ -16,8 +18,10 @@ interface IProps {
 export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [accountSettingModalVisible, setAccountSettingModalVisible] =
+        useState<boolean>(false);
     const { walletType, getWalletType } = useWalletContext();
-    const { activateWallet } = useWallet();
+    const { activateWalletETH } = useWallet();
 
     const doCopy = () => {
         copyText(account);
@@ -27,7 +31,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const doActivate = async () => {
         setLoading(true);
         try {
-            await activateWallet();
+            await activateWalletETH();
             // TODO, listen to activated wallet event, then call the following
             getWalletType();
             toast.success("Account activated");
@@ -40,39 +44,58 @@ export default function AccountInfo({ account, action }: IProps) {
     };
 
     return (
-        <div className="p-4 pt-0 text-center flex flex-col items-center justify-between">
-            {account ? (
-                <AddressIcon width={64} address={account} />
-            ) : (
-                <div className="w-[64px] h-[64px] block bg-white" />
-            )}
-
-            <div className="text-lg mt-1 mb-2">Soul Wallet</div>
-
-            {account ? (
-                <div
-                    className="gap-2 flex items-center cursor-pointer tooltip"
-                    data-tip={copied ? "Copied" : "Click to copy"}
-                    onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
-                    onClick={doCopy}
-                >
-                    <img src={IconCopy} className="w-4 opacity-50" />
-                    <span className="opacity-50 text-base text-black">
-                        {account.slice(0, 4)}...{account.slice(-4)}
-                    </span>
+        <div className="flex flex-col items-center justify-between">
+            <div className="flex items-center justify-between pt-[18px] pb-5 px-6 w-full border-b border-color">
+                <div>
+                    <div className="text-black font-bold text-lg mb-2 text-left">
+                        Account 1
+                    </div>
+                    <div
+                        className="gap-2 flex items-center cursor-pointer tooltip address"
+                        data-tip={copied ? "Copied" : "Click to copy"}
+                        onMouseLeave={() =>
+                            setTimeout(() => setCopied(false), 400)
+                        }
+                        onClick={doCopy}
+                    >
+                        <img src={IconCopy} className="w-4" />
+                        <span className="opacity-50 text-base text-black">
+                            {account.slice(0, 4)}...{account.slice(-4)}
+                        </span>
+                    </div>
                 </div>
-            ) : (
-                <div className="h-6"></div>
-            )}
+
+                <a
+                    className={cn(
+                        "cursor-pointer border-4 flex",
+                        accountSettingModalVisible
+                            ? "z-[100] rounded-full relative border-blue"
+                            : "border-transparent",
+                    )}
+                    onClick={() =>
+                        setAccountSettingModalVisible((prev) => !prev)
+                    }
+                >
+                    <AddressIcon width={48} address={account} />
+                </a>
+            </div>
 
             {action === "activate" && walletType === "eoa" && (
-                <Button
-                    classNames="btn-blue mb-4 mt-6"
-                    onClick={doActivate}
-                    loading={loading}
-                >
-                    Activate wallet
-                </Button>
+                <div className="px-6 py-4 w-full">
+                    <Button
+                        classNames="btn-blue w-full"
+                        onClick={doActivate}
+                        loading={loading}
+                    >
+                        Activate wallet
+                    </Button>
+                </div>
+            )}
+
+            {accountSettingModalVisible && (
+                <AccountSettingModal
+                    onCancel={() => setAccountSettingModalVisible(false)}
+                />
             )}
         </div>
     );

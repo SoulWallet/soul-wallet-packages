@@ -3,17 +3,22 @@
  */
 
 import useWalletContext from "../context/hooks/useWalletContext";
-import { EIP4337Lib } from "soul-wallet-lib";
+import { EntryPointAbi } from "../abi";
+import useLib from "./useLib";
 import BN from "bignumber.js";
+import ky from "ky";
+import browser from "webextension-polyfill";
 import useQuery from "./useQuery";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
+import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
 
 export default function useTransaction() {
     const { executeOperation, walletAddress, ethersProvider } =
         useWalletContext();
     const { getGasPrice } = useQuery();
     const keyStore = useKeystore();
+    const { soulWalletLib, bundler } = useLib();
 
     const signTransaction = async (txData: any) => {
         return await keyStore.sign(txData);
@@ -23,11 +28,11 @@ export default function useTransaction() {
         const actionName = "Send ETH";
         const currentFee = await getGasPrice();
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await EIP4337Lib.Utils.getNonce(
+        const nonce = await soulWalletLib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
-        const op = await EIP4337Lib.Tokens.ETH.transfer(
+        const op = await soulWalletLib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
             nonce,
@@ -50,11 +55,11 @@ export default function useTransaction() {
         const actionName = "Send Assets";
         const currentFee = await getGasPrice();
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await EIP4337Lib.Utils.getNonce(
+        const nonce = await soulWalletLib.Utils.getNonce(
             walletAddress,
             ethersProvider,
         );
-        const op = await EIP4337Lib.Tokens.ERC20.transfer(
+        const op = await soulWalletLib.Tokens.ERC20.transfer(
             ethersProvider,
             walletAddress,
             nonce,
@@ -70,9 +75,17 @@ export default function useTransaction() {
         await executeOperation(op, actionName);
     };
 
+    const saveActivityHistory = async (history: any) => {
+        let prev = (await getLocalStorage("activityHistory")) || [];
+        prev.unshift(history);
+        await setLocalStorage("activityHistory", prev);
+    };
+
     return {
         signTransaction,
         sendErc20,
         sendEth,
+        executeOperation,
+        saveActivityHistory,
     };
 }

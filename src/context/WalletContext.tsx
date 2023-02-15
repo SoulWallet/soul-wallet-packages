@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
-import { EIP4337Lib } from "soul-wallet-lib";
+import { SoulWalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
@@ -77,24 +77,23 @@ export const WalletContextProvider = ({ children }: any) => {
             }
         }
 
-        const requestId = operation.getUserOpHash(
+        const userOpHash = operation.getUserOpHash(
             config.contracts.entryPoint,
             config.chainId,
         );
 
-        const signature = await keyStore.sign(requestId);
+        const signature = await keyStore.sign(userOpHash);
+
+        console.log("user signing op hash", userOpHash);
 
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
-            // TODO, should wait for complete
             await Runtime.send("execute", {
                 actionName,
-                operation: JSON.stringify(operation),
-                requestId,
+                operation: operation.toJSON(),
+                requestId: userOpHash,
             });
-
-            return;
         }
     };
 

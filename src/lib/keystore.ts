@@ -8,6 +8,9 @@
  */
 
 import { ethers } from "ethers";
+import Web3 from "web3";
+
+const web3 = new Web3();
 // import * as ethUtil from 'ethereumjs-util';
 
 import {
@@ -20,13 +23,11 @@ import {
     clearLocalStorage,
 } from "@src/lib/tools";
 
-
 export default class KeyStore {
     private static instance: KeyStore;
     private _privateKey: string | null = null;
 
-    private constructor() {
-    }
+    private constructor() {}
 
     public static getInstance() {
         if (!KeyStore.instance) {
@@ -61,10 +62,14 @@ export default class KeyStore {
         saveKey: boolean,
     ): Promise<string> {
         try {
-            const account = ethers.Wallet.createRandom();
-            const KeystoreV3 = await account.encrypt(password);
+            // TODO, ethers is much slower
+            // const account = ethers.Wallet.createRandom();
+            const account = web3.eth.accounts.create();
+
+            const KeystoreV3 = account.encrypt(password);
+
             if (saveKey) {
-                await setLocalStorage(this.keyStoreKey, JSON.parse(KeystoreV3));
+                await setLocalStorage(this.keyStoreKey, KeystoreV3);
                 await setSessionStorage("pw", password);
             } else {
                 await setLocalStorage("stagingAccount", account.address);
@@ -80,7 +85,9 @@ export default class KeyStore {
     public async replaceAddress(): Promise<void> {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
-        const guardianNameMapping = await getLocalStorage('guardianNameMapping')
+        const guardianNameMapping = await getLocalStorage(
+            "guardianNameMapping",
+        );
         await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
         await setLocalStorage("guardianNameMapping", guardianNameMapping);
@@ -91,7 +98,8 @@ export default class KeyStore {
         if (await this.getAddress()) {
             const val = await getLocalStorage(this.keyStoreKey);
             if (val && val.address && val.crypto) {
-                const account = await ethers.Wallet.fromEncryptedJson(JSON.stringify(val), password);
+                const account = await web3.eth.accounts.decrypt(val, password);
+
                 this._privateKey = account.privateKey;
                 // console.log('pk', this._privateKey)
                 await setSessionStorage("pw", password);
@@ -135,9 +143,9 @@ export default class KeyStore {
         );
     }
 
-    public async getSigner(provider: any){
-        if(!this._privateKey){
-            return
+    public async getSigner(provider: any) {
+        if (!this._privateKey) {
+            return;
         }
         const signer = new ethers.Wallet(this._privateKey);
         return signer.connect(provider);
@@ -158,7 +166,7 @@ export default class KeyStore {
         // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
         // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
         const signer = new ethers.Wallet(this._privateKey);
+
         return await signer.signMessage(ethers.utils.arrayify(message));
     }
 }
-
