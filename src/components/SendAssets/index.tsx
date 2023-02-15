@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import config from "@src/config";
+import IconClose from "@src/assets/icons/close.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import useTransaction from "@src/hooks/useTransaction";
 import useQuery from "@src/hooks/useQuery";
 import { useNavigate } from "react-router-dom";
+import cn from "classnames";
 import { Input } from "../Input";
+import { TokenSelect } from "../TokenSelect";
+import { ICostItem } from "@src/types/IAssets";
 import { toast } from "material-react-toastify";
 
 interface ErrorProps {
     receiverAddress: string;
     amount: string;
-}
-
-interface InfoItemProps {
-    title: string;
-    value: string;
-}
-
-interface ConfirmItemProps {
-    label: string;
-    title: string;
-    value?: string;
-    icon?: string;
 }
 
 const defaultErrorValues = {
@@ -93,125 +85,122 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
         setBalance(res);
     };
 
+    const goBack = () => {
+        navigate("/wallet");
+    };
+
     useEffect(() => {
         getBalance();
     }, []);
 
-    const ConfirmItem = ({ label, title, value, icon }: ConfirmItemProps) => {
+    const CostItem = ({ label, value, memo }: ICostItem) => {
         return (
-            <div className="bg-gray40 py-4 px-6">
-                <div className=" opacity-80 mb-2">{label}</div>
-                <div className="flex items-center gap-1">
-                    {icon && <img src={icon} className="w-11 h-11" />}
-                    <div className="flex flex-col">
-                        <div className="font-bold text-lg break-all">
-                            {title}
-                        </div>
-                        {value && <div>{value}</div>}
+            <div>
+                <div className="text-gray60">{label}</div>
+                {value && (
+                    <div className="text-black text-lg font-bold mt-2">
+                        {value}
                     </div>
-                </div>
-            </div>
-        );
-    };
-
-    const InfoItem = ({ title, value }: InfoItemProps) => {
-        return (
-            <div className="flex w-full gap-3">
-                <div className="text-sm opacity-80 w-20 shrink-0">{title}</div>
-                <div className="text-base opacity-60 break-all max-w-xs text-left">
-                    {value}
-                </div>
+                )}
+                {memo && <div className="text-black text-sm mt-2">{memo}</div>}
             </div>
         );
     };
 
     return (
-        <div className="flex flex-col justify-between h-full-with-sidebar">
+        <div
+            className={cn(
+                "flex flex-col justify-between",
+                step === 1 && "pb-[100px]",
+            )}
+        >
             <div>
+                <div
+                    className={cn(
+                        "p-6 flex items-center justify-between",
+                        step === 1 && "pb-3",
+                    )}
+                >
+                    <div className="page-title">Send to</div>
+                    {step === 0 && (
+                        <img
+                            src={IconClose}
+                            className="w-6 h-6 cursor-pointer"
+                            onClick={goBack}
+                        />
+                    )}
+                </div>
+
                 {step === 0 && (
-                    <div className="px-6 pb-6">
-                        <div className="page-title mb-4">Send to</div>
+                    <div className="px-6">
                         <Input
                             value={receiverAddress}
-                            placeholder="Search, public address,or ENS"
+                            placeholder="Search, public address"
                             onChange={setReceiverAddress}
                             error={errors.receiverAddress}
+                            onEnter={confirmAddress}
+                            className="address"
                         />
                     </div>
                 )}
                 {step === 1 && (
                     <div>
-                        <div className="px-6 mb-6">
-                            <div className="page-title mb-4">Amount</div>
-                            <Input
-                                value={amount}
-                                placeholder="Send amount"
-                                onChange={setAmount}
-                                error={errors.amount}
-                            />
+                        <div className="rounded-lg bg-gray20 mx-6 break-words p-3 address text-[rgba(0,0,0,.6)]">
+                            {receiverAddress}
                         </div>
-                        <ConfirmItem
-                            label="Asset"
-                            title={tokenInfo.symbol}
-                            icon={tokenInfo.icon}
-                            value={`Balance: ${balance} ${tokenInfo.symbol}`}
-                        />
-                        <div className="h-3" />
 
-                        <ConfirmItem label="Receiver" title={receiverAddress} />
-                    </div>
-                )}
-
-                {step === 2 && (
-                    <div>
-                        <div className=" text-center">
-                            <div className=" opacity-80 mb-3">Amount</div>
-                            <div className=" font-bold text-2xl mb-4">
-                                {amount} {tokenInfo.symbol}
+                        <div className="bg-gray20 my-6 px-6">
+                            <div className="pt-4">
+                                <TokenSelect label="Asset" />
                             </div>
-                            <div className="text-green mb-11">Completed</div>
+                            <div className="py-4">
+                                <Input
+                                    label="Amount"
+                                    value={amount}
+                                    placeholder="Send amount"
+                                    memo="$ 5.00 USD"
+                                    onChange={setAmount}
+                                    error={errors.amount}
+                                />
+                            </div>
                         </div>
 
-                        <div className="p-6 bg-gray40 flex flex-col gap-6">
-                            <InfoItem
-                                title="Receiver"
-                                value={receiverAddress}
+                        <div className="flex flex-col gap-5 justify-end text-right px-6 pb-6">
+                            <CostItem
+                                label="Total"
+                                value="0.0001 ETH"
+                                memo="$ 5.00 USD"
                             />
-                            {/** TODO, show tx id here */}
-                            {/* <InfoItem title="Tx ID" value="0xcbe1...85049c" /> */}
-                            <InfoItem
-                                title="Date"
-                                value={new Date().toLocaleString()}
+                            <CostItem
+                                label="Amount + Gas fee"
+                                memo="Max: 0.000212 ETH"
                             />
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="px-6 pb-12">
-                {step === 0 && (
+            {step === 0 && (
+                <div className="absolute bottom-12 left-0 right-0 text-center px-6">
                     <Button classNames="btn-blue" onClick={confirmAddress}>
-                        Next
+                        Confirm
                     </Button>
-                )}
-                {step === 1 && (
+                </div>
+            )}
+            {step === 1 && (
+                <div className="flex gap-4 px-6 py-4 footer-shadow fixed bottom-0 left-0 right-0 bg-white">
+                    <Button classNames="btn-red flex-1 w-full" onClick={goBack}>
+                        Reject
+                    </Button>
                     <Button
-                        classNames="btn-blue"
+                        classNames="btn-blue flex-1 w-full"
                         onClick={() => doSend()}
                         loading={sending}
                     >
                         Confirm
                     </Button>
-                )}
-                {step === 2 && (
-                    <Button
-                        classNames="btn-blue"
-                        onClick={() => navigate("/wallet")}
-                    >
-                        Done
-                    </Button>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }

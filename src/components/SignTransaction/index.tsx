@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import cn from "classnames";
-import { EIP4337Lib } from "soul-wallet-lib";
+import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useQuery from "@src/hooks/useQuery";
 import AddressIcon from "../AddressIcon";
@@ -17,6 +17,7 @@ export default forwardRef<any>((props, ref) => {
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});
     const [signing, setSigning] = useState<boolean>(false);
+    const { soulWalletLib } = useLib();
 
     useImperativeHandle(ref, () => ({
         async show(
@@ -33,10 +34,10 @@ export default forwardRef<any>((props, ref) => {
 
             // todo, there's a problem when sendETH
             if (operation) {
-                console.log("op", operation);
+                console.log("sign op", operation);
 
                 const tmpMap = new Map<string, string>();
-                EIP4337Lib.Utils.DecodeCallData.new().setStorage(
+                soulWalletLib.Utils.DecodeCallData.new().setStorage(
                     (key, value) => {
                         tmpMap.set(key, value);
                     },
@@ -50,7 +51,7 @@ export default forwardRef<any>((props, ref) => {
                 );
 
                 const callDataDecode =
-                    await EIP4337Lib.Utils.DecodeCallData.new().decode(
+                    await soulWalletLib.Utils.DecodeCallData.new().decode(
                         operation.callData,
                     );
                 console.log(`callDataDecode:`, callDataDecode);

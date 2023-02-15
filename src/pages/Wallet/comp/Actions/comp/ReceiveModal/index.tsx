@@ -3,13 +3,9 @@ import QRCode from "qrcode";
 import IconCopy from "@src/assets/copy.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { copyText } from "@src/lib/tools";
+import { IModalProps } from "@src/types/IModal";
 
-interface IModalProps {
-    modalId: string;
-    onClose: () => void;
-}
-
-export default function ReceiveModal({ modalId, onClose }: IModalProps) {
+export default function ReceiveModal({ modalId }: IModalProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [imgSrc, setImgSrc] = useState<string>("");
     const { walletAddress } = useWalletContext();
@@ -22,15 +18,15 @@ export default function ReceiveModal({ modalId, onClose }: IModalProps) {
     // todo, move to lib
     const generateQR = async (text: string) => {
         try {
-            setImgSrc(await QRCode.toDataURL(text))
+            setImgSrc(await QRCode.toDataURL(text));
         } catch (err) {
             console.error(err);
         }
     };
 
     useEffect(() => {
-        if(!walletAddress){
-            return
+        if (!walletAddress) {
+            return;
         }
         generateQR(walletAddress);
     }, [walletAddress]);

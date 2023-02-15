@@ -25,9 +25,9 @@ export default function Button({
         <a
             onClick={doClick}
             className={cn(
-                "btn w-full flex gap-2",
+                "btn flex gap-2 font-bold text-xl py-3 leading-none",
                 classNames,
-                loading && "opacity-70  cursor-not-allowed ",
+                loading && "opacity-70 cursor-not-allowed ",
             )}
         >
             {loading && <img src={IconLoading} className="w-4 h-4" />}

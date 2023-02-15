@@ -14,7 +14,6 @@ const sendTransaction = async (params: any) => {
     // TODO, needs to be calculated
     param.maxFeePerGas = param.gas;
     param.maxPriorityFeePerGas = param.gas;
-    // param.gasPrice = 10 * 10 ** 9;
 
     if (!param.value) {
         param.value = "0x0";

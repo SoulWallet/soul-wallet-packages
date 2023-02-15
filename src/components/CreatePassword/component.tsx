@@ -68,10 +68,12 @@ export function CreatePassword({
         setErrors(errorDefaultValues);
         if (checkParams()) {
             // do create account
+            console.log("before create new");
             const address = await keyStore.createNewAddress(
                 newPassword,
                 saveKey,
             );
+            console.log("after create new");
 
             if (onCreatedEoaAddress) {
                 onCreatedEoaAddress(address);

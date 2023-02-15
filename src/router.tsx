@@ -52,7 +52,7 @@ export default function PluginRouter() {
         <div
             className={cn(
                 "bg-white text-base",
-                mode !== "web" && "artboard phone-1 flex flex-col mx-auto",
+                mode !== "web" && "plugin-board",
             )}
         >
             <Routes>
@@ -62,12 +62,13 @@ export default function PluginRouter() {
                 <Route path="/sign" element={<Sign />} />
                 <Route path="/create-wallet" element={<CreateWallet />} />
                 <Route path="/recover-wallet" element={<RecoverWallet />} />
-                {!loading && (
+                <Route path="*" element={<Wallet />} />
+                {/* {!loading && (
                     <Route
                         path="*"
                         element={account ? <Wallet /> : <Welcome />}
                     />
-                )}
+                )} */}
             </Routes>
         </div>
         // </Router>
