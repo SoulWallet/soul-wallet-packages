@@ -81,5 +81,7 @@ export default {
         paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
         weth: wethAddress,
+        usdc: "xxxxxx",
+        dai: "xxxxxx",
     },
 };
