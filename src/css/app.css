@@ -160,7 +160,7 @@ body {
 .progress-window-shadow{
     background: rgba(255, 255, 255, 0.02);
     box-shadow: 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3);
-    backdrop-filter: blur(20px);
+    /* backdrop-filter: blur(20px); */ /* comment this otherwise position: fixed will not working */
 }
 
 .progress-bar {

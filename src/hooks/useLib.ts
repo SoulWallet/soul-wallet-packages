@@ -12,11 +12,7 @@ const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
 export default function useLib() {
     const { ethersProvider } = useWalletContext();
 
-    const bundler = new soulWalletLib.Bundler(
-        config.contracts.entryPoint,
-        ethersProvider,
-        config.bundlerUrl,
-    );
+    const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, config.bundlerUrl);
 
     return { bundler, soulWalletLib };
 }

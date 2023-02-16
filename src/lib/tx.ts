@@ -9,24 +9,15 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const soulWalletLib = new SoulWalletLib();
 
-const bundler = new soulWalletLib.Bundler(
-    config.contracts.entryPoint,
-    ethersProvider,
-    config.bundlerUrl,
-);
+const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, config.bundlerUrl);
 
 export const saveActivityHistory = async (history: any) => {
-    let prev = (await getLocalStorage("activityHistory")) || [];
+    const prev = (await getLocalStorage("activityHistory")) || [];
     prev.unshift(history);
     await setLocalStorage("activityHistory", prev);
 };
 
-export const executeTransaction = async (
-    operation: any,
-    requestId: any,
-    actionName: any,
-    tabId: any,
-) => {
+export const executeTransaction = async (operation: any, requestId: any, actionName: any, tabId: any) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log("before simulate", operation);
@@ -40,10 +31,7 @@ export const executeTransaction = async (
             //     throw Error(simulateResult?.result.reason);
             // }
 
-            const bundlerEvent = bundler.sendUserOperation(
-                operation,
-                1000 * 60 * 3,
-            );
+            const bundlerEvent = bundler.sendUserOperation(operation, 1000 * 60 * 3);
             bundlerEvent.on("error", (err: any) => {
                 console.log(err);
             });

@@ -31,6 +31,7 @@ const FileUploader = () => {
     const handleUpload = () => {
         // TODO: file upload
         // setStatus(UploadStatusEn.Loading);
+        // upload -> parse -> guardians[] -> store
     };
     return (
         <div

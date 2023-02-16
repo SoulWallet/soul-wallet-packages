@@ -35,7 +35,7 @@ export default function GuardiansSetting() {
                 <Button
                     className="mt-32"
                     type={"primary"}
-                    disable={true}
+                    disable={false}
                     onClick={() => handleJumpToTargetStep(CreateStepEn.SaveGuardianList)}
                 >
                     Next

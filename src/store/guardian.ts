@@ -23,6 +23,7 @@ export interface GuardianStore {
     updateAddressByIndex: (idx: string, address: string) => void;
 }
 
+// TODO: remove addGuardian, removeGuardian, updateNameByIndex, updateAddressByIndex to GuardianInput
 export const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: Array(DEFAULT_GUARDIAN_NUMBER)
         .fill(EMPTY_GUARDIAN)

@@ -7,6 +7,7 @@ export type OptionItem = {
 
 interface IProps {
     placeholder?: string;
+    className?: string;
     options: OptionItem[];
     onChange: (val: number | string) => void;
 }

@@ -45,10 +45,7 @@ const StepComponent = () => {
 
     return (
         <div>
-            <ProgressNavBar
-                title={stepNodeMap[current].title}
-                percentage={Math.round((100 * current) / CreateStepEn.Completed)}
-            />
+            <ProgressNavBar title={stepNodeMap[current].title} maxStep={CreateStepEn.Completed} />
             {stepNodeMap[current].element}
         </div>
     );

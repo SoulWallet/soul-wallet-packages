@@ -19,7 +19,7 @@ interface IProps {
     loading?: boolean;
 }
 
-export default function Button({ className, onClick, children, loading, disable, type }: IProps) {
+export default function Button({ className, onClick, children, loading, disable, type = "default" }: IProps) {
     const doClick = () => {
         if (!loading && !disable) {
             onClick();

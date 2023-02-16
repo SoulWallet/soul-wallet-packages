@@ -5,6 +5,7 @@ import ProgressNavBar from "@src/components/ProgressNavBar";
 import RecoverStarter from "./Steps/RecoverStarter";
 import PasswordResetting from "./Steps/PasswordResetting";
 import GuardiansInputting from "./Steps/GuardiansInputting";
+import SignaturePending from "./Steps/SignaturePending";
 
 type StepNodeInfo = {
     title: string;
@@ -28,8 +29,8 @@ const StepComponent = () => {
             },
             // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {
-                title: "Waiting Signature (1/1) ",
-                element: <PasswordResetting />,
+                title: "Waiting Signature (n/m) ",
+                element: <SignaturePending />,
             },
         };
     }, []);
@@ -40,10 +41,7 @@ const StepComponent = () => {
 
     return (
         <div>
-            <ProgressNavBar
-                title={stepNodeMap[current].title}
-                percentage={Math.round((100 * current) / RecoverStepEn.SignaturePending)}
-            />
+            <ProgressNavBar title={stepNodeMap[current].title} maxStep={RecoverStepEn.SignaturePending} />
             {stepNodeMap[current].element}
         </div>
     );
