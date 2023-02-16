@@ -82,10 +82,10 @@ export default function useGuardian() {
         });
         return true;
     };
-    const saveLocalGuardian = async (guardianListObjArray: Array<Json>) => {
+    const saveLocalGuardian = async (guardArray: guardianListObjArray) => {
         // const localGuardianConfig = JSON.stringify(jsonObj);
-        _checkGuardianConfig(guardianListObjArray);
-        const guardianListStringArray = JSON.stringify(guardianListObjArray);
+        _checkGuardianConfig(guardArray);
+        const guardianListStringArray = JSON.stringify(guardArray);
         await removeLocalStorage("localGuardianConfig-" + walletAddress); // to be discuss
         await setLocalStorage("localGuardianConfig-", guardianListStringArray);
         return true;
