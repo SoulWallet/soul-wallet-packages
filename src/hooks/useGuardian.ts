@@ -64,9 +64,18 @@ export default function useGuardian() {
     //     return localGuardianConfig;
     // };
 
-    const _checkGuardianConfig = async (guardianListObjArray: Array<Json>) => {
+    type elementG = {
+        id: string;
+        name: string;
+        wallet_address: string;
+    };
+
+    type guardianListObjArray = [elementG];
+
+    const _checkGuardianConfig = async (guardArray: guardianListObjArray) => {
         // const localGuardianConfig = getLocalStorage("localGuardianConfig");
-        guardianListObjArray.forEach((element) => {
+
+        guardArray.forEach((element) => {
             if (!verifyAddressFormat(element.wallet_address)) {
                 return false;
             }
