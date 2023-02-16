@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import { Input } from "@src/components/Input";
+import useKeystore from "@src/hooks/useKeystore";
 import Button from "@src/components/Button";
 
 interface IResetPassword {
@@ -12,11 +13,14 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
     const [originalPassword, setOriginalPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const keystore = useKeystore();
 
-    const doConfirm = () => {
+    const doConfirm = async () => {
         if (newPassword !== confirmPassword) {
             console.log("not match");
+            return;
         }
+        await keystore.changePassword(originalPassword, newPassword);
         onChange(0);
         onCancel();
     };
