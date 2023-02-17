@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "@src/assets/logo.svg";
-import SettingModal from "../SettingModal";
+import WalletSettingModal from "../WalletSettingModal";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import IconMenu from "@src/assets/menu.svg";
 
@@ -53,7 +53,7 @@ export function Navbar({ backUrl }: IProps) {
             )}
 
             {settingVisible && (
-                <SettingModal onCancel={() => setSettingVisible(false)} />
+                <WalletSettingModal onCancel={() => setSettingVisible(false)} />
             )}
         </div>
     );
