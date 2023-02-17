@@ -1,8 +1,10 @@
 import config from "@src/config";
 import useLib from "./useLib";
-import { BigNumber } from "ethers";
+import useWalletContext from "@src/context/hooks/useWalletContext";
+import { ethers, BigNumber } from "ethers";
 
 export default function useTools() {
+    const { ethersProvider } = useWalletContext();
     const { soulWalletLib } = useLib();
     const getGuardianInitCode = (guardianList: any) => {
         return soulWalletLib.Guardian.calculateGuardianAndInitCode(
@@ -32,7 +34,7 @@ export default function useTools() {
 
         // get USDC exchangeRate
         const exchangePrice = await soulWalletLib.getPaymasterExchangePrice(
-            ethers.provider,
+            ethersProvider,
             config.contracts.paymaster,
             tokenAddress,
             true,

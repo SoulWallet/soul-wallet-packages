@@ -21,7 +21,7 @@ export default function useWallet() {
         const guardianInitCode = getGuardianInitCode(guardianList);
 
         const activateOp = soulWalletLib.activateWalletOp(
-            config.contracts.logic,
+            config.contracts.walletLogic,
             config.contracts.entryPoint,
             account,
             config.upgradeDelay,
@@ -47,7 +47,7 @@ export default function useWallet() {
         const guardianInitCode = getGuardianInitCode(guardianList);
 
         const activateOp = soulWalletLib.activateWalletOp(
-            config.contracts.logic,
+            config.contracts.walletLogic,
             config.contracts.entryPoint,
             account,
             config.upgradeDelay,
@@ -60,16 +60,14 @@ export default function useWallet() {
 
         const requiredPrefund = await getFeeCost(
             activateOp,
-            config.contracts.usdc,
+            config.tokens.usdc,
         );
 
-        const maxUSDC = requiredPrefund.mul(110).div(100); // 10% more
-
-        console.log("maxUSDC", maxUSDC);
+        const maxUSDC = requiredPrefund.mul(120).div(100); // 20% more
 
         let paymasterAndData = soulWalletLib.getPaymasterData(
             config.contracts.paymaster,
-            config.contracts.usdc,
+            config.tokens.usdc,
             maxUSDC,
         );
         activateOp.paymasterAndData = paymasterAndData;
@@ -77,11 +75,7 @@ export default function useWallet() {
         // need lib to export types
         const approveData: any = [
             {
-                token: config.contracts.usdc,
-                spender: config.contracts.paymaster,
-            },
-            {
-                token: config.contracts.dai,
+                token: config.tokens.usdc,
                 spender: config.contracts.paymaster,
             },
         ];
@@ -102,7 +96,7 @@ export default function useWallet() {
         const guardianInitCode = getGuardianInitCode(guardianList);
 
         return soulWalletLib.calculateWalletAddress(
-            config.contracts.logic,
+            config.contracts.walletLogic,
             config.contracts.entryPoint,
             address,
             config.upgradeDelay,

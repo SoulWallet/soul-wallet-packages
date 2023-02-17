@@ -73,13 +73,6 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
-            const userOpHash = parsedOperation.getUserOpHash(
-                config.contracts.entryPoint,
-                config.chainId,
-            );
-
-            console.log("after from json hash", userOpHash);
-
             await executeTransaction(
                 parsedOperation,
                 requestId,

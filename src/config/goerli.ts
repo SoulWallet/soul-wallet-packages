@@ -11,7 +11,7 @@ import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
 import IconYearn from "@src/assets/dapps/yearn.svg";
 
-export const wethAddress = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";
+export const usdcAddress = "0xe34a90dF83c29c28309f58773C41122d4E8C757A";
 
 export const assetsList = [
     {
@@ -19,11 +19,11 @@ export const assetsList = [
         symbol: "ETH",
         address: "0x0000000000000000000000000000000000000000",
     },
-    // {
-    //     icon: IconWETH,
-    //     symbol: "WETH",
-    //     address: wethAddress,
-    // },
+    {
+        icon: IconWETH,
+        symbol: "USDC",
+        address: usdcAddress,
+    },
 ];
 
 export const dappsList = [
@@ -74,14 +74,14 @@ export default {
     chainId: 421613,
     scanUrl: "https://goerli.arbiscan.io",
     bundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
+    tokens: {
+        usdc: usdcAddress,
+    },
     contracts: {
-        logic: "0xaD1021AD721cb98E682F51489b1aD84395F3e495",
+        walletLogic: "0x6d1E58635f84fF726f2CBAE6E0702949adD51994",
         guardianLogic: "0xFeA560e88BfC3700A4d09F2bA337F4496D9a8ca5",
         entryPoint: "0x0f8425222890A6D2548e095102b4C0B9F4A08c82",
-        paymaster: "0x6C8AC88860fA6CebFB44C598c3E2c55cEE08b734",
+        paymaster: "0x9212CA1a81CDE43423df7CEd92603846EE5886d1",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
-        weth: wethAddress,
-        usdc: "xxxxxx",
-        dai: "xxxxxx",
     },
 };
