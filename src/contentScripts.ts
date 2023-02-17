@@ -4,10 +4,10 @@ import browser from "webextension-polyfill";
 function sendMessage(data) {
     data.url = `chrome-extension://${browser.runtime.id}/popup.html#/sign?action=${data.action}`;
     data.pos = {
-        width: 320,
+        width: 360,
         height: 568 + 28, // 28 is title bar
         top: 0,
-        left: window.screen.width - 320,
+        left: window.screen.width - 360,
     };
     browser.runtime.sendMessage(data);
 }

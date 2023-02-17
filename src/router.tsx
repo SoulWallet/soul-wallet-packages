@@ -57,11 +57,11 @@ export default function PluginRouter() {
                 <Route path="/activate-wallet" element={<ActivateWallet />} />
                 <Route path="/create-wallet" element={<CreateWallet />} />
                 <Route path="/recover-wallet" element={<RecoverWallet />} />
-                <Route path="*" element={<ActivateWallet />} />
+                <Route path="*" element={<Wallet />} />
                 {!loading && (
                     <Route
                         path="*"
-                        element={account ? <ActivateWallet /> : <Welcome />}
+                        element={account ? <Wallet /> : <Welcome />}
                     />
                 )}
             </Routes>

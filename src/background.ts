@@ -69,13 +69,13 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
 
         case "execute":
-            const { actionName, operation, requestId, tabId } = msg.data;
+            const { actionName, operation, userOpHash, tabId } = msg.data;
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
             await executeTransaction(
                 parsedOperation,
-                requestId,
+                userOpHash,
                 actionName,
                 tabId,
             );
@@ -83,7 +83,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
             // send msg back
             browser.runtime.sendMessage({
                 target: "soul",
-                data: requestId,
+                data: userOpHash,
             });
     }
 });

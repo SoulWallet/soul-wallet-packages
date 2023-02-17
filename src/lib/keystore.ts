@@ -101,7 +101,8 @@ export default class KeyStore {
                 const account = await web3.eth.accounts.decrypt(val, password);
 
                 this._privateKey = account.privateKey;
-                // console.log('pk', this._privateKey)
+
+                console.log("pk", this._privateKey);
                 await setSessionStorage("pw", password);
                 return account.address;
             }

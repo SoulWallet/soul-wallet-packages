@@ -23,10 +23,11 @@ export const saveActivityHistory = async (history: any) => {
 
 export const executeTransaction = async (
     operation: any,
-    requestId: any,
+    userOpHash: string,
     actionName: any,
     tabId: any,
 ) => {
+    console.log("ffff", tabId);
     return new Promise(async (resolve, reject) => {
         try {
             console.log("before simulate", operation);
@@ -56,13 +57,15 @@ export const executeTransaction = async (
                 console.log("receipt: ", receipt);
                 const txHash: string = receipt.receipt.transactionHash;
 
-                browser.tabs.sendMessage(Number(tabId), {
-                    target: "soul",
-                    type: "response",
-                    action: "signTransaction",
-                    data: txHash,
-                    tabId,
-                });
+                if (tabId) {
+                    browser.tabs.sendMessage(Number(tabId), {
+                        target: "soul",
+                        type: "response",
+                        action: "signTransaction",
+                        data: txHash,
+                        tabId,
+                    });
+                }
 
                 await saveActivityHistory({
                     actionName,
@@ -80,55 +83,6 @@ export const executeTransaction = async (
             bundlerEvent.on("timeout", () => {
                 console.log("timeout");
             });
-
-            // // sent to bundler
-            // if (res.result && res.result === requestId) {
-            //     // get pending
-            //     const pendingArr =
-            //         await soulWalletLib.RPC.waitUserOperation(
-            //             ethersProvider,
-            //             config.contracts.entryPoint,
-            //             requestId,
-            //         );
-
-            //     // if op is triggered by user and need a feedback. todo, what if 0
-            //     if (tabId && pendingArr) {
-            //         browser.tabs.sendMessage(Number(tabId), {
-            //             target: "soul",
-            //             type: "response",
-            //             action: "signTransaction",
-            //             // TODO, must 0?
-            //             data: pendingArr[0].transactionHash,
-            //             tabId,
-            //         });
-            //     }
-
-            //     // get done
-            //     const doneArr = await soulWalletLib.RPC.waitUserOperation(
-            //         ethersProvider,
-            //         config.contracts.entryPoint,
-            //         requestId,
-            //         1000 * 60 * 10,
-            //         0,
-            //         "latest",
-            //     );
-
-            //     if (doneArr) {
-            //         // save to activity history
-            //         await saveActivityHistory({
-            //             actionName,
-            //             txHash: doneArr[0].transactionHash,
-            //         });
-
-            //         // TODO, what if fail, add error hint
-            //         notify(
-            //             "Trsanction success",
-            //             "Your transaction was confirmed on chain",
-            //         );
-
-            //         resolve(doneArr[0]);
-            //     }
-            // }
         } catch (err) {
             notify("Error", "Failed to send to bundler");
             reject(err);

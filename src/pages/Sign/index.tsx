@@ -49,8 +49,6 @@ export default function Sign() {
                 nonce,
                 parseInt(maxFeePerGas),
                 parseInt(maxPriorityFeePerGas),
-                // parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                // parseInt(ethers.utils.parseUnits("2", 9).toString()),
                 config.contracts.paymaster,
             );
 
@@ -58,13 +56,13 @@ export default function Sign() {
                 throw new Error("Failed to format tx");
             }
 
-            const requestId = operation.getUserOpHash(
+            const userOpHash = operation.getUserOpHash(
                 config.contracts.entryPoint,
                 config.chainId,
             );
 
             // TODO, this function should be renamed
-            const signature = await signTransaction(requestId);
+            const signature = await signTransaction(userOpHash);
 
             console.log("signature", signature);
 
@@ -77,7 +75,7 @@ export default function Sign() {
             return {
                 tabId,
                 operation,
-                requestId,
+                userOpHash,
             };
         } catch (err) {
             console.log(err);
@@ -142,7 +140,7 @@ export default function Sign() {
 
                 await signModal.current.show("", actionType, origin, true);
 
-                const { operation, requestId, tabId } = await signUserTx();
+                const { operation, userOpHash, tabId } = await signUserTx();
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -151,7 +149,7 @@ export default function Sign() {
                     tabId: searchParams.tabId,
                     data: {
                         operation: JSON.stringify(operation),
-                        requestId,
+                        userOpHash,
                         tabId,
                     },
                 });

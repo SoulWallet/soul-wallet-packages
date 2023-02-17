@@ -125,19 +125,19 @@ export default function useWallet() {
         if (!recoveryOp) {
             throw new Error("recoveryOp is null");
         }
-        // get requestId
-        const requestId = recoveryOp.getUserOpHash(
+
+        const userOpHash = recoveryOp.getUserOpHash(
             config.contracts.entryPoint,
             config.chainId,
         );
 
-        return { requestId, recoveryOp };
+        return { userOpHash, recoveryOp };
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const actionName = "Recover Wallet";
 
-        const { requestId, recoveryOp }: any = await getRecoverId(
+        const { userOpHash, recoveryOp }: any = await getRecoverId(
             newOwner,
             walletAddress,
         );
