@@ -1,6 +1,12 @@
+/**
+ * For GuardianForm use ONLY
+ * temporary store user's input
+ * Please refer to GLOBAL store for permanent use
+ */
 import { GuardianItem } from "@src/lib/type";
 import { immer } from "zustand/middleware/immer";
 import { nanoid } from "nanoid";
+import { create } from "zustand";
 
 const DEFAULT_GUARDIAN_NUMBER = 3; // 默认guardian数
 export const MAX_GUARDIAN_NUMBER = 15; // 最大guardian数
@@ -23,8 +29,7 @@ export interface GuardianStore {
     updateAddressByIndex: (idx: string, address: string) => void;
 }
 
-// TODO: remove addGuardian, removeGuardian, updateNameByIndex, updateAddressByIndex to GuardianInput
-export const createGuardianSlice = immer<GuardianStore>((set) => ({
+const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: Array(DEFAULT_GUARDIAN_NUMBER)
         .fill(EMPTY_GUARDIAN)
         .map((item) => {
@@ -56,3 +61,16 @@ export const createGuardianSlice = immer<GuardianStore>((set) => ({
         });
     },
 }));
+
+export type GuardianState = ReturnType<typeof createGuardianStore>;
+
+type GuardianStoreInitialProps = {
+    guardians: GuardianItem[];
+};
+
+export const createGuardianStore = (initProps?: GuardianStoreInitialProps) =>
+    create<GuardianStore>()((...a) => ({ ...createGuardianSlice(...a), ...initProps }));
+
+// export const useGuardianStore = create<GuardianStore>()((...a) => ({
+//     ...createGuardianSlice(...a), // add other store slice
+// }));

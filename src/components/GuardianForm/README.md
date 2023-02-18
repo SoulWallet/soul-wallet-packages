@@ -1,17 +1,41 @@
 # How to Use `<GuardianForm/>`
 
+-   No init data
+
+```tsx
+import GuardianForm from "@src/components/GuardianForm";
+
+// ...
+<GuardianForm />;
+// ...
+```
+
+-   with init data
+
+```tsx
+import GuardianForm from "@src/components/GuardianForm";
+import { nanoid } from "nanoid";
+
+const initData = [{ name: "John Doe", address: "0x12345678909876543211234567", id: nanoid() }];
+
+// ...
+<GuardianForm guardians={initData} />;
+// ...
+```
+
+<!--
 -   Provider side
 
 ```tsx
 import GuardianForm from "@src/components/GuardianForm";
 import { nanoid } from "nanoid";
 import { GuardianContext } from "@src/context/hooks/useGuardianContext";
-import { GuardianStoreReturnType, createGuardianStore } from "@src/store";
+import { GuardianState, createGuardianStore } from "@src/store/guardian";
 import React, { useRef } from "react";
 
 export default function Provider() {
     // 1. create ref for store
-    const storeRef = useRef<GuardianStoreReturnType>();
+    const storeRef = useRef<GuardianState>();
 
     // 2. pass initial data to store
     if (!storeRef.current) {
@@ -44,4 +68,4 @@ export default function Consumer({ id, name, address }: IProps) {
 
     // ...
 }
-```
+``` -->

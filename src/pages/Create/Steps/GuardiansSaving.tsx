@@ -51,6 +51,8 @@ const GuardiansSaving = () => {
                     label={"Back up via Email"}
                     value={email}
                     onChange={handleEmailChange}
+                    buttonText="Send"
+                    onClick={handleSendEmail}
                 />
             </div>
 

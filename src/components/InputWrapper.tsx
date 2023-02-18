@@ -3,6 +3,7 @@ import EyeOpen from "@src/assets/icons/eye-open.svg";
 import EyeClose from "@src/assets/icons/eye-close.svg";
 import Icon from "./Icon";
 import classNames from "classnames";
+import Button from "./Button";
 
 interface IProps {
     label: string;
@@ -14,6 +15,8 @@ interface IProps {
     className?: string;
     toggleVisibility?: () => void;
     onChange: (value: string) => void;
+    buttonText?: string;
+    onClick?: () => void;
 }
 
 const InputStyleMap = {
@@ -31,9 +34,15 @@ export default function InputWrapper({
     visible,
     toggleVisibility,
     onChange,
+    buttonText,
+    onClick,
 }: IProps) {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
+    };
+
+    const handleSendMail = () => {
+        // TODO: here
     };
 
     return (
@@ -62,6 +71,11 @@ export default function InputWrapper({
                         onClick={toggleVisibility}
                     />
                 )}
+                {buttonText && onClick ? (
+                    <Button type="primary" className="absolute right-16 top-8 w-80 h-32" onClick={handleSendMail}>
+                        {buttonText}
+                    </Button>
+                ) : null}
             </div>
         </div>
     );

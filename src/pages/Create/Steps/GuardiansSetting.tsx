@@ -1,17 +1,10 @@
 import Button from "@src/components/Button";
 import GuardianForm from "@src/components/GuardianForm";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import { GuardianContext } from "@src/context/hooks/useGuardianContext";
-import { GuardianStoreReturnType, createGuardianStore } from "@src/store";
 import React, { useRef } from "react";
 
 export default function GuardiansSetting() {
     const dispatch = useStepDispatchContext();
-
-    const storeRef = useRef<GuardianStoreReturnType>();
-    if (!storeRef.current) {
-        storeRef.current = createGuardianStore();
-    }
 
     const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
         dispatch({
@@ -27,9 +20,7 @@ export default function GuardiansSetting() {
                 help centre article to learn more about this.
             </p>
 
-            <GuardianContext.Provider value={storeRef.current}>
-                <GuardianForm />
-            </GuardianContext.Provider>
+            <GuardianForm />
 
             <div className="flex flex-col items-center gap-15">
                 <Button

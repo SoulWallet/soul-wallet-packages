@@ -62,7 +62,7 @@ const stepReducer: (prevStepState: StepState, action: IStepAction) => StepState 
 
 export const StepContextProvider = ({ children }: { children: ReactNode }) => {
     const [step, dispatch] = useReducer(stepReducer, {
-        current: RecoverStepEn.SignaturePending, // both 0 to start
+        current: 2, // both 0 to start
     });
 
     return (
