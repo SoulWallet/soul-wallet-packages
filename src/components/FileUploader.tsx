@@ -9,63 +9,62 @@ enum UploadStatusEn {
     Success,
 }
 
-const FileUploader = () => {
-    const [isActive, setIsActive] = useState(false);
-    const [status, setStatus] = useState<UploadStatusEn>(UploadStatusEn.None);
-    const [file, setFile] = useState<File>();
+interface IFileUploaderProps {
+    onFileChange: (file: File) => void;
+}
 
-    const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
+    const [isActive, setIsActive] = useState(false);
+    const [status, setStatus] = useState<UploadStatusEn>(UploadStatusEn.Success);
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement> | DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setIsActive(false);
 
-        setFile(e.dataTransfer.files[0]);
+        const file =
+            (e as DragEvent<HTMLDivElement>)?.dataTransfer?.files?.[0] ||
+            (e as ChangeEvent<HTMLInputElement>)?.target?.files?.[0];
 
-        handleUpload();
+        onFileChange(file);
     };
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFile(e.target?.files?.[0]);
-        handleUpload();
+    const handleReset = () => {
+        setStatus(UploadStatusEn.None);
     };
 
-    const handleUpload = () => {
-        // TODO: file upload
-        // setStatus(UploadStatusEn.Loading);
-        // upload -> parse -> guardians[] -> store
-    };
     return (
         <div
             className={classNames(
-                "rounded-16 bg-lightWhite px-95 py-16 cursor-pointer relative",
+                "w-full rounded-16 bg-lightWhite px-95 py-16 cursor-pointer relative",
                 isActive && "brightness-90",
             )}
-            onDrop={handleDrop}
+            onDrop={handleFileChange}
             onDragEnter={() => setIsActive(true)}
             onDragLeave={() => setIsActive(false)}
         >
             <img src={file_icon} className="w-24 h-24 place-content-center mx-auto mb-10" />
 
             <div className=" text-center">
-                {status === UploadStatusEn.None && (
-                    <p className="text-sm ">Click or drag file to this area to upload</p>
-                )}
+                {status === UploadStatusEn.None && <p className="text-sm ">Click or drag file to this area to load</p>}
                 {status === UploadStatusEn.Loading && (
                     <>
                         <div className="progress-bar"></div>
-                        <p className="w-full mt-4 text-xs">Uploading...</p>
+                        <p className="w-full mt-4 text-xs">loading...</p>
                     </>
                 )}
 
                 {status === UploadStatusEn.Error && (
                     <>
+                        {/* TODO: error reason */}
                         <span className="text-alarmRed mr-4">Error</span>
-                        <a className="link text-purple" onClick={handleUpload}>
-                            Click to reupload
+                        <a className="link text-purple" onClick={handleReset}>
+                            Click to reload
                         </a>
                     </>
                 )}
 
-                {status === UploadStatusEn.Success && <>{file?.name}</>}
+                {/* TODO: tip */}
+                {status === UploadStatusEn.Success && <>Success</>}
             </div>
 
             <input

@@ -15,9 +15,11 @@ export default function GuardiansSetting() {
 
     return (
         <div>
-            <p className="tip-text mt-22 mb-15">
+            <p className="tip-text mt-22 mb-15  whitespace-pre-wrap">
                 The Safe is a MultiSig account that is controlled by its signer keys. Please refer to the respective
-                help centre article to learn more about this.
+                help centre
+                <br />
+                article to learn more about this.
             </p>
 
             <GuardianForm />

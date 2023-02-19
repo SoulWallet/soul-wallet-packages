@@ -1,3 +1,4 @@
+import Button from "@src/components/Button";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import { StepActionTypeEn, useStepDispatchContext, CreateStepEn, RecoverStepEn } from "@src/context/StepContext";
 import React from "react";
@@ -24,18 +25,22 @@ export default function Launch() {
                     Create Wallet
                 </Link>
 
-                {/* TODO: import page? */}
-                <Link
-                    to="/recover?mode=web"
-                    className="btn w-full btn-purple mt-20 mb-16"
+                <Button
+                    // to="/recover?mode=web"
+                    disable
+                    className="btn w-full btn-purple mt-20 mb-16 cursor-not-allowed"
                     onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
                 >
                     Import Wallet
-                </Link>
+                </Button>
 
                 <div className="text-gray70">
                     Lost your wallet?{" "}
-                    <Link to="/recovery?mode=web" className="font-bold text-purple">
+                    <Link
+                        to="/recover?mode=web"
+                        className="font-bold text-purple"
+                        onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
+                    >
                         Recover it here
                     </Link>
                 </div>

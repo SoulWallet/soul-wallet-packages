@@ -11,7 +11,8 @@ export enum CreateStepEn {
 export enum RecoverStepEn {
     Start,
     ResetPassword,
-    GuardiansInputting,
+    GuardiansImporting,
+    GuardiansChecking,
     SignaturePending,
 }
 
@@ -62,7 +63,7 @@ const stepReducer: (prevStepState: StepState, action: IStepAction) => StepState 
 
 export const StepContextProvider = ({ children }: { children: ReactNode }) => {
     const [step, dispatch] = useReducer(stepReducer, {
-        current: 2, // both 0 to start
+        current: RecoverStepEn.GuardiansImporting, // both 0 to start
     });
 
     return (

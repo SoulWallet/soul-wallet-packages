@@ -16,6 +16,7 @@ interface IProps {
     toggleVisibility?: () => void;
     onChange: (value: string) => void;
     buttonText?: string;
+    buttonLoading?: boolean;
     onClick?: () => void;
 }
 
@@ -35,14 +36,11 @@ export default function InputWrapper({
     toggleVisibility,
     onChange,
     buttonText,
+    buttonLoading,
     onClick,
 }: IProps) {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
-    };
-
-    const handleSendMail = () => {
-        // TODO: here
     };
 
     return (
@@ -72,7 +70,12 @@ export default function InputWrapper({
                     />
                 )}
                 {buttonText && onClick ? (
-                    <Button type="primary" className="absolute right-16 top-8 w-80 h-32" onClick={handleSendMail}>
+                    <Button
+                        type="primary"
+                        className="absolute right-16 top-8 w-80 h-32"
+                        loading={buttonLoading}
+                        onClick={onClick}
+                    >
                         {buttonText}
                     </Button>
                 ) : null}

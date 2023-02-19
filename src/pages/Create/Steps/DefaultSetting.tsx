@@ -4,6 +4,7 @@ import React from "react";
 
 const DefaultSetting = () => {
     const dispatch = useStepDispatchContext();
+
     const handleConfirmed = () => {
         // TODO: here
     };

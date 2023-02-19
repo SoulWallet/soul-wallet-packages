@@ -12,18 +12,14 @@ import { guardianList } from "@src/config/mock";
 export default function useGuardian() {
     const { soulWalletLib } = useLib();
 
-    const { walletAddress, executeOperation, ethersProvider } =
-        useWalletContext();
+    const { walletAddress, executeOperation, ethersProvider } = useWalletContext();
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode } = useTools();
 
     const updateGuardian = async (guardianAddress: string) => {
         const actionName = "Add Guardian";
         const currentFee = await getGasPrice();
-        const nonce = await soulWalletLib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
         const guardianInitCode = getGuardianInitCode(guardianList);
         // TODO, need new guardianInitCode here

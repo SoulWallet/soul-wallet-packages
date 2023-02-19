@@ -18,7 +18,7 @@ enum SignatureStatusEn {
 const SignatureStatusMap = {
     [SignatureStatusEn.Signed]: { text: "Signed", color: "text-[#1BB85D]" },
     [SignatureStatusEn.Pending]: { text: "Waiting", color: "text-[#999999]" },
-    [SignatureStatusEn.Error]: { text: "Status error, require re-sign", color: "text-[#F5CC43]" },
+    [SignatureStatusEn.Error]: { text: "Error, need to re-sign", color: "text-[#F5CC43]" },
 };
 
 interface ISignatureVerificationItem {
@@ -97,6 +97,7 @@ const SignaturePending = () => {
                 <Button className="w-[calc(50%-18px)]" onClick={handleOpenShareModal}>
                     Share recovery URL
                 </Button>
+                {/* TODO: all signed? */}
                 <Button className="w-[calc(50%-18px)]" onClick={handleNext} disable>
                     Next
                 </Button>

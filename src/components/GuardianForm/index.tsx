@@ -11,18 +11,18 @@ export interface IGuardianFormHandler {
 
 const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) => {
     const guardians = useGuardianContext((s) => s.guardians);
-    const { updateGuardians } = useGlobalStore();
+    const { updateFinalGuardians } = useGlobalStore();
 
     useImperativeHandle(ref, () => {
         return {
             submit: () => {
-                updateGuardians(guardians);
+                updateFinalGuardians(guardians);
             },
         };
     });
 
     return (
-        <div className="w-full flex flex-row flex-wrap justify-between gap-y-24 max-h-213 overflow-y-scroll ">
+        <div className="w-full flex flex-col gap-y-24 min-h-fit max-h-183 overflow-y-scroll ">
             {guardians.map((item) => (
                 <GuardianInput key={item.id} {...item} />
             ))}

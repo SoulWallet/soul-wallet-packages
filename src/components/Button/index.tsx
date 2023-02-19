@@ -2,12 +2,14 @@ import React from "react";
 import cn from "classnames";
 import IconLoading from "@src/assets/loading.gif";
 
-type ButtonType = "default" | "primary" | "disabled"; // may add 'dash', 'text', 'link', etc. later
+// TODO: error & retry
+type ButtonType = "default" | "primary" | "disabled" | "error"; // may add 'dash', 'text', 'link', etc. later
 
 const ButtonTypeStyleMap = {
     default: "btn-purple",
     primary: "btn-purple-primary",
     disable: "btn-purple-disabled",
+    error: "btn-purple-error",
 };
 
 interface IProps {
@@ -32,13 +34,12 @@ export default function Button({ className, onClick, children, loading, disable,
             className={cn(
                 "btn w-full flex gap-2 font-bold text-xl py-3 leading-none",
                 className,
-                loading && "opacity-70  cursor-not-allowed",
+                loading && "opacity-70  bg-purple cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
                 disable && ButtonTypeStyleMap["disable"],
             )}
         >
-            {loading && <img src={IconLoading} className="w-4 h-4" />}
-            {children}
+            {loading ? <img src={IconLoading} className="w-24 h-24 " /> : children}
         </a>
     );
 }

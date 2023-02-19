@@ -1,14 +1,15 @@
 import Button from "@src/components/Button";
-import FileUploader from "@src/components/FileUploader";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import Modal from "@src/components/Modal";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef, useState } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
+import { useGlobalStore } from "@src/store/global";
 
-const GuardiansInputting = () => {
+const GuardiansChecking = () => {
     const formRef = useRef<IGuardianFormHandler>(null);
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
+    const { temporaryGuardians, clearTemporaryGuardians } = useGlobalStore();
 
     const dispatch = useStepDispatchContext();
     const handleCheckGuardianAddresses = () => {
@@ -21,6 +22,8 @@ const GuardiansInputting = () => {
 
         // ! if check pass, then submit guardians to the global store
         formRef.current?.submit();
+        // TODO: once the guardians are submitted, clear the temporary guardians
+        clearTemporaryGuardians();
     };
 
     const handleAskSignature = () => {
@@ -32,19 +35,11 @@ const GuardiansInputting = () => {
         });
     };
     return (
-        <div>
-            <>
-                <label className="mb-8">Import</label>
-                <FileUploader />
-            </>
+        <div className="pt-22">
+            {/* TODO: pass init data from file parsing? */}
+            <GuardianForm ref={formRef} guardians={temporaryGuardians} />
 
-            <div className="mt-72 6">
-                <label className="mb-16">Manual</label>
-                {/* TODO: pass init data from file parsing? */}
-                <GuardianForm ref={formRef} />
-            </div>
-
-            <Button type="primary" className="w-base mx-auto mt-103 mb-49" onClick={handleAskSignature}>
+            <Button type="primary" className="w-base mx-auto my-22" onClick={handleAskSignature}>
                 Ask For Signature
             </Button>
 
@@ -61,4 +56,4 @@ const GuardiansInputting = () => {
     );
 };
 
-export default GuardiansInputting;
+export default GuardiansChecking;

@@ -5,21 +5,26 @@ import { StepActionTypeEn, useStepDispatchContext } from "@src/context/StepConte
 
 interface IProps {
     nextStep?: number;
-    onSubmit: (pwd: string) => void;
+    onSubmit: (password: string) => void;
 }
 
 // TODO: 优化交互逻辑
 export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const dispatch = useStepDispatchContext();
 
-    const [pwd, setPwd] = useState<string>();
+    const [password, setPassword] = useState<string>();
     const [confirmPwd, setConfirmPwd] = useState<string>();
     const [createPwdVisible, setCreatePwdVisible] = useState(false);
     const [confirmPwdVisible, setConfirmPwdVisible] = useState(false);
     const [isPwdSame, setIsPwdSame] = useState(true);
+    const [passwordMessage, setPasswordMessage] = useState<string>();
 
     const handleNext = () => {
-        pwd && onSubmit(pwd);
+        if (password?.length < 9) {
+            setPasswordMessage("Password must be at least 9 characters long");
+            return;
+        }
+        password && onSubmit(password);
 
         nextStep &&
             dispatch({
@@ -30,19 +35,20 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
 
     useEffect(() => {
         // 密码均不为空 且 全等
-        setIsPwdSame(!(pwd || confirmPwd) || pwd === confirmPwd);
-    }, [pwd, confirmPwd]);
+        setIsPwdSame(!(password || confirmPwd) || password === confirmPwd);
+    }, [password, confirmPwd]);
 
     return (
         <div className="w-base mt-23 flex flex-col gap-24">
+            {/* TODO: 密码强度提醒 */}
             <InputWrapper
                 label="Create password"
                 placeholder="At least 9 characters"
-                value={pwd}
+                value={password}
                 visible={createPwdVisible}
                 toggleVisibility={() => setCreatePwdVisible((state) => !state)}
-                errorMsg={pwd && pwd?.length > 8 ? undefined : "Please set a password of at least 9 characters"}
-                onChange={(val) => setPwd(val)}
+                errorMsg={passwordMessage}
+                onChange={(val) => setPassword(val)}
             />
 
             <InputWrapper
@@ -50,12 +56,14 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
                 placeholder="Enter again"
                 value={confirmPwd}
                 visible={confirmPwdVisible}
-                errorMsg={(pwd && pwd?.length < 9) || isPwdSame ? undefined : "Please enter the same password"}
+                errorMsg={
+                    (password && password?.length < 9) || isPwdSame ? undefined : "Please enter the same password"
+                }
                 toggleVisibility={() => setConfirmPwdVisible((state) => !state)}
                 onChange={(val) => setConfirmPwd(val)}
             />
 
-            <Button className="mt-32" type={"primary"} disable={!(pwd && isPwdSame)} onClick={handleNext}>
+            <Button className="mt-12" type={"primary"} disable={!(password && isPwdSame)} onClick={handleNext}>
                 Next
             </Button>
         </div>

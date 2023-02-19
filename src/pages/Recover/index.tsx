@@ -4,8 +4,9 @@ import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import RecoverStarter from "./Steps/RecoverStarter";
 import PasswordResetting from "./Steps/PasswordResetting";
-import GuardiansInputting from "./Steps/GuardiansInputting";
 import SignaturePending from "./Steps/SignaturePending";
+import GuardiansChecking from "./Steps/GuardiansChecking";
+import GuardiansImporting from "./Steps/GuardiansImporting";
 
 type StepNodeInfo = {
     title: string;
@@ -13,6 +14,7 @@ type StepNodeInfo = {
 };
 
 const StepComponent = () => {
+    // TODO: guardians & signed
     const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
         return {
             [RecoverStepEn.Start]: {
@@ -23,9 +25,13 @@ const StepComponent = () => {
                 title: "Set New Password",
                 element: <PasswordResetting />,
             },
-            [RecoverStepEn.GuardiansInputting]: {
+            [RecoverStepEn.GuardiansImporting]: {
+                title: "Import guardians from file",
+                element: <GuardiansImporting />,
+            },
+            [RecoverStepEn.GuardiansChecking]: {
                 title: "Enter Guardians address",
-                element: <GuardiansInputting />,
+                element: <GuardiansChecking />,
             },
             // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {

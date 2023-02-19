@@ -40,7 +40,7 @@ const RecoverStarter = () => {
     };
 
     return (
-        <div className="pt-23 pb-38 flex flex-col gap-y-24">
+        <div className="pt-23 pb-34 flex flex-col gap-y-24">
             <InputWrapper
                 label="Enter Wallet Address"
                 value={address}

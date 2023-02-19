@@ -6,12 +6,19 @@ import React, { useState } from "react";
 const GuardiansSaving = () => {
     const [email, setEmail] = useState<string>();
     const [hasSaved, setHasSaved] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+    const [sending, setSending] = useState(false);
 
     const dispatch = useStepDispatchContext();
 
     const handleDownload = () => {
+        setDownloading(true);
         // TODO: here
-        setHasSaved(true);
+
+        setTimeout(() => {
+            setDownloading(false);
+            setHasSaved(true);
+        }, 2000);
     };
 
     const handleEmailChange = (val: string) => {
@@ -19,8 +26,13 @@ const GuardiansSaving = () => {
     };
 
     const handleSendEmail = () => {
+        setSending(true);
+
         // TODO: here
-        setHasSaved(true);
+        setTimeout(() => {
+            setSending(false);
+            setHasSaved(true);
+        }, 2000);
     };
 
     const handleNext = () => {
@@ -40,7 +52,8 @@ const GuardiansSaving = () => {
             </p>
 
             <div className="flex flex-row items-end">
-                <Button type="default" onClick={handleDownload} className="w-base">
+                {/* TODO: add loading & retry */}
+                <Button type="default" onClick={handleDownload} className="w-base" loading={downloading}>
                     Download
                 </Button>
 
@@ -52,6 +65,7 @@ const GuardiansSaving = () => {
                     value={email}
                     onChange={handleEmailChange}
                     buttonText="Send"
+                    buttonLoading={sending}
                     onClick={handleSendEmail}
                 />
             </div>

@@ -9,7 +9,7 @@ export default function PasswordSetting() {
     };
 
     return (
-        <div className="pb-38">
+        <div className="pb-34">
             <PasswordSetter nextStep={CreateStepEn.SetupGuardians} onSubmit={handleSubmitPassword} />
         </div>
     );

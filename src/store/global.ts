@@ -3,15 +3,19 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface GlobalState {
-    guardians: GuardianItem[];
-    updateGuardians: (guardians: GuardianItem[]) => void;
+    temporaryGuardians?: GuardianItem[];
+    guardians?: GuardianItem[];
+    saveTemporaryGuardians: (guardians: GuardianItem[]) => void;
+    clearTemporaryGuardians: () => void;
+    updateFinalGuardians: (guardians: GuardianItem[]) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
     persist(
         (set) => ({
-            guardians: [],
-            updateGuardians: (guardians: GuardianItem[]) => set({ guardians }),
+            clearTemporaryGuardians: () => set({ temporaryGuardians: undefined }),
+            saveTemporaryGuardians: (guardians: GuardianItem[]) => set({ temporaryGuardians: guardians }),
+            updateFinalGuardians: (guardians: GuardianItem[]) => set({ guardians }),
         }),
         {
             name: "global",
