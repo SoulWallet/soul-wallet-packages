@@ -12,6 +12,7 @@ export default function useTools() {
             guardianList,
             Math.round(guardianList.length / 2),
             config.guardianSalt,
+            
         );
     };
 
