@@ -7,6 +7,7 @@ interface IProps {
     classNames?: string;
     onClick: () => void;
     loading?: boolean;
+    disabled?: boolean;
 }
 
 export default function Button({
@@ -14,9 +15,10 @@ export default function Button({
     onClick,
     children,
     loading,
+    disabled,
 }: IProps) {
     const doClick = () => {
-        if (!loading) {
+        if (!loading || disabled) {
             onClick();
         }
     };
@@ -27,7 +29,7 @@ export default function Button({
             className={cn(
                 "btn flex gap-2 font-bold text-xl py-3 leading-none",
                 classNames,
-                loading && "opacity-70 cursor-not-allowed ",
+                (loading || disabled) && "opacity-70 cursor-not-allowed ",
             )}
         >
             {loading && <img src={IconLoading} className="w-4 h-4" />}

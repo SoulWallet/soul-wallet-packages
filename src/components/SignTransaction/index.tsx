@@ -212,6 +212,7 @@ export default forwardRef<any>((props, ref) => {
                     classNames="btn-blue w-1/2"
                     onClick={onConfirm}
                     loading={signing}
+                    disabled={loadingFee}
                 >
                     Sign
                 </Button>

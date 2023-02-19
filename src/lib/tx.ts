@@ -9,12 +9,6 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const soulWalletLib = new SoulWalletLib();
 
-const bundler = new soulWalletLib.Bundler(
-    config.contracts.entryPoint,
-    ethersProvider,
-    config.bundlerUrl,
-);
-
 export const saveActivityHistory = async (history: any) => {
     let prev = (await getLocalStorage("activityHistory")) || [];
     prev.unshift(history);
@@ -23,10 +17,16 @@ export const saveActivityHistory = async (history: any) => {
 
 export const executeTransaction = async (
     operation: any,
-    userOpHash: string,
     actionName: any,
     tabId: any,
+    bundlerUrl: string,
 ) => {
+    const bundler = new soulWalletLib.Bundler(
+        config.contracts.entryPoint,
+        ethersProvider,
+        bundlerUrl,
+    );
+
     return new Promise(async (resolve, reject) => {
         try {
             const simulateResult: any = await bundler.simulateValidation(

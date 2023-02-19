@@ -74,7 +74,7 @@ export default {
     guardianSalt: "",
     chainId: 421613,
     scanUrl: "https://goerli.arbiscan.io",
-    bundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
+    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
     tokens: {
         usdc: usdcAddress,
     },

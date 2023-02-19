@@ -4,6 +4,7 @@ import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
 import useKeystore from "@src/hooks/useKeystore";
+import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
@@ -41,6 +42,7 @@ export const WalletContext = createContext<IWalletContext>({
 });
 
 export const WalletContextProvider = ({ children }: any) => {
+    const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
@@ -92,6 +94,7 @@ export const WalletContextProvider = ({ children }: any) => {
                         actionName,
                         operation: operation.toJSON(),
                         userOpHash,
+                        bundlerUrl,
                     });
                 }
             } catch (err) {

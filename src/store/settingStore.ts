@@ -11,7 +11,7 @@ export const useSettingStore = create<ISettingStore>()(
     persist(
         (set) => ({
             isDefaultProvider: true,
-            bundlerUrl: config.bundlerUrl,
+            bundlerUrl: config.defaultBundlerUrl,
             setIsDefaultProvider: (isDefaultProvider: boolean) => {
                 set({
                     isDefaultProvider,

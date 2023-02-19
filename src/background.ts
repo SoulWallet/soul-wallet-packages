@@ -68,15 +68,16 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
 
         case "execute":
-            const { actionName, operation, userOpHash, tabId } = msg.data;
+            const { actionName, operation, userOpHash, tabId, bundlerUrl } =
+                msg.data;
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
             await executeTransaction(
                 parsedOperation,
-                userOpHash,
                 actionName,
                 tabId,
+                bundlerUrl,
             );
 
             // send msg back
