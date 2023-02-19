@@ -13,8 +13,6 @@ import {
 } from "@src/lib/tools";
 import useQuery from "./useQuery";
 import { guardianList } from "@src/config/mock";
-import { Json } from "json-rpc-engine";
-import { each, range } from "lodash";
 
 export default function useGuardian() {
     const { soulWalletLib } = useLib();
@@ -82,9 +80,32 @@ export default function useGuardian() {
         });
         return true;
     };
+
+    // save final guardian config to local storage
     const saveLocalGuardian = async (guardArray: guardianListObjArray) => {
         // const localGuardianConfig = JSON.stringify(jsonObj);
-        _checkGuardianConfig(guardArray);
+        let checkResult = null;
+        try {
+            checkResult = _checkGuardianConfig(guardArray);
+        } catch (error) {
+            return checkResult;
+        }
+        const guardianListStringArray = JSON.stringify(guardArray);
+        await removeLocalStorage("localGuardianConfig-" + walletAddress); // to be discuss
+        await setLocalStorage("localGuardianConfig-", guardianListStringArray);
+        return true;
+    };
+
+    // save temp guardian config to local storage
+    const saveTempLocalGuardian = async (guardArray: guardianListObjArray) => {
+        // const localGuardianConfig = JSON.stringify(jsonObj);
+        let checkResult = null;
+        try {
+            checkResult = _checkGuardianConfig(guardArray);
+        } catch (error) {
+            return checkResult;
+        }
+
         const guardianListStringArray = JSON.stringify(guardArray);
         await removeLocalStorage("localGuardianConfig-" + walletAddress); // to be discuss
         await setLocalStorage("localGuardianConfig-", guardianListStringArray);
@@ -94,5 +115,6 @@ export default function useGuardian() {
     return {
         updateGuardian,
         saveLocalGuardian,
+        saveTempLocalGuardian,
     };
 }
