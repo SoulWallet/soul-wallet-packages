@@ -8,7 +8,7 @@ import useTools from "./useTools";
 import config from "@src/config";
 
 export default function useQuery() {
-    const { executeOperation, walletAddress, web3 } = useWalletContext();
+    const { walletAddress, web3 } = useWalletContext();
     const { verifyAddressFormat } = useTools();
 
     const getEthBalance = async () => {

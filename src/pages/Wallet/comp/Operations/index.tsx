@@ -18,7 +18,7 @@ export default function Operations() {
                         <a
                             key={index}
                             className={cn(
-                                "py-3 text-center flex-1 cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
+                                "py-3 text-center flex-1 select-none cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
                                 activeTabIndex === index &&
                                     "border-blue text-blue text-base font-bold",
                             )}

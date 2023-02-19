@@ -29,7 +29,10 @@ export default function useTools() {
         );
 
         if (!tokenAddress) {
-            return requiredPrefund;
+            return {
+                requireAmountInWei: requiredPrefund,
+                requireAmount: ethers.utils.formatEther(requiredPrefund),
+            };
         }
 
         // get USDC exchangeRate
@@ -61,7 +64,13 @@ export default function useTools() {
             "USDC",
         );
 
-        return requiredUSDC;
+        return {
+            requireAmountInWei: requiredUSDC,
+            requireAmount: ethers.utils.formatUnits(
+                requiredUSDC,
+                tokenDecimals,
+            ),
+        };
     };
 
     return { getGuardianInitCode, verifyAddressFormat, getFeeCost };

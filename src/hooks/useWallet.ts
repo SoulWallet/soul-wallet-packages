@@ -32,11 +32,6 @@ export default function useWallet() {
             currentFee,
         );
 
-        // const requiredPrefund = activateOp.requiredPrefund(ethers.utils.parseUnits(eip1559GasFee.estimatedBaseFee, "gwei"));
-        const requiredPrefund = await getFeeCost(activateOp);
-
-        console.log("requiredPrefund", requiredPrefund);
-
         await executeOperation(activateOp, actionName);
     };
 
@@ -58,20 +53,6 @@ export default function useWallet() {
             currentFee,
         );
 
-        const requiredPrefund = await getFeeCost(
-            activateOp,
-            config.tokens.usdc,
-        );
-
-        const maxUSDC = requiredPrefund.mul(120).div(100); // 20% more
-
-        let paymasterAndData = soulWalletLib.getPaymasterData(
-            config.contracts.paymaster,
-            config.tokens.usdc,
-            maxUSDC,
-        );
-        activateOp.paymasterAndData = paymasterAndData;
-
         // need lib to export types
         const approveData: any = [
             {
@@ -87,7 +68,6 @@ export default function useWallet() {
             );
         activateOp.callData = approveCallData.callData;
         activateOp.callGasLimit = approveCallData.callGasLimit;
-        console.log("init code", activateOp.initCode);
 
         await executeOperation(activateOp, actionName);
     };

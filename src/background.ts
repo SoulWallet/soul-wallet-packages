@@ -8,7 +8,6 @@
 import browser from "webextension-polyfill";
 import { getLocalStorage } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
-import config from "./config";
 import { executeTransaction } from "@src/lib/tx";
 
 browser.runtime.onMessage.addListener(async (msg) => {

@@ -18,11 +18,13 @@ export const assetsList = [
         icon: IconETH,
         symbol: "ETH",
         address: "0x0000000000000000000000000000000000000000",
+        payable: true,
     },
     {
         icon: IconUSDC,
         symbol: "USDC",
         address: usdcAddress,
+        payable: true,
     },
 ];
 

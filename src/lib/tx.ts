@@ -27,10 +27,8 @@ export const executeTransaction = async (
     actionName: any,
     tabId: any,
 ) => {
-    console.log("ffff", tabId);
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("before simulate", operation);
             const simulateResult: any = await bundler.simulateValidation(
                 operation,
             );

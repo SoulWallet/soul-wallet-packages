@@ -11,5 +11,6 @@ export interface IAccountSettingModal {
 }
 
 export interface ITokenSelectModal {
+    onChange: (val: string) => void;
     onCancel: () => void;
 }

@@ -29,7 +29,7 @@ export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
             <div className="flex items-center justify-between px-6 py-4 border-b border-color w-full">
                 <div className="font-bold text-black text-lg">Setting</div>
                 <div className="flex items-center gap-2">
-                    <a onClick={doLockWallet} className="btn-trans">
+                    <a onClick={doLockWallet} className="btn-trans select-none">
                         Lock
                     </a>
                     <img

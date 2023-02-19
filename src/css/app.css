@@ -86,6 +86,10 @@
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    .info-box {
+        @apply bg-gray20 py-4 px-6;
+    }
+
     .h-full-with-sidebar {
         height: calc(100% - 80px);
     }

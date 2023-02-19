@@ -20,7 +20,11 @@ interface IWalletContext {
     walletAddress: string;
     getWalletType: () => Promise<void>;
     getAccount: () => Promise<void>;
-    executeOperation: (operation: any, actionName?: string) => Promise<void>;
+    executeOperation: (
+        operation: any,
+        actionName?: string,
+        gasFormatted?: string,
+    ) => Promise<void>;
     replaceAddress: () => Promise<void>;
 }
 
@@ -47,11 +51,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const getAccount = async () => {
         const res = await keyStore.getAddress();
         setAccount(res);
-
-        console.log("before", res);
         const wAddress = calculateWalletAddress(res);
-        console.log("after", wAddress);
-
         setWalletAddress(wAddress);
     };
 
@@ -67,31 +67,36 @@ export const WalletContextProvider = ({ children }: any) => {
     ) => {
         if (actionName) {
             try {
-                await signModal.current.show(
+                const paymasterAndData = await signModal.current.show(
                     operation,
                     actionName,
                     "Soul Wallet",
+                    false,
                 );
+
+                if (paymasterAndData) {
+                    operation.paymasterAndData = paymasterAndData;
+                }
+
+                const userOpHash = operation.getUserOpHash(
+                    config.contracts.entryPoint,
+                    config.chainId,
+                );
+
+                const signature = await keyStore.sign(userOpHash);
+
+                if (signature) {
+                    operation.signWithSignature(account, signature || "");
+
+                    await Runtime.send("execute", {
+                        actionName,
+                        operation: operation.toJSON(),
+                        userOpHash,
+                    });
+                }
             } catch (err) {
                 throw Error("User rejected");
             }
-        }
-
-        const userOpHash = operation.getUserOpHash(
-            config.contracts.entryPoint,
-            config.chainId,
-        );
-
-        const signature = await keyStore.sign(userOpHash);
-
-        if (signature) {
-            operation.signWithSignature(account, signature || "");
-
-            await Runtime.send("execute", {
-                actionName,
-                operation: operation.toJSON(),
-                userOpHash,
-            });
         }
     };
 
