@@ -63,6 +63,7 @@ export default function useGuardian() {
                 "localTempGuardianConfig-" + walletAddress
             )) || {};
         console.log(loadLocalGuardian);
+        
         return JSON.parse(localGuardianConfig); //push? delete?
     };
 
