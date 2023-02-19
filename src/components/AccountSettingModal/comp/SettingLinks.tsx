@@ -1,6 +1,6 @@
 import React from "react";
-import Switch from "@src/components/Switch";
 import cn from "classnames";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
 import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
@@ -9,6 +9,7 @@ interface ISettingLinks {
 }
 
 export default function SettingLinks({ onChange }: ISettingLinks) {
+    const { walletAddress } = useWalletContext();
     const linksStyle =
         "text-black leading-none hover:bg-gray40 cursor-pointer px-4 py-3";
     return (
@@ -29,7 +30,11 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
             <a className={cn(linksStyle, "flex justify-between items-center")}>
                 <ApprovePaymaster />
             </a>
-            <a target="_blank" className={linksStyle}>
+            <a
+                target="_blank"
+                className={linksStyle}
+                href={`${config.scanUrl}/address/${walletAddress}`}
+            >
                 view on explorer
             </a>
         </div>

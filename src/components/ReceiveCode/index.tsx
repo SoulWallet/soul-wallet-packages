@@ -38,7 +38,7 @@ export default function ReceiveCode({
     }, [walletAddress]);
 
     return (
-        <div className="text-center">
+        <div className="text-center w-full">
             <div
                 className={cn(
                     "mb-2 flex gap-2",

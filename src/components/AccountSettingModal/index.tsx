@@ -1,10 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import IconClose from "@src/assets/icons/close.svg";
 import Modal from "../Modal";
 import { IAccountSettingModal } from "@src/types/IModal";
 import SettingLinks from "./comp/SettingLinks";
-import BundlerUrl from "./comp/BundlerUrl";
 
 export default function AccountSettingModal({
     onCancel,
@@ -31,12 +29,6 @@ export default function AccountSettingModal({
             <ModalNavBar />
             {currentModalIndex === 0 && (
                 <SettingLinks onChange={setCurrentModalIndex} />
-            )}
-            {currentModalIndex === 2 && (
-                <BundlerUrl
-                    onCancel={onCancel}
-                    onChange={setCurrentModalIndex}
-                />
             )}
         </Modal>
     );

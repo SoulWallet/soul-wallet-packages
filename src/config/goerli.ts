@@ -62,7 +62,6 @@ export const dappsList = [
 export default {
     assetsList,
     dappsList,
-    // provider: `https://arb-goerli.g.alchemy.com/v2/demo`,
     provider: `https://goerli-rollup.arbitrum.io/rpc`,
     defaultSalt: 0,
     feeMultiplier: 3,
