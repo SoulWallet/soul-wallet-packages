@@ -3,7 +3,7 @@
  */
 
 import IconETH from "@src/assets/tokens/eth.svg";
-import IconWETH from "@src/assets/tokens/weth.png";
+import IconUSDC from "@src/assets/tokens/usdc.svg";
 
 import Icon1inch from "@src/assets/dapps/1inch.svg";
 import IconAave from "@src/assets/dapps/aave.svg";
@@ -20,7 +20,7 @@ export const assetsList = [
         address: "0x0000000000000000000000000000000000000000",
     },
     {
-        icon: IconWETH,
+        icon: IconUSDC,
         symbol: "USDC",
         address: usdcAddress,
     },
