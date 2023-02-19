@@ -41,10 +41,6 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     const { sendErc20, sendEth } = useTransaction();
     const erc20Contract = useErc20Contract();
 
-    const tokenInfo = config.assetsList.filter(
-        (item) => item.address === tokenAddress,
-    )[0];
-
     const confirmAddress = () => {
         if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
             toast.error("Address not valid");
@@ -69,7 +65,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
             } else {
                 await sendErc20(tokenAddress, receiverAddress, amount);
             }
-            setStep(2);
+            goBack();
         } finally {
             setSending(false);
         }

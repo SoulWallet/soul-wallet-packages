@@ -84,15 +84,13 @@ export const WalletContextProvider = ({ children }: any) => {
 
         const signature = await keyStore.sign(userOpHash);
 
-        console.log("user signing op hash", userOpHash);
-
         if (signature) {
             operation.signWithSignature(account, signature || "");
 
             await Runtime.send("execute", {
                 actionName,
                 operation: operation.toJSON(),
-                requestId: userOpHash,
+                userOpHash,
             });
         }
     };

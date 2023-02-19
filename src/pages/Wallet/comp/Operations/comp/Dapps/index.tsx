@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import useWalletContext from "@src/context/hooks/useWalletContext";
+import React from "react";
 import config from "@src/config";
 
 export default function Dapps() {
-    console.log("heyeeeee");
     return (
         <div className=" grid grid-cols-2 gap-y-2 gap-x-3 px-6 pt-3">
             {config.dappsList.map((item) => (

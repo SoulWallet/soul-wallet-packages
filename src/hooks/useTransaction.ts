@@ -9,6 +9,7 @@ import BN from "bignumber.js";
 import ky from "ky";
 import browser from "webextension-polyfill";
 import useQuery from "./useQuery";
+import useTools from "./useTools";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
 import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
@@ -16,6 +17,7 @@ import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
 export default function useTransaction() {
     const { executeOperation, walletAddress, ethersProvider } =
         useWalletContext();
+    const { getFeeCost } = useTools();
     const { getGasPrice } = useQuery();
     const keyStore = useKeystore();
     const { soulWalletLib, bundler } = useLib();
@@ -71,6 +73,22 @@ export default function useTransaction() {
             to,
             amountInWei,
         );
+
+        if (!op) {
+            return;
+        }
+
+        const requiredPrefund = await getFeeCost(op, config.tokens.usdc);
+
+        const maxUSDC = requiredPrefund.mul(120).div(100); // 20% more
+
+        let paymasterAndData = soulWalletLib.getPaymasterData(
+            config.contracts.paymaster,
+            config.tokens.usdc,
+            maxUSDC,
+        );
+
+        op.paymasterAndData = paymasterAndData;
 
         await executeOperation(op, actionName);
     };

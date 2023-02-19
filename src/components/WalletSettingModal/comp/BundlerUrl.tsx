@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useSettingStore } from "@src/store/settingStore";
+import { shallow } from "zustand/shallow";
+import { toast } from "material-react-toastify";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import { Input } from "@src/components/Input";
 import Button from "@src/components/Button";
@@ -9,9 +12,17 @@ interface IBundlerUrl {
 }
 
 export default function BundlerUrl({ onChange, onCancel }: IBundlerUrl) {
-    const [bundlerUrl, setBundlerUrl] = useState("");
+    const [bundlerUrl, setBundlerUrl] = useSettingStore(
+        (state: any) => [state.bundlerUrl, state.setBundlerUrl],
+        shallow,
+    );
+
+    const [tempUrl, setTempUrl] = useState(bundlerUrl);
 
     const doConfirm = () => {
+        //valid url first
+        setBundlerUrl(tempUrl);
+        toast.success("Updated Bundler URL");
         onChange(0);
         onCancel();
     };
@@ -28,8 +39,8 @@ export default function BundlerUrl({ onChange, onCancel }: IBundlerUrl) {
             <div className="flex flex-col gap-4">
                 <Input
                     labelColor="text-black"
-                    value={bundlerUrl}
-                    onChange={setBundlerUrl}
+                    value={tempUrl}
+                    onChange={setTempUrl}
                     error=""
                 />
 

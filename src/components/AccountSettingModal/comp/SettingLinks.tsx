@@ -1,13 +1,15 @@
 import React from "react";
-import Switch from "@src/components/Switch";
 import cn from "classnames";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
+import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 interface ISettingLinks {
     onChange: (index: number) => void;
 }
 
 export default function SettingLinks({ onChange }: ISettingLinks) {
+    const { walletAddress } = useWalletContext();
     const linksStyle =
         "text-black leading-none hover:bg-gray40 cursor-pointer px-4 py-3";
     return (
@@ -26,15 +28,13 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
                 Download guardian list
             </a>
             <a className={cn(linksStyle, "flex justify-between items-center")}>
-                <div>
-                    <div>Approve Paymaster</div>
-                    <div className="text-sm text-gray60 mt-1">
-                        Use USD to pay for gas
-                    </div>
-                </div>
-                <Switch checked={true} onChange={() => {}} />
+                <ApprovePaymaster />
             </a>
-            <a target="_blank" className={linksStyle}>
+            <a
+                target="_blank"
+                className={linksStyle}
+                href={`${config.scanUrl}/address/${walletAddress}`}
+            >
                 view on explorer
             </a>
         </div>

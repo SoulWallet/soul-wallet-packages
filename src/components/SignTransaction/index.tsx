@@ -89,7 +89,7 @@ export default forwardRef<any>((props, ref) => {
         <div
             ref={ref}
             className={cn(
-                "flex flex-col justify-between h-full p-6 z-20 absolute top-0 bottom-0 left-0 right-0 bg-white",
+                "flex flex-col justify-between h-full p-6 z-20 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-y-hidden",
                 !visible && "hidden",
             )}
         >

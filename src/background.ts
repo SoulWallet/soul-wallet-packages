@@ -69,20 +69,13 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
 
         case "execute":
-            const { actionName, operation, requestId, tabId } = msg.data;
+            const { actionName, operation, userOpHash, tabId } = msg.data;
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
-            const userOpHash = parsedOperation.getUserOpHash(
-                config.contracts.entryPoint,
-                config.chainId,
-            );
-
-            console.log("after from json hash", userOpHash);
-
             await executeTransaction(
                 parsedOperation,
-                requestId,
+                userOpHash,
                 actionName,
                 tabId,
             );
@@ -90,7 +83,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
             // send msg back
             browser.runtime.sendMessage({
                 target: "soul",
-                data: requestId,
+                data: userOpHash,
             });
     }
 });
