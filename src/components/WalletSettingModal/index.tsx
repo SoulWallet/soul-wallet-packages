@@ -1,14 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import useKeystore from "@src/hooks/useKeystore";
 import IconClose from "@src/assets/icons/close.svg";
-import { ISettingModal } from "@src/types/IModal";
+import { IWalletSettingModal } from "@src/types/IModal";
 import Modal from "../Modal";
 import SettingLinks from "./comp/SettingLinks";
 import ResetPassword from "./comp/ResetPassword";
 import BundlerUrl from "./comp/BundlerUrl";
 
-export default function SettingModal({ onCancel }: ISettingModal) {
+export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
     const navigate = useNavigate();
     const keyStore = useKeystore();
     const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
@@ -43,7 +43,10 @@ export default function SettingModal({ onCancel }: ISettingModal) {
     };
 
     return (
-        <Modal className=" top-0 left-0 right-0">
+        <Modal
+            className="top-0 left-0 right-0 rounded-t-none"
+            onCancel={onCancel}
+        >
             <ModalNavBar />
             {currentModalIndex === 0 && (
                 <SettingLinks onChange={setCurrentModalIndex} />

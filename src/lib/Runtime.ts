@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 
 export default {
     send(type: string, data: any) {
-        const { requestId } = data;
+        const { userOpHash } = data;
 
         return new Promise(async (resolve, reject) => {
             try {
@@ -13,7 +13,7 @@ export default {
 
                 browser.runtime.onMessage.addListener(async (msg) => {
                     console.log("got mesg", msg);
-                    if (msg.target === "soul" && msg.data === requestId) {
+                    if (msg.target === "soul" && msg.data === userOpHash) {
                         resolve(msg.data);
                     }
                 });

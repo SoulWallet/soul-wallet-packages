@@ -101,7 +101,8 @@ export default class KeyStore {
                 const account = await web3.eth.accounts.decrypt(val, password);
 
                 this._privateKey = account.privateKey;
-                // console.log('pk', this._privateKey)
+
+                console.log("pk", this._privateKey);
                 await setSessionStorage("pw", password);
                 return account.address;
             }
@@ -112,6 +113,24 @@ export default class KeyStore {
     public async lock(): Promise<void> {
         this._privateKey = null;
         await removeSessionStorage("pw");
+    }
+
+    public async changePassword(
+        originalPassword: string,
+        newPassword: string,
+    ): Promise<void> {
+        const val = await getLocalStorage(this.keyStoreKey);
+        if (val && val.address && val.crypto) {
+            const account = await web3.eth.accounts.decrypt(
+                val,
+                originalPassword,
+            );
+
+            const KeystoreV3 = account.encrypt(newPassword);
+
+            await setLocalStorage(this.keyStoreKey, KeystoreV3);
+            await setSessionStorage("pw", newPassword);
+        }
     }
 
     public async delete(): Promise<void> {
