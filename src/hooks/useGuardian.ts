@@ -56,12 +56,24 @@ export default function useGuardian() {
         console.log(loadLocalGuardian);
         return JSON.parse(localGuardianConfig); //push? delete?
     };
+
+    const loadLocalTempGuardian = async () => {
+        const localGuardianConfig =
+            (await getLocalStorage(
+                "localTempGuardianConfig-" + walletAddress
+            )) || {};
+        console.log(loadLocalGuardian);
+        return JSON.parse(localGuardianConfig); //push? delete?
+    };
+
+    // joi implement this function in plugin front page
     // const loadFileGuardian = async (guardianListObjArray: Json) => {
     //     const localGuardianConfig = null;
     //     // todo coding
     //     return localGuardianConfig;
     // };
 
+    // it should be the formate of guardian list type, to be upgrade @todo
     type elementG = {
         id: string;
         name: string;
@@ -72,10 +84,14 @@ export default function useGuardian() {
 
     const _checkGuardianConfig = async (guardArray: guardianListObjArray) => {
         // const localGuardianConfig = getLocalStorage("localGuardianConfig");
-
+        // It will add more checking rules here @todo
         guardArray.forEach((element) => {
             if (!verifyAddressFormat(element.wallet_address)) {
-                return false;
+                return {
+                    result: false,
+                    data: null,
+                    msg: "Error in parsing the guardian config.",
+                };
             }
         });
         return true;
@@ -107,8 +123,17 @@ export default function useGuardian() {
         }
 
         const guardianListStringArray = JSON.stringify(guardArray);
-        await removeLocalStorage("localGuardianConfig-" + walletAddress); // to be discuss
-        await setLocalStorage("localGuardianConfig-", guardianListStringArray);
+        await removeLocalStorage("localTempGuardianConfig-" + walletAddress); // to be discuss
+        await setLocalStorage(
+            "localTempGuardianConfig-",
+            guardianListStringArray,
+        );
+        return true;
+    };
+
+    // save final guardian config to local storage
+    const removeTempGuardian = async () => {
+        await removeLocalStorage("localTempGuardianConfig-" + walletAddress); // to be discuss
         return true;
     };
 
@@ -116,5 +141,8 @@ export default function useGuardian() {
         updateGuardian,
         saveLocalGuardian,
         saveTempLocalGuardian,
+        loadLocalGuardian,
+        loadLocalTempGuardian,
+        removeTempGuardian,
     };
 }
