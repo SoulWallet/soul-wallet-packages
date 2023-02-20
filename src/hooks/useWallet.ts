@@ -1,5 +1,4 @@
 import useWalletContext from "../context/hooks/useWalletContext";
-import { guardianList } from "@src/config/mock";
 import useKeystore from "./useKeystore";
 import useTools from "./useTools";
 import useLib from "./useLib";
@@ -7,8 +6,7 @@ import useQuery from "./useQuery";
 import config from "@src/config";
 
 export default function useWallet() {
-    const { account, executeOperation, ethersProvider, walletAddress } =
-        useWalletContext();
+    const { account, executeOperation, ethersProvider, walletAddress } = useWalletContext();
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode, getFeeCost } = useTools();
     const keyStore = useKeystore();
@@ -18,7 +16,7 @@ export default function useWallet() {
         const actionName = "Activate Wallet";
         const currentFee = await getGasPrice();
 
-        const guardianInitCode = getGuardianInitCode(guardianList);
+        const guardianInitCode = getGuardianInitCode();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -39,7 +37,7 @@ export default function useWallet() {
         const actionName = "Activate Wallet with USDC";
         const currentFee = await getGasPrice();
 
-        const guardianInitCode = getGuardianInitCode(guardianList);
+        const guardianInitCode = getGuardianInitCode();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -60,12 +58,11 @@ export default function useWallet() {
                 spender: config.contracts.paymaster,
             },
         ];
-        const approveCallData =
-            await soulWalletLib.Tokens.ERC20.getApproveCallData(
-                ethersProvider,
-                walletAddress,
-                approveData,
-            );
+        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
+            ethersProvider,
+            walletAddress,
+            approveData,
+        );
         activateOp.callData = approveCallData.callData;
         activateOp.callGasLimit = approveCallData.callGasLimit;
 
@@ -73,7 +70,7 @@ export default function useWallet() {
     };
 
     const calculateWalletAddress = (address: string) => {
-        const guardianInitCode = getGuardianInitCode(guardianList);
+        const guardianInitCode = getGuardianInitCode();
 
         return soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
@@ -86,10 +83,7 @@ export default function useWallet() {
     };
 
     const getRecoverId = async (newOwner: string, walletAddress: string) => {
-        let nonce = await soulWalletLib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        let nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = await getGasPrice();
 
         const recoveryOp = await soulWalletLib.Guardian.transferOwner(
@@ -106,10 +100,7 @@ export default function useWallet() {
             throw new Error("recoveryOp is null");
         }
 
-        const userOpHash = recoveryOp.getUserOpHash(
-            config.contracts.entryPoint,
-            config.chainId,
-        );
+        const userOpHash = recoveryOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
         return { userOpHash, recoveryOp };
     };
@@ -117,10 +108,7 @@ export default function useWallet() {
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const actionName = "Recover Wallet";
 
-        const { userOpHash, recoveryOp }: any = await getRecoverId(
-            newOwner,
-            walletAddress,
-        );
+        const { userOpHash, recoveryOp }: any = await getRecoverId(newOwner, walletAddress);
 
         // TODO, add guardian signatures here
         const signPack = "";

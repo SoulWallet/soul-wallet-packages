@@ -7,7 +7,6 @@ import config from "@src/config";
 import useLib from "./useLib";
 import useTools from "./useTools";
 import useQuery from "./useQuery";
-import { guardianList } from "@src/config/mock";
 
 export default function useGuardian() {
     const { soulWalletLib } = useLib();
@@ -16,12 +15,13 @@ export default function useGuardian() {
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode } = useTools();
 
-    const updateGuardian = async (guardianAddress: string) => {
-        const actionName = "Add Guardian";
+    const updateGuardian = async (guardiansList: string[]) => {
+        const actionName = "Update Guardian";
         const currentFee = await getGasPrice();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
-        const guardianInitCode = getGuardianInitCode(guardianList);
+        // TODO, change to get from store
+        const guardianInitCode = getGuardianInitCode(guardiansList);
         // TODO, need new guardianInitCode here
         const setGuardianOp = await soulWalletLib.Guardian.setGuardian(
             ethersProvider,
