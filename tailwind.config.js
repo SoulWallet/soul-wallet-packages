@@ -62,6 +62,8 @@ module.exports = {
             backgroundImage: {
                 "web-bg": "url('/src/assets/bg.svg')",
                 gray60: "#999999",
+                gray60: "#737373",
+                gray80: "#4d4d4d",
                 green: "#48BE93",
             },
         },
