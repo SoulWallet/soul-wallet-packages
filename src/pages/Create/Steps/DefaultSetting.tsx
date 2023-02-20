@@ -1,14 +1,14 @@
 import Button from "@src/components/Button";
+import { useSettingStore } from "@src/store/settingStore";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React from "react";
 
 const DefaultSetting = () => {
     const dispatch = useStepDispatchContext();
+    const setIsDefaultProvider = useSettingStore((state: any) => state.setIsDefaultProvider);
 
-    const handleNext = (setDefault: boolean) => {
-        if (setDefault) {
-        } else {
-        }
+    const handleNext = (setDefault: boolean = true) => {
+        setIsDefaultProvider(setDefault);
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: CreateStepEn.Completed,

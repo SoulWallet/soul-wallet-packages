@@ -27,10 +27,7 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
 
     return (
         <div className="px-6 pt-3 pb-8">
-            <PageTitle
-                title="Reset login password"
-                onBack={() => onChange(0)}
-            />
+            <PageTitle title="Reset login password" onBack={() => onChange(0)} />
             <div className="flex flex-col gap-4">
                 <Input
                     label="Original password"
@@ -59,7 +56,7 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
                     error=""
                 />
 
-                <Button onClick={doConfirm} classNames="btn-blue mt-1">
+                <Button onClick={doConfirm} className="btn-blue mt-1">
                     Confirm
                 </Button>
             </div>

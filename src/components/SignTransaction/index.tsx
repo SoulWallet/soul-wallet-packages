@@ -161,10 +161,10 @@ export default forwardRef<any>((props, ref) => {
             </div>
 
             <div className="flex gap-2 px-6">
-                <Button classNames="btn-red w-1/2" onClick={onReject}>
+                <Button className="btn-red w-1/2" onClick={onReject}>
                     Cancel
                 </Button>
-                <Button classNames="btn-blue w-1/2" onClick={onConfirm} loading={signing} disabled={loadingFee}>
+                <Button className="btn-blue w-1/2" onClick={onConfirm} loading={signing} disabled={loadingFee}>
                     Sign
                 </Button>
             </div>

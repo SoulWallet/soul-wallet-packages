@@ -15,23 +15,17 @@ export default function ActivateWallet() {
         <>
             <Navbar />
             <div className="px-6 pb-8">
-                <PageTitle
-                    title="Activate Wallet"
-                    onBack={() => navigate("/wallet")}
-                />
+                <PageTitle title="Activate Wallet" onBack={() => navigate("/wallet")} />
                 <ApprovePaymaster />
 
                 <div className="my-6">
                     <div className="mb-1">Wallet address</div>
                     <div className="bg-gray20 rounded-lg p-3">
-                        <ReceiveCode
-                            walletAddress={walletAddress}
-                            addressTop={true}
-                        />
+                        <ReceiveCode walletAddress={walletAddress} addressTop={true} />
                     </div>
                 </div>
 
-                <Button onClick={() => {}} classNames="btn-blue">
+                <Button onClick={() => {}} className="btn-blue">
                     Next
                 </Button>
             </div>

@@ -29,22 +29,13 @@ export default function BundlerUrl({ onChange, onCancel }: IBundlerUrl) {
 
     return (
         <div className="px-6 pt-3 pb-8">
-            <img
-                src={IconArrowBack}
-                className="cursor-pointer w-6 mb-2"
-                onClick={() => onChange(0)}
-            />
+            <img src={IconArrowBack} className="cursor-pointer w-6 mb-2" onClick={() => onChange(0)} />
 
             <div className="text-black text-lg font-bold mb-3">Bundler URL</div>
             <div className="flex flex-col gap-4">
-                <Input
-                    labelColor="text-black"
-                    value={tempUrl}
-                    onChange={setTempUrl}
-                    error=""
-                />
+                <Input labelColor="text-black" value={tempUrl} onChange={setTempUrl} error="" />
 
-                <Button onClick={doConfirm} classNames="btn-blue mt-1">
+                <Button onClick={doConfirm} className="btn-blue mt-1">
                     Confirm
                 </Button>
             </div>
