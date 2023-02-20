@@ -35,7 +35,7 @@ export default function BundlerUrl({ onChange, onCancel }: IBundlerUrl) {
             <div className="flex flex-col gap-4">
                 <Input labelColor="text-black" value={tempUrl} onChange={setTempUrl} error="" />
 
-                <Button onClick={doConfirm} className="btn-blue mt-1">
+                <Button onClick={doConfirm} type="primary" className="h-auto mt-1">
                     Confirm
                 </Button>
             </div>

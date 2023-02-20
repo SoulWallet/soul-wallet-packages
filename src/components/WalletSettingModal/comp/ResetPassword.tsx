@@ -56,7 +56,7 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
                     error=""
                 />
 
-                <Button onClick={doConfirm} className="btn-blue mt-1">
+                <Button onClick={doConfirm} type="primary" className="h-auto mt-1">
                     Confirm
                 </Button>
             </div>

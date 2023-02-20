@@ -18,8 +18,7 @@ interface IProps {
 export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [accountSettingModalVisible, setAccountSettingModalVisible] =
-        useState<boolean>(false);
+    const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
     const { walletType, getWalletType } = useWalletContext();
     const { activateWalletETH, activateWalletUSDC } = useWallet();
 
@@ -65,13 +64,9 @@ export default function AccountInfo({ account, action }: IProps) {
                 <a
                     className={cn(
                         "cursor-pointer border-4 flex",
-                        accountSettingModalVisible
-                            ? "z-[100] rounded-full relative border-blue"
-                            : "border-transparent",
+                        accountSettingModalVisible ? "z-[100] rounded-full relative border-blue" : "border-transparent",
                     )}
-                    onClick={() =>
-                        setAccountSettingModalVisible((prev) => !prev)
-                    }
+                    onClick={() => setAccountSettingModalVisible((prev) => !prev)}
                 >
                     <AddressIcon width={48} address={account} />
                 </a>
@@ -79,16 +74,14 @@ export default function AccountInfo({ account, action }: IProps) {
 
             {action === "activate" && walletType === "eoa" && (
                 <div className="px-6 py-4 w-full">
-                    <Button className="btn-blue w-full" onClick={doActivate} loading={loading}>
+                    <Button type={"primary"} className="h-auto" onClick={doActivate} loading={loading}>
                         Activate wallet
                     </Button>
                 </div>
             )}
 
             {accountSettingModalVisible && (
-                <AccountSettingModal
-                    onCancel={() => setAccountSettingModalVisible(false)}
-                />
+                <AccountSettingModal onCancel={() => setAccountSettingModalVisible(false)} />
             )}
         </div>
     );
