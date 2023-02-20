@@ -1,9 +1,11 @@
 import Button from "@src/components/Button";
+import useBrowser from "@src/hooks/useBrowser";
 import React from "react";
 
 const Completion = () => {
+    const { openWallet } = useBrowser();
     const handleToMyWallet = () => {
-        // TODO: here
+        openWallet();
     };
     return (
         <div className="tip-text mx-0 pb-14">

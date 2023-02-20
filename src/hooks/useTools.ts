@@ -1,16 +1,23 @@
 import config from "@src/config";
 import useLib from "./useLib";
+import { useGlobalStore } from "@src/store/global";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ethers, BigNumber } from "ethers";
 
 export default function useTools() {
+    const { guardians } = useGlobalStore();
     const { ethersProvider } = useWalletContext();
     const { soulWalletLib } = useLib();
-    const getGuardianInitCode = (guardianList: any) => {
+
+    console.log("guardian list from store", guardians);
+
+    const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
+
+    const getGuardianInitCode = (list = guardiansList) => {
         return soulWalletLib.Guardian.calculateGuardianAndInitCode(
             config.contracts.guardianLogic,
-            guardianList,
-            Math.round(guardianList.length / 2),
+            list,
+            Math.round(list.length / 2),
             config.guardianSalt,
         );
     };
@@ -22,11 +29,7 @@ export default function useTools() {
     const getFeeCost = async (activateOp: any, tokenAddress?: string) => {
         // calculate eth cost
         const requiredPrefund = activateOp.requiredPrefund();
-        console.log(
-            "requiredPrefund: ",
-            ethers.utils.formatEther(requiredPrefund),
-            "ETH",
-        );
+        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
 
         if (!tokenAddress) {
             return {
@@ -45,11 +48,7 @@ export default function useTools() {
         const tokenDecimals = exchangePrice.tokenDecimals || 6;
         // print price now
         console.log(
-            "exchangePrice: " +
-                ethers.utils.formatUnits(
-                    exchangePrice.price,
-                    exchangePrice.decimals,
-                ),
+            "exchangePrice: " + ethers.utils.formatUnits(exchangePrice.price, exchangePrice.decimals),
             "USDC/ETH",
         );
         // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
@@ -58,18 +57,11 @@ export default function useTools() {
             .mul(BigNumber.from(10).pow(tokenDecimals))
             .div(BigNumber.from(10).pow(exchangePrice.decimals))
             .div(BigNumber.from(10).pow(18));
-        console.log(
-            "requiredUSDC: " +
-                ethers.utils.formatUnits(requiredUSDC, tokenDecimals),
-            "USDC",
-        );
+        console.log("requiredUSDC: " + ethers.utils.formatUnits(requiredUSDC, tokenDecimals), "USDC");
 
         return {
             requireAmountInWei: requiredUSDC,
-            requireAmount: ethers.utils.formatUnits(
-                requiredUSDC,
-                tokenDecimals,
-            ),
+            requireAmount: ethers.utils.formatUnits(requiredUSDC, tokenDecimals),
         };
     };
 
@@ -88,10 +80,7 @@ export default function useTools() {
             },
         );
 
-        const callDataDecode =
-            await soulWalletLib.Utils.DecodeCallData.new().decode(
-                operation.callData,
-            );
+        const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(operation.callData);
         console.log(`callDataDecode:`, callDataDecode);
 
         return callDataDecode;
