@@ -9,9 +9,8 @@ import cn from "classnames";
 import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ICostItem } from "@src/types/IAssets";
-import useTools from "@src/hooks/useTools";
 import config from "@src/config";
-import useQuery from "@src/hooks/useQuery";
+import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
 import PageTitle from "../PageTitle";
@@ -30,7 +29,7 @@ const CostItem = ({ label, value, memo }: ICostItem) => {
 };
 
 export default forwardRef<any>((props, ref) => {
-    const { account } = useWalletContext();
+    const { walletAddress } = useWalletContext();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
@@ -44,7 +43,7 @@ export default forwardRef<any>((props, ref) => {
     const [activeOperation, setActiveOperation] = useState("");
     const [activePaymasterData, setActivePaymasterData] = useState({});
     const { soulWalletLib } = useLib();
-    const { getFeeCost } = useTools();
+    const { getFeeCost, decodeCalldata } = useTools();
 
     useImperativeHandle(ref, () => ({
         async show(
@@ -60,25 +59,7 @@ export default forwardRef<any>((props, ref) => {
             // todo, there's a problem when sendETH
             if (operation) {
                 setActiveOperation(operation);
-                const tmpMap = new Map<string, string>();
-                soulWalletLib.Utils.DecodeCallData.new().setStorage(
-                    (key, value) => {
-                        tmpMap.set(key, value);
-                    },
-                    (key) => {
-                        const v = tmpMap.get(key);
-                        if (typeof v === "string") {
-                            return v;
-                        }
-                        return null;
-                    },
-                );
-
-                const callDataDecode =
-                    await soulWalletLib.Utils.DecodeCallData.new().decode(
-                        operation.callData,
-                    );
-                console.log(`callDataDecode:`, callDataDecode);
+                const callDataDecode = decodeCalldata(operation);
                 setDecodedData(callDataDecode);
             }
 
@@ -169,9 +150,10 @@ export default forwardRef<any>((props, ref) => {
                 <div className="info-box">
                     <div className="mb-2 text-gray60">Account</div>
                     <div className="flex gap-2 items-center">
-                        <AddressIcon width={32} address={account} />
+                        <AddressIcon width={32} address={walletAddress} />
                         <div className="font-bold text-lg font-sans">
-                            {account.slice(0, 6)}...{account.slice(-6)}
+                            {walletAddress.slice(0, 6)}...
+                            {walletAddress.slice(-6)}
                         </div>
                     </div>
                 </div>

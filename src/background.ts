@@ -73,6 +73,8 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
+            console.log("parsed op", parsedOperation);
+
             await executeTransaction(
                 parsedOperation,
                 actionName,

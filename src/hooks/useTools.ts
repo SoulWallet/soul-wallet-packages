@@ -73,5 +73,34 @@ export default function useTools() {
         };
     };
 
-    return { getGuardianInitCode, verifyAddressFormat, getFeeCost };
+    const decodeCalldata = async (operation: any) => {
+        const tmpMap = new Map<string, string>();
+        soulWalletLib.Utils.DecodeCallData.new().setStorage(
+            (key, value) => {
+                tmpMap.set(key, value);
+            },
+            (key) => {
+                const v = tmpMap.get(key);
+                if (typeof v === "string") {
+                    return v;
+                }
+                return null;
+            },
+        );
+
+        const callDataDecode =
+            await soulWalletLib.Utils.DecodeCallData.new().decode(
+                operation.callData,
+            );
+        console.log(`callDataDecode:`, callDataDecode);
+
+        return callDataDecode;
+    };
+
+    return {
+        getGuardianInitCode,
+        verifyAddressFormat,
+        getFeeCost,
+        decodeCalldata,
+    };
 }

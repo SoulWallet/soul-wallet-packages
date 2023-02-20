@@ -36,12 +36,12 @@ const engine = new JsonRpcEngine();
 
 engine.push(soulMiddleware);
 
-engine.push(
-    createInfuraMiddleware({
-        network: "goerli",
-        projectId: "be71e669fc24426aa39ca6c212bf58c9",
-    }),
-);
+// engine.push(
+//     createInfuraMiddleware({
+//         network: "goerli",
+//         projectId: "be71e669fc24426aa39ca6c212bf58c9",
+//     }),
+// );
 
 const provider = providerFromEngine(engine);
 

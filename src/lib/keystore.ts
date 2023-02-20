@@ -102,7 +102,6 @@ export default class KeyStore {
 
                 this._privateKey = account.privateKey;
 
-                console.log("pk", this._privateKey);
                 await setSessionStorage("pw", password);
                 return account.address;
             }

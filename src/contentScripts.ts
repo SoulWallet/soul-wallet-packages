@@ -5,7 +5,7 @@ function sendMessage(data) {
     data.url = `chrome-extension://${browser.runtime.id}/popup.html#/sign?action=${data.action}`;
     data.pos = {
         width: 360,
-        height: 568 + 28, // 28 is title bar
+        height: 600 + 28, // 28 is title bar
         top: 0,
         left: window.screen.width - 360,
     };

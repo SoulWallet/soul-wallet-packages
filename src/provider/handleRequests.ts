@@ -19,8 +19,6 @@ const sendTransaction = async (params: any) => {
         param.value = "0x0";
     }
 
-    console.log("tx params", param);
-
     const opData: any = await Bus.send("approve", "approveTransaction", param);
 
     opData.actionName = "Transaction";

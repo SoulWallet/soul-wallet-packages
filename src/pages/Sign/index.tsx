@@ -5,6 +5,7 @@ import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
 import useTransaction from "@src/hooks/useTransaction";
@@ -16,6 +17,7 @@ export default function Sign() {
     const { signTransaction } = useTransaction();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
+    const keystore = useKeystore();
 
     const signUserTx: any = async () => {
         const {
@@ -31,10 +33,8 @@ export default function Sign() {
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
-        const nonce = await soulWalletLib.Utils.getNonce(
-            fromAddress,
-            ethersProvider,
-        );
+        const nonce = await soulWalletLib.Utils.getNonce(from, ethersProvider);
+
         try {
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 [
@@ -61,10 +61,11 @@ export default function Sign() {
                 config.chainId,
             );
 
-            // TODO, this function should be renamed
-            const signature = await signTransaction(userOpHash);
+            console.log("OPPPPP hash", userOpHash);
 
-            console.log("signature", signature);
+            const signature = await keystore.sign(userOpHash);
+
+            console.log("SIG", signature);
 
             if (!signature) {
                 return;
@@ -114,8 +115,9 @@ export default function Sign() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        console.log("s params", searchParams);
         const { actionType, origin } = searchParams;
+
+        console.log("determine action", searchParams);
 
         // TODO, 1. need to check if account is locked.
         if (actionType === "getAccounts") {
@@ -136,11 +138,18 @@ export default function Sign() {
             }
         } else if (actionType === "approveTransaction") {
             try {
-                // format signature of userOP
+                const { tabId, operation, userOpHash } = await signUserTx();
 
-                await signModal.current.show("", actionType, origin, true);
+                const paymasterAndData = await signModal.current.show(
+                    operation,
+                    actionType,
+                    origin,
+                    true,
+                );
 
-                const { operation, userOpHash, tabId } = await signUserTx();
+                if (paymasterAndData) {
+                    operation.paymasterAndData = paymasterAndData;
+                }
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -148,7 +157,7 @@ export default function Sign() {
                     action: "approveTransaction",
                     tabId: searchParams.tabId,
                     data: {
-                        operation: JSON.stringify(operation),
+                        operation: operation.toJSON(),
                         userOpHash,
                         tabId,
                     },
@@ -156,7 +165,7 @@ export default function Sign() {
             } catch (err) {
                 console.log(err);
             } finally {
-                window.close();
+                // window.close();
             }
         }
     };
@@ -168,5 +177,10 @@ export default function Sign() {
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 
-    return <SignTransaction ref={signModal} />;
+    return (
+        <div>
+            {/** TODO, add loading here */}
+            <SignTransaction ref={signModal} />
+        </div>
+    );
 }

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
-import { SoulWalletLib } from "soul-wallet-lib";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
+import { setLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import useKeystore from "@src/hooks/useKeystore";
 import { useSettingStore } from "@src/store/settingStore";
@@ -55,6 +55,7 @@ export const WalletContextProvider = ({ children }: any) => {
         setAccount(res);
         const wAddress = calculateWalletAddress(res);
         setWalletAddress(wAddress);
+        setLocalStorage("activeWalletAddress", wAddress);
     };
 
     const getWalletType = async () => {
