@@ -143,7 +143,86 @@
         @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
     }
 
+    .btn-purple{
+        @apply text-lg  h-48 font-bold min-h-fit text-purple border-purple bg-white;
+    }
 
+
+    .btn-purple:hover {
+        @apply bg-white brightness-125 border-purple;
+    }
+
+    .btn-purple-primary {
+        @apply  bg-purple border-purple text-white;
+    }
+
+    .btn-purple-primary:hover {
+        @apply  bg-purple brightness-105 border-purple;
+    }
+
+    .btn-purple-disabled{
+        @apply opacity-60;
+    }
+
+    .btn-purple-disabled:hover{
+        @apply cursor-not-allowed brightness-90;
+    }
+    .btn-purple-error{
+        @apply text-alarmRed  border-alarmRed;
+    }
+
+    .btn-purple-error:hover{
+        @apply text-alarmRed  border-alarmRed brightness-105;
+    }
+    .input {
+        @apply rounded-full bg-black bg-opacity-5 border-transparent;
+    
+    }
+
+    .tip-text{
+        @apply text-black text-sm;
+    }
+
+    .skip-text{
+        @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
+    }
+
+    .btn-purple{
+        @apply text-lg  h-48 font-bold min-h-fit text-purple border-purple bg-white;
+    }
+
+
+    .btn-purple:hover {
+        @apply bg-white brightness-125 border-purple;
+    }
+
+    .btn-purple-primary {
+        @apply  bg-purple border-purple text-white;
+    }
+
+    .btn-purple-primary:hover {
+        @apply  bg-purple brightness-105 border-purple;
+    }
+
+    .btn-purple-disabled{
+        @apply opacity-60;
+    }
+
+    .btn-purple-disabled:hover{
+        @apply cursor-not-allowed brightness-90;
+    }
+    .btn-purple-error{
+        @apply text-alarmRed  border-alarmRed;
+    }
+
+    .btn-purple-error:hover{
+        @apply text-alarmRed  border-alarmRed brightness-105;
+    }
+    
+    .input {
+        @apply rounded-full bg-black bg-opacity-5 border-transparent;
+    
+    }
 }
 
 @font-face {
@@ -180,6 +259,7 @@ body {
 .Toastify__toast {
     border-radius: 0;
 }
+
 
 .progress-window-shadow{
     background: rgba(255, 255, 255, 0.02);

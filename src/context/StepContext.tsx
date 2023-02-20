@@ -63,7 +63,7 @@ const stepReducer: (prevStepState: StepState, action: IStepAction) => StepState 
 
 export const StepContextProvider = ({ children }: { children: ReactNode }) => {
     const [step, dispatch] = useReducer(stepReducer, {
-        current: RecoverStepEn.Start, // both 0 to start
+        current: 0, // both 0 to start
     });
 
     return (

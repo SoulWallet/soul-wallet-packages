@@ -20,7 +20,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const [passwordMessage, setPasswordMessage] = useState<string>();
 
     const handleNext = () => {
-        if (password?.length < 9) {
+        if ((password?.length ?? 0) < 9) {
             setPasswordMessage("Password must be at least 9 characters long");
             return;
         }
@@ -56,9 +56,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
                 placeholder="Enter again"
                 value={confirmPwd}
                 visible={confirmPwdVisible}
-                errorMsg={
-                    (password && password?.length < 9) || isPwdSame ? undefined : "Please enter the same password"
-                }
+                errorMsg={(password?.length ?? 0) < 9 || isPwdSame ? undefined : "Please enter the same password"}
                 toggleVisibility={() => setConfirmPwdVisible((state) => !state)}
                 onChange={(val) => setConfirmPwd(val)}
             />

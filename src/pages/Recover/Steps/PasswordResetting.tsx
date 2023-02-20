@@ -1,6 +1,6 @@
 import React from "react";
 import useKeystore from "@src/hooks/useKeystore";
-import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import { RecoverStepEn } from "@src/context/StepContext";
 import PasswordSetter from "@src/components/PasswordSetter";
 
 export default function PasswordResetting() {
