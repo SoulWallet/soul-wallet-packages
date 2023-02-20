@@ -5,11 +5,10 @@ import React from "react";
 const DefaultSetting = () => {
     const dispatch = useStepDispatchContext();
 
-    const handleConfirmed = () => {
-        // TODO: here
-    };
-
-    const handleNext = () => {
+    const handleNext = (setDefault: boolean) => {
+        if (setDefault) {
+        } else {
+        }
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: CreateStepEn.Completed,
@@ -22,11 +21,11 @@ const DefaultSetting = () => {
                 You can change this setting easily on our home page.
             </p>
 
-            <Button type="primary" onClick={handleConfirmed}>
+            <Button type="primary" onClick={() => handleNext(true)}>
                 Yes
             </Button>
 
-            <a className="skip-text mx-auto self-center mt-19 mb-38" onClick={handleNext}>
+            <a className="skip-text mx-auto self-center mt-19 mb-38" onClick={() => handleNext(false)}>
                 Skip for now
             </a>
         </div>

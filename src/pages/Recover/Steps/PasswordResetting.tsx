@@ -1,18 +1,18 @@
 import React from "react";
+import useKeystore from "@src/hooks/useKeystore";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import PasswordSetter from "@src/components/PasswordSetter";
 
 export default function PasswordResetting() {
-    const dispatch = useStepDispatchContext();
+    const keystore = useKeystore();
 
-    const handleSubmitPassword = (pwd: string) => {
-        //TODO: here
-        console.log("user reset password: ", pwd);
+    const handleSubmitPassword = async (pwd: string) => {
+        await keystore.createNewAddress(pwd, false);
     };
 
     return (
         <div className="pb-38">
-            <PasswordSetter nextStep={RecoverStepEn.GuardiansInputting} onSubmit={handleSubmitPassword} />
+            <PasswordSetter nextStep={RecoverStepEn.GuardiansImporting} onSubmit={handleSubmitPassword} />
         </div>
     );
 }

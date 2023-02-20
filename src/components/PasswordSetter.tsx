@@ -12,7 +12,7 @@ interface IProps {
 export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const dispatch = useStepDispatchContext();
 
-    const [password, setPassword] = useState<string>();
+    const [password, setPassword] = useState<string>("");
     const [confirmPwd, setConfirmPwd] = useState<string>();
     const [createPwdVisible, setCreatePwdVisible] = useState(false);
     const [confirmPwdVisible, setConfirmPwdVisible] = useState(false);
