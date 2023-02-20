@@ -1,6 +1,6 @@
 import Button from "@src/components/Button";
 import Icon from "@src/components/Icon";
-import Modal from "@src/components/Modal";
+import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
 import React, { useState } from "react";
 
@@ -103,7 +103,7 @@ const SignaturePending = () => {
                 </Button>
             </div>
 
-            <Modal visible={showShareModal} className="bg-white text-black">
+            <ModalV2 visible={showShareModal} className="bg-white text-black">
                 <div>
                     <div className="flex flex-row justify-between">
                         <h1 className="font-bold text-xl">Share recovery URL to your guardians</h1>
@@ -131,7 +131,7 @@ const SignaturePending = () => {
                         </Button>
                     </div>
                 </div>
-            </Modal>
+            </ModalV2>
         </div>
     );
 };

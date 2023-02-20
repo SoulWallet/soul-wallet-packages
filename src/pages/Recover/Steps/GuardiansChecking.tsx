@@ -1,10 +1,10 @@
 import Button from "@src/components/Button";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
-import Modal from "@src/components/Modal";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef, useState } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
 import { useGlobalStore } from "@src/store/global";
+import ModalV2 from "@src/components/ModalV2";
 
 const GuardiansChecking = () => {
     const formRef = useRef<IGuardianFormHandler>(null);
@@ -43,7 +43,7 @@ const GuardiansChecking = () => {
                 Ask For Signature
             </Button>
 
-            <Modal visible={showVerificationModal} id="verification-failed">
+            <ModalV2 visible={showVerificationModal} id="verification-failed">
                 <div className="flex flex-col items-center w-480 ">
                     <h1>Guardian addresses Verification failed</h1>
                     <img src={attentionIcon} alt="" className="w-64 h-64 my-40" />
@@ -51,7 +51,7 @@ const GuardiansChecking = () => {
                         Check again
                     </Button>
                 </div>
-            </Modal>
+            </ModalV2>
         </div>
     );
 };

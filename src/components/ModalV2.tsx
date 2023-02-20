@@ -8,7 +8,7 @@ interface IProps {
     className?: string;
 }
 
-const Modal = ({ visible, children, id = nanoid(), className }: IProps) => {
+const ModalV2 = ({ visible, children, id = nanoid(), className }: IProps) => {
     const [modalClassName, setModalClassName] = useState("modal-close");
 
     useEffect(() => {
@@ -26,4 +26,4 @@ const Modal = ({ visible, children, id = nanoid(), className }: IProps) => {
     );
 };
 
-export default Modal;
+export default ModalV2;
