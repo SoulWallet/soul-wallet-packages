@@ -3,13 +3,15 @@ import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef, useState } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
-import { useGlobalStore } from "@src/store/global";
 import ModalV2 from "@src/components/ModalV2";
+import { TEMPORARY_GUARDIANS_STORAGE_KEY, getSessionStorageV2, removeSessionStorageV2 } from "@src/lib/tools";
 
 const GuardiansChecking = () => {
+    const storage = getSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
+    const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
+
     const formRef = useRef<IGuardianFormHandler>(null);
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
-    const { temporaryGuardians, clearTemporaryGuardians } = useGlobalStore();
 
     const dispatch = useStepDispatchContext();
     const handleCheckGuardianAddresses = () => {
@@ -23,7 +25,7 @@ const GuardiansChecking = () => {
         // ! if check pass, then submit guardians to the global store
         formRef.current?.submit();
         // TODO: once the guardians are submitted, clear the temporary guardians
-        clearTemporaryGuardians();
+        removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
     };
 
     const handleAskSignature = () => {

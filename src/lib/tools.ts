@@ -87,10 +87,7 @@ export async function getSessionStorage(key: string): Promise<string> {
  * @param value
  * @returns
  */
-export async function setSessionStorage(
-    key: string,
-    value: any,
-): Promise<void> {
+export async function setSessionStorage(key: string, value: any): Promise<void> {
     // @ts-ignore
     return await chrome.storage.session.set({ [key]: value });
 }
@@ -105,18 +102,21 @@ export async function removeSessionStorage(key: string): Promise<void> {
 }
 
 export async function getGuardianName(address: string): Promise<void> {
-    let guardianNameMapping =
-        (await getLocalStorage("guardianNameMapping")) || {};
+    const guardianNameMapping = (await getLocalStorage("guardianNameMapping")) || {};
 
     return guardianNameMapping[address];
 }
 
-export async function setGuardianName(
-    address: string,
-    name: string,
-): Promise<void> {
-    let guardianNameMapping =
-        (await getLocalStorage("guardianNameMapping")) || {};
+export async function setGuardianName(address: string, name: string): Promise<void> {
+    const guardianNameMapping = (await getLocalStorage("guardianNameMapping")) || {};
     guardianNameMapping[address] = name;
     await setLocalStorage("guardianNameMapping", guardianNameMapping);
 }
+
+export const TEMPORARY_GUARDIANS_STORAGE_KEY = "TEMPORARY_GUARDIANS";
+
+export const getSessionStorageV2 = (key: string) => sessionStorage.getItem(key) ?? undefined;
+
+export const setSessionStorageV2 = (key: string, value: string) => sessionStorage.setItem(key, value);
+
+export const removeSessionStorageV2 = (key: string) => sessionStorage.removeItem(key);

@@ -1,14 +1,13 @@
 import Button from "@src/components/Button";
 import FileUploader from "@src/components/FileUploader";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import { TEMPORARY_GUARDIANS_STORAGE_KEY, setSessionStorageV2 } from "@src/lib/tools";
 import React, { useState } from "react";
-import { useGlobalStore } from "@src/store/global";
 
 const GuardiansImporting = () => {
     const [fileValid, setFileValid] = useState(false);
 
     const dispatch = useStepDispatchContext();
-    const { saveTemporaryGuardians } = useGlobalStore();
 
     const handleNext = () => {
         dispatch({
@@ -28,7 +27,8 @@ const GuardiansImporting = () => {
                 id: "1",
             },
         ];
-        saveTemporaryGuardians(parseRes);
+
+        setSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY, JSON.stringify(parseRes));
         setFileValid(true);
     };
 

@@ -53,7 +53,7 @@ const StepComponent = () => {
     );
 };
 
-export default function CreatePage() {
+export default function RecoverPage() {
     return (
         <FullscreenContainer>
             <StepContextProvider>
