@@ -1,8 +1,10 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
+import { setLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import useKeystore from "@src/hooks/useKeystore";
+import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
@@ -19,7 +21,7 @@ interface IWalletContext {
     walletAddress: string;
     getWalletType: () => Promise<void>;
     getAccount: () => Promise<void>;
-    executeOperation: (operation: any, actionName?: string) => Promise<void>;
+    executeOperation: (operation: any, actionName?: string, gasFormatted?: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
 }
 
@@ -36,6 +38,7 @@ export const WalletContext = createContext<IWalletContext>({
 });
 
 export const WalletContextProvider = ({ children }: any) => {
+    const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
@@ -46,12 +49,9 @@ export const WalletContextProvider = ({ children }: any) => {
     const getAccount = async () => {
         const res = await keyStore.getAddress();
         setAccount(res);
-
-        console.log("before", res);
         const wAddress = calculateWalletAddress(res);
-        console.log("after", wAddress);
-
         setWalletAddress(wAddress);
+        setLocalStorage("activeWalletAddress", wAddress);
     };
 
     const getWalletType = async () => {
@@ -66,26 +66,29 @@ export const WalletContextProvider = ({ children }: any) => {
     ) => {
         if (actionName) {
             try {
-                await signModal.current.show(operation, actionName, "Soul Wallet");
+                const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
+
+                if (paymasterAndData) {
+                    operation.paymasterAndData = paymasterAndData;
+                }
+
+                const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
+
+                const signature = await keyStore.sign(userOpHash);
+
+                if (signature) {
+                    operation.signWithSignature(account, signature || "");
+
+                    await Runtime.send("execute", {
+                        actionName,
+                        operation: operation.toJSON(),
+                        userOpHash,
+                        bundlerUrl,
+                    });
+                }
             } catch (err) {
                 throw Error("User rejected");
             }
-        }
-
-        const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
-
-        const signature = await keyStore.sign(userOpHash);
-
-        console.log("user signing op hash", userOpHash);
-
-        if (signature) {
-            operation.signWithSignature(account, signature || "");
-
-            await Runtime.send("execute", {
-                actionName,
-                operation: operation.toJSON(),
-                requestId: userOpHash,
-            });
         }
     };
 

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import cn from "classnames";
 import KeyStore from "@src/lib/keystore";
-import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Welcome from "@src/pages/Welcome";
 import { CreateWallet } from "@src/pages/CreateWallet";
 import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import Send from "@src/pages/Send";
 import Sign from "@src/pages/Sign";
+import ActivateWallet from "@src/pages/ActivateWallet";
 
 import { getLocalStorage } from "@src/lib/tools";
 // import StartPage from "./pages/Start";
@@ -52,11 +53,13 @@ export default function PluginRouter() {
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/send/:tokenAddress" element={<Send />} />
                 <Route path="/sign" element={<Sign />} />
+                <Route path="/activate-wallet" element={<ActivateWallet />} />
                 <Route path="/create-wallet" element={<CreateWallet />} />
                 <Route path="/recover-wallet" element={<RecoverWallet />} />
                 <Route path="/launch" element={<Launch />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/recover" element={<RecoverPage />} />
+                {/* <Route path="*" element={<Wallet />} /> */}
                 {!loading && <Route path="*" element={account ? <Wallet /> : <Welcome />} />}
             </Routes>
         </div>

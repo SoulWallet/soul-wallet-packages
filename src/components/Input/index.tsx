@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import IconChecked from "@src/assets/checked.svg";
+import IconEyeOpen from "@src/assets/icons/eye-open.svg";
+import IconEyeCLose from "@src/assets/icons/eye-close.svg";
 import cn from "classnames";
 import { IInputProps } from "@src/types/IInput";
 
@@ -13,9 +15,12 @@ export function Input({
     verified,
     label,
     ExtraButton,
+    labelColor,
     onEnter,
     onChange,
 }: IInputProps) {
+    const [eyeOpen, setEyeOpen] = useState(false);
+
     const onKeyDown = (e: any) => {
         const { keyCode } = e;
         if (keyCode === 13 && onEnter) {
@@ -27,7 +32,12 @@ export function Input({
         <div>
             {label && (
                 <label className="label">
-                    <span className="label-text text-gray60 text-base leading-none">
+                    <span
+                        className={cn(
+                            "label-text text-base leading-none",
+                            labelColor || "text-gray60",
+                        )}
+                    >
                         {label}
                     </span>
                 </label>
@@ -35,7 +45,7 @@ export function Input({
 
             <div className="relative">
                 <input
-                    type={type}
+                    type={type === "password" && eyeOpen ? "text" : type}
                     value={value}
                     onChange={(e) => {
                         onChange(e.target.value);
@@ -57,6 +67,14 @@ export function Input({
                 <div className="absolute right-4 flex items-center top-0 bottom-0">
                     {ExtraButton}
                 </div>
+
+                {type === "password" && (
+                    <img
+                        src={eyeOpen ? IconEyeOpen : IconEyeCLose}
+                        onClick={() => setEyeOpen((prev) => !prev)}
+                        className="absolute right-4 top-0 bottom-0 my-auto cursor-pointer"
+                    />
+                )}
             </div>
 
             {!error && memo && (

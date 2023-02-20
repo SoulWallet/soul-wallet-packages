@@ -7,7 +7,7 @@ export default function Switch({ checked, onChange }: ISwitchProps) {
         <div
             onClick={() => onChange(!checked)}
             className={cn(
-                "rounded-xl flex p-[2px] cursor-pointer w-[42px]",
+                "rounded-xl flex p-[2px] cursor-pointer w-[42px] h-6",
                 checked ? "bg-blue justify-end" : "bg-[#999]",
             )}
         >

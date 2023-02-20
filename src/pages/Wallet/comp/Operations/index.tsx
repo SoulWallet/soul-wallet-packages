@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import cn from "classnames";
 import Assets from "./comp/Assets";
+import Dapps from "./comp/Dapps";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import Activitys from "./comp/Activitys";
 const tabs = ["assets", "activity", "Dapps"];
 
 export default function Operations() {
+    const { walletType, getWalletType } = useWalletContext();
     const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
     return (
@@ -15,7 +18,7 @@ export default function Operations() {
                         <a
                             key={index}
                             className={cn(
-                                "py-3 text-center flex-1 cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
+                                "py-3 text-center flex-1 select-none cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
                                 activeTabIndex === index &&
                                     "border-blue text-blue text-base font-bold",
                             )}
@@ -26,9 +29,15 @@ export default function Operations() {
                     ))}
                 </div>
 
-                <div className="h-[150px] overflow-y-scroll">
+                <div
+                    className={cn(
+                        "overflow-y-scroll",
+                        walletType === "eoa" ? "h-[150px]" : "h-[230px]",
+                    )}
+                >
                     {activeTabIndex === 0 && <Assets />}
                     {activeTabIndex === 1 && <Activitys />}
+                    {activeTabIndex === 2 && <Dapps />}
                 </div>
             </div>
         </>

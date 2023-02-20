@@ -19,11 +19,12 @@ interface IProps {
     className?: string;
     onClick: () => void;
     loading?: boolean;
+    disabled?: boolean;
 }
 
-export default function Button({ className, onClick, children, loading, disable, type = "default" }: IProps) {
+export default function Button({ className, onClick, children, loading, disabled, type = "default" }: IProps) {
     const doClick = () => {
-        if (!loading && !disable) {
+        if (!loading || disabled) {
             onClick();
         }
     };
@@ -36,7 +37,7 @@ export default function Button({ className, onClick, children, loading, disable,
                 className,
                 loading && "opacity-70  bg-purple cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
-                disable && ButtonTypeStyleMap["disable"],
+                disabled && ButtonTypeStyleMap["disable"],
             )}
         >
             {loading ? <img src={IconLoading} className="w-24 h-24 " /> : children}

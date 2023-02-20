@@ -3,22 +3,21 @@
  */
 
 import useWalletContext from "../context/hooks/useWalletContext";
-import { EntryPointAbi } from "../abi";
 import useLib from "./useLib";
-import BN from "bignumber.js";
-import ky from "ky";
-import browser from "webextension-polyfill";
 import useQuery from "./useQuery";
+import BN from "bignumber.js";
+import useTools from "./useTools";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
-import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 export default function useTransaction() {
     const { executeOperation, walletAddress, ethersProvider } =
         useWalletContext();
+    const { getFeeCost } = useTools();
     const { getGasPrice } = useQuery();
     const keyStore = useKeystore();
-    const { soulWalletLib, bundler } = useLib();
+    const { soulWalletLib } = useLib();
 
     const signTransaction = async (txData: any) => {
         return await keyStore.sign(txData);
@@ -71,6 +70,10 @@ export default function useTransaction() {
             to,
             amountInWei,
         );
+
+        if (!op) {
+            return;
+        }
 
         await executeOperation(op, actionName);
     };

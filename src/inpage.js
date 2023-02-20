@@ -1,8 +1,9 @@
 // @ts-nocheck
 import Bus from "./lib/Bus";
+import config from "../src/config";
 import { JsonRpcEngine } from "json-rpc-engine";
 import { providerFromEngine } from "eth-json-rpc-middleware";
-import createInfuraMiddleware from "eth-json-rpc-infura";
+// import createInfuraMiddleware from "eth-json-rpc-infura";
 import createSoulMiddleware from "./provider/createSoulMiddleware";
 import shouldInjectProvider from "./provider/provider-injection";
 import handleRequests from "./provider/handleRequests";
@@ -36,18 +37,18 @@ const engine = new JsonRpcEngine();
 
 engine.push(soulMiddleware);
 
-engine.push(
-    createInfuraMiddleware({
-        network: "goerli",
-        projectId: "be71e669fc24426aa39ca6c212bf58c9",
-    }),
-);
+// engine.push(
+//     createInfuraMiddleware({
+//         network: "goerli",
+//         projectId: "be71e669fc24426aa39ca6c212bf58c9",
+//     }),
+// );
 
 const provider = providerFromEngine(engine);
 
 if (shouldInjectProvider()) {
     const providerToInject = {
-        chainId: "0x5",
+        chainId: config.chainId.toString(16),
         isMetamask: true,
         request: async (call) => {
             return await handleRequests(call);

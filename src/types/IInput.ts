@@ -6,6 +6,7 @@ export interface IInputProps {
     placeholder?: string;
     verified?: boolean;
     value: string;
+    labelColor?: string;
     error: string;
     ExtraButton?: React.ReactNode;
     onEnter?: () => void;

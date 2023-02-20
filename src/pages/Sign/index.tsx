@@ -5,6 +5,7 @@ import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
 import useTransaction from "@src/hooks/useTransaction";
@@ -16,6 +17,7 @@ export default function Sign() {
     const { signTransaction } = useTransaction();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
+    const keystore = useKeystore();
 
     const signUserTx: any = async () => {
         const {
@@ -31,10 +33,8 @@ export default function Sign() {
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
-        const nonce = await soulWalletLib.Utils.getNonce(
-            fromAddress,
-            ethersProvider,
-        );
+        const nonce = await soulWalletLib.Utils.getNonce(from, ethersProvider);
+
         try {
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 [
@@ -49,8 +49,6 @@ export default function Sign() {
                 nonce,
                 parseInt(maxFeePerGas),
                 parseInt(maxPriorityFeePerGas),
-                // parseInt(ethers.utils.parseUnits("30", 9).toString()),
-                // parseInt(ethers.utils.parseUnits("2", 9).toString()),
                 config.contracts.paymaster,
             );
 
@@ -58,15 +56,16 @@ export default function Sign() {
                 throw new Error("Failed to format tx");
             }
 
-            const requestId = operation.getUserOpHash(
+            const userOpHash = operation.getUserOpHash(
                 config.contracts.entryPoint,
                 config.chainId,
             );
 
-            // TODO, this function should be renamed
-            const signature = await signTransaction(requestId);
+            console.log("OPPPPP hash", userOpHash);
 
-            console.log("signature", signature);
+            const signature = await keystore.sign(userOpHash);
+
+            console.log("SIG", signature);
 
             if (!signature) {
                 return;
@@ -77,7 +76,7 @@ export default function Sign() {
             return {
                 tabId,
                 operation,
-                requestId,
+                userOpHash,
             };
         } catch (err) {
             console.log(err);
@@ -116,8 +115,9 @@ export default function Sign() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        console.log("s params", searchParams);
         const { actionType, origin } = searchParams;
+
+        console.log("determine action", searchParams);
 
         // TODO, 1. need to check if account is locked.
         if (actionType === "getAccounts") {
@@ -138,11 +138,18 @@ export default function Sign() {
             }
         } else if (actionType === "approveTransaction") {
             try {
-                // format signature of userOP
+                const { tabId, operation, userOpHash } = await signUserTx();
 
-                await signModal.current.show("", actionType, origin, true);
+                const paymasterAndData = await signModal.current.show(
+                    operation,
+                    actionType,
+                    origin,
+                    true,
+                );
 
-                const { operation, requestId, tabId } = await signUserTx();
+                if (paymasterAndData) {
+                    operation.paymasterAndData = paymasterAndData;
+                }
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -150,15 +157,15 @@ export default function Sign() {
                     action: "approveTransaction",
                     tabId: searchParams.tabId,
                     data: {
-                        operation: JSON.stringify(operation),
-                        requestId,
+                        operation: operation.toJSON(),
+                        userOpHash,
                         tabId,
                     },
                 });
             } catch (err) {
                 console.log(err);
             } finally {
-                window.close();
+                // window.close();
             }
         }
     };
@@ -170,5 +177,10 @@ export default function Sign() {
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 
-    return <SignTransaction ref={signModal} />;
+    return (
+        <div>
+            {/** TODO, add loading here */}
+            <SignTransaction ref={signModal} />
+        </div>
+    );
 }

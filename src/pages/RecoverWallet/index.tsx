@@ -36,13 +36,13 @@ export function RecoverWallet() {
         // todo, get by calculating
         const walletAddress = "0x000";
 
-        const { requestId }: any = await getRecoverId(new_key, walletAddress);
+        const { userOpHash }: any = await getRecoverId(new_key, walletAddress);
 
         const res: any = await api.account.recover({
             email,
             code,
             new_key,
-            request_id: requestId,
+            request_id: userOpHash,
         });
         if (res.code === 200) {
             await replaceAddress();

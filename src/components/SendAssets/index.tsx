@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import cn from "classnames";
 import { Input } from "../Input";
 import { TokenSelect } from "../TokenSelect";
-import { ICostItem } from "@src/types/IAssets";
 import { toast } from "material-react-toastify";
 
 interface ErrorProps {
@@ -33,6 +32,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     const [sending, setSending] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>("");
     const [balance, setBalance] = useState<string>("");
+    const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
     const { web3 } = useWalletContext();
@@ -40,8 +40,6 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
     const { sendErc20, sendEth } = useTransaction();
     const erc20Contract = useErc20Contract();
-
-    const tokenInfo = config.assetsList.filter((item) => item.address === tokenAddress)[0];
 
     const confirmAddress = () => {
         if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
@@ -67,7 +65,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
             } else {
                 await sendErc20(tokenAddress, receiverAddress, amount);
             }
-            setStep(2);
+            goBack();
         } finally {
             setSending(false);
         }
@@ -90,16 +88,6 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
     useEffect(() => {
         getBalance();
     }, []);
-
-    const CostItem = ({ label, value, memo }: ICostItem) => {
-        return (
-            <div>
-                <div className="text-gray60">{label}</div>
-                {value && <div className="text-black text-lg font-bold mt-2">{value}</div>}
-                {memo && <div className="text-black text-sm mt-2">{memo}</div>}
-            </div>
-        );
-    };
 
     return (
         <div className={cn("flex flex-col justify-between", step === 1 && "pb-[100px]")}>
@@ -129,23 +117,18 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
                         <div className="bg-gray20 my-6 px-6">
                             <div className="pt-4">
-                                <TokenSelect label="Asset" />
+                                <TokenSelect label="Asset" selectedAddress={sendToken} onChange={setSendToken} />
                             </div>
                             <div className="py-4">
                                 <Input
                                     label="Amount"
                                     value={amount}
                                     placeholder="Send amount"
-                                    memo="$ 5.00 USD"
+                                    // memo="$ 5.00 USD"
                                     onChange={setAmount}
                                     error={errors.amount}
                                 />
                             </div>
-                        </div>
-
-                        <div className="flex flex-col gap-5 justify-end text-right px-6 pb-6">
-                            <CostItem label="Total" value="0.0001 ETH" memo="$ 5.00 USD" />
-                            <CostItem label="Amount + Gas fee" memo="Max: 0.000212 ETH" />
                         </div>
                     </div>
                 )}
