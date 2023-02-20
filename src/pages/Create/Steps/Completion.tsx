@@ -1,18 +1,11 @@
 import Button from "@src/components/Button";
-import browser from "webextension-polyfill";
+import useBrowser from "@src/hooks/useBrowser";
 import React from "react";
 
 const Completion = () => {
+    const { openWallet } = useBrowser();
     const handleToMyWallet = () => {
-        // TODO: here
-        browser.windows.create({
-            type: "popup",
-            url: `chrome-extension://${browser.runtime.id}/popup.html#`,
-            width: 360,
-            height: 600 + 28, // 28 is title bar
-            top: 0,
-            left: window.screen.width - 360,
-        });
+        openWallet();
     };
     return (
         <div className="tip-text mx-0 pb-14">
