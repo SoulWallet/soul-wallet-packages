@@ -1,16 +1,4 @@
-const gen =
-    (valueProcessor = (v) => v, keyProcessor = (v) => v) =>
-    (l) =>
-        l
-            .map((i) => [keyProcessor(i), valueProcessor(i)])
-            .reduce((acc, [i, v]) => {
-                acc[i] = v;
-                return acc;
-            }, {});
-
-const ALL_SIZE = [...Array(1025).keys()];
-const PERCENT_SIZE = [...Array(101).keys()];
-const WIDTH_PERCENTAGE_STYLES = PERCENT_SIZE.map((i) => `w-${i}p`);
+const WIDTH_PERCENTAGE_STYLES = [...Array(101).keys()].map((i) => `w-${i}p`);
 
 module.exports = {
     purge: ["./src/**/*.{js,jsx,ts,tsx}", "./dist/popup.html"],
@@ -39,26 +27,9 @@ module.exports = {
                 lightWhite: "#FAFAFA",
                 lightGray: "#E0E0E0",
             },
-            spacing: {
-                ...gen((v) => `${v}px`)(ALL_SIZE),
-                ...gen(
-                    (v) => `${v}%`,
-                    (k) => `${k}p`,
-                )(PERCENT_SIZE),
-            },
-            width: (theme) => ({
-                ...theme("spacing"),
+            width: () => ({
                 base: "428px",
             }),
-            height: (theme) => ({
-                ...theme("spacing"),
-            }),
-            margin: (theme) => ({
-                ...theme("spacing"),
-            }),
-            borderRadius: {
-                ...gen((v) => `${v}px`)(PERCENT_SIZE),
-            },
             backgroundImage: {
                 "web-bg": "url('/src/assets/bg.svg')",
                 gray60: "#999999",
