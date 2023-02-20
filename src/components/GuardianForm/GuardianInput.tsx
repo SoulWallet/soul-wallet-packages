@@ -60,12 +60,12 @@ export default function GuardianInput({ id, name, address }: IProps) {
     // TODO: address input width better larger than 468
     return (
         <div className="flex flex-row items-center">
-            <div className="bg-[#F3F3F3] rounded-16 px-24 py-16 text-sm flex flex-row gap-12 mr-7">
-                <InputWrapper value={name} size="s" className="w-124" label="Name" onChange={handleNameChange} />
+            <div className="bg-[#F3F3F3] rounded-2xl px-6 py-4 text-sm flex flex-row gap-3 mr-2">
+                <InputWrapper value={name} size="s" className="w-[124px]" label="Name" onChange={handleNameChange} />
                 <InputWrapper
                     value={address}
                     size="s"
-                    className="w-468"
+                    className="w-[468px]"
                     label="Address"
                     onChange={handleAddressChange}
                 />

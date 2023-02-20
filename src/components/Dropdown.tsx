@@ -22,14 +22,12 @@ const Dropdown = ({ placeholder, options, onChange }: IProps) => {
     };
 
     return (
-        <div className="w-full dropdown h-48 bg-lightWhite border border-lightGray rounded-24 text-base">
-            {
-                <label tabIndex={0} className="flex place-items-center h-48 px-24 mb-2">
-                    {selectedItem?.label ?? placeholder}
-                </label>
-            }
+        <div className="w-full dropdown h-12 bg-lightWhite border border-lightGray rounded-3xl text-base">
+            <label tabIndex={0} className="flex place-items-center h-12 px-6 mb-[2px]">
+                {selectedItem?.label ?? placeholder}
+            </label>
 
-            <ul tabIndex={0} className="bg-white dropdown-content compact menu shadow w-full rounded-4">
+            <ul tabIndex={0} className="bg-white dropdown-content compact menu shadow w-full rounded-md">
                 {options.map((item) => (
                     <li key={item.value} onClick={() => handleChangeSelect(item)}>
                         <a>{item.label}</a>

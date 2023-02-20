@@ -7,7 +7,7 @@ const DefaultSetting = () => {
     const dispatch = useStepDispatchContext();
     const setIsDefaultProvider = useSettingStore((state: any) => state.setIsDefaultProvider);
 
-    const handleNext = (setDefault: boolean = true) => {
+    const handleNext = (setDefault = true) => {
         setIsDefaultProvider(setDefault);
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
@@ -16,16 +16,13 @@ const DefaultSetting = () => {
     };
     return (
         <div className="flex flex-col">
-            <p className="tip-text mt-9 mb-33">
-                Say Yes! <br />
-                You can change this setting easily on our home page.
-            </p>
+            <p className="tip-text mt-4 mb-8">Say Yes! You can change this setting easily on our home page.</p>
 
             <Button type="primary" onClick={() => handleNext(true)}>
                 Yes
             </Button>
 
-            <a className="skip-text mx-auto self-center mt-19 mb-38" onClick={() => handleNext(false)}>
+            <a className="skip-text mx-auto self-center my-5" onClick={() => handleNext(false)}>
                 Skip for now
             </a>
         </div>

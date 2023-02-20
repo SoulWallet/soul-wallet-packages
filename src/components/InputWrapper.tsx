@@ -21,8 +21,8 @@ interface IProps {
 }
 
 const InputStyleMap = {
-    s: "h-32 text-sm px-12",
-    m: "h-48 text-base px-24",
+    s: "h-8 text-sm px-3",
+    m: "h-12 text-base px-6",
 };
 
 export default function InputWrapper({
@@ -45,7 +45,7 @@ export default function InputWrapper({
 
     return (
         <div className={`flex flex-col w-full ${className}`}>
-            <label className="tip-text mb-4 " htmlFor={label}>
+            <label className="tip-text mb-1 " htmlFor={label}>
                 {label}
             </label>
 
@@ -56,23 +56,23 @@ export default function InputWrapper({
                     value={value ?? ""}
                     onChange={handleChange}
                     className={classNames(
-                        "w-full rounded-24 bg-lightWhite border border-lightGray ",
+                        "w-full rounded-3xl bg-lightWhite border border-lightGray ",
                         InputStyleMap[size],
                         errorMsg && "border-alarmRed",
                     )}
                 />
-                <span className="absolute top-50 left-0 text-alarmRed text-xs">{errorMsg}</span>
+                <span className="absolute top-[50px] left-0 text-alarmRed text-xs">{errorMsg}</span>
                 {visible !== undefined && (
                     <Icon
                         src={visible ? EyeOpen : EyeClose}
-                        className="absolute top-12 right-12 cursor-pointer"
+                        className="absolute top-3 right-3 cursor-pointer"
                         onClick={toggleVisibility}
                     />
                 )}
                 {buttonText && onClick ? (
                     <Button
                         type="primary"
-                        className="absolute right-16 top-8 w-80 h-32"
+                        className="absolute right-1 top-2 w-[80px] h-8"
                         loading={buttonLoading}
                         onClick={onClick}
                     >

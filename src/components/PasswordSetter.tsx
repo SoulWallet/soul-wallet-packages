@@ -39,7 +39,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     }, [password, confirmPwd]);
 
     return (
-        <div className="w-base mt-23 flex flex-col gap-24">
+        <div className="w-base mt-4 flex flex-col gap-6">
             {/* TODO: 密码强度提醒 */}
             <InputWrapper
                 label="Create password"
@@ -61,7 +61,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
                 onChange={(val) => setConfirmPwd(val)}
             />
 
-            <Button className="mt-12" type={"primary"} disable={!(password && isPwdSame)} onClick={handleNext}>
+            <Button className="mb-6" type={"primary"} disable={!(password && isPwdSame)} onClick={handleNext}>
                 Next
             </Button>
         </div>

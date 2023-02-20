@@ -33,14 +33,14 @@ export default function Button({ className, onClick, children, loading, disabled
         <a
             onClick={doClick}
             className={cn(
-                "btn w-full flex gap-2 font-bold text-xl py-3 leading-none",
+                "btn w-full font-bold text-xl py-1 leading-none",
                 className,
                 loading && "opacity-70  bg-purple cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
                 disabled && ButtonTypeStyleMap["disable"],
             )}
         >
-            {loading ? <img src={IconLoading} className="w-24 h-24 " /> : children}
+            {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}
         </a>
     );
 }

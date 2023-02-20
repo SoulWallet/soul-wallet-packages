@@ -43,12 +43,10 @@ const GuardiansSaving = () => {
     };
 
     return (
-        <div className="pb-58">
-            <p className="tip-text mt-16 mb-37">
-                To finish up, remember to backup your Guardians list!
-                <br />
-                <br />
-                You’ll need this file to start the wallet recovery process, so make sure you have the copy saved.
+        <div className="flex flex-col pb-14">
+            <p className="tip-text my-4">
+                To finish up, remember to backup your Guardians list! You’ll need this file to start the wallet recovery
+                process, so make sure you have the copy saved.
             </p>
 
             <div className="flex flex-row items-end">
@@ -57,7 +55,7 @@ const GuardiansSaving = () => {
                     Download
                 </Button>
 
-                <span className="mx-28 mb-12 text-base text-black">or</span>
+                <span className="mx-7 mb-3 text-base text-black">or</span>
 
                 <InputWrapper
                     className="w-base"
@@ -70,7 +68,7 @@ const GuardiansSaving = () => {
                 />
             </div>
 
-            <Button className="w-base mt-83 mx-auto" type="primary" disable={!hasSaved} onClick={handleNext}>
+            <Button className="w-base mt-14 mx-auto" type="primary" disable={!hasSaved} onClick={handleNext}>
                 Next
             </Button>
         </div>

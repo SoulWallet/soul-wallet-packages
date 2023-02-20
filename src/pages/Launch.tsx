@@ -16,7 +16,7 @@ export default function Launch() {
 
     return (
         <FullscreenContainer>
-            <div className="w-460 flex flex-col justify-center items-center px-62 pt-28 pb-52">
+            <div className="w-[460px] flex flex-col justify-center items-center px-16 pt-7 pb-14">
                 <Link
                     to="/create?mode=web"
                     className="w-full btn btn-purple btn-purple-primary"
@@ -28,7 +28,7 @@ export default function Launch() {
                 <Button
                     // to="/recover?mode=web"
                     disable
-                    className="btn w-full btn-purple mt-20 mb-16 cursor-not-allowed"
+                    className="btn w-full btn-purple mt-5 mb-4 cursor-not-allowed"
                     onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
                 >
                     Import Wallet

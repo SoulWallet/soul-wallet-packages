@@ -54,7 +54,7 @@ export default function Welcome() {
     }, []);
 
     return (
-        <div className="h-full pt-11 pb-16 text-center flex flex-col justify-between">
+        <div className="h-full pt-11 pb-4 text-center flex flex-col justify-between">
             <div className="flex flex-col items-center mb-4">
                 <img src={Logo} className="w-40 h-40 mb-2" />
                 <img src={LogoText} />

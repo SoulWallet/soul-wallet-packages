@@ -47,7 +47,7 @@
     }
 
     .btn-purple{
-        @apply text-lg  h-48 font-bold min-h-fit text-purple border-purple bg-white;
+        @apply text-lg  h-12 font-bold min-h-fit text-purple border-purple bg-white;
     }
 
 
@@ -144,7 +144,7 @@
     }
 
     .btn-purple{
-        @apply text-lg  h-48 font-bold min-h-fit text-purple border-purple bg-white;
+        @apply text-lg  h-12 font-bold min-h-fit text-purple border-purple bg-white;
     }
 
 
@@ -188,7 +188,7 @@
     }
 
     .btn-purple{
-        @apply text-lg  h-48 font-bold min-h-fit text-purple border-purple bg-white;
+        @apply text-lg h-12 font-bold min-h-fit text-purple border-purple bg-white;
     }
 
 

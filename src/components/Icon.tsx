@@ -8,5 +8,5 @@ interface IProps {
 }
 
 export default function Icon({ src, className, onClick }: IProps) {
-    return <img src={src} className={classNames("w-24 h-24", className)} onClick={onClick} />;
+    return <img src={src} className={classNames("w-6 h-6", className)} onClick={onClick} />;
 }

@@ -33,14 +33,14 @@ const GuardiansImporting = () => {
     };
 
     return (
-        <div className="flex flex-col items-center pt-22">
+        <div className="flex flex-col items-center pt-6">
             <FileUploader onFileChange={handleFileParseResult} />
 
-            <Button type="primary" className="w-base mx-auto mt-22" disable={!fileValid} onClick={handleNext}>
+            <Button type="primary" className="w-base mx-auto mt-6" disable={!fileValid} onClick={handleNext}>
                 Check guardians parsing results
             </Button>
 
-            <a className="skip-text mx-auto self-center mt-8 mb-22" onClick={handleNext}>
+            <a className="skip-text mx-auto self-center mt-4 mb-6" onClick={handleNext}>
                 Input guardians manually
             </a>
         </div>

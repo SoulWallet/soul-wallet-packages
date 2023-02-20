@@ -35,28 +35,28 @@ const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
     return (
         <div
             className={classNames(
-                "w-full rounded-16 bg-lightWhite px-95 py-16 cursor-pointer relative",
+                "w-full rounded-2xl bg-lightWhite px-24 py-4 cursor-pointer relative",
                 isActive && "brightness-90",
             )}
             onDrop={handleFileChange}
             onDragEnter={() => setIsActive(true)}
             onDragLeave={() => setIsActive(false)}
         >
-            <img src={file_icon} className="w-24 h-24 place-content-center mx-auto mb-10" />
+            <img src={file_icon} className="w-6 h-6 place-content-center mx-auto mb-2" />
 
             <div className=" text-center">
                 {status === UploadStatusEn.None && <p className="text-sm ">Click or drag file to this area to load</p>}
                 {status === UploadStatusEn.Loading && (
                     <>
                         <div className="progress-bar"></div>
-                        <p className="w-full mt-4 text-xs">loading...</p>
+                        <p className="w-full mt-1 text-xs">loading...</p>
                     </>
                 )}
 
                 {status === UploadStatusEn.Error && (
                     <>
                         {/* TODO: error reason */}
-                        <span className="text-alarmRed mr-4">Error</span>
+                        <span className="text-alarmRed mr-1">Error</span>
                         <a className="link text-purple" onClick={handleReset}>
                             Click to reload
                         </a>
@@ -70,7 +70,7 @@ const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
             <input
                 type="file"
                 id="file"
-                className="absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer"
+                className="absolute inset-0 opacity-0 cursor-pointer"
                 onChange={handleFileChange}
             />
         </div>

@@ -15,7 +15,7 @@ export default function GuardiansSetting() {
 
     return (
         <div>
-            <p className="tip-text mt-22 mb-15  whitespace-pre-wrap">
+            <p className="tip-text mt-6 mb-4  whitespace-pre-wrap">
                 The Safe is a MultiSig account that is controlled by its signer keys. Please refer to the respective
                 help centre
                 <br />
@@ -24,9 +24,9 @@ export default function GuardiansSetting() {
 
             <GuardianForm />
 
-            <div className="flex flex-col items-center gap-15">
+            <div className="flex flex-col items-center gap-4">
                 <Button
-                    className="mt-32"
+                    className="mt-8"
                     type={"primary"}
                     disable={false}
                     onClick={() => handleJumpToTargetStep(CreateStepEn.SaveGuardianList)}
@@ -34,7 +34,10 @@ export default function GuardiansSetting() {
                     Next
                 </Button>
 
-                <a className="ski-text" onClick={() => handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault)}>
+                <a
+                    className="skip-text mb-8"
+                    onClick={() => handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault)}
+                >
                     Skip
                 </a>
             </div>

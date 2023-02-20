@@ -37,18 +37,18 @@ const GuardiansChecking = () => {
         });
     };
     return (
-        <div className="pt-22">
+        <div className="pt-6 flex flex-col">
             {/* TODO: pass init data from file parsing? */}
             <GuardianForm ref={formRef} guardians={temporaryGuardians} />
 
-            <Button type="primary" className="w-base mx-auto my-22" onClick={handleAskSignature}>
+            <Button type="primary" className="w-base mx-auto my-6" onClick={handleAskSignature}>
                 Ask For Signature
             </Button>
 
             <ModalV2 visible={showVerificationModal} id="verification-failed">
-                <div className="flex flex-col items-center w-480 ">
+                <div className="flex flex-col items-center w-[480px] ">
                     <h1>Guardian addresses Verification failed</h1>
-                    <img src={attentionIcon} alt="" className="w-64 h-64 my-40" />
+                    <img src={attentionIcon} alt="" className="w-16 h-16 my-10" />
                     <Button type="primary" onClick={handleCheckGuardianAddresses}>
                         Check again
                     </Button>
