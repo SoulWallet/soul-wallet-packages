@@ -1,16 +1,22 @@
 import Button from "@src/components/Button";
-import GuardianForm from "@src/components/GuardianForm";
+import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef } from "react";
 
 export default function GuardiansSetting() {
     const dispatch = useStepDispatchContext();
+    const formRef = useRef<IGuardianFormHandler>(null);
 
     const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: targetStep,
         });
+    };
+
+    const handleNext = () => {
+        handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
+        formRef.current?.submit();
     };
 
     return (
@@ -22,15 +28,10 @@ export default function GuardiansSetting() {
                 article to learn more about this.
             </p>
 
-            <GuardianForm />
+            <GuardianForm ref={formRef} />
 
             <div className="flex flex-col items-center gap-4">
-                <Button
-                    className="mt-8"
-                    type={"primary"}
-                    disable={false}
-                    onClick={() => handleJumpToTargetStep(CreateStepEn.SaveGuardianList)}
-                >
+                <Button className="mt-8" type={"primary"} disable={false} onClick={handleNext}>
                     Next
                 </Button>
 
