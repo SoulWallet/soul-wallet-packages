@@ -6,6 +6,7 @@ import { useGlobalStore } from "@src/store/global";
 import api from "@src/lib/api";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
+import { validateEmail } from "@src/lib/tools";
 
 const GuardiansSaving = () => {
     const { downloadJsonFile, formatGuardianFile } = useTools();
@@ -78,6 +79,7 @@ const GuardiansSaving = () => {
                     className="w-base"
                     label={"Back up via Email"}
                     value={email}
+                    errorMsg={email && !validateEmail(email) ? "Please enter a valid email address." : undefined}
                     onChange={handleEmailChange}
                     buttonText="Send"
                     buttonLoading={sending}

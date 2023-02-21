@@ -120,3 +120,9 @@ export const getSessionStorageV2 = (key: string) => sessionStorage.getItem(key) 
 export const setSessionStorageV2 = (key: string, value: string) => sessionStorage.setItem(key, value);
 
 export const removeSessionStorageV2 = (key: string) => sessionStorage.removeItem(key);
+
+export const validateEmail = (email: string) => {
+    const emialRegex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emialRegex.test(String(email).toLowerCase());
+};
