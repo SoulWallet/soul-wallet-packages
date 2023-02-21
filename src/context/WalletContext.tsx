@@ -130,8 +130,6 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const checkLocked = async () => {
         const res = await keystore.checkLocked();
-        console.log("do check", res);
-
         if (res) {
             await lockedModal.current.show();
         }

@@ -21,13 +21,13 @@ export default function useTools() {
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
         return {
             walletVersion: packageJson.version,
-            wallet_address: walletAddress,
-            wallet_logic: config.contracts.walletLogic,
+            walletAddress: walletAddress,
+            walletLogic: config.contracts.walletLogic,
             salt: "",
-            chain_id: config.chainId,
-            endpoint_address: config.contracts.entryPoint,
-            guardian_list: guardiansList,
-            guardian_logic: config.contracts.guardianLogic,
+            chainId: config.chainId,
+            endpointAddress: config.contracts.entryPoint,
+            guardianList: guardiansList,
+            guardianLogic: config.contracts.guardianLogic,
         };
     };
 
