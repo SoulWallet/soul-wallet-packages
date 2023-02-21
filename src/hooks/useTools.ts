@@ -29,6 +29,8 @@ export default function useTools() {
             guardianList: guardiansList,
             threshold: Math.round(guardiansList.length / 2),
             guardianLogic: config.contracts.guardianLogic,
+            upgradeDelay: config.upgradeDelay,
+            guardianDelay: config.guardianDelay,
         };
     };
 

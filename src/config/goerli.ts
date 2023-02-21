@@ -11,7 +11,7 @@ import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
 import IconYearn from "@src/assets/dapps/yearn.svg";
 
-export const usdcAddress = "0xe34a90dF83c29c28309f58773C41122d4E8C757A";
+export const usdcAddress = "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35";
 
 export const assetsList = [
     {
@@ -81,10 +81,10 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        walletLogic: "0x6d1E58635f84fF726f2CBAE6E0702949adD51994",
-        guardianLogic: "0xFeA560e88BfC3700A4d09F2bA337F4496D9a8ca5",
-        entryPoint: "0x0f8425222890A6D2548e095102b4C0B9F4A08c82",
-        paymaster: "0x9212CA1a81CDE43423df7CEd92603846EE5886d1",
+        walletLogic: "0x3f081ac2F6BC12d07971C02D1A552c7283ba3375",
+        guardianLogic: "0x0C549EDdf533F3f63e1E5C2Ae2fbEa805F432078",
+        entryPoint: "0xA19e1F46d9CFbc1557300bb93F96D76EA1FF2a69",
+        paymaster: "0x84C5C35d3b13951d5256262716E2ffD12AaBFa2c",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };
