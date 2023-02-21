@@ -1,68 +1,64 @@
 import React, { useEffect, useState } from "react";
-import browser from "webextension-polyfill";
 import cn from "classnames";
-import KeyStore from "@src/lib/keystore";
-import { Routes, Route, useLocation } from "react-router-dom";
-import Welcome from "@src/pages/Welcome";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { CreateWallet } from "@src/pages/CreateWallet";
 import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import Send from "@src/pages/Send";
-import Sign from "@src/pages/Sign";
+import SignPage from "@src/pages/SignPage";
 import ActivateWallet from "@src/pages/ActivateWallet";
-
+import useBrowser from "./hooks/useBrowser";
 import { getLocalStorage } from "@src/lib/tools";
-// import StartPage from "./pages/Start";
 import Launch from "./pages/Launch";
+import useKeystore from "./hooks/useKeystore";
 import CreatePage from "./pages/Create";
 import RecoverPage from "./pages/Recover";
 
-const keyStore = KeyStore.getInstance();
-
 export default function PluginRouter() {
-    const [loading, setLoading] = useState(true);
-    const [account, setAccount] = useState<string>("");
     const location = useLocation();
+    const { goWebsite } = useBrowser();
+    const navigate = useNavigate();
     const mode = new URLSearchParams(location.search).get("mode");
+    const keystore = useKeystore();
 
     const checkUserState = async () => {
-        const sessionPw = await keyStore.getPassword();
+        const sessionPw = await keystore.getPassword();
         const recovering = await getLocalStorage("recovering");
+        const isLocked = await keystore.checkLocked();
+        const isSign = location.pathname === "/sign";
 
-        if (sessionPw && !recovering) {
-            await keyStore.unlock(sessionPw);
-            setAccount(await keyStore.getAddress());
+        if (sessionPw) {
+            await keystore.unlock(sessionPw);
         }
-        setLoading(false);
+
+        if (mode !== "web") {
+            if (recovering) {
+                goWebsite("/recover");
+            } else if ((isLocked || sessionPw) && !isSign) {
+                navigate("/wallet");
+            } else if (!isSign) {
+                goWebsite("/launch");
+            }
+        }
     };
 
     useEffect(() => {
         checkUserState();
-
-        if (!browser) {
-            return;
-        }
-        browser.runtime.sendMessage({ popupMounted: true });
     }, []);
 
     return (
-        // <Router>
         <div className={cn("bg-white text-base", mode !== "web" && "plugin-board")}>
             <Routes>
-                <Route path="/welcome" element={<Welcome />} />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/send/:tokenAddress" element={<Send />} />
-                <Route path="/sign" element={<Sign />} />
+                <Route path="/sign" element={<SignPage />} />
                 <Route path="/activate-wallet" element={<ActivateWallet />} />
                 <Route path="/create-wallet" element={<CreateWallet />} />
                 <Route path="/recover-wallet" element={<RecoverWallet />} />
                 <Route path="/launch" element={<Launch />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/recover" element={<RecoverPage />} />
-                {/* <Route path="*" element={<Wallet />} /> */}
-                {!loading && <Route path="*" element={account ? <Wallet /> : <Welcome />} />}
             </Routes>
         </div>
-        // </Router>
     );
 }

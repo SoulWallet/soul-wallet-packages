@@ -24,13 +24,9 @@ browser.runtime.onMessage.addListener(async (msg) => {
         case "getAccounts":
             // if already allowed getting accounts, don't show popup
             const walletAddress = await getLocalStorage("activeWalletAddress");
-            const accountsAllowed =
-                (await getLocalStorage("accountsAllowed")) || {};
+            const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
-            if (
-                accountsAllowed[walletAddress] &&
-                accountsAllowed[walletAddress].includes(msg.data.origin)
-            ) {
+            if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
                 browser.tabs.sendMessage(Number(tab.id), {
                     target: "soul",
                     type: "response",
@@ -49,16 +45,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             break;
         case "approve":
-            const {
-                origin,
-                data,
-                from,
-                to,
-                value,
-                gas,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            } = msg.data;
+            const { origin, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = msg.data;
 
             browser.windows.create({
                 url: `${msg.url}&tabId=${tab.id}&origin=${origin}&data=${data}&from=${from}&to=${to}&value=${value}&gas=${gas}&maxFeePerGas=${maxFeePerGas}&maxPriorityFeePerGas=${maxPriorityFeePerGas}`,
@@ -68,19 +55,11 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
 
         case "execute":
-            const { actionName, operation, userOpHash, tabId, bundlerUrl } =
-                msg.data;
+            const { actionName, operation, userOpHash, tabId, bundlerUrl } = msg.data;
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
-            console.log("parsed op", parsedOperation);
-
-            await executeTransaction(
-                parsedOperation,
-                actionName,
-                tabId,
-                bundlerUrl,
-            );
+            await executeTransaction(parsedOperation, actionName, tabId, bundlerUrl);
 
             // send msg back
             browser.runtime.sendMessage({
@@ -98,7 +77,7 @@ browser.runtime.onInstalled.addListener((details) => {
         case "install":
             // installed
             browser.tabs.create({
-                url: browser.runtime.getURL("popup.html#/welcome"),
+                url: browser.runtime.getURL("popup.html#/launch"),
             });
             break;
         case "update":

@@ -11,11 +11,10 @@ import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
 import useTransaction from "@src/hooks/useTransaction";
 
-export default function Sign() {
+export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { walletAddress, ethersProvider, account } = useWalletContext();
-    const { signTransaction } = useTransaction();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
     const keystore = useKeystore();
@@ -50,10 +49,12 @@ export default function Sign() {
 
             const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
+            console.log("op hash", userOpHash);
             const signature = await keystore.sign(userOpHash);
+            console.log("sig", signature);
 
             if (!signature) {
-                return;
+                throw new Error("Failed to sign");
             }
 
             operation.signWithSignature(account, signature || "");
@@ -160,7 +161,7 @@ export default function Sign() {
     return (
         <div>
             {/** TODO, add loading here */}
-            <img src={LogoLoading} />
+            {/* <img src={LogoLoading} /> */}
             <SignTransaction ref={signModal} />
         </div>
     );
