@@ -1,19 +1,26 @@
 import Button from "@src/components/Button";
 import InputWrapper from "@src/components/InputWrapper";
+import useTools from "@src/hooks/useTools";
+import useWalletContext from "@src/context/hooks/useWalletContext";
+import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
 
 const GuardiansSaving = () => {
+    const { downloadGuardianFile } = useTools();
+    const { guardians } = useGlobalStore();
     const [email, setEmail] = useState<string>();
     const [hasSaved, setHasSaved] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [sending, setSending] = useState(false);
+    const { walletAddress } = useWalletContext();
 
     const dispatch = useStepDispatchContext();
 
     const handleDownload = () => {
         setDownloading(true);
-        // TODO: here
+
+        downloadGuardianFile(walletAddress, guardians);
 
         setTimeout(() => {
             setDownloading(false);

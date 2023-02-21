@@ -1,25 +1,45 @@
 import config from "@src/config";
 import useLib from "./useLib";
-import { useGlobalStore } from "@src/store/global";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ethers, BigNumber } from "ethers";
+import packageJson from "../../package.json";
 
 export default function useTools() {
-    const { guardians } = useGlobalStore();
     const { ethersProvider } = useWalletContext();
     const { soulWalletLib } = useLib();
 
-    console.log("guardian list from store", guardians);
-
-    const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
-
-    const getGuardianInitCode = (list = guardiansList) => {
+    const getGuardianInitCode = (guardiansList: string[]) => {
         return soulWalletLib.Guardian.calculateGuardianAndInitCode(
             config.contracts.guardianLogic,
-            list,
-            Math.round(list.length / 2),
+            guardiansList,
+            Math.round(guardiansList.length / 2),
             config.guardianSalt,
         );
+    };
+
+    const downloadGuardianFile = async (walletAddress: string, guardiansList: object) => {
+        const jsonToSave = {
+            walletVersion: packageJson.version,
+            wallet_address: walletAddress,
+            wallet_logic: config.contracts.walletLogic,
+            salt: "",
+            chain_id: config.chainId,
+            endpoint_address: config.contracts.entryPoint,
+            guardian_list: guardiansList,
+            guardian_logic: config.contracts.guardianLogic,
+        };
+
+        const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(jsonToSave))}`;
+
+        const link = document.createElement("a");
+
+        link.setAttribute("href", dataStr);
+
+        link.setAttribute("target", "_blank");
+
+        link.setAttribute("download", "guardian.json");
+
+        link.click();
     };
 
     const verifyAddressFormat = (address: string) => {
@@ -91,5 +111,6 @@ export default function useTools() {
         verifyAddressFormat,
         getFeeCost,
         decodeCalldata,
+        downloadGuardianFile,
     };
 }

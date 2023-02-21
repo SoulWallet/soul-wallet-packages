@@ -1,5 +1,6 @@
 import useWalletContext from "../context/hooks/useWalletContext";
 import useKeystore from "./useKeystore";
+import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import useLib from "./useLib";
 import useQuery from "./useQuery";
@@ -8,15 +9,19 @@ import config from "@src/config";
 export default function useWallet() {
     const { account, executeOperation, ethersProvider, walletAddress } = useWalletContext();
     const { getGasPrice } = useQuery();
-    const { getGuardianInitCode, getFeeCost } = useTools();
+    const { getGuardianInitCode } = useTools();
+    const { guardians } = useGlobalStore();
     const keyStore = useKeystore();
+
+    const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
+
     const { soulWalletLib } = useLib();
 
     const activateWalletETH = async () => {
         const actionName = "Activate Wallet";
         const currentFee = await getGasPrice();
 
-        const guardianInitCode = getGuardianInitCode();
+        const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -37,7 +42,7 @@ export default function useWallet() {
         const actionName = "Activate Wallet with USDC";
         const currentFee = await getGasPrice();
 
-        const guardianInitCode = getGuardianInitCode();
+        const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -70,7 +75,7 @@ export default function useWallet() {
     };
 
     const calculateWalletAddress = (address: string) => {
-        const guardianInitCode = getGuardianInitCode();
+        const guardianInitCode = getGuardianInitCode(guardiansList);
 
         return soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
