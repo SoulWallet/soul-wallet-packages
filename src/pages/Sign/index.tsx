@@ -4,6 +4,7 @@ import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
+import LogoLoading from "@src/assets/logo-loading.gif";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
@@ -20,16 +21,7 @@ export default function Sign() {
     const keystore = useKeystore();
 
     const signUserTx: any = async () => {
-        const {
-            tabId,
-            data,
-            from,
-            to,
-            value,
-            gas,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        } = searchParams;
+        const { tabId, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = searchParams;
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
@@ -56,10 +48,7 @@ export default function Sign() {
                 throw new Error("Failed to format tx");
             }
 
-            const userOpHash = operation.getUserOpHash(
-                config.contracts.entryPoint,
-                config.chainId,
-            );
+            const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
             console.log("OPPPPP hash", userOpHash);
 
@@ -140,12 +129,7 @@ export default function Sign() {
             try {
                 const { tabId, operation, userOpHash } = await signUserTx();
 
-                const paymasterAndData = await signModal.current.show(
-                    operation,
-                    actionType,
-                    origin,
-                    true,
-                );
+                const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
 
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
@@ -180,6 +164,7 @@ export default function Sign() {
     return (
         <div>
             {/** TODO, add loading here */}
+            <img src={LogoLoading} />
             <SignTransaction ref={signModal} />
         </div>
     );
