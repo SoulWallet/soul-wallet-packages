@@ -36,7 +36,7 @@ const GuardiansImporting = () => {
         <div className="flex flex-col items-center pt-6">
             <FileUploader onFileChange={handleFileParseResult} />
 
-            <Button type="primary" className="w-base mx-auto mt-6" disable={!fileValid} onClick={handleNext}>
+            <Button type="primary" className="w-base mx-auto mt-6" disabled={!fileValid} onClick={handleNext}>
                 Check guardians parsing results
             </Button>
 

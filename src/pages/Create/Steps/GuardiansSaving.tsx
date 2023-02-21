@@ -87,7 +87,7 @@ const GuardiansSaving = () => {
                 />
             </div>
 
-            <Button className="w-base mt-14 mx-auto" type="primary" disable={!hasSaved} onClick={handleNext}>
+            <Button className="w-base mt-14 mx-auto" type="primary" disabled={!hasSaved} onClick={handleNext}>
                 Next
             </Button>
         </div>

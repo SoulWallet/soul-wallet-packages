@@ -49,7 +49,7 @@ const RecoverStarter = () => {
             />
             <Dropdown options={NetworkOptions} placeholder="Select Network" onChange={handleChangeNetwork} />
 
-            <Button type="primary" disable={!address || network === undefined} onClick={handleNext}>
+            <Button type="primary" disabled={!address || network === undefined} onClick={handleNext}>
                 Next
             </Button>
         </div>

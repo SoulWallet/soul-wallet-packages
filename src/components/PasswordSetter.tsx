@@ -61,7 +61,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
                 onChange={(val) => setConfirmPwd(val)}
             />
 
-            <Button className="mb-6" type={"primary"} disable={!(password && isPwdSame)} onClick={handleNext}>
+            <Button className="mb-6" type={"primary"} disabled={!(password && isPwdSame)} onClick={handleNext}>
                 Next
             </Button>
         </div>

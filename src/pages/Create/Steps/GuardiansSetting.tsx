@@ -31,7 +31,7 @@ export default function GuardiansSetting() {
             <GuardianForm ref={formRef} />
 
             <div className="flex flex-col items-center gap-4">
-                <Button className="mt-8" type={"primary"} disable={false} onClick={handleNext}>
+                <Button className="mt-8" type={"primary"} disabled={false} onClick={handleNext}>
                     Next
                 </Button>
 
