@@ -11,6 +11,12 @@ import Button from "../Button";
 import PageTitle from "../PageTitle";
 import { TokenSelect } from "../TokenSelect";
 
+enum SignTypeEn {
+    Transaction,
+    Message,
+    Account,
+}
+
 const CostItem = ({ label, value, memo }: ICostItem) => {
     return (
         <div>
@@ -34,6 +40,7 @@ export default forwardRef<any>((props, ref) => {
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [feeCost, setFeeCost] = useState("");
     const [activeOperation, setActiveOperation] = useState("");
+    const [signType, setSignType] = useState<SignTypeEn>();
     const [activePaymasterData, setActivePaymasterData] = useState({});
     const { soulWalletLib } = useLib();
     const { getFeeCost, decodeCalldata } = useTools();
@@ -44,6 +51,16 @@ export default forwardRef<any>((props, ref) => {
             setOrigin(origin);
 
             setKeepModalVisible(keepVisible || false);
+
+            if (_actionName === "getAccounts") {
+                setSignType(SignTypeEn.Account);
+            } else {
+                setSignType(SignTypeEn.Transaction);
+            }
+            // TODO, sign msg to be added
+            // else{
+            // }
+
             // todo, there's a problem when sendETH
             if (operation) {
                 setActiveOperation(operation);
@@ -130,7 +147,8 @@ export default forwardRef<any>((props, ref) => {
         >
             <div>
                 <div className="px-6">
-                    <PageTitle title="Signature Request" />
+                    {signType === SignTypeEn.Account && <PageTitle title={`Get Account`} />}
+                    {signType === SignTypeEn.Transaction && <PageTitle title={`Signature Request`} />}
                 </div>
                 <div className="info-box">
                     <div className="mb-2 text-gray60">Account</div>
@@ -152,21 +170,44 @@ export default forwardRef<any>((props, ref) => {
                         {actionName ? actionName : decodedData ? JSON.stringify(decodedData) : ""}
                     </div>
                 </div>
-                <div className="px-6 py-4">
-                    <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
-                </div>
-                <div className="flex flex-col gap-5 justify-end text-right px-6 pb-4">
-                    <CostItem label="Gas fee" memo={loadingFee ? "Loading fee" : `Max: ${feeCost}`} />
-                </div>
+                {actionName !== "getAccounts" && (
+                    <>
+                        <div className="px-6 py-4">
+                            <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
+                        </div>
+                        <div className="flex flex-col gap-5 justify-end text-right px-6 pb-4">
+                            <CostItem label="Gas fee" memo={loadingFee ? "Loading fee" : `Max: ${feeCost}`} />
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="flex gap-2 px-6">
-                <Button type="error" className="w-1/2" onClick={onReject}>
-                    Cancel
+                <Button type="reject" className="w-1/2" onClick={onReject}>
+                    Reject
                 </Button>
-                <Button type="primary" className="w-1/2" onClick={onConfirm} loading={signing} disabled={loadingFee}>
-                    Sign
-                </Button>
+                {signType === SignTypeEn.Account && (
+                    <Button
+                        type="primary"
+                        className="w-1/2"
+                        onClick={onConfirm}
+                        loading={signing}
+                        disabled={loadingFee}
+                    >
+                        Confirm
+                    </Button>
+                )}
+                {signType === SignTypeEn.Transaction && (
+                    <Button
+                        type="primary"
+                        className="w-1/2"
+                        onClick={onConfirm}
+                        loading={signing}
+                        disabled={loadingFee}
+                    >
+                        Sign
+                    </Button>
+                )}
             </div>
         </div>
     );

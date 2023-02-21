@@ -6,22 +6,24 @@ import { IWalletSettingModal } from "@src/types/IModal";
 import Modal from "../Modal";
 import SettingLinks from "./comp/SettingLinks";
 import ResetPassword from "./comp/ResetPassword";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import BundlerUrl from "./comp/BundlerUrl";
 
 export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
     const navigate = useNavigate();
     const keyStore = useKeystore();
+    const { showLocked } = useWalletContext();
     const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
 
     const doLockWallet = async () => {
         await keyStore.lock();
-        navigate("/welcome");
+        showLocked();
     };
 
     // clear local wallet
     const doDeleteWallet = async () => {
         await keyStore.delete();
-        navigate("/welcome");
+        navigate("/locked");
     };
 
     const ModalNavBar = () => {
@@ -32,37 +34,18 @@ export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
                     <a onClick={doLockWallet} className="btn-trans select-none">
                         Lock
                     </a>
-                    <img
-                        src={IconClose}
-                        className="w-6 h-6 cursor-pointer"
-                        onClick={onCancel}
-                    />
+                    <img src={IconClose} className="w-6 h-6 cursor-pointer" onClick={onCancel} />
                 </div>
             </div>
         );
     };
 
     return (
-        <Modal
-            className="top-0 left-0 right-0 rounded-t-none"
-            onCancel={onCancel}
-        >
+        <Modal className="top-0 left-0 right-0 rounded-t-none" onCancel={onCancel}>
             <ModalNavBar />
-            {currentModalIndex === 0 && (
-                <SettingLinks onChange={setCurrentModalIndex} />
-            )}
-            {currentModalIndex === 1 && (
-                <ResetPassword
-                    onCancel={onCancel}
-                    onChange={setCurrentModalIndex}
-                />
-            )}
-            {currentModalIndex === 2 && (
-                <BundlerUrl
-                    onCancel={onCancel}
-                    onChange={setCurrentModalIndex}
-                />
-            )}
+            {currentModalIndex === 0 && <SettingLinks onChange={setCurrentModalIndex} />}
+            {currentModalIndex === 1 && <ResetPassword onCancel={onCancel} onChange={setCurrentModalIndex} />}
+            {currentModalIndex === 2 && <BundlerUrl onCancel={onCancel} onChange={setCurrentModalIndex} />}
         </Modal>
     );
 }

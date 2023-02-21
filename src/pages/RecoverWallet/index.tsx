@@ -10,7 +10,6 @@ import api from "@src/lib/api";
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import ImgSuccessCat from "@src/assets/success-cat.svg";
 import { CreatePassword } from "@src/components/CreatePassword";
-import { SendEmail } from "@src/components/SendEmail";
 import config from "@src/config";
 
 export function RecoverWallet() {
@@ -55,7 +54,7 @@ export function RecoverWallet() {
     const doDeleteWallet = async () => {
         await deleteWallet();
         await removeLocalStorage("recovering");
-        navigate("/welcome");
+        navigate("/locked");
     };
 
     const checkRecoverStatus = async (newKey?: string) => {
@@ -125,19 +124,6 @@ export function RecoverWallet() {
                 )}
 
                 {step === 1 && (
-                    <>
-                        {/** TODO, 这里邮箱是不能编辑的  */}
-                        <div className="page-title mb-4">Recover</div>
-                        <SendEmail
-                            cachedEmail={cachedEmail}
-                            source="/recover-wallet"
-                            onReceiveCode={onReceiveCode}
-                            emailLabel="Verify your email address to proceed"
-                        />
-                    </>
-                )}
-
-                {step === 2 && (
                     <>
                         <div className="page-title mb-4">Recovering</div>
                         <div className="page-desc">

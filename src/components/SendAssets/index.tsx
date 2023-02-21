@@ -143,7 +143,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
             )}
             {step === 1 && (
                 <div className="flex gap-4 px-6 py-4 footer-shadow fixed bottom-0 left-0 right-0 bg-white">
-                    <Button type="error" className="flex-1 w-full" onClick={goBack}>
+                    <Button type="reject" className="flex-1 w-full" onClick={goBack}>
                         Reject
                     </Button>
                     <Button type="primary" className="flex-1 w-full" onClick={() => doSend()} loading={sending}>

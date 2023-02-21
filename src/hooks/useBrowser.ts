@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 
 export default function useBrowser() {
-    const openWallet = async () => {
+    const goPlugin = async () => {
         browser.windows.create({
             type: "popup",
             url: `chrome-extension://${browser.runtime.id}/popup.html#`,
@@ -12,7 +12,14 @@ export default function useBrowser() {
         });
     };
 
+    const goWebsite = async (path: string = "/") => {
+        browser.tabs.create({
+            url: browser.runtime.getURL(`popup.html#${path}?mode=web`),
+        });
+    };
+
     return {
-        openWallet,
+        goPlugin,
+        goWebsite,
     };
 }

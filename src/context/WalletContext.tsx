@@ -3,10 +3,11 @@ import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
 import { setLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
-import useKeystore from "@src/hooks/useKeystore";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
+import Locked from "@src/components/Locked";
 import config from "@src/config";
+import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import useLib from "@src/hooks/useLib";
 const web3 = new Web3(config.provider);
@@ -24,6 +25,7 @@ interface IWalletContext {
     getAccount: () => Promise<void>;
     executeOperation: (operation: any, actionName?: string, gasFormatted?: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
+    showLocked: () => void;
 }
 
 export const WalletContext = createContext<IWalletContext>({
@@ -36,6 +38,7 @@ export const WalletContext = createContext<IWalletContext>({
     getAccount: async () => {},
     executeOperation: async () => {},
     replaceAddress: async () => {},
+    showLocked: async () => {},
 });
 
 export const WalletContextProvider = ({ children }: any) => {
@@ -44,12 +47,15 @@ export const WalletContextProvider = ({ children }: any) => {
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletType, setWalletType] = useState<string>("");
     const signModal = createRef<any>();
-    const keyStore = useKeystore();
+    const lockedModal = createRef<any>();
+    const keystore = useKeystore();
     const { calculateWalletAddress } = useWallet();
     const { soulWalletLib } = useLib();
 
+    console.log("l", location);
+
     const getAccount = async () => {
-        const res = await keyStore.getAddress();
+        const res = await keystore.getAddress();
         setAccount(res);
         const wAddress = calculateWalletAddress(res);
         setWalletAddress(wAddress);
@@ -94,7 +100,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
-                const signature = await keyStore.sign(userOpHash);
+                const signature = await keystore.sign(userOpHash);
 
                 if (signature) {
                     operation.signWithSignature(account, signature || "");
@@ -113,7 +119,7 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     const replaceAddress = async () => {
-        await keyStore.replaceAddress();
+        await keystore.replaceAddress();
         await getAccount();
     };
 
@@ -124,8 +130,27 @@ export const WalletContextProvider = ({ children }: any) => {
         getWalletType();
     }, [walletAddress]);
 
+    const checkLocked = async () => {
+        const res = await keystore.checkLocked();
+        if (res) {
+            // await lockedModal.current.show();
+        }
+    };
+
+    const showLocked = async () => {
+        await lockedModal.current.show();
+    };
+
+    useEffect(() => {
+        if (!lockedModal.current) {
+            return;
+        }
+        checkLocked();
+    }, [lockedModal]);
+
     useEffect(() => {
         getAccount();
+        checkLocked();
     }, []);
 
     return (
@@ -140,10 +165,12 @@ export const WalletContextProvider = ({ children }: any) => {
                 executeOperation,
                 getWalletType,
                 replaceAddress,
+                showLocked,
             }}
         >
             {children}
             <SignTransaction ref={signModal} />
+            <Locked ref={lockedModal} />
         </WalletContext.Provider>
     );
 };

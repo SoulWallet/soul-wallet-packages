@@ -3,9 +3,9 @@ import useBrowser from "@src/hooks/useBrowser";
 import React from "react";
 
 const Completion = () => {
-    const { openWallet } = useBrowser();
+    const { goPlugin } = useBrowser();
     const handleToMyWallet = () => {
-        openWallet();
+        goPlugin();
     };
     return (
         <div className="tip-text mx-0 pb-6">

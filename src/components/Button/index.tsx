@@ -3,13 +3,14 @@ import cn from "classnames";
 import IconLoading from "@src/assets/loading.gif";
 
 // TODO: error & retry
-type ButtonType = "default" | "primary" | "disabled" | "error"; // may add 'dash', 'text', 'link', etc. later
+type ButtonType = "default" | "primary" | "disabled" | "error" | "reject"; // may add 'dash', 'text', 'link', etc. later
 
 const ButtonTypeStyleMap = {
     default: "btn-purple",
     primary: "btn-purple-primary",
     disable: "btn-purple-disabled",
     error: "btn-purple-error",
+    reject: "btn-purple-reject",
 };
 
 interface IProps {
@@ -35,7 +36,7 @@ export default function Button({ className, onClick, children, loading, disabled
             className={cn(
                 "btn w-full font-bold text-xl py-1 leading-none",
                 className,
-                loading && "opacity-70  bg-purple cursor-not-allowed",
+                loading && "opacity-70 bg-purple cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,
                 disabled && ButtonTypeStyleMap["disable"],
             )}
