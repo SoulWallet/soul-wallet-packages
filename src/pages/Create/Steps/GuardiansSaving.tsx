@@ -68,7 +68,6 @@ const GuardiansSaving = () => {
             </p>
 
             <div className="flex flex-row items-end">
-                {/* TODO: add loading & retry */}
                 <Button type="default" onClick={handleDownload} className="w-base" loading={downloading}>
                     Download
                 </Button>

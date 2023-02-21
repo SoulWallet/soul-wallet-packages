@@ -25,7 +25,7 @@ interface IProps {
 
 export default function Button({ className, onClick, children, loading, disabled, type = "default" }: IProps) {
     const doClick = () => {
-        if (!loading || disabled) {
+        if (!loading && !disabled) {
             onClick();
         }
     };

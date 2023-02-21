@@ -2,13 +2,13 @@ import InputWrapper from "@src/components/InputWrapper";
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import PasswordStrengthBar from "./PasswordStrengthBar";
 
 interface IProps {
     nextStep?: number;
     onSubmit: (password: string) => void;
 }
 
-// TODO: 优化交互逻辑
 export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const dispatch = useStepDispatchContext();
 
@@ -39,29 +39,31 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     }, [password, confirmPwd]);
 
     return (
-        <div className="w-base mt-4 flex flex-col gap-6">
-            {/* TODO: 密码强度提醒 */}
+        <div className="w-base mt-4 flex flex-col">
             <InputWrapper
                 label="Create password"
                 placeholder="At least 9 characters"
                 value={password}
                 visible={createPwdVisible}
-                toggleVisibility={() => setCreatePwdVisible((state) => !state)}
+                toggleVisibility={() => setCreatePwdVisible((prev: boolean) => !prev)}
                 errorMsg={passwordMessage}
                 onChange={(val) => setPassword(val)}
             />
 
+            <PasswordStrengthBar className="mt-2" password={password} />
+
             <InputWrapper
+                className="mt-3"
                 label="Confirm password"
                 placeholder="Enter again"
                 value={confirmPwd}
                 visible={confirmPwdVisible}
                 errorMsg={(password?.length ?? 0) < 9 || isPwdSame ? undefined : "Please enter the same password"}
-                toggleVisibility={() => setConfirmPwdVisible((state) => !state)}
+                toggleVisibility={() => setConfirmPwdVisible((prev: boolean) => !prev)}
                 onChange={(val) => setConfirmPwd(val)}
             />
 
-            <Button className="mb-6" type={"primary"} disabled={!(password && isPwdSame)} onClick={handleNext}>
+            <Button className="mb-6 mt-6" type={"primary"} disabled={!(password && isPwdSame)} onClick={handleNext}>
                 Next
             </Button>
         </div>
