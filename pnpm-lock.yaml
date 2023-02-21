@@ -25,6 +25,9 @@ specifiers:
   '@types/webextension-polyfill': ^0.9.0
   '@typescript-eslint/eslint-plugin': ^4.4.1
   '@typescript-eslint/parser': ^4.4.1
+  '@zxcvbn-ts/core': ^2.2.1
+  '@zxcvbn-ts/language-common': ^2.0.1
+  '@zxcvbn-ts/language-en': ^2.1.0
   autoprefixer: ^10.4.1
   awesome-typescript-loader: ^5.2.1
   axios: ^0.27.2
@@ -89,6 +92,9 @@ dependencies:
   '@metamask/providers': 10.2.1
   '@types/qrcode': 1.5.0
   '@types/react-router-dom': 5.3.3
+  '@zxcvbn-ts/core': 2.2.1
+  '@zxcvbn-ts/language-common': 2.0.1
+  '@zxcvbn-ts/language-en': 2.1.0
   axios: 0.27.2
   bignumber.js: 9.1.1
   classnames: 2.3.2
@@ -5012,6 +5018,20 @@ packages:
 
   /@xtuc/long/4.2.2:
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
+
+  /@zxcvbn-ts/core/2.2.1:
+    resolution: {integrity: sha512-Cg1JyRpCDIF+Dh3nauqygmmCYxogNVZDxSn+9PgkPD1HZ2QiJe4elruVJrGmYRS7muGmZ1hNJq8ySQdPv6GHaw==}
+    dependencies:
+      fastest-levenshtein: 1.0.16
+    dev: false
+
+  /@zxcvbn-ts/language-common/2.0.1:
+    resolution: {integrity: sha512-P+v5MA/UNc9nb3FEOEoDgTyIGQc2vLc6m04pdf5YyuNOzrL0iNANhECk2TUp62JbrjouJVodqhMH0j1a8/24Bg==}
+    dev: false
+
+  /@zxcvbn-ts/language-en/2.1.0:
+    resolution: {integrity: sha512-I3n4AAbArjPAZtwCrk9MQnSrcj5+9rq8sic2rUU44fP5QaR17Vk8zDt61+R9dnP9ZRsj09aAUYML4Ash05qZjQ==}
+    dev: false
 
   /abab/2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -16124,7 +16144,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:

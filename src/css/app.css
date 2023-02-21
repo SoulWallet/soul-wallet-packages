@@ -240,6 +240,10 @@
         @apply rounded-full bg-black bg-opacity-5 border-transparent;
 
     }
+
+    .pwd-indicator {
+        @apply flex-1 bg-slate-300;
+    }
 }
 
 @font-face {
