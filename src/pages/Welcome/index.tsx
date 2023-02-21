@@ -73,12 +73,12 @@ export default function Welcome() {
                             }}
                             error={passwordError}
                         />
-                        <Button onClick={doUnlock} loading={unlocking} className="btn-blue my-4">
+                        <Button onClick={doUnlock} loading={unlocking} type="primary" className="my-4">
                             Unlock
                         </Button>
                     </>
                 ) : (
-                    <Link to="/create-wallet" className="btn btn-blue mb-4">
+                    <Link to="/create-wallet" type="primary" className="btn mb-4">
                         Create a Wallet
                     </Link>
                 )}

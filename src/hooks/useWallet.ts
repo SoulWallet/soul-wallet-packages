@@ -17,7 +17,7 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWalletETH = async () => {
+    const activateWallet = async (paymaster: boolean = false) => {
         const actionName = "Activate Wallet";
         const currentFee = await getGasPrice();
 
@@ -30,46 +30,10 @@ export default function useWallet() {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            config.zeroAddress,
+            paymaster ? config.contracts.paymaster : config.zeroAddress,
             currentFee,
             currentFee,
         );
-
-        await executeOperation(activateOp, actionName);
-    };
-
-    const activateWalletUSDC = async () => {
-        const actionName = "Activate Wallet with USDC";
-        const currentFee = await getGasPrice();
-
-        const guardianInitCode = getGuardianInitCode(guardiansList);
-
-        const activateOp = soulWalletLib.activateWalletOp(
-            config.contracts.walletLogic,
-            config.contracts.entryPoint,
-            account,
-            config.upgradeDelay,
-            config.guardianDelay,
-            guardianInitCode.address,
-            config.contracts.paymaster,
-            currentFee,
-            currentFee,
-        );
-
-        // need lib to export types
-        const approveData: any = [
-            {
-                token: config.tokens.usdc,
-                spender: config.contracts.paymaster,
-            },
-        ];
-        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
-            ethersProvider,
-            walletAddress,
-            approveData,
-        );
-        activateOp.callData = approveCallData.callData;
-        activateOp.callGasLimit = approveCallData.callGasLimit;
 
         await executeOperation(activateOp, actionName);
     };
@@ -157,8 +121,7 @@ export default function useWallet() {
     // };
 
     return {
-        activateWalletETH,
-        activateWalletUSDC,
+        activateWallet,
         recoverWallet,
         calculateWalletAddress,
         deleteWallet,

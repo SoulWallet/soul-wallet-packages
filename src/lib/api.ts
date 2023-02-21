@@ -1,17 +1,9 @@
 import axios from "axios";
 import { toast } from "material-react-toastify";
-import { getLocalStorage } from "./tools";
 import config from "@src/config";
 
 const axio = axios.create({
     baseURL: config.backendURL,
-});
-
-axio.interceptors.request.use(async (config: any) => {
-    config.headers.authorization = `bearer ${await getLocalStorage(
-        "authorization",
-    )}`;
-    return config;
 });
 
 axio.interceptors.response.use((res: any) => {
@@ -20,6 +12,16 @@ axio.interceptors.response.use((res: any) => {
     }
     return res.data;
 });
+
+const recovery = {
+    get: (params: any) => axio.get(`/recovery-record/${params.opHash}`),
+    getOp: (params: any) => axio.get(`/recovery-record/guardian/${params.opHash}`),
+    sig: (params: any) => axio.post(`/recovery-record/guardian/${params.opHash}`),
+};
+
+const notification = {
+    backup: (params: any) => axio.post("/notification/backup-guardians", params),
+};
 
 const account = {
     add: (params: any) => axio.post("/add-account", params),
@@ -31,14 +33,9 @@ const account = {
     finishRecoveryRecord: (params: any) => axio.post("/finish-recovery-record", params),
 };
 
-const guardian = {
-    get: (params: any) => axio.post("/get-account-guardian", params),
-    add: (params: any) => axio.post("/add-account-guardian", params),
-    remove: (params: any) => axio.post("/del-account-guardian", params),
-    records: (params: any) => axio.post("/fetch-recovery-records", params),
-};
-
 export default {
+    recovery,
+    // TODO, to be removed
     account,
-    guardian,
+    notification,
 };

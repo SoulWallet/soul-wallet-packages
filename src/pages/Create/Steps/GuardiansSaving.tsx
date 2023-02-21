@@ -3,11 +3,12 @@ import InputWrapper from "@src/components/InputWrapper";
 import useTools from "@src/hooks/useTools";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useGlobalStore } from "@src/store/global";
+import api from "@src/lib/api";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
 
 const GuardiansSaving = () => {
-    const { downloadGuardianFile } = useTools();
+    const { downloadJsonFile, formatGuardianFile } = useTools();
     const { guardians } = useGlobalStore();
     const [email, setEmail] = useState<string>();
     const [hasSaved, setHasSaved] = useState(false);
@@ -20,7 +21,9 @@ const GuardiansSaving = () => {
     const handleDownload = () => {
         setDownloading(true);
 
-        downloadGuardianFile(walletAddress, guardians);
+        const jsonToSave = formatGuardianFile(walletAddress, guardians);
+
+        downloadJsonFile(jsonToSave);
 
         setTimeout(() => {
             setDownloading(false);
@@ -32,8 +35,15 @@ const GuardiansSaving = () => {
         setEmail(val);
     };
 
-    const handleSendEmail = () => {
+    const handleSendEmail = async () => {
         setSending(true);
+
+        const jsonToSave = formatGuardianFile(walletAddress, guardians);
+
+        await api.notification.backup({
+            email,
+            jsonToSave,
+        });
 
         // TODO: here
         setTimeout(() => {

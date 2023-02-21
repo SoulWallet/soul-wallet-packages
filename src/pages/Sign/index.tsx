@@ -50,11 +50,7 @@ export default function Sign() {
 
             const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
-            console.log("OPPPPP hash", userOpHash);
-
             const signature = await keystore.sign(userOpHash);
-
-            console.log("SIG", signature);
 
             if (!signature) {
                 return;

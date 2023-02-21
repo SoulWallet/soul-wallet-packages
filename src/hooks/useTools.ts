@@ -2,6 +2,7 @@ import config from "@src/config";
 import useLib from "./useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ethers, BigNumber } from "ethers";
+import { GuardianItem } from "@src/lib/type";
 import packageJson from "../../package.json";
 
 export default function useTools() {
@@ -17,8 +18,8 @@ export default function useTools() {
         );
     };
 
-    const downloadGuardianFile = async (walletAddress: string, guardiansList: object) => {
-        const jsonToSave = {
+    const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
+        return {
             walletVersion: packageJson.version,
             wallet_address: walletAddress,
             wallet_logic: config.contracts.walletLogic,
@@ -28,7 +29,9 @@ export default function useTools() {
             guardian_list: guardiansList,
             guardian_logic: config.contracts.guardianLogic,
         };
+    };
 
+    const downloadJsonFile = async (jsonToSave: any) => {
         const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(jsonToSave))}`;
 
         const link = document.createElement("a");
@@ -111,6 +114,7 @@ export default function useTools() {
         verifyAddressFormat,
         getFeeCost,
         decodeCalldata,
-        downloadGuardianFile,
+        downloadJsonFile,
+        formatGuardianFile,
     };
 }

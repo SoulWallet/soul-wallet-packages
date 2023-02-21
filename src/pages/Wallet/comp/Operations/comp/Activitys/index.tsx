@@ -3,11 +3,9 @@ import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/Contract.svg";
 import IconActivate from "@src/assets/activities/activate.svg";
 import IconAdd from "@src/assets/activities/add.svg";
-import IconRemove from "@src/assets/activities/remove.svg";
-import IconUpdate from "@src/assets/activities/dpdate.svg";
-
+import useWalletContext from "@src/context/hooks/useWalletContext";
+import soulScanApi from "@src/lib/soulScanApi";
 import config from "@src/config";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 const getIconMapping = (actionName: string) => {
     switch (actionName) {
@@ -24,30 +22,22 @@ const getIconMapping = (actionName: string) => {
     }
 };
 
-const mockHistoryList = [
-    {
-        txHash: "0x123123",
-        actionName: "SEND ETH",
-        amount: "123 MATIC",
-    },
-    {
-        txHash: "0x123123",
-        actionName: "Send Assets",
-        amount: "123 MATIC",
-    },
-    {
-        txHash: "0x123123",
-        actionName: "Activate Wallet",
-        amount: "123 MATIC",
-    },
-];
-
 export default function Activities() {
+    const { walletAddress } = useWalletContext();
     const [historyList, setHistoryList] = useState<any>([]);
 
     const getHistory = async () => {
-        // const res = (await getLocalStorage("activityHistory")) || [];
-        setHistoryList(mockHistoryList);
+        const res = await soulScanApi.op.getAll({
+            chain_id: config.chainId,
+            entrypoint: config.contracts.entryPoint,
+            wallet_address: walletAddress,
+            // TODO, add pagination
+            // option: {
+
+            // }
+        });
+        console.log("his", res);
+        setHistoryList(res.data.ops);
     };
 
     useEffect(() => {
@@ -57,9 +47,7 @@ export default function Activities() {
     return (
         <div className="pt-2">
             {(!historyList || historyList.length === 0) && (
-                <div className="text-center py-6">
-                    You don't have any activities yet.
-                </div>
+                <div className="text-center py-6">You don't have any activities yet.</div>
             )}
             {historyList.map((item: any) => (
                 <a
@@ -70,19 +58,12 @@ export default function Activities() {
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex gap-[14px] items-center">
-                            <img
-                                src={getIconMapping(item.actionName)}
-                                className="h-6 w-6"
-                            />
+                            <img src={getIconMapping(item.actionName)} className="h-6 w-6" />
                             <div className="flex flex-col">
-                                <div className="leading-none text-black">
-                                    {item.actionName}
-                                </div>
+                                <div className="leading-none text-black">{item.actionName}</div>
                             </div>
                         </div>
-                        <div className="text-[rgba(0,0,0,.5)] font-bold">
-                            {item.amount}
-                        </div>
+                        <div className="text-[rgba(0,0,0,.5)] font-bold">{item.amount}</div>
                     </div>
 
                     {item.txHash && (

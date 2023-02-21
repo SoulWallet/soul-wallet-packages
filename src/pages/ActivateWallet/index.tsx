@@ -25,7 +25,7 @@ export default function ActivateWallet() {
                     </div>
                 </div>
 
-                <Button onClick={() => {}} className="btn-blue">
+                <Button onClick={() => {}} type="primary">
                     Next
                 </Button>
             </div>

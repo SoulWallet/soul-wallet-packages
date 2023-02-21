@@ -8,6 +8,7 @@ import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
+import useLib from "@src/hooks/useLib";
 const web3 = new Web3(config.provider);
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
@@ -45,6 +46,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const signModal = createRef<any>();
     const keyStore = useKeystore();
     const { calculateWalletAddress } = useWallet();
+    const { soulWalletLib } = useLib();
 
     const getAccount = async () => {
         const res = await keyStore.getAddress();
@@ -68,8 +70,26 @@ export const WalletContextProvider = ({ children }: any) => {
             try {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
+                // if user want to pay with paymaster
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
+
+                    // if it's activate wallet, and user would like to approve first
+                    if (actionName === "Activate Wallet") {
+                        const approveData: any = [
+                            {
+                                token: config.tokens.usdc,
+                                spender: config.contracts.paymaster,
+                            },
+                        ];
+                        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
+                            ethersProvider,
+                            walletAddress,
+                            approveData,
+                        );
+                        operation.callData = approveCallData.callData;
+                        operation.callGasLimit = approveCallData.callGasLimit;
+                    }
                 }
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);

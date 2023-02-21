@@ -20,7 +20,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
     const { walletType, getWalletType } = useWalletContext();
-    const { activateWalletETH, activateWalletUSDC } = useWallet();
+    const { activateWallet } = useWallet();
 
     const doCopy = () => {
         copyText(account);
@@ -30,9 +30,8 @@ export default function AccountInfo({ account, action }: IProps) {
     const doActivate = async () => {
         setLoading(true);
         try {
-            await activateWalletUSDC();
-            // await activateWalletETH();
-            // TODO, listen to activated wallet event, then call the following
+            // pay with usdc
+            await activateWallet(true);
             getWalletType();
             toast.success("Account activated");
         } catch (err) {

@@ -46,7 +46,6 @@ export function RecoverWallet() {
         });
         if (res.code === 200) {
             await replaceAddress();
-            await setLocalStorage("authorization", res.data.jwtToken);
             await setLocalStorage("recovering", true);
             await checkRecoverStatus(new_key);
             setStep(2);
@@ -68,15 +67,15 @@ export function RecoverWallet() {
         } else if (_recovering) {
             setStep(2);
             console.log("check account", account);
-            const res = await api.guardian.records({
-                new_key: newKey || account,
-            });
+            // const res = await api.guardian.records({
+            //     new_key: newKey || account,
+            // });
 
-            const require = res.data.requirements;
+            // const require = res.data.requirements;
 
-            setProgress(new BN(require.signedNum).div(require.total).times(100).toNumber());
+            // setProgress(new BN(require.signedNum).div(require.total).times(100).toNumber());
 
-            setDetail(res.data);
+            // setDetail(res.data);
         }
     };
 
