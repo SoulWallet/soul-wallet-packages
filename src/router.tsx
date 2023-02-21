@@ -5,6 +5,7 @@ import { CreateWallet } from "@src/pages/CreateWallet";
 import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import Send from "@src/pages/Send";
+import useWalletContext from "./context/hooks/useWalletContext";
 import SignPage from "@src/pages/SignPage";
 import ActivateWallet from "@src/pages/ActivateWallet";
 import useBrowser from "./hooks/useBrowser";

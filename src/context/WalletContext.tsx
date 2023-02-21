@@ -44,15 +44,13 @@ export const WalletContext = createContext<IWalletContext>({
 export const WalletContextProvider = ({ children }: any) => {
     const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
     const [account, setAccount] = useState<string>("");
-    const [walletAddress, setWalletAddress] = useState<string>("");
-    const [walletType, setWalletType] = useState<string>("");
+    const [walletAddress, setWalletAddress] = useState("");
+    const [walletType, setWalletType] = useState("");
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeystore();
     const { calculateWalletAddress } = useWallet();
     const { soulWalletLib } = useLib();
-
-    console.log("l", location);
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
@@ -132,8 +130,10 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const checkLocked = async () => {
         const res = await keystore.checkLocked();
+        console.log("do check", res);
+
         if (res) {
-            // await lockedModal.current.show();
+            await lockedModal.current.show();
         }
     };
 
@@ -142,16 +142,18 @@ export const WalletContextProvider = ({ children }: any) => {
     };
 
     useEffect(() => {
+        getAccount();
+    }, []);
+
+    useEffect(() => {
+        // TODO, need to optimize
         if (!lockedModal.current) {
             return;
         }
-        checkLocked();
-    }, [lockedModal]);
-
-    useEffect(() => {
-        getAccount();
-        checkLocked();
-    }, []);
+        if (location.hash.indexOf("mode=web") === -1) {
+            checkLocked();
+        }
+    }, [location, lockedModal]);
 
     return (
         <WalletContext.Provider
