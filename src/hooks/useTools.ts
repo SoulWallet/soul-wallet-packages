@@ -54,7 +54,16 @@ export default function useTools() {
 
     const getFeeCost = async (activateOp: any, tokenAddress?: string) => {
         // calculate eth cost
-        const requiredPrefund = activateOp.requiredPrefund();
+        let baseFeeInGwei = "";
+        if (config.support1559) {
+            // TODO, move to store
+            const fee: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+            baseFeeInGwei = ethers.utils.parseUnits(fee.estimatedBaseFee, "gwei").toString();
+        }
+
+        console.log("base is", Number(baseFeeInGwei));
+
+        const requiredPrefund = activateOp.requiredPrefund(baseFeeInGwei);
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
 
         if (!tokenAddress) {

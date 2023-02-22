@@ -27,20 +27,28 @@ export default function SignPage() {
         const nonce = await soulWalletLib.Utils.getNonce(from, ethersProvider);
 
         try {
+            const rawTxs = [
+                {
+                    data: data,
+                    from: fromAddress,
+                    gas,
+                    to,
+                    value,
+                },
+            ];
+
+            let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+
+            const maxFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxFeePerGas, "gwei").toString();
+            const maxPriorityFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxPriorityFeePerGas, "gwei").toString();
+
             const operation: any = await soulWalletLib.Utils.fromTransaction(
-                [
-                    {
-                        data: data,
-                        from: fromAddress,
-                        gas,
-                        to,
-                        value,
-                    },
-                ],
+                ethersProvider,
+                config.contracts.entryPoint,
+                rawTxs,
                 nonce,
-                parseInt(maxFeePerGas),
-                parseInt(maxPriorityFeePerGas),
-                config.contracts.paymaster,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
             );
 
             if (!operation) {

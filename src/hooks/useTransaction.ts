@@ -12,9 +12,7 @@ import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 export default function useTransaction() {
-    const { executeOperation, walletAddress, ethersProvider } =
-        useWalletContext();
-    const { getFeeCost } = useTools();
+    const { executeOperation, walletAddress, ethersProvider } = useWalletContext();
     const { getGasPrice } = useQuery();
     const keyStore = useKeystore();
     const { soulWalletLib } = useLib();
@@ -27,10 +25,7 @@ export default function useTransaction() {
         const actionName = "Send ETH";
         const currentFee = await getGasPrice();
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await soulWalletLib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const op = await soulWalletLib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
@@ -46,18 +41,11 @@ export default function useTransaction() {
         await executeOperation(op, actionName);
     };
 
-    const sendErc20 = async (
-        tokenAddress: string,
-        to: string,
-        amount: string,
-    ) => {
+    const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
         const actionName = "Send Assets";
         const currentFee = await getGasPrice();
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await soulWalletLib.Utils.getNonce(
-            walletAddress,
-            ethersProvider,
-        );
+        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const op = await soulWalletLib.Tokens.ERC20.transfer(
             ethersProvider,
             walletAddress,

@@ -11,10 +11,6 @@ const getAccounts = async () => {
 const sendTransaction = async (params: any) => {
     let param = params[0];
 
-    // TODO, needs to be calculated
-    param.maxFeePerGas = param.gas;
-    param.maxPriorityFeePerGas = param.gas;
-
     if (!param.value) {
         param.value = "0x0";
     }

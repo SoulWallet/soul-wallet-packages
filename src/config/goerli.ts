@@ -78,7 +78,8 @@ export default {
     upgradeDelay: 10,
     guardianDelay: 100,
     guardianSalt: "",
-    chainId: 421613,
+    chainId: 5,
+    support1559: true,
     tokens: {
         usdc: usdcAddress,
     },
