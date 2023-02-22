@@ -28,9 +28,9 @@ export default function Activities() {
 
     const getHistory = async () => {
         const res = await soulScanApi.op.getAll({
-            chain_id: config.chainId,
-            entrypoint: config.contracts.entryPoint,
-            wallet_address: walletAddress,
+            chainId: config.chainId,
+            entrypointAddress: config.contracts.entryPoint,
+            walletAddress: walletAddress,
             // TODO, add pagination
             // option: {
 
