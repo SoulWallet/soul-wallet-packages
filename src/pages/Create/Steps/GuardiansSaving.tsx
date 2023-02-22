@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { validateEmail } from "@src/lib/tools";
 
 const GuardiansSaving = () => {
-    const { downloadJsonFile, formatGuardianFile } = useTools();
+    const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
     const { guardians } = useGlobalStore();
     const [email, setEmail] = useState<string>();
     const [hasSaved, setHasSaved] = useState(false);
@@ -41,10 +41,7 @@ const GuardiansSaving = () => {
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
-        await api.notification.backup({
-            email,
-            jsonToSave,
-        });
+        await emailJsonFile(jsonToSave, email);
 
         // TODO: here
         setTimeout(() => {

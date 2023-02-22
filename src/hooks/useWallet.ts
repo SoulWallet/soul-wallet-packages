@@ -44,6 +44,8 @@ export default function useWallet() {
     };
 
     const calculateWalletAddress = (address: string) => {
+        console.log("calculate with guardian list", guardiansList);
+
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
         return soulWalletLib.calculateWalletAddress(

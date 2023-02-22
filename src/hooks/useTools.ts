@@ -2,6 +2,7 @@ import config from "@src/config";
 import useLib from "./useLib";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ethers, BigNumber } from "ethers";
+import api from "@src/lib/api";
 import { GuardianItem } from "@src/lib/type";
 import packageJson from "../../package.json";
 
@@ -20,18 +21,24 @@ export default function useTools() {
 
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
         return {
-            salt: "",
-            walletVersion: packageJson.version,
             walletAddress: walletAddress,
-            walletLogic: config.contracts.walletLogic,
-            chainId: config.chainId,
-            entrypointAddress: config.contracts.entryPoint,
-            guardianList: guardiansList,
-            threshold: Math.round(guardiansList.length / 2),
-            guardianLogic: config.contracts.guardianLogic,
-            upgradeDelay: config.upgradeDelay,
-            guardianDelay: config.guardianDelay,
+            guardians: guardiansList,
+            // salt: "",
+            // walletVersion: packageJson.version,
+            // walletLogic: config.contracts.walletLogic,
+            // chainId: config.chainId,
+            // entrypointAddress: config.contracts.entryPoint,
+            // guardianList: guardiansList,
+            // threshold: Math.round(guardiansList.length / 2),
+            // guardianLogic: config.contracts.guardianLogic,
+            // upgradeDelay: config.upgradeDelay,
+            // guardianDelay: config.guardianDelay,
         };
+    };
+
+    const generateJsonName = (name: string) => {
+        const date = new Date();
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-${name}.json`;
     };
 
     const downloadJsonFile = async (jsonToSave: any) => {
@@ -43,9 +50,17 @@ export default function useTools() {
 
         link.setAttribute("target", "_blank");
 
-        link.setAttribute("download", "guardian.json");
+        link.setAttribute("download", generateJsonName("guardian"));
 
         link.click();
+    };
+
+    const emailJsonFile = async (jsonToSave: any, email: string) => {
+        await api.notification.backup({
+            email,
+            fileName: generateJsonName("guardian"),
+            jsonToSave,
+        });
     };
 
     const verifyAddressFormat = (address: string) => {
@@ -127,6 +142,7 @@ export default function useTools() {
         getFeeCost,
         decodeCalldata,
         downloadJsonFile,
+        emailJsonFile,
         formatGuardianFile,
     };
 }
