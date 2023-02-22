@@ -51,7 +51,7 @@ export default function InputWrapper({
 
             <div className="relative">
                 <input
-                    type={!visible ? "password" : "text"}
+                    type={visible === false ? "password" : "text"}
                     placeholder={placeholder}
                     value={value ?? ""}
                     onChange={handleChange}
