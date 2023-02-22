@@ -15,7 +15,6 @@ const ButtonTypeStyleMap = {
 
 interface IProps {
     children: React.ReactNode;
-    disable?: boolean;
     type?: ButtonType; // 不传使用旧button，传了代表使用淡紫色新button
     className?: string;
     onClick: () => void;

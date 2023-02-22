@@ -16,6 +16,7 @@ interface IProps {
     toggleVisibility?: () => void;
     onChange: (value: string) => void;
     buttonText?: string;
+    buttonDisbaled?: boolean;
     buttonLoading?: boolean;
     onClick?: () => void;
 }
@@ -36,6 +37,7 @@ export default function InputWrapper({
     toggleVisibility,
     onChange,
     buttonText,
+    buttonDisbaled,
     buttonLoading,
     onClick,
 }: IProps) {
@@ -74,6 +76,7 @@ export default function InputWrapper({
                         type="primary"
                         className="absolute right-1 top-2 w-[80px] h-8"
                         loading={buttonLoading}
+                        disabled={buttonDisbaled}
                         onClick={onClick}
                     >
                         {buttonText}

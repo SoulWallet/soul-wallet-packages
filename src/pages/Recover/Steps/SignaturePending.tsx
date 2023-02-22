@@ -98,7 +98,7 @@ const SignaturePending = () => {
                     Share URL
                 </Button>
                 {/* TODO: all signed? */}
-                <Button className="w-[calc(50%-12px)]" onClick={handleNext} disable>
+                <Button className="w-[calc(50%-12px)]" onClick={handleNext} disabled>
                     Next
                 </Button>
             </div>

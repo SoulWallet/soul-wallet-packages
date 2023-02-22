@@ -27,7 +27,7 @@ export default function Launch() {
 
                 <Button
                     // to="/recover?mode=web"
-                    disable
+                    disabled
                     className="btn w-full btn-purple mt-5 mb-4 cursor-not-allowed"
                     onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
                 >
