@@ -18,6 +18,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const [confirmPwdVisible, setConfirmPwdVisible] = useState(false);
     const [isPwdSame, setIsPwdSame] = useState(true);
     const [passwordMessage, setPasswordMessage] = useState<string>();
+    const [nextable, setNextable] = useState(false);
 
     const handleNext = () => {
         if ((password?.length ?? 0) < 9) {
@@ -35,7 +36,11 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
 
     useEffect(() => {
         // 密码均不为空 且 全等
-        setIsPwdSame(!(password || confirmPwd) || password === confirmPwd);
+        const pwdSame = !(password || confirmPwd) || password === confirmPwd;
+        setIsPwdSame(pwdSame);
+
+        // 密码长度不小于9 且 密码相等
+        setNextable((password?.length ?? 0) > 8 && pwdSame);
     }, [password, confirmPwd]);
 
     return (
@@ -63,7 +68,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
                 onChange={(val) => setConfirmPwd(val)}
             />
 
-            <Button className="mb-6 mt-6" type={"primary"} disabled={!(password && isPwdSame)} onClick={handleNext}>
+            <Button className="mb-6 mt-6" type={"primary"} disabled={!nextable} onClick={handleNext}>
                 Next
             </Button>
         </div>
