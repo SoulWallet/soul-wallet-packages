@@ -61,11 +61,11 @@ export default function GuardianInput({ id, name, address }: IProps) {
     return (
         <div className="flex flex-row items-center">
             <div className="bg-[#F3F3F3] rounded-2xl px-6 py-4 text-sm flex flex-row gap-3 mr-2">
-                <InputWrapper value={name} size="s" className="w-[124px]" label="Name" onChange={handleNameChange} />
+                <InputWrapper value={name} size="s" className="w-sm" label="Name" onChange={handleNameChange} />
                 <InputWrapper
                     value={address}
                     size="s"
-                    className="w-[468px]"
+                    className="w-lg"
                     label="Address"
                     onChange={handleAddressChange}
                 />

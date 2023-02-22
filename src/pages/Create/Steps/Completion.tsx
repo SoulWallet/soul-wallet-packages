@@ -17,7 +17,7 @@ const Completion = () => {
 
             <p className="text-warnRed">Warning: This is a beta version. Do NOT put in too much money.</p>
 
-            <Button type="primary" onClick={handleToMyWallet} className="mt-2">
+            <Button type="primary" onClick={handleToMyWallet} className="mt-2 w-full">
                 See My Wallet
             </Button>
         </div>

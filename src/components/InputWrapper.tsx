@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent } from "react";
 import EyeOpen from "@src/assets/icons/eye-open.svg";
 import EyeClose from "@src/assets/icons/eye-close.svg";
 import Icon from "./Icon";
@@ -16,7 +16,7 @@ interface IProps {
     toggleVisibility?: () => void;
     onChange: (value: string) => void;
     buttonText?: string;
-    buttonDisbaled?: boolean;
+    buttonDisabled?: boolean;
     buttonLoading?: boolean;
     onClick?: () => void;
 }
@@ -37,7 +37,7 @@ export default function InputWrapper({
     toggleVisibility,
     onChange,
     buttonText,
-    buttonDisbaled,
+    buttonDisabled,
     buttonLoading,
     onClick,
 }: IProps) {
@@ -46,7 +46,7 @@ export default function InputWrapper({
     };
 
     return (
-        <div className={`flex flex-col w-full ${className}`}>
+        <div className={classNames("flex flex-col w-full", className)}>
             <label className="tip-text mb-1 " htmlFor={label}>
                 {label}
             </label>
@@ -74,9 +74,9 @@ export default function InputWrapper({
                 {buttonText && onClick ? (
                     <Button
                         type="primary"
-                        className="absolute right-1 top-2 w-[80px] h-8"
+                        className="absolute right-2 top-2 w-[80px] h-8"
                         loading={buttonLoading}
-                        disabled={buttonDisbaled}
+                        disabled={buttonDisabled}
                         onClick={onClick}
                     >
                         {buttonText}
