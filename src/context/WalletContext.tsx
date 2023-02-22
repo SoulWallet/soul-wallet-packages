@@ -56,6 +56,8 @@ export const WalletContextProvider = ({ children }: any) => {
         const res = await keystore.getAddress();
         setAccount(res);
         const wAddress = calculateWalletAddress(res);
+
+        console.log("beoa, wallet", res, wAddress);
         setWalletAddress(wAddress);
         setLocalStorage("activeWalletAddress", wAddress);
     };

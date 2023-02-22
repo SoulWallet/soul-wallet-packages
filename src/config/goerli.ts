@@ -11,6 +11,8 @@ import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
 import IconYearn from "@src/assets/dapps/yearn.svg";
 
+export const infuraId = "36edb4e805524ba696b5b83b3e23ad18";
+
 export const usdcAddress = "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35";
 
 export const assetsList = [
@@ -64,10 +66,10 @@ export const dappsList = [
 export default {
     assetsList,
     dappsList,
-    provider: `https://goerli-rollup.arbitrum.io/rpc`,
+    provider: `https://goerli.infura.io/v3/${infuraId}`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
-    scanUrl: "https://goerli.arbiscan.io",
+    scanUrl: "https://goerli.etherscan.io",
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
     defaultSalt: 0,
     feeMultiplier: 3,
