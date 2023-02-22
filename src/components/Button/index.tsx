@@ -33,7 +33,7 @@ export default function Button({ className, onClick, children, loading, disabled
         <a
             onClick={doClick}
             className={cn(
-                "btn w-full font-bold text-xl py-1 leading-none",
+                "btn font-bold text-xl py-1 leading-none",
                 className,
                 loading && "opacity-70 bg-purple cursor-not-allowed",
                 type && `btn-purple btn-purple-${type}`,

@@ -5,7 +5,7 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useGlobalStore } from "@src/store/global";
 import api from "@src/lib/api";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { validateEmail } from "@src/lib/tools";
 
 const GuardiansSaving = () => {
@@ -15,9 +15,14 @@ const GuardiansSaving = () => {
     const [hasSaved, setHasSaved] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [sending, setSending] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(false);
     const { walletAddress } = useWalletContext();
 
     const dispatch = useStepDispatchContext();
+
+    useEffect(() => {
+        setIsEmailValid(validateEmail(email));
+    }, [email]);
 
     const handleDownload = () => {
         setDownloading(true);
@@ -75,9 +80,10 @@ const GuardiansSaving = () => {
                     className="w-base"
                     label={"Back up via Email"}
                     value={email}
-                    errorMsg={email && !validateEmail(email) ? "Please enter a valid email address." : undefined}
+                    errorMsg={email && !isEmailValid ? "Please enter a valid email address." : undefined}
                     onChange={handleEmailChange}
                     buttonText="Send"
+                    buttonDisabled={!isEmailValid}
                     buttonLoading={sending}
                     onClick={handleSendEmail}
                 />

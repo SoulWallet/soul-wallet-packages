@@ -38,7 +38,9 @@ module.exports = {
                 lightGray: "#E0E0E0",
             },
             width: () => ({
+                sm: "124px",
                 base: "428px",
+                lg: "468px",
                 ...gen(
                     (v) => `${v}%`,
                     (k) => `${k}p`,
