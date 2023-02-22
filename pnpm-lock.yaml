@@ -71,7 +71,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
   shortid: ^2.2.16
-  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.8
+  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.9
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
   tailwindcss: ^3.0.8
@@ -122,7 +122,7 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/aac0a56babe2d4b0d179ec1365dd64e47d469d06
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/24d29d17b1ceac0d5e307d851ea74db8e21c95a2
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -16182,8 +16182,8 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/aac0a56babe2d4b0d179ec1365dd64e47d469d06:
-    resolution: {commit: aac0a56babe2d4b0d179ec1365dd64e47d469d06, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
+  github.com/proofofsoulprotocol/soulwalletlib/24d29d17b1ceac0d5e307d851ea74db8e21c95a2:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/24d29d17b1ceac0d5e307d851ea74db8e21c95a2}
     name: soul-wallet-lib
     version: 0.1.0-alpha.7
     dependencies:

@@ -3,6 +3,7 @@ import useKeystore from "./useKeystore";
 import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import useLib from "./useLib";
+import { ethers } from "ethers";
 import useQuery from "./useQuery";
 import config from "@src/config";
 
@@ -19,9 +20,13 @@ export default function useWallet() {
 
     const activateWallet = async (paymaster: boolean = false) => {
         const actionName = "Activate Wallet";
-        const currentFee = await getGasPrice();
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
+
+        let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+
+        const maxFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxFeePerGas, "gwei").toString();
+        const maxPriorityFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxPriorityFeePerGas, "gwei").toString();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -31,8 +36,8 @@ export default function useWallet() {
             config.guardianDelay,
             guardianInitCode.address,
             paymaster ? config.contracts.paymaster : config.zeroAddress,
-            currentFee,
-            currentFee,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
         );
 
         await executeOperation(activateOp, actionName);

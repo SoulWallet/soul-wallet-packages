@@ -20,6 +20,7 @@ export const executeTransaction = async (operation: any, actionName: any, tabId:
 
     return new Promise(async (resolve, reject) => {
         try {
+            console.log("final operation", operation);
             const simulateResult: any = await bundler.simulateValidation(operation);
 
             // IMPORTANT TODO, catch errors and return
