@@ -3,7 +3,6 @@ import InputWrapper from "@src/components/InputWrapper";
 import useTools from "@src/hooks/useTools";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useGlobalStore } from "@src/store/global";
-import api from "@src/lib/api";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState, useEffect } from "react";
 import { validateEmail } from "@src/lib/tools";

@@ -34,7 +34,7 @@ const SignatureItem = ({ name, address, status }: ISignatureVerificationItem) =>
             <span className="text-black text-xl">{name}</span>
             <span className={"text-base " + SignatureStatusMap[status].color}>{SignatureStatusMap[status].text}</span>
         </div>
-        <p className="text-[#4D4D4D] whitespace-nowrap mt-2">{address}</p>
+        <p className="text-gray80 whitespace-nowrap mt-2">{address}</p>
     </div>
 );
 

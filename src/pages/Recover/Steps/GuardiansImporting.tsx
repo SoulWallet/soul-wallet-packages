@@ -18,6 +18,7 @@ const GuardiansImporting = () => {
 
     const handleFileParseResult = (file?: File) => {
         // TODO: parse file here
+        // TODO: add ID to each guardian
 
         // mock logic 👇
         const parseRes = [

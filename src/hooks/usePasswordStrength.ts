@@ -9,10 +9,6 @@ const options = {
         ...zxcvbnCommonPackage.dictionary,
         ...zxcvbnEnPackage.dictionary,
     },
-    // recommended
-    graphs: zxcvbnCommonPackage.adjacencyGraphs,
-    // recommended
-    useLevenshteinDistance: true,
     // optional
     translations: zxcvbnEnPackage.translations,
 };
@@ -25,6 +21,8 @@ export const usePasswordStrength = (password: string) => {
     useEffect(() => {
         if (password.length > 8) {
             zxcvbnAsync(password).then((response) => setScore(response?.score));
+        } else {
+            setScore(1);
         }
     }, [password]);
 
