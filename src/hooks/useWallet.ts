@@ -25,8 +25,10 @@ export default function useWallet() {
 
         let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
 
-        const maxFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxFeePerGas, "gwei").toString();
-        const maxPriorityFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxPriorityFeePerGas, "gwei").toString();
+        const maxFeePerGas = ethers.utils.parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei").toString();
+        const maxPriorityFeePerGas = ethers.utils
+            .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
+            .toString();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,

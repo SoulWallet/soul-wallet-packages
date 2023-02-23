@@ -18,11 +18,7 @@ export default function useQuery() {
 
     const getGasPrice = async () => {
         const gas = await web3.eth.getGasPrice();
-        const gasMultiplied = new BN(gas)
-            .times(config.feeMultiplier)
-            .integerValue()
-            .toNumber();
-        console.log("gas multiplied", gasMultiplied);
+        const gasMultiplied = new BN(gas).times(config.feeMultiplier).integerValue().toNumber();
         return gasMultiplied;
     };
 

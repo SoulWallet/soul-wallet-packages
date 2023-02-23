@@ -43,6 +43,7 @@ export const WalletContext = createContext<IWalletContext>({
 
 export const WalletContextProvider = ({ children }: any) => {
     const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
+
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState("");
     const [walletType, setWalletType] = useState("");
@@ -72,14 +73,14 @@ export const WalletContextProvider = ({ children }: any) => {
         // no actionName means no need to sign
         actionName?: string,
     ) => {
+        console.log("B url", bundlerUrl);
         if (actionName) {
             try {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
                 // if user want to pay with paymaster
                 if (paymasterAndData) {
-                    console.log("actionname is:", actionName);
-                    operation.paymasterAndData = paymasterAndData;
+                    operation.setPaymasterAndData(paymasterAndData);
 
                     // if it's activate wallet, and user would like to approve first
                     if (actionName === "Activate Wallet") {
@@ -94,8 +95,9 @@ export const WalletContextProvider = ({ children }: any) => {
                             walletAddress,
                             approveData,
                         );
-                        operation.callData = approveCallData.callData;
+
                         operation.callGasLimit = approveCallData.callGasLimit;
+                        operation.setCallData(approveCallData.callData);
                     }
                 }
 

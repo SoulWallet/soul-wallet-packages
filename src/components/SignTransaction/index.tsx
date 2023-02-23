@@ -104,6 +104,7 @@ export default forwardRef<any>((props, ref) => {
     const getFeeCostAndPaymasterData = async () => {
         setLoadingFee(true);
         setFeeCost("");
+
         const { requireAmountInWei, requireAmount } = await getFeeCost(
             activeOperation,
             payToken === config.zeroAddress ? "" : payToken,
@@ -113,9 +114,9 @@ export default forwardRef<any>((props, ref) => {
             setActivePaymasterData("");
             setFeeCost(`${requireAmount} ETH`);
         } else {
-            const maxUSDC = requireAmountInWei.mul(120).div(100);
+            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier);
 
-            const maxUSDCFormatted = BN(requireAmount).multipliedBy(120).div(100).toFixed(4);
+            const maxUSDCFormatted = BN(requireAmount).multipliedBy(config.maxCostMultiplier).toFixed(4);
 
             const paymasterAndData = soulWalletLib.getPaymasterData(
                 config.contracts.paymaster,

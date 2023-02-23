@@ -39,8 +39,12 @@ export default function SignPage() {
 
             let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
 
-            const maxFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxFeePerGas, "gwei").toString();
-            const maxPriorityFeePerGas = ethers.utils.parseUnits(fee.suggestedMaxPriorityFeePerGas, "gwei").toString();
+            const maxFeePerGas = ethers.utils
+                .parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei")
+                .toString();
+            const maxPriorityFeePerGas = ethers.utils
+                .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
+                .toString();
 
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 ethersProvider,
@@ -95,6 +99,8 @@ export default function SignPage() {
     const determineAction = async () => {
         const { actionType, origin, tabId } = searchParams;
 
+        console.log("tab id is", tabId);
+
         console.log("determine action", searchParams);
 
         // TODO, 1. need to check if account is locked.
@@ -121,7 +127,7 @@ export default function SignPage() {
                 const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
 
                 if (paymasterAndData) {
-                    operation.paymasterAndData = paymasterAndData;
+                    operation.setPaymasterAndData(paymasterAndData);
                 }
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);

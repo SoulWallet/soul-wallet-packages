@@ -15,8 +15,13 @@ export const saveActivityHistory = async (history: any) => {
     await setLocalStorage("activityHistory", prev);
 };
 
-export const executeTransaction = async (operation: any, actionName: any, tabId: any, bundlerUrl: string) => {
-    console.log("bundler set", config.contracts.entryPoint, ethersProvider, bundlerUrl);
+export const executeTransaction = async (
+    operation: any,
+    actionName: any,
+    tabId: any,
+    bundlerUrl: string = "https://bundler-eth-goerli.soulwallets.me/rpc",
+) => {
+    console.log("bundler url", bundlerUrl);
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
     return new Promise(async (resolve, reject) => {
@@ -41,7 +46,7 @@ export const executeTransaction = async (operation: any, actionName: any, tabId:
             bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
                 console.log("receipt: ", receipt);
                 const txHash: string = receipt.receipt.transactionHash;
-
+                console.log("receive tab id", tabId);
                 if (tabId) {
                     browser.tabs.sendMessage(Number(tabId), {
                         target: "soul",
