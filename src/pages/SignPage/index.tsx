@@ -19,8 +19,8 @@ export default function SignPage() {
     const signModal = createRef<any>();
     const keystore = useKeystore();
 
-    const signUserTx: any = async () => {
-        const { tabId, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = searchParams;
+    const formatOperation: any = async () => {
+        const { data, from, to, value } = searchParams;
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
@@ -31,7 +31,7 @@ export default function SignPage() {
                 {
                     data: data,
                     from: fromAddress,
-                    gas,
+                    // gas,
                     to,
                     value,
                 },
@@ -55,23 +55,7 @@ export default function SignPage() {
                 throw new Error("Failed to format tx");
             }
 
-            const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
-
-            console.log("op hash", userOpHash);
-            const signature = await keystore.sign(userOpHash);
-            console.log("sig", signature);
-
-            if (!signature) {
-                throw new Error("Failed to sign");
-            }
-
-            operation.signWithSignature(account, signature || "");
-
-            return {
-                tabId,
-                operation,
-                userOpHash,
-            };
+            return operation;
         } catch (err) {
             console.log(err);
         }
@@ -109,7 +93,7 @@ export default function SignPage() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        const { actionType, origin } = searchParams;
+        const { actionType, origin, tabId } = searchParams;
 
         console.log("determine action", searchParams);
 
@@ -132,13 +116,23 @@ export default function SignPage() {
             }
         } else if (actionType === "approveTransaction") {
             try {
-                const { tabId, operation, userOpHash } = await signUserTx();
+                const operation = await formatOperation();
 
                 const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
 
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
                 }
+
+                const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
+
+                const signature = await keystore.sign(userOpHash);
+
+                if (!signature) {
+                    throw new Error("Failed to sign");
+                }
+
+                operation.signWithSignature(account, signature || "");
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -168,7 +162,6 @@ export default function SignPage() {
 
     return (
         <div>
-            {/** TODO, add loading here */}
             {/* <img src={LogoLoading} /> */}
             <SignTransaction ref={signModal} />
         </div>

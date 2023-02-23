@@ -105,16 +105,18 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 const signature = await keystore.sign(userOpHash);
 
-                if (signature) {
-                    operation.signWithSignature(account, signature || "");
-
-                    await Runtime.send("execute", {
-                        actionName,
-                        operation: operation.toJSON(),
-                        userOpHash,
-                        bundlerUrl,
-                    });
+                if (!signature) {
+                    throw new Error("Failed to sign");
                 }
+
+                operation.signWithSignature(account, signature || "");
+
+                await Runtime.send("execute", {
+                    actionName,
+                    operation: operation.toJSON(),
+                    userOpHash,
+                    bundlerUrl,
+                });
             } catch (err) {
                 throw Error("User rejected");
             }

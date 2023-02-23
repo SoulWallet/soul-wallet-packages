@@ -136,7 +136,7 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
 
             {step === 0 && (
                 <div className="absolute bottom-12 left-0 right-0 text-center px-6">
-                    <Button type="primary" onClick={confirmAddress}>
+                    <Button type="primary" className="w-full" onClick={confirmAddress}>
                         Confirm
                     </Button>
                 </div>

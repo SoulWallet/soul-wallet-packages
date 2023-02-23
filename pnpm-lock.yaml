@@ -71,7 +71,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
   shortid: ^2.2.16
-  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.9
+  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.11
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
   tailwindcss: ^3.0.8
@@ -98,7 +98,7 @@ dependencies:
   axios: 0.27.2
   bignumber.js: 9.1.1
   classnames: 2.3.2
-  daisyui: 2.50.2_gbtt6ss3tbiz4yjtvdr6fbrj44
+  daisyui: 2.51.0_gbtt6ss3tbiz4yjtvdr6fbrj44
   eth-block-tracker: 4.4.3_@babel+core@7.21.0
   eth-json-rpc-filters: 5.1.0
   eth-json-rpc-infura: 5.1.0
@@ -122,7 +122,7 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/24d29d17b1ceac0d5e307d851ea74db8e21c95a2
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/4d650b1df44e8822c93abae7c2060bf951dae14f
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -4398,8 +4398,8 @@ packages:
       '@types/node': 14.18.36
     dev: true
 
-  /@types/glob/8.0.1:
-    resolution: {integrity: sha512-8bVUjXZvJacUFkJXHdyZ9iH1Eaj5V7I8c4NdH5sQJsdXkqT4CA5Dhb4yb4VE/3asyx4L9ayZr1NIhTsWHczmMw==}
+  /@types/glob/8.1.0:
+    resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
     dependencies:
       '@types/minimatch': 5.1.2
       '@types/node': 14.18.36
@@ -6167,7 +6167,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001457
-      electron-to-chromium: 1.4.305
+      electron-to-chromium: 1.4.308
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
 
@@ -7131,8 +7131,8 @@ packages:
       es5-ext: 0.10.62
       type: 1.2.0
 
-  /daisyui/2.50.2_gbtt6ss3tbiz4yjtvdr6fbrj44:
-    resolution: {integrity: sha512-CzyTsqdkpP2Zwk5Fl+1pFfL7XewRn/COm4TyKx4DbdITpzADMe01j6YZRG/D0kAOyd7t4rXA3zvkqNc7Ak9ukQ==}
+  /daisyui/2.51.0_gbtt6ss3tbiz4yjtvdr6fbrj44:
+    resolution: {integrity: sha512-HGM89+VzZ/KDsH4cK6OhizIscXOVzkEENynovL6bXPfJDOKZQz0V2CuTGEoQmN8FeuGxrZiz/He1P9p+E9Qr5A==}
     peerDependencies:
       autoprefixer: ^10.0.2
       postcss: ^8.1.6
@@ -7532,8 +7532,8 @@ packages:
   /ee-first/1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium/1.4.305:
-    resolution: {integrity: sha512-WETy6tG0CT5gm1O+xCbyapWNsCcmIvrn4NHViIGYo2AT8FV2qUCXdaB+WqYxSv/vS5mFqhBYnfZAAkVArjBmUg==}
+  /electron-to-chromium/1.4.308:
+    resolution: {integrity: sha512-qyTx2aDFjEni4UnRWEME9ubd2Xc9c0zerTUl/ZinvD4QPsF0S7kJTV/Es/lPCTkNX6smyYar+z/n8Cl6pFr8yQ==}
 
   /elliptic/6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -9075,7 +9075,7 @@ packages:
     peerDependencies:
       glob: '*'
     dependencies:
-      '@types/glob': 8.0.1
+      '@types/glob': 8.1.0
       glob: 7.2.3
     dev: true
 
@@ -16174,7 +16174,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:
@@ -16182,10 +16182,10 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/24d29d17b1ceac0d5e307d851ea74db8e21c95a2:
-    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/24d29d17b1ceac0d5e307d851ea74db8e21c95a2}
+  github.com/proofofsoulprotocol/soulwalletlib/4d650b1df44e8822c93abae7c2060bf951dae14f:
+    resolution: {commit: 4d650b1df44e8822c93abae7c2060bf951dae14f, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
     name: soul-wallet-lib
-    version: 0.1.0-alpha.7
+    version: 0.1.0-alpha.10
     dependencies:
       dotenv: 8.6.0
       ethereumjs-util: 7.1.5

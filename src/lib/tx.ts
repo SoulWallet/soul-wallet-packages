@@ -16,6 +16,7 @@ export const saveActivityHistory = async (history: any) => {
 };
 
 export const executeTransaction = async (operation: any, actionName: any, tabId: any, bundlerUrl: string) => {
+    console.log("bundler set", config.contracts.entryPoint, ethersProvider, bundlerUrl);
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
     return new Promise(async (resolve, reject) => {
