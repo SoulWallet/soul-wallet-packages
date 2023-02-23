@@ -4,6 +4,7 @@ import IconContract from "@src/assets/activities/Contract.svg";
 import IconActivate from "@src/assets/activities/activate.svg";
 import IconAdd from "@src/assets/activities/add.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import useTools from "@src/hooks/useTools";
 import soulScanApi from "@src/lib/soulScanApi";
 import config from "@src/config";
 
@@ -24,9 +25,12 @@ const getIconMapping = (actionName: string) => {
 
 export default function Activities() {
     const { walletAddress } = useWalletContext();
+    const [loading, setLoading] = useState(false);
     const [historyList, setHistoryList] = useState<any>([]);
+    const { decodeCalldata } = useTools();
 
     const getHistory = async () => {
+        setLoading(true);
         const res = await soulScanApi.op.getAll({
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
@@ -36,8 +40,21 @@ export default function Activities() {
 
             // }
         });
-        console.log("his", res);
-        setHistoryList(res.data.ops);
+        setLoading(false);
+        formatHistory(res.data.ops);
+        // setHistoryList(res.data.ops);
+    };
+
+    const formatHistory = (rawHistoryList: any) => {
+        const finalHistoryList = rawHistoryList.map(async (item: any) => {
+            const callData = item.userOp.callData;
+            const callDataDecode = await decodeCalldata(callData);
+            return {
+                txHash: item.trxHash,
+            };
+        });
+
+        setHistoryList(finalHistoryList);
     };
 
     useEffect(() => {
@@ -46,9 +63,10 @@ export default function Activities() {
 
     return (
         <div className="pt-2">
-            {(!historyList || historyList.length === 0) && (
+            {!loading && (!historyList || historyList.length === 0) && (
                 <div className="text-center py-6">You don't have any activities yet.</div>
             )}
+            {loading && <div className="text-center py-6">Loading activities.</div>}
             {historyList.map((item: any) => (
                 <a
                     href={`${config.scanUrl}/tx/${item.txHash}`}

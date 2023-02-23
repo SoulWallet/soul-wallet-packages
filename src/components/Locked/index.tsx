@@ -64,7 +64,7 @@ export default forwardRef<any>((props, ref) => {
                         }}
                         error={passwordError}
                     />
-                    <Button onClick={doUnlock} loading={unlocking} type="primary" className="my-4">
+                    <Button onClick={doUnlock} loading={unlocking} type="primary" className="my-4 w-full">
                         Unlock
                     </Button>
                 </>

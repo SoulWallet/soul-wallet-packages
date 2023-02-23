@@ -59,6 +59,7 @@ export default function PluginRouter() {
                 <Route path="/launch" element={<Launch />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/recover" element={<RecoverPage />} />
+                <Route path="*" element={<Wallet />} />
             </Routes>
         </div>
     );

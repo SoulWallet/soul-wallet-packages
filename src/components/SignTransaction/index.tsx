@@ -64,7 +64,7 @@ export default forwardRef<any>((props, ref) => {
             // todo, there's a problem when sendETH
             if (operation) {
                 setActiveOperation(operation);
-                const callDataDecode = decodeCalldata(operation);
+                const callDataDecode = decodeCalldata(operation.callData);
                 setDecodedData(callDataDecode);
             }
 

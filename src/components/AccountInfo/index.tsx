@@ -73,7 +73,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
             {action === "activate" && walletType === "eoa" && (
                 <div className="px-6 py-4 w-full">
-                    <Button type={"primary"} onClick={doActivate} loading={loading}>
+                    <Button type={"primary"} onClick={doActivate} className="w-full" loading={loading}>
                         Activate wallet
                     </Button>
                 </div>

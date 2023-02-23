@@ -115,7 +115,7 @@ export default function useTools() {
         };
     };
 
-    const decodeCalldata = async (operation: any) => {
+    const decodeCalldata = async (callData: string) => {
         const tmpMap = new Map<string, string>();
         soulWalletLib.Utils.DecodeCallData.new().setStorage(
             (key, value) => {
@@ -130,7 +130,7 @@ export default function useTools() {
             },
         );
 
-        const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(operation.callData);
+        const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(callData);
         console.log(`callDataDecode:`, callDataDecode);
 
         return callDataDecode;

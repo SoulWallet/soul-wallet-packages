@@ -78,6 +78,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 // if user want to pay with paymaster
                 if (paymasterAndData) {
+                    console.log("actionname is:", actionName);
                     operation.paymasterAndData = paymasterAndData;
 
                     // if it's activate wallet, and user would like to approve first
@@ -97,6 +98,8 @@ export const WalletContextProvider = ({ children }: any) => {
                         operation.callGasLimit = approveCallData.callGasLimit;
                     }
                 }
+
+                operation.verificationGasLimit = Number(operation.verificationGasLimit) + 50000;
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 

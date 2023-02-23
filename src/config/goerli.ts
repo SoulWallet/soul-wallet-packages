@@ -70,7 +70,8 @@ export default {
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://goerli.etherscan.io",
-    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc/",
+    // should it override state when we set new?
+    defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
     defaultSalt: 0,
     feeMultiplier: 3,
     defaultTip: 10 * 10 ** 9,

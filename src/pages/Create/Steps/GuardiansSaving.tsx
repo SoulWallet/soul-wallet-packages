@@ -42,6 +42,9 @@ const GuardiansSaving = () => {
     };
 
     const handleSendEmail = async () => {
+        if (!email) {
+            return;
+        }
         setSending(true);
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
