@@ -80,7 +80,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 // if user want to pay with paymaster
                 if (paymasterAndData) {
-                    operation.setPaymasterAndData(paymasterAndData);
+                    operation.paymasterAndData = paymasterAndData;
 
                     // if it's activate wallet, and user would like to approve first
                     if (actionName === "Activate Wallet") {
@@ -97,7 +97,7 @@ export const WalletContextProvider = ({ children }: any) => {
                         );
 
                         operation.callGasLimit = approveCallData.callGasLimit;
-                        operation.setCallData(approveCallData.callData);
+                        operation.callData = approveCallData.callData;
                     }
                 }
 

@@ -127,7 +127,7 @@ export default function SignPage() {
                 const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
 
                 if (paymasterAndData) {
-                    operation.setPaymasterAndData(paymasterAndData);
+                    operation.paymasterAndData = paymasterAndData;
                 }
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
