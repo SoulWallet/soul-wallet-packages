@@ -2,10 +2,12 @@ import Button from "@src/components/Button";
 import FileUploader from "@src/components/FileUploader";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { TEMPORARY_GUARDIANS_STORAGE_KEY, setSessionStorageV2 } from "@src/lib/tools";
+import useTools from "@src/hooks/useTools";
 import React, { useState } from "react";
 
 const GuardiansImporting = () => {
     const [fileValid, setFileValid] = useState(false);
+    const { getJsonFromFile } = useTools();
 
     const dispatch = useStepDispatchContext();
 
@@ -16,17 +18,15 @@ const GuardiansImporting = () => {
         });
     };
 
-    const handleFileParseResult = (file?: File) => {
+    const handleFileParseResult = async (file?: File) => {
+        if (!file) {
+            return;
+        }
         // TODO: parse file here
+        const fileJson: any = await getJsonFromFile(file);
+        const parseRes = fileJson.guardians;
 
-        // mock logic 👇
-        const parseRes = [
-            {
-                name: "test",
-                address: "0x1231249ef092403431249ef0924034abadf09240",
-                id: "1",
-            },
-        ];
+        console.log("parseRes", parseRes);
 
         setSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY, JSON.stringify(parseRes));
         setFileValid(true);

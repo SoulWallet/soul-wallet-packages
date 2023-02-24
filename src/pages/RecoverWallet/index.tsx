@@ -14,7 +14,7 @@ import config from "@src/config";
 
 export function RecoverWallet() {
     const { account, replaceAddress } = useWalletContext();
-    const { recoverWallet, deleteWallet, getRecoverId } = useWallet();
+    const { recoverWallet, deleteWallet } = useWallet();
     const [progress, setProgress] = useState<number>();
     const navigate = useNavigate();
     const [cachedEmail, setCachedEmail] = useState<string>("");
@@ -33,22 +33,22 @@ export function RecoverWallet() {
         const new_key = newOwnerAddress || (await getLocalStorage("stagingAccount"));
 
         // todo, get by calculating
-        const walletAddress = "0x000";
+        // const walletAddress = "0x000";
 
-        const { userOpHash }: any = await getRecoverId(new_key, walletAddress);
+        // const { userOpHash }: any = await getRecoverId(new_key, walletAddress);
 
-        const res: any = await api.account.recover({
-            email,
-            code,
-            new_key,
-            request_id: userOpHash,
-        });
-        if (res.code === 200) {
-            await replaceAddress();
-            await setLocalStorage("recovering", true);
-            await checkRecoverStatus(new_key);
-            setStep(2);
-        }
+        // const res: any = await api.account.recover({
+        //     email,
+        //     code,
+        //     new_key,
+        //     request_id: userOpHash,
+        // });
+        // if (res.code === 200) {
+        //     await replaceAddress();
+        //     await setLocalStorage("recovering", true);
+        //     await checkRecoverStatus(new_key);
+        //     setStep(2);
+        // }
     };
 
     const doDeleteWallet = async () => {

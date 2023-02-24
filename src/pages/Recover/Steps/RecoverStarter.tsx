@@ -2,21 +2,26 @@ import Button from "@src/components/Button";
 import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import config from "@src/config";
 import React, { useState } from "react";
 
 // TODO: here
 const NetworkOptions: OptionItem[] = [
     {
         label: "Ethereum",
-        value: 0,
+        value: 1,
     },
     {
-        label: "Bitcoin",
-        value: 1,
+        label: "Goerli",
+        value: 5,
     },
 ];
 
-const RecoverStarter = () => {
+interface IRecoverStarter {
+    onChange: (address: string) => void;
+}
+
+const RecoverStarter = ({ onChange }: IRecoverStarter) => {
     const dispatch = useStepDispatchContext();
 
     const [address, setAddress] = useState<string>();
@@ -31,8 +36,11 @@ const RecoverStarter = () => {
     };
 
     const handleNext = () => {
-        // TODO: here
-
+        // TODO: add some check
+        if (!address) {
+            return;
+        }
+        onChange(address);
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: RecoverStepEn.ResetPassword,
@@ -47,7 +55,14 @@ const RecoverStarter = () => {
                 onChange={handleChangeAddress}
                 className="w-base"
             />
-            <Dropdown options={NetworkOptions} placeholder="Select Network" onChange={handleChangeNetwork} />
+            <div></div>
+            <Dropdown
+                value={config.chainId}
+                disabled={true}
+                options={NetworkOptions}
+                placeholder="Select Network"
+                onChange={handleChangeNetwork}
+            />
 
             <Button type="primary" disabled={!address || network === undefined} onClick={handleNext}>
                 Next

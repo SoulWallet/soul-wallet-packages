@@ -1,5 +1,5 @@
 import { RecoverStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import RecoverStarter from "./Steps/RecoverStarter";
@@ -14,12 +14,14 @@ type StepNodeInfo = {
 };
 
 const StepComponent = () => {
+    const [walletAddress, setWalletAddress] = useState("");
+
     // TODO: guardians & signed
     const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
         return {
             [RecoverStepEn.Start]: {
                 title: "Recover your wallet",
-                element: <RecoverStarter />,
+                element: <RecoverStarter onChange={setWalletAddress} />,
             },
             [RecoverStepEn.ResetPassword]: {
                 title: "Set New Password",

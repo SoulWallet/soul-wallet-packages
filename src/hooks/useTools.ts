@@ -4,7 +4,10 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ethers, BigNumber } from "ethers";
 import api from "@src/lib/api";
 import { GuardianItem } from "@src/lib/type";
-import packageJson from "../../package.json";
+import IconSend from "@src/assets/activities/send.svg";
+import IconContract from "@src/assets/activities/Contract.svg";
+import IconActivate from "@src/assets/activities/activate.svg";
+import IconAdd from "@src/assets/activities/add.svg";
 
 export default function useTools() {
     const { ethersProvider } = useWalletContext();
@@ -53,6 +56,18 @@ export default function useTools() {
         link.setAttribute("download", generateJsonName("guardian"));
 
         link.click();
+    };
+
+    const getJsonFromFile = async (jsonFile: File) => {
+        const reader = new FileReader();
+        reader.readAsText(jsonFile);
+
+        return new Promise((resolve) => {
+            reader.onload = (e: any) => {
+                const data = JSON.parse(e.target.result);
+                resolve(data);
+            };
+        });
     };
 
     const emailJsonFile = async (jsonToSave: any, email: string) => {
@@ -135,6 +150,19 @@ export default function useTools() {
         return callDataDecode;
     };
 
+    const getIconMapping = (name: string) => {
+        switch (name) {
+            case "transfer":
+                return IconSend;
+            case "activate":
+                return IconActivate;
+            case "Set Guardian":
+                return IconAdd;
+            default:
+                return IconContract;
+        }
+    };
+
     return {
         getGuardianInitCode,
         verifyAddressFormat,
@@ -143,5 +171,7 @@ export default function useTools() {
         downloadJsonFile,
         emailJsonFile,
         formatGuardianFile,
+        getIconMapping,
+        getJsonFromFile,
     };
 }

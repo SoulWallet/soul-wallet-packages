@@ -15,7 +15,7 @@ interface IFileUploaderProps {
 
 const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
     const [isActive, setIsActive] = useState(false);
-    const [status, setStatus] = useState<UploadStatusEn>(UploadStatusEn.Success);
+    const [status, setStatus] = useState<UploadStatusEn>(UploadStatusEn.None);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement> | DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -26,6 +26,7 @@ const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
             (e as ChangeEvent<HTMLInputElement>)?.target?.files?.[0];
 
         onFileChange(file);
+        setStatus(UploadStatusEn.Success);
     };
 
     const handleReset = () => {

@@ -4,6 +4,8 @@ import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import useLib from "./useLib";
 import { ethers } from "ethers";
+import api from "@src/lib/api";
+import { getLocalStorage } from "@src/lib/tools";
 import useQuery from "./useQuery";
 import config from "@src/config";
 
@@ -60,40 +62,51 @@ export default function useWallet() {
         );
     };
 
-    const getRecoverId = async (newOwner: string, walletAddress: string) => {
+    const initRecoverWallet = async (walletAddress: string) => {
         let nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = await getGasPrice();
+
+        const newOwner = await getLocalStorage("stagingAccount");
 
         const recoveryOp = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
+            // IMPORTANT, paymaster?
             config.contracts.paymaster,
             currentFee,
             currentFee,
             newOwner,
         );
+
         if (!recoveryOp) {
             throw new Error("recoveryOp is null");
         }
 
-        const userOpHash = recoveryOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
+        const opHash = recoveryOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
-        return { userOpHash, recoveryOp };
+        await api.recovery.create({
+            chainId: config.chainId,
+            entrypointAddress: config.contracts.entryPoint,
+            newOwner,
+            guardians: [],
+            userOp: recoveryOp,
+            opHash,
+        });
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {
         const actionName = "Recover Wallet";
 
-        const { userOpHash, recoveryOp }: any = await getRecoverId(newOwner, walletAddress);
+        // const { userOpHash, recoveryOp }: any = await getRecoverId(newOwner, walletAddress);
 
-        // TODO, add guardian signatures here
-        const signPack = "";
+        // // TODO, add guardian signatures here
+        // const signPack = "";
 
-        recoveryOp.signature = signPack;
+        // recoveryOp.signature = signPack;
 
-        await executeOperation(recoveryOp, actionName);
+        // await executeOperation(recoveryOp, actionName);
     };
 
     const deleteWallet = async () => {
@@ -131,9 +144,9 @@ export default function useWallet() {
 
     return {
         activateWallet,
+        initRecoverWallet,
         recoverWallet,
         calculateWalletAddress,
         deleteWallet,
-        getRecoverId,
     };
 }
