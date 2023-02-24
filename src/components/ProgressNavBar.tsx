@@ -25,7 +25,9 @@ export default function ProgressNavBar({ title, maxStep, extraRight }: IProgress
         <div className="flex flex-col w-full">
             <div className="flex flex-row justify-between mb-2">
                 <div className="flex flex-row items-center ">
-                    {current === 0 ? null : <Icon className="mr-1" src={ChevronLeft} onClick={handleBack} />}
+                    {current === 0 || current === maxStep ? null : (
+                        <Icon className="mr-1" src={ChevronLeft} onClick={handleBack} />
+                    )}
                     <span className="font-bold text-xl text-black -tracking-[0.01em]">{title}</span>
                 </div>
                 {extraRight}

@@ -23,9 +23,16 @@ export default function useTools() {
     };
 
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
+        // remove id
+        const guardians = guardiansList.map((item) => {
+            return {
+                address: item.address,
+                name: item.name,
+            };
+        });
         return {
             walletAddress: walletAddress,
-            guardians: guardiansList,
+            guardians,
             // salt: "",
             // walletVersion: packageJson.version,
             // walletLogic: config.contracts.walletLogic,
