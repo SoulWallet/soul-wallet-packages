@@ -9,7 +9,6 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import ImgSuccessCat from "@src/assets/success-cat.svg";
-import { CreatePassword } from "@src/components/CreatePassword";
 import config from "@src/config";
 
 export function RecoverWallet() {
@@ -66,15 +65,6 @@ export function RecoverWallet() {
         } else if (_recovering) {
             setStep(2);
             console.log("check account", account);
-            // const res = await api.guardian.records({
-            //     new_key: newKey || account,
-            // });
-
-            // const require = res.data.requirements;
-
-            // setProgress(new BN(require.signedNum).div(require.total).times(100).toNumber());
-
-            // setDetail(res.data);
         }
     };
 
@@ -112,7 +102,6 @@ export function RecoverWallet() {
                 {step === 0 && (
                     <>
                         <div className="page-title mb-4">Recover</div>
-                        <CreatePassword onCreatedEoaAddress={onCreatedEoaAddress} saveKey={false} />
                         <div className="text-xs">
                             Setting a new password will delete the signing key from your current device.
                             <br />

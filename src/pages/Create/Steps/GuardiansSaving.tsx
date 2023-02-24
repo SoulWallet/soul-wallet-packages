@@ -30,10 +30,8 @@ const GuardiansSaving = () => {
 
         downloadJsonFile(jsonToSave);
 
-        setTimeout(() => {
-            setDownloading(false);
-            setHasSaved(true);
-        }, 2000);
+        setDownloading(false);
+        setHasSaved(true);
     };
 
     const handleEmailChange = (val: string) => {
@@ -50,11 +48,8 @@ const GuardiansSaving = () => {
 
         await emailJsonFile(jsonToSave, email);
 
-        // TODO: here
-        setTimeout(() => {
-            setSending(false);
-            setHasSaved(true);
-        }, 2000);
+        setSending(false);
+        setHasSaved(true);
     };
 
     const handleNext = () => {

@@ -4,6 +4,7 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
 import useTools from "@src/hooks/useTools";
 import { useGlobalStore } from "@src/store/global";
+import useBrowser from "@src/hooks/useBrowser";
 import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 interface ISettingLinks {
@@ -14,6 +15,7 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
     const { walletAddress } = useWalletContext();
     const { guardians } = useGlobalStore();
     const { formatGuardianFile, downloadJsonFile } = useTools();
+    const { goWebsite } = useBrowser();
 
     const downloadGuardianList = async () => {
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
@@ -26,7 +28,7 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
             <a className={linksStyle} onClick={() => onChange(1)}>
                 Account details
             </a>
-            <a className={linksStyle} onClick={() => onChange(2)}>
+            <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
                 Edit guardian list
             </a>
             <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>

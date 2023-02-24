@@ -23,7 +23,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
         case "getAccounts":
             // if already allowed getting accounts, don't show popup
-            const walletAddress = await getLocalStorage("activeWalletAddress");
+            const walletAddress = await getLocalStorage("walletAddress");
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
             if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {

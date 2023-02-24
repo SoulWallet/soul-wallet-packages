@@ -5,7 +5,7 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useQuery from "./useQuery";
 import config from "@src/config";
 
@@ -47,12 +47,12 @@ export default function useWallet() {
         await executeOperation(activateOp, actionName);
     };
 
-    const calculateWalletAddress = (address: string) => {
+    const calculateWalletAddress = async (address: string, saveKey?: boolean) => {
         console.log("calculate with guardian list", guardiansList);
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        return soulWalletLib.calculateWalletAddress(
+        const wAddress = soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
             config.contracts.entryPoint,
             address,
@@ -60,6 +60,12 @@ export default function useWallet() {
             config.guardianDelay,
             guardianInitCode.address,
         );
+
+        if (saveKey) {
+            await setLocalStorage("walletAddress", wAddress);
+        }
+
+        return wAddress;
     };
 
     const initRecoverWallet = async (walletAddress: string) => {
@@ -112,35 +118,6 @@ export default function useWallet() {
     const deleteWallet = async () => {
         await keyStore.delete();
     };
-
-    // The following functions is to be moved
-
-    // const getWalletAddress = async () => {
-    //     console.log("aaaaa");
-    //     const cachedWalletAddress = await getLocalStorage(
-    //         "activeWalletAddress",
-    //     );
-    //     if (cachedWalletAddress) {
-    //         setWalletAddress(cachedWalletAddress);
-    //     } else {
-    //         const walletAddress: string = (
-    //             await api.account.getWalletAddress({
-    //                 key: account,
-    //             })
-    //         ).data.wallet_address;
-    //         await setLocalStorage("activeWalletAddress", walletAddress);
-
-    //         setWalletAddress(walletAddress);
-    //     }
-    // };
-
-    // const getWalletAddressByEmail = async (email: string) => {
-    //     const res: any = await api.account.getWalletAddress({
-    //         email,
-    //     });
-    //     const walletAddress = res.data.wallet_address;
-    //     return walletAddress;
-    // };
 
     return {
         activateWallet,

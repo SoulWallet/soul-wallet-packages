@@ -50,6 +50,7 @@ if (shouldInjectProvider()) {
     const providerToInject = {
         chainId: config.chainId.toString(16),
         isMetamask: true,
+        isSoul: true,
         request: async (call) => {
             return await handleRequests(call);
         },

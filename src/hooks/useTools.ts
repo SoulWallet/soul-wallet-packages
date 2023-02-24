@@ -51,7 +51,7 @@ export default function useTools() {
         return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-${name}.json`;
     };
 
-    const downloadJsonFile = async (jsonToSave: any) => {
+    const downloadJsonFile = (jsonToSave: any) => {
         const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(jsonToSave))}`;
 
         const link = document.createElement("a");

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
-import { setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
@@ -50,17 +50,13 @@ export const WalletContextProvider = ({ children }: any) => {
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeystore();
-    const { calculateWalletAddress } = useWallet();
     const { soulWalletLib } = useLib();
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
+        const wAddress = await getLocalStorage("walletAddress");
         setAccount(res);
-        const wAddress = calculateWalletAddress(res);
-
-        console.log("beoa, wallet", res, wAddress);
         setWalletAddress(wAddress);
-        setLocalStorage("activeWalletAddress", wAddress);
     };
 
     const getWalletType = async () => {
