@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import cn from "classnames";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { RecoverWallet } from "@src/pages/RecoverWallet";
 import { Wallet } from "@src/pages/Wallet";
 import Send from "@src/pages/Send";
 import SignPage from "@src/pages/SignPage";
@@ -53,7 +52,6 @@ export default function PluginRouter() {
                 <Route path="/send/:tokenAddress" element={<Send />} />
                 <Route path="/sign" element={<SignPage />} />
                 <Route path="/activate-wallet" element={<ActivateWallet />} />
-                <Route path="/recover-wallet" element={<RecoverWallet />} />
                 <Route path="/launch" element={<Launch />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/recover" element={<RecoverPage />} />
