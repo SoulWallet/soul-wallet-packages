@@ -89,7 +89,7 @@ export default function useTools() {
         return /^0x[0-9a-fA-F]{40}$/.test(address);
     };
 
-    const getFeeCost = async (activateOp: any, tokenAddress?: string) => {
+    const getFeeCost = async (op: any, tokenAddress?: string) => {
         // calculate eth cost
         let baseFeeInGwei = "";
         if (config.support1559) {
@@ -99,7 +99,7 @@ export default function useTools() {
             baseFeeInGwei = ethers.utils.parseUnits(fee.estimatedBaseFee, "gwei").toString();
         }
 
-        const requiredPrefund = activateOp.requiredPrefund(baseFeeInGwei);
+        const requiredPrefund = op.requiredPrefund(baseFeeInGwei);
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
 
         if (!tokenAddress) {

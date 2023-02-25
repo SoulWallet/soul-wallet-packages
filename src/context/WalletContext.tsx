@@ -96,6 +96,7 @@ export const WalletContextProvider = ({ children }: any) => {
                     }
                 }
 
+                // IMPORTANT TODO, remove?
                 operation.verificationGasLimit = Number(operation.verificationGasLimit) + 50000;
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);

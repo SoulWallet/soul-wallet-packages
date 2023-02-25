@@ -6,7 +6,6 @@ import useWalletContext from "../context/hooks/useWalletContext";
 import useLib from "./useLib";
 import useQuery from "./useQuery";
 import BN from "bignumber.js";
-import useTools from "./useTools";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";

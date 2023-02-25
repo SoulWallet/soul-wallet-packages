@@ -6,12 +6,16 @@ import useLib from "./useLib";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
+import { useSettingStore } from "@src/store/settingStore";
+import { UserOperation } from "soul-wallet-lib";
 import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
-    const { account, executeOperation, ethersProvider, walletAddress } = useWalletContext();
+    const { account, executeOperation, ethersProvider } = useWalletContext();
+    const { bundlerUrl } = useSettingStore();
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode } = useTools();
     const { guardians } = useGlobalStore();
@@ -112,6 +116,7 @@ export default function useWallet() {
     };
 
     const recoverWallet = async (transferOp: any, signatureList: any) => {
+        const op = UserOperation.fromJSON(JSON.stringify(transferOp));
         const actionName = "Recover Wallet";
 
         signatureList.forEach((item: any) => {
@@ -128,9 +133,16 @@ export default function useWallet() {
             guardianInitCode.initCode,
         );
 
-        transferOp.signature = signature;
+        const opHash = op.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
-        await executeOperation(transferOp, actionName);
+        op.signature = signature;
+
+        await Runtime.send("execute", {
+            actionName,
+            operation: op.toJSON(),
+            opHash,
+            bundlerUrl,
+        });
     };
 
     const deleteWallet = async () => {

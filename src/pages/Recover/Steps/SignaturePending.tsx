@@ -80,22 +80,25 @@ const SignaturePending = () => {
         setLoadingList(true);
         setShareUrl(`${config.recoverUrl}/${opHash}`);
         const res: any = await api.recovery.get(opHash);
+        let signedNum = 0;
         res.data.signatures.forEach((item: ISignaturesItem) => {
             // check status
             if (item.signature) {
                 item.status = SignatureStatusEn.Signed;
+                signedNum++;
             } else {
                 item.status = SignatureStatusEn.Pending;
             }
         });
         setSignatureList(res.data.signatures);
+        setProgress(Math.ceil(signedNum / signatureList.length));
         setLoadingList(false);
     };
 
     const getDetail = async (opHash: string) => {
         const res = await api.recovery.getOp(opHash);
         console.log("detail", res);
-        setOpDetail(res.data);
+        setOpDetail(res.data.userOp);
     };
 
     const getInfo = async () => {
@@ -116,7 +119,7 @@ const SignaturePending = () => {
                     <SignatureItem key={idx} {...item} />
                 ))}
             </div>
-            <div className="bg-white absolute inset-x-0 bottom-0 w-full h-[100px] flex flex-row items-center justify-evenly gap-x-5 rounded-b-md px-4">
+            <div className="bg-white relative inset-x-0 bottom-0 w-full h-[100px] flex flex-row items-center justify-evenly gap-x-5 rounded-b-md px-4">
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>
                     Share URL
                 </Button>
