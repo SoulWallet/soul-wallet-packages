@@ -9,6 +9,7 @@ const getAccounts = async () => {
 };
 
 const sendTransaction = async (params: any) => {
+    console.log("got request yo");
     let param = params[0];
 
     if (!param.value) {

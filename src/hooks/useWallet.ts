@@ -80,7 +80,7 @@ export default function useWallet() {
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            // IMPORTANT, paymaster?
+            // IMPORTANT TODO, paymaster?
             config.contracts.paymaster,
             currentFee,
             currentFee,
@@ -111,17 +111,26 @@ export default function useWallet() {
         }
     };
 
-    const recoverWallet = async (newOwner: string, signatures: string[]) => {
+    const recoverWallet = async (transferOp: any, signatureList: any) => {
         const actionName = "Recover Wallet";
 
-        // const { userOpHash, recoveryOp }: any = await getRecoverId(newOwner, walletAddress);
+        signatureList.forEach((item: any) => {
+            // TODO, need to judge
+            item.contract = false;
+        });
 
-        // // TODO, add guardian signatures here
-        // const signPack = "";
+        const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        // recoveryOp.signature = signPack;
+        const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
+            guardianInitCode.address,
+            signatureList,
+            0,
+            guardianInitCode.initCode,
+        );
 
-        // await executeOperation(recoveryOp, actionName);
+        transferOp.signature = signature;
+
+        await executeOperation(transferOp, actionName);
     };
 
     const deleteWallet = async () => {

@@ -9,12 +9,13 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
 import SignTransaction from "@src/components/SignTransaction";
-import useTransaction from "@src/hooks/useTransaction";
+import { useSettingStore } from "@src/store/settingStore";
 
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { walletAddress, ethersProvider, account } = useWalletContext();
+    const { bundlerUrl } = useSettingStore();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
     const keystore = useKeystore();
@@ -121,6 +122,7 @@ export default function SignPage() {
                 window.close();
             }
         } else if (actionType === "approveTransaction") {
+            console.log("why why");
             try {
                 const operation = await formatOperation();
 
@@ -149,6 +151,7 @@ export default function SignPage() {
                         operation: operation.toJSON(),
                         userOpHash,
                         tabId,
+                        bundlerUrl,
                     },
                 });
             } catch (err) {

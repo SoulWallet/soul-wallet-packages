@@ -6,7 +6,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
 import api from "@src/lib/api";
-import { getLocalStorage } from "@src/lib/tools";
+import useWallet from "@src/hooks/useWallet";
+import { getLocalStorage, removeLocalStorage } from "@src/lib/tools";
 
 enum SignatureStatusEn {
     Signed = 1,
@@ -51,8 +52,12 @@ const SignatureItem = ({ address, status }: ISignaturesItem) => (
 const SignaturePending = () => {
     const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
-    const [pendingList, setPendingList] = useState([]);
-    const [shareUrl, setShareUrl] = useState(""); // TODO: get from api
+    const { recoverWallet } = useWallet();
+    const [signatureList, setSignatureList] = useState([]);
+    const [progress, setProgress] = useState(0);
+    const [shareUrl, setShareUrl] = useState("");
+    const [opDetail, setOpDetail] = useState({});
+    const [recoveringWallet, setRecoveringWallet] = useState(false);
 
     const handleOpenShareModal = () => {
         setShowShareModal(true);
@@ -62,13 +67,17 @@ const SignaturePending = () => {
         setShowShareModal(false);
     };
 
-    const handleNext = () => {
-        // TODO: jump to where?
+    const doRecover = async () => {
+        setRecoveringWallet(true);
+        // GET OP
+        await recoverWallet(opDetail, signatureList);
+        setRecoveringWallet(true);
+        await removeLocalStorage("recoveryOpHash");
+        // TOOD, add success page
     };
 
-    const getList = async () => {
+    const getList = async (opHash: string) => {
         setLoadingList(true);
-        const opHash = await getLocalStorage("recoverOpHash");
         setShareUrl(`${config.recoverUrl}/${opHash}`);
         const res: any = await api.recovery.get(opHash);
         res.data.signatures.forEach((item: ISignaturesItem) => {
@@ -79,18 +88,31 @@ const SignaturePending = () => {
                 item.status = SignatureStatusEn.Pending;
             }
         });
-        setPendingList(res.data.signatures);
+        setSignatureList(res.data.signatures);
         setLoadingList(false);
     };
 
+    const getDetail = async (opHash: string) => {
+        const res = await api.recovery.getOp(opHash);
+        console.log("detail", res);
+        setOpDetail(res.data);
+    };
+
+    const getInfo = async () => {
+        const opHash = await getLocalStorage("recoverOpHash");
+
+        getList(opHash);
+        getDetail(opHash);
+    };
+
     useEffect(() => {
-        getList();
+        getInfo();
     }, []);
 
     return (
         <div className="relative pb-100 -mx-4">
             <div>
-                {pendingList.map((item: ISignaturesItem, idx) => (
+                {signatureList.map((item: ISignaturesItem, idx: number) => (
                     <SignatureItem key={idx} {...item} />
                 ))}
             </div>
@@ -98,9 +120,8 @@ const SignaturePending = () => {
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>
                     Share URL
                 </Button>
-                {/* TODO: all signed? */}
-                <Button className="w-[calc(50%-12px)]" onClick={handleNext} disabled>
-                    Next
+                <Button loading={recoveringWallet} type="primary" disabled={progress < 50} onClick={doRecover}>
+                    Recover
                 </Button>
             </div>
 

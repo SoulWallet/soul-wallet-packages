@@ -44,8 +44,9 @@ export default function useTransaction() {
     const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
         const actionName = "Send Assets";
         const currentFee = await getGasPrice();
-        // IMPORTANT TODO
-        const amountInWei = new BN(amount).shiftedBy(6).toString();
+        // get decimals `locally`
+        const decimals = config.assetsList.filter((item: any) => item.address === tokenAddress)[0].decimals;
+        const amountInWei = new BN(amount).shiftedBy(decimals).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const op = await soulWalletLib.Tokens.ERC20.transfer(
             ethersProvider,

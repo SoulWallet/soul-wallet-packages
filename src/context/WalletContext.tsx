@@ -69,7 +69,6 @@ export const WalletContextProvider = ({ children }: any) => {
         // no actionName means no need to sign
         actionName?: string,
     ) => {
-        console.log("B url", bundlerUrl);
         if (actionName) {
             try {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);

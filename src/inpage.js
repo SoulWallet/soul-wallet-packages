@@ -10,19 +10,18 @@ import handleRequests from "./provider/handleRequests";
 
 const soulMiddleware = createSoulMiddleware({
     getAccounts: async () => {
-        const res = await Bus.send("getAccounts", "getAccounts");
-        return [res];
+        // const res = await Bus.send("getAccounts", "getAccounts");
+        // return [res];
     },
     processTransaction: async (txData) => {
-        const opData = await Bus.send("approve", "approveTransaction", txData);
-
-        opData.actionName = "Transaction";
-
-        try {
-            return await Bus.send("execute", "signTransaction", opData);
-        } catch (err) {
-            throw new Error("Failed to execute");
-        }
+        console.log("readyt to process in processTransaction");
+        // const opData = await Bus.send("approve", "approveTransaction", txData);
+        // opData.actionName = "Transaction";
+        // try {
+        //     return await Bus.send("execute", "signTransaction", opData);
+        // } catch (err) {
+        //     throw new Error("Failed to execute");
+        // }
     },
     processEthSignMessage: () => {},
     processTypedMessage: () => {},
