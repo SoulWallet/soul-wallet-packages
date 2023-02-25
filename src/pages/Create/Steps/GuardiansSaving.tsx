@@ -5,7 +5,7 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState, useEffect } from "react";
-import { validateEmail } from "@src/lib/tools";
+import { getLocalStorage, validateEmail } from "@src/lib/tools";
 
 const GuardiansSaving = () => {
     const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
@@ -23,8 +23,10 @@ const GuardiansSaving = () => {
         setIsEmailValid(validateEmail(email));
     }, [email]);
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         setDownloading(true);
+
+        const walletAddress = await getLocalStorage("walletAddress");
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
@@ -43,6 +45,8 @@ const GuardiansSaving = () => {
             return;
         }
         setSending(true);
+
+        const walletAddress = await getLocalStorage("walletAddress");
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
 

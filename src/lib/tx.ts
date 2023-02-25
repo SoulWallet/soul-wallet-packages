@@ -21,7 +21,6 @@ export const executeTransaction = async (
     tabId: any,
     bundlerUrl: string = "https://bundler-eth-goerli.soulwallets.me/rpc",
 ) => {
-    console.log("bundler url", bundlerUrl);
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
     return new Promise(async (resolve, reject) => {

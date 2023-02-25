@@ -4,7 +4,6 @@ import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
-import LogoLoading from "@src/assets/logo-loading.gif";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
@@ -154,6 +153,8 @@ export default function SignPage() {
                         bundlerUrl,
                     },
                 });
+
+                window.close();
             } catch (err) {
                 console.log(err);
             } finally {
@@ -163,7 +164,7 @@ export default function SignPage() {
     };
 
     useEffect(() => {
-        if (!searchParams.actionType || !signModal.current || !walletAddress) {
+        if (!searchParams.actionType || !signModal || !signModal.current || !walletAddress) {
             return;
         }
         determineAction();

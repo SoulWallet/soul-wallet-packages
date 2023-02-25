@@ -3,10 +3,14 @@ import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef } from "react";
+import useKeystore from "@src/hooks/useKeystore";
+import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 
 export default function GuardiansSetting() {
     const dispatch = useStepDispatchContext();
+    const keystore = useKeystore();
+    const { generateWalletAddress } = useWallet();
     const { updateFinalGuardians } = useGlobalStore();
     const formRef = useRef<IGuardianFormHandler>(null);
 
@@ -24,6 +28,14 @@ export default function GuardiansSetting() {
                 return;
             }
             updateFinalGuardians(guardianList);
+
+            const eoaAddress = await keystore.getAddress();
+
+            const guardianAddress = guardianList.map((item: any) => item.address);
+
+            console.log("before create", eoaAddress, guardianAddress);
+
+            generateWalletAddress(eoaAddress, guardianAddress, true);
             handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
         } catch (err) {
             console.error(err);

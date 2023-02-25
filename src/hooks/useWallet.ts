@@ -14,7 +14,7 @@ import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
-    const { account, executeOperation, ethersProvider } = useWalletContext();
+    const { account, executeOperation, ethersProvider, getAccount } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice } = useQuery();
     const { getGuardianInitCode } = useTools();
@@ -52,9 +52,7 @@ export default function useWallet() {
         await executeOperation(activateOp, actionName);
     };
 
-    const calculateWalletAddress = async (address: string, saveKey?: boolean) => {
-        console.log("calculate with guardian list", guardiansList);
-
+    const generateWalletAddress = async (address: string, guardiansList: GuardianItem[], saveKey?: boolean) => {
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const wAddress = soulWalletLib.calculateWalletAddress(
@@ -68,6 +66,7 @@ export default function useWallet() {
 
         if (saveKey) {
             await setLocalStorage("walletAddress", wAddress);
+            getAccount();
         }
 
         return wAddress;
@@ -116,7 +115,6 @@ export default function useWallet() {
     };
 
     const recoverWallet = async (transferOp: any, signatureList: any, opHash: string) => {
-        console.log("sig list", signatureList);
         console.log("op hash", opHash);
 
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
@@ -157,7 +155,7 @@ export default function useWallet() {
         activateWallet,
         initRecoverWallet,
         recoverWallet,
-        calculateWalletAddress,
+        generateWalletAddress,
         deleteWallet,
     };
 }
