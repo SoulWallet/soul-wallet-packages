@@ -57,13 +57,13 @@ const StepComponent = () => {
     } = useStepContext();
 
     const checkRecoverStatus = async () => {
-        // const opHash = await getLocalStorage("recoverOpHash");
-        // if (opHash) {
-        //     dispatch({
-        //         type: StepActionTypeEn.JumpToTargetStep,
-        //         payload: RecoverStepEn.SignaturePending,
-        //     });
-        // }
+        const opHash = await getLocalStorage("recoverOpHash");
+        if (opHash) {
+            dispatch({
+                type: StepActionTypeEn.JumpToTargetStep,
+                payload: RecoverStepEn.SignaturePending,
+            });
+        }
     };
 
     useEffect(() => {

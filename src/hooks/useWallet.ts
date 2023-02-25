@@ -115,7 +115,10 @@ export default function useWallet() {
         }
     };
 
-    const recoverWallet = async (transferOp: any, signatureList: any) => {
+    const recoverWallet = async (transferOp: any, signatureList: any, opHash: string) => {
+        console.log("sig list", signatureList);
+        console.log("op hash", opHash);
+
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
         const actionName = "Recover Wallet";
 
@@ -124,10 +127,9 @@ export default function useWallet() {
             item.contract = false;
         });
 
-        console.log("before", guardiansList);
         const guardianInitCode = getGuardianInitCode(guardiansList);
-        console.log("after", guardianInitCode);
 
+        debugger;
         const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
             guardianInitCode.address,
             signatureList,
@@ -135,7 +137,7 @@ export default function useWallet() {
             guardianInitCode.initCode,
         );
 
-        const opHash = op.getUserOpHash(config.contracts.entryPoint, config.chainId);
+        console.log("recover op hash", opHash);
 
         op.signature = signature;
 

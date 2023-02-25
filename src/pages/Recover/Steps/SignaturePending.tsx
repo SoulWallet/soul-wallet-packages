@@ -53,10 +53,11 @@ const SignaturePending = () => {
     const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
     const { recoverWallet } = useWallet();
-    const [signatureList, setSignatureList] = useState([]);
+    const [signatureList, setSignatureList] = useState<any>([]);
     const [progress, setProgress] = useState(0);
     const [shareUrl, setShareUrl] = useState("");
-    const [opDetail, setOpDetail] = useState({});
+    const [opDetail, setOpDetail] = useState<any>({});
+    const [opHash, setOpHash] = useState("");
     const [recoveringWallet, setRecoveringWallet] = useState(false);
 
     const handleOpenShareModal = () => {
@@ -68,11 +69,15 @@ const SignaturePending = () => {
     };
 
     const doRecover = async () => {
-        const finalSignatureList = signatureList.filter((item: any) => item.signature);
+        const finalSignatureList = signatureList.filter((item: any) => !!item.signature);
+        // TODO, 0x should be removed
+        // finalSignatureList.forEach((item: any) => {
+        //     item.signature = `0x${item.signature}`;
+        // });
 
         setRecoveringWallet(true);
         // GET OP
-        await recoverWallet(opDetail, finalSignatureList);
+        await recoverWallet(opDetail, finalSignatureList, opHash);
         setRecoveringWallet(true);
         await removeLocalStorage("recoveryOpHash");
         // TOOD, add success page
@@ -99,8 +104,8 @@ const SignaturePending = () => {
 
     const getDetail = async (opHash: string) => {
         const res = await api.recovery.getOp(opHash);
-        console.log("detail", res);
         setOpDetail(res.data.userOp);
+        setOpHash(res.data.opHash);
     };
 
     const getInfo = async () => {
