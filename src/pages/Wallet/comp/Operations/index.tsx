@@ -13,14 +13,13 @@ export default function Operations() {
     return (
         <>
             <div className="py-3 relative flex-1">
-                <div className="flex px-6">
+                <div className="flex">
                     {tabs.map((item, index) => (
                         <a
                             key={index}
                             className={cn(
                                 "py-3 text-center flex-1 select-none cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
-                                activeTabIndex === index &&
-                                    "border-blue text-blue text-base font-bold",
+                                activeTabIndex === index && "border-blue text-blue text-base font-bold",
                             )}
                             onClick={() => setActiveTabIndex(index)}
                         >
@@ -29,12 +28,7 @@ export default function Operations() {
                     ))}
                 </div>
 
-                <div
-                    className={cn(
-                        "overflow-y-scroll",
-                        walletType === "eoa" ? "h-[150px]" : "h-[230px]",
-                    )}
-                >
+                <div className={cn("overflow-y-scroll", walletType === "eoa" ? "h-[150px]" : "h-[230px]")}>
                     {activeTabIndex === 0 && <Assets />}
                     {activeTabIndex === 1 && <Activitys />}
                     {activeTabIndex === 2 && <Dapps />}

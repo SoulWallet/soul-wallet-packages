@@ -9,13 +9,14 @@ export type OptionItem = {
 interface IProps {
     placeholder?: string;
     className?: string;
+    label?: string;
     options: OptionItem[];
-    value?: number;
+    value?: number | string;
     disabled?: boolean;
     onChange: (val: number | string) => void;
 }
 
-const Dropdown = ({ placeholder, options, disabled, value, onChange }: IProps) => {
+const Dropdown = ({ placeholder, label, options, disabled, value, onChange }: IProps) => {
     const [selectedItem, setSelectedItem] = useState<OptionItem>();
 
     const handleChangeSelect = (item: OptionItem) => {
@@ -34,25 +35,28 @@ const Dropdown = ({ placeholder, options, disabled, value, onChange }: IProps) =
     }, [value]);
 
     return (
-        <div
-            className={cn(
-                "w-full dropdown h-12 bg-lightWhite border border-lightGray rounded-3xl text-base",
-                disabled && "cursor-no-drop",
-            )}
-        >
-            <label tabIndex={0} className="flex place-items-center h-12 px-6 mb-[2px]">
-                {selectedItem?.label ?? placeholder}
-            </label>
+        <div>
+            {label && <div className="tip-text mb-1 ">{label}</div>}
+            <div
+                className={cn(
+                    "w-full dropdown h-12 bg-lightWhite border border-lightGray rounded-3xl text-base",
+                    disabled && "cursor-no-drop",
+                )}
+            >
+                <label tabIndex={0} className="flex place-items-center h-12 px-6 mb-[2px]">
+                    {selectedItem?.label ?? placeholder}
+                </label>
 
-            {!disabled && (
-                <ul tabIndex={0} className="bg-white dropdown-content compact menu shadow w-full rounded-md">
-                    {options.map((item) => (
-                        <li key={item.value} onClick={() => handleChangeSelect(item)}>
-                            <a>{item.label}</a>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                {!disabled && (
+                    <ul tabIndex={0} className="bg-white dropdown-content compact menu shadow w-full rounded-md">
+                        {options.map((item) => (
+                            <li key={item.value} onClick={() => handleChangeSelect(item)}>
+                                <a>{item.label}</a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 };

@@ -18,6 +18,8 @@ const NetworkOptions: OptionItem[] = [
     },
 ];
 
+const payTokens = config.assetsList.map((item: any) => ({ label: item.symbol, value: item.address }));
+
 interface IRecoverStarter {
     onChange: (address: string) => void;
 }
@@ -27,6 +29,7 @@ const RecoverStarter = ({ onChange }: IRecoverStarter) => {
 
     const [address, setAddress] = useState<string>();
     const [network, setNetwork] = useState<number>();
+    const [payToken, setPayToken] = useState<string>(config.zeroAddress);
 
     const handleChangeAddress = (val: string) => {
         setAddress(val);
@@ -34,6 +37,10 @@ const RecoverStarter = ({ onChange }: IRecoverStarter) => {
 
     const handleChangeNetwork = (val: string | number) => {
         setNetwork(val as number);
+    };
+
+    const handleChangePayToken = (val: string | number) => {
+        setPayToken(val as string);
     };
 
     const handleNext = () => {
@@ -60,22 +67,21 @@ const RecoverStarter = ({ onChange }: IRecoverStarter) => {
     }, []);
 
     return (
-        <div className="pt-6 pb-8 flex flex-col gap-y-6">
+        <div className="pt-6 pb-8 flex flex-col gap-4">
             <InputWrapper
                 label="Enter Wallet Address"
                 value={address}
                 onChange={handleChangeAddress}
                 className="w-base"
             />
-            <div></div>
+            <Dropdown label="Select Token" value={payToken} options={payTokens} onChange={handleChangePayToken} />
             <Dropdown
+                label="Select Network"
                 value={config.chainId}
                 disabled={true}
                 options={NetworkOptions}
-                placeholder="Select Network"
                 onChange={handleChangeNetwork}
             />
-
             <Button type="primary" disabled={!address || network === undefined} onClick={handleNext}>
                 Next
             </Button>
