@@ -8,6 +8,7 @@ import api from "@src/lib/api";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useQuery from "./useQuery";
 import config from "@src/config";
+import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
     const { account, executeOperation, ethersProvider, walletAddress } = useWalletContext();
@@ -68,13 +69,13 @@ export default function useWallet() {
         return wAddress;
     };
 
-    const initRecoverWallet = async (walletAddress: string) => {
+    const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[]) => {
         let nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = await getGasPrice();
 
         const newOwner = await getLocalStorage("stagingAccount");
 
-        const recoveryOp = await soulWalletLib.Guardian.transferOwner(
+        const op = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
@@ -86,20 +87,28 @@ export default function useWallet() {
             newOwner,
         );
 
-        if (!recoveryOp) {
+        if (!op) {
             throw new Error("recoveryOp is null");
         }
 
-        const opHash = recoveryOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
+        const opHash = op.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
-        await api.recovery.create({
+        const guardiansList = guardians.map((item) => item.address);
+
+        const res: any = await api.recovery.create({
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
             newOwner,
-            guardians: [],
-            userOp: recoveryOp,
+            guardians: guardiansList,
+            userOp: JSON.parse(op.toJSON()),
             opHash,
         });
+
+        if (res.code === 200) {
+            await setLocalStorage("recoverOpHash", opHash);
+        } else {
+            throw new Error(res.msg);
+        }
     };
 
     const recoverWallet = async (newOwner: string, signatures: string[]) => {

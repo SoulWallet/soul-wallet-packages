@@ -26,8 +26,6 @@ const GuardiansImporting = () => {
         const fileJson: any = await getJsonFromFile(file);
         const parseRes = fileJson.guardians;
 
-        console.log("parseRes", parseRes);
-
         setSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY, JSON.stringify(parseRes));
         setFileValid(true);
     };

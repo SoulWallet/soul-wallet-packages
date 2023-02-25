@@ -1,5 +1,11 @@
-import { RecoverStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
-import React, { useMemo, useState } from "react";
+import {
+    RecoverStepEn,
+    StepContextProvider,
+    useStepContext,
+    StepActionTypeEn,
+    useStepDispatchContext,
+} from "@src/context/StepContext";
+import React, { useEffect, useMemo, useState } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import RecoverStarter from "./Steps/RecoverStarter";
@@ -7,6 +13,7 @@ import PasswordResetting from "./Steps/PasswordResetting";
 import SignaturePending from "./Steps/SignaturePending";
 import GuardiansChecking from "./Steps/GuardiansChecking";
 import GuardiansImporting from "./Steps/GuardiansImporting";
+import { getLocalStorage } from "@src/lib/tools";
 
 type StepNodeInfo = {
     title: string;
@@ -14,6 +21,8 @@ type StepNodeInfo = {
 };
 
 const StepComponent = () => {
+    const dispatch = useStepDispatchContext();
+
     const [walletAddress, setWalletAddress] = useState("");
 
     // TODO: guardians & signed
@@ -33,7 +42,7 @@ const StepComponent = () => {
             },
             [RecoverStepEn.GuardiansChecking]: {
                 title: "Enter Guardians address",
-                element: <GuardiansChecking />,
+                element: <GuardiansChecking walletAddress={walletAddress} />,
             },
             // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {
@@ -41,11 +50,25 @@ const StepComponent = () => {
                 element: <SignaturePending />,
             },
         };
-    }, []);
+    }, [walletAddress]);
 
     const {
         step: { current },
     } = useStepContext();
+
+    const checkRecoverStatus = async () => {
+        const opHash = await getLocalStorage("recoverOpHash");
+        if (opHash) {
+            dispatch({
+                type: StepActionTypeEn.JumpToTargetStep,
+                payload: RecoverStepEn.SignaturePending,
+            });
+        }
+    };
+
+    useEffect(() => {
+        checkRecoverStatus();
+    }, []);
 
     return (
         <div>

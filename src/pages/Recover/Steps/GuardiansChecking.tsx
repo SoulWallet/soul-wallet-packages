@@ -5,14 +5,16 @@ import React, { useRef, useState } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
 import ModalV2 from "@src/components/ModalV2";
 import { TEMPORARY_GUARDIANS_STORAGE_KEY, getSessionStorageV2, removeSessionStorageV2 } from "@src/lib/tools";
-import api from "@src/lib/api";
-import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
 
-const GuardiansChecking = () => {
+interface IGuardianChecking {
+    walletAddress: string;
+}
+
+const GuardiansChecking = ({ walletAddress }: IGuardianChecking) => {
+    const { initRecoverWallet } = useWallet();
     const storage = getSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
     const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
-    const { initRecoverWallet } = useWallet();
 
     const formRef = useRef<IGuardianFormHandler>(null);
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
@@ -25,17 +27,17 @@ const GuardiansChecking = () => {
         // setTimeout(() => {
         //     setShowVerificationModal(false);
         // }, 3000);
-
         // ! if check pass, then submit guardians to the global store
-        formRef.current?.submit();
+        // formRef.current?.submit();
         // TODO: once the guardians are submitted, clear the temporary guardians
-        removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
     };
 
     const handleAskSignature = async () => {
         handleCheckGuardianAddresses();
 
-        await initRecoverWallet("");
+        await initRecoverWallet(walletAddress, temporaryGuardians);
+
+        removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
 
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,

@@ -2,7 +2,11 @@ import Button from "@src/components/Button";
 import Icon from "@src/components/Icon";
 import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "material-react-toastify";
+import config from "@src/config";
+import api from "@src/lib/api";
+import { getLocalStorage } from "@src/lib/tools";
 
 enum SignatureStatusEn {
     Signed = 1,
@@ -28,52 +32,27 @@ interface ISignatureVerificationItem {
     status: SignatureStatusEn;
 }
 
-const SignatureItem = ({ name, address, status }: ISignatureVerificationItem) => (
+interface ISignaturesItem {
+    address: string;
+    signature: string;
+    status: SignatureStatusEn;
+}
+
+const SignatureItem = ({ address, status }: ISignaturesItem) => (
     <div className="px-6 py-3 even:bg-[#FAFAFA]">
         <div className="flex flex-row justify-between items-center">
-            <span className="text-black text-xl">{name}</span>
+            <span className="text-black text-xl">Guardian</span>
             <span className={"text-base " + SignatureStatusMap[status].color}>{SignatureStatusMap[status].text}</span>
         </div>
         <p className="text-gray80 whitespace-nowrap mt-2">{address}</p>
     </div>
 );
 
-const mockData: ISignatureVerificationItem[] = [
-    {
-        name: "Guardian 1",
-        address: "0x3345672903345672903345672934567290334567290",
-        status: SignatureStatusEn.Signed,
-    },
-    {
-        name: "Guardian 2",
-        address: "0x334567290334567290334567290",
-        status: SignatureStatusEn.Pending,
-    },
-    {
-        name: "Guardian 3",
-        address: "0x334567290334567290334567290",
-        status: SignatureStatusEn.Error,
-    },
-    {
-        name: "Guardian 4",
-        address: "0x334567290334567290334567290",
-        status: SignatureStatusEn.Signed,
-    },
-    {
-        name: "Guardian 5",
-        address: "0x334567290334567290334567290",
-        status: SignatureStatusEn.Signed,
-    },
-    {
-        name: "Guardian 6",
-        address: "0x334567290334567290334567290",
-        status: SignatureStatusEn.Signed,
-    },
-];
-
 const SignaturePending = () => {
+    const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
-    const [shareUrl, setShareUrl] = useState("https://soulwallet.io/recover/334567290"); // TODO: get from api
+    const [pendingList, setPendingList] = useState([]);
+    const [shareUrl, setShareUrl] = useState(""); // TODO: get from api
 
     const handleOpenShareModal = () => {
         setShowShareModal(true);
@@ -86,10 +65,32 @@ const SignaturePending = () => {
     const handleNext = () => {
         // TODO: jump to where?
     };
+
+    const getList = async () => {
+        setLoadingList(true);
+        const opHash = await getLocalStorage("recoverOpHash");
+        setShareUrl(`${config.recoverUrl}/${opHash}`);
+        const res: any = await api.recovery.get(opHash);
+        res.data.signatures.forEach((item: ISignaturesItem) => {
+            // check status
+            if (item.signature) {
+                item.status = SignatureStatusEn.Signed;
+            } else {
+                item.status = SignatureStatusEn.Pending;
+            }
+        });
+        setPendingList(res.data.signatures);
+        setLoadingList(false);
+    };
+
+    useEffect(() => {
+        getList();
+    }, []);
+
     return (
         <div className="relative pb-100 -mx-4">
-            <div className="max-h-[400px] overflow-y-scroll">
-                {mockData.map((item, idx) => (
+            <div>
+                {pendingList.map((item: ISignaturesItem, idx) => (
                     <SignatureItem key={idx} {...item} />
                 ))}
             </div>
@@ -115,7 +116,7 @@ const SignaturePending = () => {
                     </p>
 
                     <div>
-                        <a target="_blank" href={shareUrl} className="text-purple" rel="noreferrer">
+                        <a target="_blank" href={shareUrl} className="text-purple break-words" rel="noreferrer">
                             {shareUrl}
                         </a>
                         <Button
@@ -123,7 +124,7 @@ const SignaturePending = () => {
                             className="mt-3"
                             onClick={() => {
                                 navigator?.clipboard?.writeText(shareUrl).then(() => {
-                                    alert("Copied to clipboard");
+                                    toast.success("Copied to clipboard");
                                 });
                             }}
                         >

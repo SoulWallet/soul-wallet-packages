@@ -3,7 +3,8 @@ import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import config from "@src/config";
-import React, { useState } from "react";
+import { getLocalStorage } from "@src/lib/tools";
+import React, { useEffect, useState } from "react";
 
 // TODO: here
 const NetworkOptions: OptionItem[] = [
@@ -46,6 +47,17 @@ const RecoverStarter = ({ onChange }: IRecoverStarter) => {
             payload: RecoverStepEn.ResetPassword,
         });
     };
+
+    const getStoredWalletAddress = async () => {
+        const wAddress = await getLocalStorage("walletAddress");
+        if (wAddress) {
+            setAddress(wAddress);
+        }
+    };
+
+    useEffect(() => {
+        getStoredWalletAddress();
+    }, []);
 
     return (
         <div className="pt-6 pb-8 flex flex-col gap-y-6">

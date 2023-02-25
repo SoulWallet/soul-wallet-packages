@@ -158,7 +158,7 @@ export function RecoverWallet() {
                                     Recover
                                 </Button>
                             ) : (
-                                <a href={config.safeCenterURL} target="_blank" rel="noreferrer">
+                                <a target="_blank" rel="noreferrer">
                                     <a className="btn btn-blue w-full">Security Center</a>
                                 </a>
                             )}
