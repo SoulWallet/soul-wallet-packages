@@ -23,6 +23,28 @@ const initData = [{ name: "John Doe", address: "0x12345678909876543211234567", i
 // ...
 ```
 
+-   Submit form data to global
+
+```tsx
+// ...
+
+const formRef = useRef<IGuardianFormHandler>(null);
+
+const handleSubmit = () => {
+    formRef?.current?.submit().then(() => {
+        // do sth. after submitted to the global store
+    });
+};
+
+return (
+    <div>
+        <GuardianForm ref={formRef} guardians={guardians} />
+    </div>
+);
+
+// ...
+```
+
 <!--
 -   Provider side
 

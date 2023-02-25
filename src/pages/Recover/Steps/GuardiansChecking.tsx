@@ -28,6 +28,7 @@ const GuardiansChecking = () => {
 
         // ! if check pass, then submit guardians to the global store
         formRef.current?.submit();
+
         // TODO: once the guardians are submitted, clear the temporary guardians
         removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
     };
