@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
 import BN from "bignumber.js";
 import cn from "classnames";
 import useLib from "@src/hooks/useLib";
@@ -27,8 +27,8 @@ const CostItem = ({ label, value, memo }: ICostItem) => {
     );
 };
 
-export default forwardRef<any>((props, ref) => {
-    const { walletAddress } = useWalletContext();
+const SignTransaction = (_: unknown, ref: Ref<any>) => {
+    const { walletAddress = "" } = useWalletContext(); // ! check this
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
@@ -212,4 +212,6 @@ export default forwardRef<any>((props, ref) => {
             </div>
         </div>
     );
-});
+};
+
+export default forwardRef(SignTransaction);

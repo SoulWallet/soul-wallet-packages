@@ -10,9 +10,9 @@ const EditGuardians = () => {
     const formRef = useRef<IGuardianFormHandler>(null);
 
     const handleClickConfirm = () => {
-        formRef?.current?.submit();
-
-        // TODO: here?
+        formRef?.current?.submit().then(() => {
+            // TODO: here?
+        });
     };
 
     return (

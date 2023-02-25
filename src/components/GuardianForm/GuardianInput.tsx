@@ -18,19 +18,16 @@ const OperationTypeIconMap = {
     [OperationType.Delete]: MinusIcon,
 };
 
-export default function GuardianInput({ id, name, address }: IProps) {
-    // TODO: auto selectors?
-    const { guardians, addGuardian, removeGuardian, updateAddressByIndex, updateNameByIndex } = useGuardianContext(
-        (s) => s,
-    );
+export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
+    const { guardians, addGuardian, removeGuardian, updateAddressById, updateNameById } = useGuardianContext((s) => s);
 
     const [operationType, setOperationType] = useState<OperationType>(OperationType.Create);
 
     const handleNameChange = (value: string) => {
-        updateNameByIndex(id, value);
+        updateNameById(id, value);
     };
     const handleAddressChange = (value: string) => {
-        updateAddressByIndex(id, value);
+        updateAddressById(id, value);
     };
 
     const handleChangeGuardianSize = () => {
@@ -68,6 +65,7 @@ export default function GuardianInput({ id, name, address }: IProps) {
                     className="w-lg"
                     label="Address"
                     onChange={handleAddressChange}
+                    errorMsg={errorMsg}
                 />
             </div>
 

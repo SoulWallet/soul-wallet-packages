@@ -27,8 +27,9 @@ export interface GuardianStore {
     guardians: GuardianItem[];
     addGuardian: (guardian?: GuardianItem) => void;
     removeGuardian: (idx: string) => void;
-    updateNameByIndex: (idx: string, name: string) => void;
-    updateAddressByIndex: (idx: string, address: string) => void;
+    updateNameById: (idx: string, name: string) => void;
+    updateAddressById: (idx: string, address: string) => void;
+    updateErrorMsgById: (idx: string, msg: string) => void;
 }
 
 const createGuardianSlice = immer<GuardianStore>((set) => ({
@@ -52,14 +53,19 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
             guardians.splice(getIndexById(guardians, id), 1);
         });
     },
-    updateNameByIndex: (id, name) => {
+    updateNameById: (id, name) => {
         set(({ guardians }) => {
             guardians[getIndexById(guardians, id)].name = name;
         });
     },
-    updateAddressByIndex: (id, address) => {
+    updateAddressById: (id, address) => {
         set(({ guardians }) => {
             guardians[getIndexById(guardians, id)].address = address;
+        });
+    },
+    updateErrorMsgById: (id, errorMsg) => {
+        set(({ guardians }) => {
+            guardians[getIndexById(guardians, id)]["errorMsg"] = errorMsg;
         });
     },
 }));

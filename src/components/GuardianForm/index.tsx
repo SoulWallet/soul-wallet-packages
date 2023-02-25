@@ -6,18 +6,33 @@ import { GuardianState, createGuardianStore } from "@src/store/guardian";
 import { useGlobalStore } from "@src/store/global";
 
 export interface IGuardianFormHandler {
-    submit: () => void;
+    submit: () => Promise<void>;
 }
 
 const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) => {
     const guardians = useGuardianContext((s) => s.guardians);
+    const updateErrorMsgById = useGuardianContext((s) => s.updateErrorMsgById);
     const { updateFinalGuardians } = useGlobalStore();
+
+    const handleSubmit: () => Promise<void> = () =>
+        new Promise((resolve, reject) => {
+            const addressList: string[] = [];
+
+            for (let i = 0; i < guardians.length; i++) {
+                if (guardians[i].address.length && addressList.includes(guardians[i].address)) {
+                    updateErrorMsgById(guardians[i].id, "Duplicate address");
+                    return reject();
+                }
+                addressList.push(guardians[i].address);
+            }
+
+            updateFinalGuardians(guardians);
+            return resolve();
+        });
 
     useImperativeHandle(ref, () => {
         return {
-            submit: () => {
-                updateFinalGuardians(guardians);
-            },
+            submit: handleSubmit,
         };
     });
 
@@ -46,7 +61,7 @@ const GuardianForm = ({ guardians }: IGuardianFormProps, ref: React.Ref<IGuardia
     useImperativeHandle(ref, () => {
         return {
             submit: () => {
-                innerRef.current?.submit();
+                return innerRef.current?.submit() ?? Promise.reject();
             },
         };
     });

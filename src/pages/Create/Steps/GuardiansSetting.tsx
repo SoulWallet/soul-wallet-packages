@@ -15,8 +15,14 @@ export default function GuardiansSetting() {
     };
 
     const handleNext = () => {
-        handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-        formRef.current?.submit();
+        formRef.current
+            ?.submit()
+            .then(() => {
+                handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
+            })
+            .catch(() => {
+                // do nothing
+            });
     };
 
     return (

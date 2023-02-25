@@ -12,7 +12,7 @@ export default function useBrowser() {
         });
     };
 
-    const goWebsite = async (path: string = "/") => {
+    const goWebsite = async (path = "/") => {
         browser.tabs.create({
             url: browser.runtime.getURL(`popup.html#${path}?mode=web`),
         });
