@@ -22,7 +22,6 @@ const GuardiansImporting = () => {
         if (!file) {
             return;
         }
-        // TODO: parse file here
         const fileJson: any = await getJsonFromFile(file);
         const parseRes = fileJson.guardians;
 

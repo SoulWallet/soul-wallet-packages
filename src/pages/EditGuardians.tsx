@@ -3,16 +3,20 @@ import FullscreenContainer from "@src/components/FullscreenContainer";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import { useGlobalStore } from "@src/store/global";
+import { GuardianItem } from "@src/lib/type";
 import React, { useRef } from "react";
 
 const EditGuardians = () => {
     const { guardians } = useGlobalStore();
     const formRef = useRef<IGuardianFormHandler>(null);
 
-    const handleClickConfirm = () => {
-        formRef?.current?.submit().then(() => {
-            // TODO: here?
-        });
+    const handleClickConfirm = async () => {
+        const guardianList: GuardianItem[] = (await formRef.current?.submit()) as GuardianItem[];
+        if (!guardianList || guardianList.length === 0) {
+            return;
+        }
+
+        // TODO add guardian logic
     };
 
     return (

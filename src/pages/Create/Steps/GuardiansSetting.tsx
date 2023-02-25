@@ -1,10 +1,13 @@
 import Button from "@src/components/Button";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
+import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef } from "react";
+import { GuardianItem } from "@src/lib/type";
 
 export default function GuardiansSetting() {
     const dispatch = useStepDispatchContext();
+    const { updateFinalGuardians } = useGlobalStore();
     const formRef = useRef<IGuardianFormHandler>(null);
 
     const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
@@ -14,15 +17,17 @@ export default function GuardiansSetting() {
         });
     };
 
-    const handleNext = () => {
-        formRef.current
-            ?.submit()
-            .then(() => {
-                handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-            })
-            .catch(() => {
-                // do nothing
-            });
+    const handleNext = async () => {
+        try {
+            const guardianList: GuardianItem[] = (await formRef.current?.submit()) as GuardianItem[];
+            if (!guardianList || guardianList.length === 0) {
+                return;
+            }
+            updateFinalGuardians(guardianList);
+            handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

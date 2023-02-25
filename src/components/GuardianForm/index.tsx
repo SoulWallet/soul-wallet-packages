@@ -3,18 +3,16 @@ import GuardianInput from "./GuardianInput";
 import { GuardianContext, useGuardianContext } from "@src/context/hooks/useGuardianContext";
 import { GuardianItem } from "@src/lib/type";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
-import { useGlobalStore } from "@src/store/global";
 
 export interface IGuardianFormHandler {
-    submit: () => Promise<void>;
+    submit: () => Promise<GuardianItem[]>;
 }
 
 const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) => {
     const guardians = useGuardianContext((s) => s.guardians);
     const updateErrorMsgById = useGuardianContext((s) => s.updateErrorMsgById);
-    const { updateFinalGuardians } = useGlobalStore();
 
-    const handleSubmit: () => Promise<void> = () =>
+    const handleSubmit: () => Promise<GuardianItem[]> = () =>
         new Promise((resolve, reject) => {
             const addressList: string[] = [];
 
@@ -26,8 +24,7 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
                 addressList.push(guardians[i].address);
             }
 
-            updateFinalGuardians(guardians);
-            return resolve();
+            return resolve(guardians);
         });
 
     useImperativeHandle(ref, () => {

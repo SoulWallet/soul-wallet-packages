@@ -68,7 +68,7 @@ export const dappsList = [
 export default {
     assetsList,
     dappsList,
-    recoverUrl: "http://localhost:8100/recover",
+    recoverUrl: "http://localhost:8000/recover",
     provider: `https://goerli.infura.io/v3/${infuraId}`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",

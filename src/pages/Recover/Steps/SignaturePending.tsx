@@ -68,9 +68,11 @@ const SignaturePending = () => {
     };
 
     const doRecover = async () => {
+        const finalSignatureList = signatureList.filter((item: any) => item.signature);
+
         setRecoveringWallet(true);
         // GET OP
-        await recoverWallet(opDetail, signatureList);
+        await recoverWallet(opDetail, finalSignatureList);
         setRecoveringWallet(true);
         await removeLocalStorage("recoveryOpHash");
         // TOOD, add success page

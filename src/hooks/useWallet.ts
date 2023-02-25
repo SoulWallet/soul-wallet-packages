@@ -124,7 +124,9 @@ export default function useWallet() {
             item.contract = false;
         });
 
+        console.log("before", guardiansList);
         const guardianInitCode = getGuardianInitCode(guardiansList);
+        console.log("after", guardianInitCode);
 
         const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
             guardianInitCode.address,
