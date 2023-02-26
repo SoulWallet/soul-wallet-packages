@@ -136,8 +136,6 @@ export default function SignPage() {
                     operation.paymasterAndData = paymasterAndData;
                 }
 
-                console.log("bbbbbb", paymasterAndData);
-
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
                 const signature = await keystore.sign(userOpHash);
@@ -160,12 +158,10 @@ export default function SignPage() {
                         bundlerUrl,
                     },
                 });
-
-                // window.close();
             } catch (err) {
                 console.log(err);
             } finally {
-                // window.close();
+                window.close();
             }
         }
     };

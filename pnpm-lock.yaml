@@ -71,7 +71,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
   shortid: ^2.2.16
-  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.14
+  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
   tailwindcss: ^3.0.8
@@ -122,7 +122,7 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/695ad7ab34f4530f123c99d9046106efec5c69c5
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/7c63884bce43511a7e66455da0b88cf99894ef0b
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -11492,8 +11492,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /minipass/4.2.1:
-    resolution: {integrity: sha512-KS4CHIsDfOZetnT+u6fwxyFADXLamtkPxkGScmmtTW//MlRrImV+LtbmbJpLQ86Hw7km/utbfEfndhGBrfwvlA==}
+  /minipass/4.2.2:
+    resolution: {integrity: sha512-CK/S6dX/gmBq0YF4FGPlvsv5O0WH6YVwEc28xJiTNjkstRGPYA4S7lfrGTqE61YydECWC68pYSUt9aP8yC70PQ==}
     engines: {node: '>=8'}
     dev: true
 
@@ -14450,7 +14450,7 @@ packages:
     dependencies:
       chownr: 2.0.0
       fs-minipass: 2.1.0
-      minipass: 4.2.1
+      minipass: 4.2.2
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
@@ -16187,7 +16187,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:
@@ -16195,8 +16195,8 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/695ad7ab34f4530f123c99d9046106efec5c69c5:
-    resolution: {commit: 695ad7ab34f4530f123c99d9046106efec5c69c5, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
+  github.com/proofofsoulprotocol/soulwalletlib/7c63884bce43511a7e66455da0b88cf99894ef0b:
+    resolution: {commit: 7c63884bce43511a7e66455da0b88cf99894ef0b, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
     name: soul-wallet-lib
     version: 0.1.0-alpha.13
     dependencies:
