@@ -3,6 +3,7 @@ import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import config from "@src/config";
+import PayTokenSelect from "@src/components/PayTokenSelect";
 import { getLocalStorage } from "@src/lib/tools";
 import React, { useEffect, useState } from "react";
 
@@ -17,10 +18,6 @@ const NetworkOptions: OptionItem[] = [
         value: 5,
     },
 ];
-
-const payTokens = config.assetsList
-    .filter((item: any) => item.payable)
-    .map((item: any) => ({ label: item.symbol, value: item.address }));
 
 interface IRecoverStarter {
     onSubmit: (wAddress: string, pToken: string) => void;
@@ -76,7 +73,7 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
                 onChange={handleChangeAddress}
                 className="w-base"
             />
-            <Dropdown label="Select Token" value={payToken} options={payTokens} onChange={handleChangePayToken} />
+            <PayTokenSelect value={payToken} onChange={handleChangePayToken} />
             <Dropdown
                 label="Select Network"
                 value={config.chainId}

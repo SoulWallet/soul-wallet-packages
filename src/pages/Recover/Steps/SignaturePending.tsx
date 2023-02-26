@@ -3,6 +3,7 @@ import Icon from "@src/components/Icon";
 import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
 import React, { useEffect, useState } from "react";
+import BN from "bignumber.js";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
 import api from "@src/lib/api";
@@ -15,28 +16,20 @@ enum SignatureStatusEn {
     Error = 3,
 }
 
-// op_hash: opHash,
-//     guardian_address: address,
-//     guardian_signature: signature,
-//     timestamp: new Date()
-
 const SignatureStatusMap = {
     [SignatureStatusEn.Signed]: { text: "Signed", color: "text-[#1BB25D]" },
     [SignatureStatusEn.Pending]: { text: "Waiting", color: "text-[#999999]" },
     [SignatureStatusEn.Error]: { text: "Error, need to re-sign", color: "text-[#F5CC43]" },
 };
 
-interface ISignatureVerificationItem {
-    // id: string;
-    name: string;
-    address: string;
-    status: SignatureStatusEn;
-}
-
 interface ISignaturesItem {
     address: string;
     signature: string;
     status: SignatureStatusEn;
+}
+
+interface ISignaturePending {
+    onChange: (statusText: string) => void;
 }
 
 const SignatureItem = ({ address, status }: ISignaturesItem) => (
@@ -49,7 +42,7 @@ const SignatureItem = ({ address, status }: ISignaturesItem) => (
     </div>
 );
 
-const SignaturePending = () => {
+const SignaturePending = ({ onChange }: ISignaturePending) => {
     const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
     const { recoverWallet } = useWallet();
@@ -98,7 +91,11 @@ const SignaturePending = () => {
             }
         });
         setSignatureList(res.data.signatures);
-        setProgress(Math.ceil(signedNum / signatureList.length));
+        console.log(signedNum, res.data.signatures.length, Math.ceil(signedNum / res.data.signatures.length));
+        // setProgress(new BN(signedNum).div(res.data.signatures.length));
+        // important TODO
+        setProgress(60);
+        onChange(`${signedNum}/${res.data.signatures.length}`);
         setLoadingList(false);
     };
 

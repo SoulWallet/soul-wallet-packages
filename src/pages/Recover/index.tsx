@@ -25,6 +25,7 @@ const StepComponent = () => {
 
     const [walletAddress, setWalletAddress] = useState("");
     const [payToken, setPayToken] = useState("");
+    const [recoverStatus, setRecoverStatus] = useState("n/m");
 
     const onRecoverSubmit = (wAddress: string, pToken: string) => {
         setWalletAddress(wAddress);
@@ -52,11 +53,11 @@ const StepComponent = () => {
             },
             // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {
-                title: "Waiting Signature (n/m) ",
-                element: <SignaturePending />,
+                title: `Waiting Signature (${recoverStatus}) `,
+                element: <SignaturePending onChange={setRecoverStatus} />,
             },
         };
-    }, [walletAddress, payToken]);
+    }, [walletAddress, payToken, recoverStatus]);
 
     const {
         step: { current },

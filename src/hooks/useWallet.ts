@@ -79,7 +79,7 @@ export default function useWallet() {
 
         const newOwner = await getLocalStorage("stagingAccount");
 
-        const usePaymaster = payToken === config.zeroAddress;
+        const usePaymaster = payToken !== config.zeroAddress;
 
         console.log("use paymaster", usePaymaster);
 
@@ -88,7 +88,7 @@ export default function useWallet() {
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            usePaymaster ? config.zeroAddress : config.contracts.paymaster,
+            usePaymaster ? config.contracts.paymaster : config.zeroAddress,
             currentFee,
             currentFee,
             newOwner,
@@ -159,7 +159,7 @@ export default function useWallet() {
 
         let guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
 
-        console.log("guardian info", guardianInfo);
+        console.log("guardian info", guardianInfo, guardianInitCode.address);
 
         if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
             throw new Error("Guardian address not match");
