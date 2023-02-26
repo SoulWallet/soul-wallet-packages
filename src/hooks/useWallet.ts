@@ -19,7 +19,7 @@ export default function useWallet() {
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType } = useQuery();
     const { getGuardianInitCode, getFeeCost } = useTools();
-    const { guardians, updateFinalGuardians } = useGlobalStore();
+    const { guardians } = useGlobalStore();
     const keystore = useKeystore();
 
     const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];

@@ -38,7 +38,7 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
                 <ApprovePaymaster />
             </a>
             <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
-                view on explorer
+                View on explorer
             </a>
         </div>
     );

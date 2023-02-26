@@ -147,11 +147,10 @@ export const WalletContextProvider = ({ children }: any) => {
 
     useEffect(() => {
         const current = lockedModal.current;
-        // TODO, need to optimize
-        if (!current) {
+        if (!current || !location.hash) {
             return;
         }
-        console.log("bb99", "triggered check lock");
+        console.log("bb99", "triggered check lock", location.hash, current);
         // important todo, this doesn't work
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();
