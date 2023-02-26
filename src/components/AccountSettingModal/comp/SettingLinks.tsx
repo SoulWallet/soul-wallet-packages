@@ -24,7 +24,7 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
 
     const linksStyle = "text-black leading-none hover:bg-gray40 cursor-pointer px-4 py-3";
     return (
-        <div className="py-3 flex flex-col">
+        <div className="py-2 flex flex-col">
             <a className={linksStyle} onClick={() => onChange(1)}>
                 Account details
             </a>
