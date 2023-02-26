@@ -150,6 +150,7 @@ export const WalletContextProvider = ({ children }: any) => {
         if (!lockedModal.current) {
             return;
         }
+        // important todo, this doesn't work
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();
         }

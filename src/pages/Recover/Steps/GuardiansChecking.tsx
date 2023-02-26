@@ -36,8 +36,6 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     const handleAskSignature = async () => {
         handleCheckGuardianAddresses();
 
-        console.log("pppp", payToken);
-
         await initRecoverWallet(walletAddress, temporaryGuardians, payToken);
 
         removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);

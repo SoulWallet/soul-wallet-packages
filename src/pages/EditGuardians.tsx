@@ -1,17 +1,18 @@
 import { useState } from "react";
 import Button from "@src/components/Button";
-import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import PayTokenSelect from "@src/components/PayTokenSelect";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import config from "@src/config";
 import { useGlobalStore } from "@src/store/global";
+import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import React, { useRef } from "react";
 
 const EditGuardians = () => {
-    const { guardians } = useGlobalStore();
+    const { guardians, updateFinalGuardians } = useGlobalStore();
+    const { updateGuardian } = useWallet();
     const formRef = useRef<IGuardianFormHandler>(null);
     const [payToken, setPayToken] = useState<string>(config.zeroAddress);
 
@@ -21,7 +22,11 @@ const EditGuardians = () => {
             return;
         }
 
-        // TODO add guardian logic
+        const guardianAddressList = guardianList.map((item: GuardianItem) => item.address);
+        await updateGuardian(guardianAddressList, payToken);
+
+        // if success update, update global state
+        updateFinalGuardians(guardianList);
     };
 
     const handleChangePayToken = (val: string | number) => {
