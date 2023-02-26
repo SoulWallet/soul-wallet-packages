@@ -15,7 +15,7 @@ import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
-    const { account, executeOperation, ethersProvider, getAccount } = useWalletContext();
+    const { account, executeOperation, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType } = useQuery();
     const { getGuardianInitCode, getFeeCost } = useTools();
@@ -79,12 +79,16 @@ export default function useWallet() {
 
         const newOwner = await getLocalStorage("stagingAccount");
 
+        const usePaymaster = payToken === config.zeroAddress;
+
+        console.log("use paymaster", usePaymaster);
+
         const op = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            payToken === config.zeroAddress ? config.zeroAddress : config.contracts.paymaster,
+            usePaymaster ? config.zeroAddress : config.contracts.paymaster,
             currentFee,
             currentFee,
             newOwner,
@@ -153,7 +157,13 @@ export default function useWallet() {
 
         const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
 
-        console.log("is guardian deployed", isGuardianDeployed);
+        let guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
+
+        console.log("guardian info", guardianInfo);
+
+        if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
+            throw new Error("Guardian address not match");
+        }
 
         const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
             guardianInitCode.address,
