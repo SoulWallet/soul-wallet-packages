@@ -123,6 +123,7 @@ export default function SignPage() {
         } else if (actionType === "approveTransaction") {
             console.log("why why");
             try {
+                // IMPORTANT TODO, move to signModal
                 const operation = await formatOperation();
 
                 const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
@@ -167,6 +168,7 @@ export default function SignPage() {
         if (!searchParams.actionType || !signModal || !signModal.current || !walletAddress) {
             return;
         }
+        console.log("changed", searchParams.actionType, signModal, walletAddress);
         determineAction();
     }, [searchParams.actionType, signModal, walletAddress]);
 

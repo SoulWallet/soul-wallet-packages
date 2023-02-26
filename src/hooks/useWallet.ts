@@ -5,7 +5,8 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import BN from "bignumber.js";
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -16,8 +17,8 @@ import { GuardianItem } from "@src/lib/type";
 export default function useWallet() {
     const { account, executeOperation, ethersProvider, getAccount } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice } = useQuery();
-    const { getGuardianInitCode } = useTools();
+    const { getGasPrice, getWalletType } = useQuery();
+    const { getGuardianInitCode, getFeeCost } = useTools();
     const { guardians } = useGlobalStore();
     const keyStore = useKeystore();
 
@@ -72,7 +73,7 @@ export default function useWallet() {
         return wAddress;
     };
 
-    const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[]) => {
+    const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
         let nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = await getGasPrice();
 
@@ -83,8 +84,7 @@ export default function useWallet() {
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            // IMPORTANT TODO, paymaster?
-            config.contracts.paymaster,
+            payToken === config.zeroAddress ? config.zeroAddress : config.contracts.paymaster,
             currentFee,
             currentFee,
             newOwner,
@@ -92,6 +92,30 @@ export default function useWallet() {
 
         if (!op) {
             throw new Error("recoveryOp is null");
+        }
+
+        // important todo, extract
+        const { requireAmountInWei, requireAmount } = await getFeeCost(
+            op,
+            payToken === config.zeroAddress ? "" : payToken,
+        );
+
+        if (payToken !== config.zeroAddress) {
+            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier);
+
+            const maxUSDCFormatted = BN(requireAmount).multipliedBy(config.maxCostMultiplier).toFixed(4);
+
+            const paymasterAndData = soulWalletLib.getPaymasterData(
+                config.contracts.paymaster,
+                config.tokens.usdc,
+                maxUSDC,
+            );
+
+            op.paymasterAndData = paymasterAndData;
+
+            console.log(`need ${maxUSDCFormatted} USDC`);
+        } else {
+            console.log(`need ${requireAmount} ETH`);
         }
 
         const opHash = op.getUserOpHash(config.contracts.entryPoint, config.chainId);
@@ -127,24 +151,29 @@ export default function useWallet() {
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        debugger;
+        const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
+
+        console.log("is guardian deployed", isGuardianDeployed);
+
         const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
             guardianInitCode.address,
             signatureList,
             0,
-            guardianInitCode.initCode,
+            isGuardianDeployed ? "0x" : guardianInitCode.initCode,
         );
-
-        console.log("recover op hash", opHash);
 
         op.signature = signature;
 
-        await Runtime.send("execute", {
+        const res = await Runtime.send("execute", {
             actionName,
             operation: op.toJSON(),
             opHash,
             bundlerUrl,
         });
+
+        // support succeed
+
+        await keyStore.replaceAddress();
     };
 
     const deleteWallet = async () => {

@@ -105,6 +105,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         setLoadingFee(true);
         setFeeCost("");
 
+        // TODO, extract this for other functions
         const { requireAmountInWei, requireAmount } = await getFeeCost(
             activeOperation,
             payToken === config.zeroAddress ? "" : payToken,

@@ -24,13 +24,19 @@ const StepComponent = () => {
     const dispatch = useStepDispatchContext();
 
     const [walletAddress, setWalletAddress] = useState("");
+    const [payToken, setPayToken] = useState("");
+
+    const onRecoverSubmit = (wAddress: string, pToken: string) => {
+        setWalletAddress(wAddress);
+        setPayToken(pToken);
+    };
 
     // TODO: guardians & signed
     const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
         return {
             [RecoverStepEn.Start]: {
                 title: "Recover your wallet",
-                element: <RecoverStarter onChange={setWalletAddress} />,
+                element: <RecoverStarter onSubmit={onRecoverSubmit} />,
             },
             [RecoverStepEn.ResetPassword]: {
                 title: "Set New Password",
@@ -42,7 +48,7 @@ const StepComponent = () => {
             },
             [RecoverStepEn.GuardiansChecking]: {
                 title: "Enter Guardians address",
-                element: <GuardiansChecking walletAddress={walletAddress} />,
+                element: <GuardiansChecking walletAddress={walletAddress} payToken={payToken} />,
             },
             // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {
@@ -50,7 +56,7 @@ const StepComponent = () => {
                 element: <SignaturePending />,
             },
         };
-    }, [walletAddress]);
+    }, [walletAddress, payToken]);
 
     const {
         step: { current },

@@ -18,13 +18,15 @@ const NetworkOptions: OptionItem[] = [
     },
 ];
 
-const payTokens = config.assetsList.map((item: any) => ({ label: item.symbol, value: item.address }));
+const payTokens = config.assetsList
+    .filter((item: any) => item.payable)
+    .map((item: any) => ({ label: item.symbol, value: item.address }));
 
 interface IRecoverStarter {
-    onChange: (address: string) => void;
+    onSubmit: (wAddress: string, pToken: string) => void;
 }
 
-const RecoverStarter = ({ onChange }: IRecoverStarter) => {
+const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
     const dispatch = useStepDispatchContext();
 
     const [address, setAddress] = useState<string>();
@@ -45,10 +47,10 @@ const RecoverStarter = ({ onChange }: IRecoverStarter) => {
 
     const handleNext = () => {
         // TODO: add some check
-        if (!address) {
+        if (!address || !payToken) {
             return;
         }
-        onChange(address);
+        onSubmit(address, payToken);
         dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: RecoverStepEn.ResetPassword,

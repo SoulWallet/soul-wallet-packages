@@ -21,6 +21,7 @@ import {
     setSessionStorage,
     // removeLocalStorage,
     clearLocalStorage,
+    removeLocalStorage,
 } from "@src/lib/tools";
 
 export default class KeyStore {
@@ -57,10 +58,7 @@ export default class KeyStore {
      * @param password
      * @returns EOA address, null is failed
      */
-    public async createNewAddress(
-        password: string,
-        saveKey: boolean,
-    ): Promise<string> {
+    public async createNewAddress(password: string, saveKey: boolean): Promise<string> {
         try {
             // TODO, ethers is much slower
             // const account = ethers.Wallet.createRandom();
@@ -85,12 +83,11 @@ export default class KeyStore {
     public async replaceAddress(): Promise<void> {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
-        const guardianNameMapping = await getLocalStorage(
-            "guardianNameMapping",
-        );
-        await clearLocalStorage();
+        await removeLocalStorage("stagingAccount");
+        await removeLocalStorage("accountsAllowed");
+        await removeLocalStorage("recoverOpHash");
+        // await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
-        await setLocalStorage("guardianNameMapping", guardianNameMapping);
         await setSessionStorage("pw", stagingPw);
     }
 
@@ -114,16 +111,10 @@ export default class KeyStore {
         await removeSessionStorage("pw");
     }
 
-    public async changePassword(
-        originalPassword: string,
-        newPassword: string,
-    ): Promise<void> {
+    public async changePassword(originalPassword: string, newPassword: string): Promise<void> {
         const val = await getLocalStorage(this.keyStoreKey);
         if (val && val.address && val.crypto) {
-            const account = await web3.eth.accounts.decrypt(
-                val,
-                originalPassword,
-            );
+            const account = await web3.eth.accounts.decrypt(val, originalPassword);
 
             const KeystoreV3 = account.encrypt(newPassword);
 
@@ -140,7 +131,6 @@ export default class KeyStore {
         // await removeLocalStorage("stagingAccount");
         // await removeLocalStorage("stagingKeystore");
         // await removeLocalStorage("stagingPw");
-        // await removeLocalStorage("guardianNameMapping");
         await clearLocalStorage();
     }
 
@@ -155,10 +145,7 @@ export default class KeyStore {
      * check if user is locked
      */
     public async checkLocked(): Promise<string> {
-        return (
-            !(await this.getPassword()) &&
-            (await getLocalStorage(this.keyStoreKey))
-        );
+        return !(await this.getPassword()) && (await getLocalStorage(this.keyStoreKey));
     }
 
     public async getSigner(provider: any) {

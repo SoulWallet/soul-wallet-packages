@@ -3,17 +3,11 @@ import { ethers } from "ethers";
 // import ky from "ky";
 import browser from "webextension-polyfill";
 import config from "@src/config";
-import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
+import { notify } from "@src/lib/tools";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const soulWalletLib = new SoulWalletLib();
-
-export const saveActivityHistory = async (history: any) => {
-    const prev = (await getLocalStorage("activityHistory")) || [];
-    prev.unshift(history);
-    await setLocalStorage("activityHistory", prev);
-};
 
 export const executeTransaction = async (
     operation: any,
@@ -55,11 +49,6 @@ export const executeTransaction = async (
                         tabId,
                     });
                 }
-
-                await saveActivityHistory({
-                    actionName,
-                    txHash,
-                });
 
                 // TODO, what if fail, add error hint
                 notify("Trsanction success", "Your transaction was confirmed on chain");

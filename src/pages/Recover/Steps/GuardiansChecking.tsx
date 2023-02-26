@@ -9,9 +9,10 @@ import useWallet from "@src/hooks/useWallet";
 
 interface IGuardianChecking {
     walletAddress: string;
+    payToken: string;
 }
 
-const GuardiansChecking = ({ walletAddress }: IGuardianChecking) => {
+const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     const { initRecoverWallet } = useWallet();
     const storage = getSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
     const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
@@ -35,7 +36,9 @@ const GuardiansChecking = ({ walletAddress }: IGuardianChecking) => {
     const handleAskSignature = async () => {
         handleCheckGuardianAddresses();
 
-        await initRecoverWallet(walletAddress, temporaryGuardians);
+        console.log("pppp", payToken);
+
+        await initRecoverWallet(walletAddress, temporaryGuardians, payToken);
 
         removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
 

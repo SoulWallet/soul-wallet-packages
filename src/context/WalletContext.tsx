@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
@@ -76,28 +76,25 @@ export const WalletContextProvider = ({ children }: any) => {
                 // if user want to pay with paymaster
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
-
-                    // if it's activate wallet, and user would like to approve first
-                    if (actionName === "Activate Wallet") {
-                        const approveData: any = [
-                            {
-                                token: config.tokens.usdc,
-                                spender: config.contracts.paymaster,
-                            },
-                        ];
-                        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
-                            ethersProvider,
-                            walletAddress,
-                            approveData,
-                        );
-
-                        operation.callGasLimit = approveCallData.callGasLimit;
-                        operation.callData = approveCallData.callData;
-                    }
                 }
 
-                // IMPORTANT TODO, remove?
-                operation.verificationGasLimit = Number(operation.verificationGasLimit) + 50000;
+                // if it's activate wallet, and user would like to approve first
+                if (actionName === "Activate Wallet") {
+                    const approveData: any = [
+                        {
+                            token: config.tokens.usdc,
+                            spender: config.contracts.paymaster,
+                        },
+                    ];
+                    const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
+                        ethersProvider,
+                        walletAddress,
+                        approveData,
+                    );
+
+                    operation.callGasLimit = approveCallData.callGasLimit;
+                    operation.callData = approveCallData.callData;
+                }
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 

@@ -8,7 +8,6 @@ import useQuery from "./useQuery";
 import BN from "bignumber.js";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 
 export default function useTransaction() {
     const { executeOperation, walletAddress, ethersProvider } = useWalletContext();
@@ -67,17 +66,10 @@ export default function useTransaction() {
         await executeOperation(op, actionName);
     };
 
-    const saveActivityHistory = async (history: any) => {
-        let prev = (await getLocalStorage("activityHistory")) || [];
-        prev.unshift(history);
-        await setLocalStorage("activityHistory", prev);
-    };
-
     return {
         signTransaction,
         sendErc20,
         sendEth,
         executeOperation,
-        saveActivityHistory,
     };
 }

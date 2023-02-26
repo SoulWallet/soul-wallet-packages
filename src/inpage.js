@@ -60,6 +60,6 @@ if (shouldInjectProvider()) {
         ...provider,
     };
 
-    window.ethereum = providerToInject;
+    // window.ethereum = providerToInject;
     window.soul = providerToInject;
 }
