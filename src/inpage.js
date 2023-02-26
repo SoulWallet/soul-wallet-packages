@@ -48,7 +48,7 @@ const provider = providerFromEngine(engine);
 if (shouldInjectProvider()) {
     const providerToInject = {
         chainId: config.chainId.toString(16),
-        isMetamask: true,
+        isMetaMask: true,
         isSoul: true,
         request: async (call) => {
             return await handleRequests(call);
@@ -60,6 +60,6 @@ if (shouldInjectProvider()) {
         ...provider,
     };
 
-    // window.ethereum = providerToInject;
+    window.ethereum = providerToInject;
     window.soul = providerToInject;
 }

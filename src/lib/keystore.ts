@@ -84,7 +84,7 @@ export default class KeyStore {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
         await removeLocalStorage("stagingAccount");
-        await removeLocalStorage("accountsAllowed");
+        // await removeLocalStorage("accountsAllowed");
         await removeLocalStorage("recoverOpHash");
         // await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
@@ -144,7 +144,7 @@ export default class KeyStore {
     /**
      * check if user is locked
      */
-    public async checkLocked(): Promise<string> {
+    public async checkLocked(): Promise<boolean> {
         return !(await this.getPassword()) && (await getLocalStorage(this.keyStoreKey));
     }
 

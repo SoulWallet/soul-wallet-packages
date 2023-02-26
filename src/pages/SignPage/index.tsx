@@ -99,14 +99,19 @@ export default function SignPage() {
     const determineAction = async () => {
         const { actionType, origin, tabId } = searchParams;
 
-        console.log("tab id is", tabId);
+        const currentSignModal = signModal.current;
 
-        console.log("determine action", searchParams);
+        if (!currentSignModal) {
+            console.log("no modal detected");
+            return;
+        }
+
+        console.log("tab id is", tabId);
 
         // TODO, 1. need to check if account is locked.
         if (actionType === "getAccounts") {
             try {
-                await signModal.current.show("", actionType, origin, true);
+                await currentSignModal.show("", actionType, origin, true);
                 await saveAccountsAllowed(searchParams.origin || "");
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -121,16 +126,17 @@ export default function SignPage() {
                 window.close();
             }
         } else if (actionType === "approveTransaction") {
-            console.log("why why");
             try {
                 // IMPORTANT TODO, move to signModal
                 const operation = await formatOperation();
 
-                const paymasterAndData = await signModal.current.show(operation, actionType, origin, true);
+                const paymasterAndData = await currentSignModal.show(operation, actionType, origin, true);
 
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
                 }
+
+                console.log("bbbbbb", paymasterAndData);
 
                 const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
@@ -155,7 +161,7 @@ export default function SignPage() {
                     },
                 });
 
-                window.close();
+                // window.close();
             } catch (err) {
                 console.log(err);
             } finally {
@@ -165,12 +171,13 @@ export default function SignPage() {
     };
 
     useEffect(() => {
-        if (!searchParams.actionType || !signModal || !signModal.current || !walletAddress) {
+        const current = signModal.current;
+        if (!searchParams.actionType || !current || !walletAddress) {
             return;
         }
-        console.log("changed", searchParams.actionType, signModal, walletAddress);
+        console.log("changed", searchParams.actionType, current);
         determineAction();
-    }, [searchParams.actionType, signModal, walletAddress]);
+    }, [searchParams.actionType, signModal.current, walletAddress]);
 
     return (
         <div>
