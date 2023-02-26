@@ -6,6 +6,8 @@ import attentionIcon from "@src/assets/icons/attention.svg";
 import ModalV2 from "@src/components/ModalV2";
 import { TEMPORARY_GUARDIANS_STORAGE_KEY, getSessionStorageV2, removeSessionStorageV2 } from "@src/lib/tools";
 import useWallet from "@src/hooks/useWallet";
+import { useRecoveryContext } from "@src/context/RecoveryContext";
+import { GuardianItem } from "@src/lib/type";
 
 interface IGuardianChecking {
     walletAddress: string;
@@ -14,12 +16,12 @@ interface IGuardianChecking {
 
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     const { initRecoverWallet } = useWallet();
-    const storage = getSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
-    const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
+    // const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
 
     const formRef = useRef<IGuardianFormHandler>(null);
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
 
+    const { cachedGuardians } = useRecoveryContext();
     const dispatch = useStepDispatchContext();
     const handleCheckGuardianAddresses = () => {
         // TODO: here
@@ -35,20 +37,22 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
 
     const handleAskSignature = async () => {
         handleCheckGuardianAddresses();
+        try {
+            const guardians = (await formRef.current?.submit()) as GuardianItem[];
+            await initRecoverWallet(walletAddress, guardians, payToken);
 
-        await initRecoverWallet(walletAddress, temporaryGuardians, payToken);
-
-        removeSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY);
-
-        dispatch({
-            type: StepActionTypeEn.JumpToTargetStep,
-            payload: RecoverStepEn.SignaturePending,
-        });
+            dispatch({
+                type: StepActionTypeEn.JumpToTargetStep,
+                payload: RecoverStepEn.SignaturePending,
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
     return (
         <div className="pt-6 flex flex-col">
             {/* TODO: pass init data from file parsing? */}
-            <GuardianForm ref={formRef} guardians={temporaryGuardians} />
+            <GuardianForm ref={formRef} guardians={cachedGuardians} />
 
             <Button type="primary" className="w-base mx-auto my-6" onClick={handleAskSignature}>
                 Ask For Signature

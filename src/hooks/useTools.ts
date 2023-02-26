@@ -13,7 +13,7 @@ export default function useTools() {
     const { ethersProvider } = useWalletContext();
     const { soulWalletLib } = useLib();
 
-    const getGuardianInitCode = (guardiansList: any) => {
+    const getGuardianInitCode = (guardiansList: string[]) => {
         return soulWalletLib.Guardian.calculateGuardianAndInitCode(
             config.contracts.guardianLogic,
             guardiansList,
