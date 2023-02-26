@@ -101,14 +101,6 @@ export async function removeSessionStorage(key: string): Promise<void> {
     return await chrome.storage.session.remove(key);
 }
 
-export const TEMPORARY_GUARDIANS_STORAGE_KEY = "TEMPORARY_GUARDIANS";
-
-export const getSessionStorageV2 = (key: string) => sessionStorage.getItem(key) ?? undefined;
-
-export const setSessionStorageV2 = (key: string, value: string) => sessionStorage.setItem(key, value);
-
-export const removeSessionStorageV2 = (key: string) => sessionStorage.removeItem(key);
-
 export const validateEmail = (email?: string) => {
     if (!email) return false;
     const emialRegex =

@@ -23,15 +23,15 @@ export default function GuardiansSetting() {
 
     const handleNext = async () => {
         try {
-            const guardianList: GuardianItem[] = (await formRef.current?.submit()) as GuardianItem[];
-            if (!guardianList || guardianList.length === 0) {
+            const guardianList = (await formRef.current?.submit()) as GuardianItem[];
+            if (guardianList?.length === 0) {
                 return;
             }
             updateFinalGuardians(guardianList);
 
             const eoaAddress = await keystore.getAddress();
 
-            const guardianAddress = guardianList.map((item: any) => item.address);
+            const guardianAddress = guardianList.map((item) => item.address);
 
             console.log("before create", eoaAddress, guardianAddress);
 

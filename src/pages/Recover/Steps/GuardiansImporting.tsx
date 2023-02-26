@@ -1,18 +1,21 @@
 import Button from "@src/components/Button";
 import FileUploader from "@src/components/FileUploader";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import { TEMPORARY_GUARDIANS_STORAGE_KEY, setSessionStorageV2 } from "@src/lib/tools";
 import useTools from "@src/hooks/useTools";
 import React, { useState } from "react";
+import { RecoveryActionTypeEn, useRecoveryDispatchContext } from "@src/context/RecoveryContext";
+import { nanoid } from "nanoid";
+import { toast } from "material-react-toastify";
 
 const GuardiansImporting = () => {
     const [fileValid, setFileValid] = useState(false);
     const { getJsonFromFile } = useTools();
 
-    const dispatch = useStepDispatchContext();
+    const stepDispatch = useStepDispatchContext();
+    const recoveryDispatch = useRecoveryDispatchContext();
 
     const handleNext = () => {
-        dispatch({
+        stepDispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: RecoverStepEn.GuardiansChecking,
         });
@@ -23,10 +26,33 @@ const GuardiansImporting = () => {
             return;
         }
         const fileJson: any = await getJsonFromFile(file);
-        const parseRes = fileJson.guardians;
 
-        setSessionStorageV2(TEMPORARY_GUARDIANS_STORAGE_KEY, JSON.stringify(parseRes));
-        setFileValid(true);
+        // ! just simple validation for now. please DO check this
+        if (Array.isArray(fileJson)) {
+            const parsedGuardians = [];
+
+            for (let i = 0; i < fileJson.length; i++) {
+                const { address, name } = fileJson[i];
+
+                if (!address || !name) {
+                    toast.error("Oops, something went wrong. Please check your file and try again.");
+                    return;
+                }
+
+                parsedGuardians.push({
+                    address,
+                    name,
+                    id: nanoid(),
+                });
+            }
+
+            recoveryDispatch({
+                type: RecoveryActionTypeEn.UpdateCachedGuardians,
+                payload: JSON.parse(JSON.stringify(parsedGuardians)),
+            });
+
+            setFileValid(true);
+        }
     };
 
     return (

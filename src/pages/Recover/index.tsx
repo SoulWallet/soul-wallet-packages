@@ -14,6 +14,7 @@ import SignaturePending from "./Steps/SignaturePending";
 import GuardiansChecking from "./Steps/GuardiansChecking";
 import GuardiansImporting from "./Steps/GuardiansImporting";
 import { getLocalStorage } from "@src/lib/tools";
+import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 
 type StepNodeInfo = {
     title: string;
@@ -88,9 +89,11 @@ const StepComponent = () => {
 export default function RecoverPage() {
     return (
         <FullscreenContainer>
-            <StepContextProvider>
-                <StepComponent />
-            </StepContextProvider>
+            <RecoveryContextProvider>
+                <StepContextProvider>
+                    <StepComponent />
+                </StepContextProvider>
+            </RecoveryContextProvider>
         </FullscreenContainer>
     );
 }

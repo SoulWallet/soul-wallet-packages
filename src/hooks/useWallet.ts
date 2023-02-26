@@ -26,12 +26,12 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (paymaster: boolean = false) => {
+    const activateWallet = async (paymaster = false) => {
         const actionName = "Activate Wallet";
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+        const fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
 
         const maxFeePerGas = ethers.utils.parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei").toString();
         const maxPriorityFeePerGas = ethers.utils
@@ -53,7 +53,7 @@ export default function useWallet() {
         await executeOperation(activateOp, actionName);
     };
 
-    const generateWalletAddress = async (address: string, guardiansList: GuardianItem[], saveKey?: boolean) => {
+    const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const wAddress = soulWalletLib.calculateWalletAddress(
@@ -104,7 +104,7 @@ export default function useWallet() {
     };
 
     const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
-        let nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const currentFee = await getGasPrice();
 
         const newOwner = await getLocalStorage("stagingAccount");
@@ -161,7 +161,7 @@ export default function useWallet() {
 
         const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
 
-        let guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
+        const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
 
         if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
             throw new Error("Guardian address not match");
