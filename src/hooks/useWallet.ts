@@ -119,6 +119,7 @@ export default function useWallet() {
 
             console.log(`need ${maxUSDCFormatted} USDC`);
         } else {
+            op.paymasterAndData = "0x";
             console.log(`need ${requireAmount} ETH`);
         }
 
@@ -174,7 +175,7 @@ export default function useWallet() {
 
         op.signature = signature;
 
-        const res = await Runtime.send("execute", {
+        await Runtime.send("execute", {
             actionName,
             operation: op.toJSON(),
             opHash,

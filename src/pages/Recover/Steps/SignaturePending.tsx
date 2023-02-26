@@ -71,8 +71,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         setRecoveringWallet(true);
         // GET OP
         await recoverWallet(opDetail, finalSignatureList, opHash);
-        setRecoveringWallet(true);
-        await removeLocalStorage("recoveryOpHash");
+        setRecoveringWallet(false);
         // TOOD, add success page
     };
 
@@ -91,10 +90,8 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
             }
         });
         setSignatureList(res.data.signatures);
-        console.log(signedNum, res.data.signatures.length, Math.ceil(signedNum / res.data.signatures.length));
-        // setProgress(new BN(signedNum).div(res.data.signatures.length));
         // important TODO
-        setProgress(60);
+        setProgress(Math.ceil((signedNum / res.data.signatures.length) * 100));
         onChange(`${signedNum}/${res.data.signatures.length}`);
         setLoadingList(false);
     };
