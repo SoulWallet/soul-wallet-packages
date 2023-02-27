@@ -150,7 +150,6 @@ export const WalletContextProvider = ({ children }: any) => {
         if (!current || !location.hash) {
             return;
         }
-        console.log("bb99", "triggered check lock", location.hash, current);
         // important todo, this doesn't work
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();

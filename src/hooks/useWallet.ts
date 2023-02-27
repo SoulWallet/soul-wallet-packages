@@ -27,6 +27,7 @@ export default function useWallet() {
     const { soulWalletLib } = useLib();
 
     const activateWallet = async (paymaster = false) => {
+        console.log("paymaster", paymaster);
         const actionName = "Activate Wallet";
 
         const guardianInitCode = getGuardianInitCode(guardiansList);

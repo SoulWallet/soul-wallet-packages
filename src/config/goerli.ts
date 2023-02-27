@@ -77,6 +77,7 @@ export default {
     defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
     defaultSalt: 0,
     feeMultiplier: 3,
+    // IMPORTANT TODO, remove
     maxCostMultiplier: 5,
     defaultTip: 10 * 10 ** 9,
     // TODO,
