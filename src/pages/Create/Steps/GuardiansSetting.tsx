@@ -33,13 +33,18 @@ export default function GuardiansSetting() {
 
             const guardianAddress = guardianList.map((item) => item.address);
 
-            console.log("before create", eoaAddress, guardianAddress);
-
             generateWalletAddress(eoaAddress, guardianAddress, true);
             handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const handleSkip = async () => {
+        updateFinalGuardians([]);
+        const eoaAddress = await keystore.getAddress();
+        generateWalletAddress(eoaAddress, [], true);
+        handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault);
     };
 
     return (
@@ -58,10 +63,7 @@ export default function GuardiansSetting() {
                     Next
                 </Button>
 
-                <a
-                    className="skip-text mb-8"
-                    onClick={() => handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault)}
-                >
+                <a className="skip-text mb-8" onClick={handleSkip}>
                     Skip
                 </a>
             </div>
