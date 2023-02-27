@@ -8,6 +8,7 @@ import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/Contract.svg";
 import IconActivate from "@src/assets/activities/activate.svg";
 import IconAdd from "@src/assets/activities/add.svg";
+import { toast } from "material-react-toastify";
 
 export default function useTools() {
     const { ethersProvider } = useWalletContext();
@@ -78,11 +79,14 @@ export default function useTools() {
     };
 
     const emailJsonFile = async (jsonToSave: any, email: string) => {
-        await api.notification.backup({
+        const res: any = await api.notification.backup({
             email,
-            fileName: generateJsonName("guardian"),
-            jsonToSave,
+            filename: generateJsonName("guardian"),
+            backupObject: jsonToSave,
         });
+        if (res.code === 200) {
+            toast.success("Success");
+        }
     };
 
     const verifyAddressFormat = (address: string) => {

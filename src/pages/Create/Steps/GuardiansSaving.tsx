@@ -15,7 +15,6 @@ const GuardiansSaving = () => {
     const [downloading, setDownloading] = useState(false);
     const [sending, setSending] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(false);
-    const { walletAddress } = useWalletContext();
 
     const dispatch = useStepDispatchContext();
 
@@ -50,6 +49,7 @@ const GuardiansSaving = () => {
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
+        console.log("JJJJJ", jsonToSave);
         await emailJsonFile(jsonToSave, email);
 
         setSending(false);
