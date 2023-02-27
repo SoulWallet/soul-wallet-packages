@@ -45,21 +45,39 @@ engine.push(soulMiddleware);
 
 const provider = providerFromEngine(engine);
 
-if (shouldInjectProvider()) {
-    const providerToInject = {
-        chainId: config.chainId.toString(16),
-        isMetaMask: true,
-        isSoul: true,
-        request: async (call) => {
-            return await handleRequests(call);
-        },
-        enable: async () => {
-            const res = await Bus.send("getAccounts", "getAccounts");
-            return [res];
-        },
-        ...provider,
-    };
+// if (!shouldInjectProvider()) {
+//     return;
+// }
+// todo, should do some check if to inject the provider
 
-    window.ethereum = providerToInject;
-    window.soul = providerToInject;
-}
+const providerToInject = {
+    chainId: config.chainId.toString(16),
+    isMetaMask: true,
+    isSoul: true,
+    request: async (call) => {
+        return await handleRequests(call);
+    },
+    enable: async () => {
+        const res = await Bus.send("getAccounts", "getAccounts");
+        return [res];
+    },
+    ...provider,
+};
+
+window.ethereum = providerToInject;
+window.soul = providerToInject;
+
+// const checkProvider = async () => {
+//     console.log("check provider", window.ethereum);
+
+//     // should get this from store
+//     const isDefaultProvider = true;
+
+//     if (isDefaultProvider && !window.ethereum.isSoul) {
+//         window.ethereum = providerToInject;
+//     }
+// };
+
+// setInterval(() => {
+//     checkProvider();
+// }, 10000);

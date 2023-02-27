@@ -17,7 +17,6 @@ function injectScript(file, node) {
     var s = document.createElement("script");
     s.setAttribute("type", "text/javascript");
     s.setAttribute("src", file);
-    // th.appendChild(s);
     th.insertBefore(s, th.children[0]);
 }
 
