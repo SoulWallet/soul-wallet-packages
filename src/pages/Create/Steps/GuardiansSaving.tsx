@@ -49,7 +49,6 @@ const GuardiansSaving = () => {
 
         const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
-        console.log("JJJJJ", jsonToSave);
         await emailJsonFile(jsonToSave, email);
 
         setSending(false);

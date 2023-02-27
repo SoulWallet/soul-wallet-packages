@@ -15,12 +15,19 @@ export default function useTools() {
     const { soulWalletLib } = useLib();
 
     const getGuardianInitCode = (guardiansList: string[]) => {
-        return soulWalletLib.Guardian.calculateGuardianAndInitCode(
-            config.contracts.guardianLogic,
-            guardiansList,
-            Math.round(guardiansList.length / 2),
-            config.guardianSalt,
-        );
+        if (guardiansList.length === 0) {
+            return {
+                address: config.zeroAddress,
+                initCode: "0x",
+            };
+        } else {
+            return soulWalletLib.Guardian.calculateGuardianAndInitCode(
+                config.contracts.guardianLogic,
+                guardiansList,
+                Math.round(guardiansList.length / 2),
+                config.guardianSalt,
+            );
+        }
     };
 
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
