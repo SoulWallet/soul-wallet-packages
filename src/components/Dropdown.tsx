@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
+import classNames from "classnames";
 
 export type OptionItem = {
     label: string;
@@ -43,7 +44,13 @@ const Dropdown = ({ placeholder, label, options, disabled, value, onChange }: IP
                     disabled && "cursor-no-drop",
                 )}
             >
-                <label tabIndex={0} className="flex place-items-center h-12 px-6 mb-[2px]">
+                <label
+                    tabIndex={0}
+                    className={classNames(
+                        "flex place-items-center h-12 px-6 mb-[2px]",
+                        disabled && "cursor-not-allowed",
+                    )}
+                >
                     {selectedItem?.label ?? placeholder}
                 </label>
 

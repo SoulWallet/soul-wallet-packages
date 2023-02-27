@@ -124,7 +124,13 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>
                     Share URL
                 </Button>
-                <Button loading={recoveringWallet} type="primary" disabled={progress < 50} onClick={doRecover}>
+                <Button
+                    className="w-[calc(50%-12px)]"
+                    loading={recoveringWallet}
+                    type="primary"
+                    disabled={progress < 50}
+                    onClick={doRecover}
+                >
                     Recover
                 </Button>
             </div>
