@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import useKeystore from "@src/hooks/useKeystore";
 import IconClose from "@src/assets/icons/close.svg";
@@ -10,20 +9,14 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import BundlerUrl from "./comp/BundlerUrl";
 
 export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
-    const navigate = useNavigate();
     const keyStore = useKeystore();
     const { showLocked } = useWalletContext();
     const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
 
     const doLockWallet = async () => {
         await keyStore.lock();
+        onCancel();
         showLocked();
-    };
-
-    // clear local wallet
-    const doDeleteWallet = async () => {
-        await keyStore.delete();
-        navigate("/locked");
     };
 
     const ModalNavBar = () => {

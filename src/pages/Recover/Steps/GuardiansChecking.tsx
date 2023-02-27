@@ -4,7 +4,6 @@ import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/co
 import React, { useRef, useState } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
 import ModalV2 from "@src/components/ModalV2";
-import { TEMPORARY_GUARDIANS_STORAGE_KEY, getSessionStorageV2, removeSessionStorageV2 } from "@src/lib/tools";
 import useWallet from "@src/hooks/useWallet";
 import { useRecoveryContext } from "@src/context/RecoveryContext";
 import { GuardianItem } from "@src/lib/type";

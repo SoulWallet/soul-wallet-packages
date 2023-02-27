@@ -12,7 +12,7 @@ interface ISettingLinks {
 }
 
 export default function SettingLinks({ onChange }: ISettingLinks) {
-    const { walletAddress } = useWalletContext();
+    const { walletAddress, walletType } = useWalletContext();
     const { guardians } = useGlobalStore();
     const { formatGuardianFile, downloadJsonFile } = useTools();
     const { goWebsite } = useBrowser();
@@ -24,22 +24,26 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
 
     const linksStyle = "text-black leading-none hover:bg-gray40 cursor-pointer px-4 py-3";
     return (
-        <div className="py-3 flex flex-col">
+        <div className="py-2 flex flex-col">
             <a className={linksStyle} onClick={() => onChange(1)}>
                 Account details
             </a>
-            <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
-                Edit guardian list
-            </a>
-            <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>
-                Download guardian list
-            </a>
-            <a className={cn(linksStyle, "flex justify-between items-center")}>
-                <ApprovePaymaster />
-            </a>
-            <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
-                view on explorer
-            </a>
+            {walletType === "contract" && (
+                <>
+                    <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
+                        Edit guardian list
+                    </a>
+                    <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>
+                        Download guardian list
+                    </a>
+                    <a className={cn(linksStyle, "flex justify-between items-center")}>
+                        <ApprovePaymaster />
+                    </a>
+                    <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
+                        View on explorer
+                    </a>
+                </>
+            )}
         </div>
     );
 }

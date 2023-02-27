@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IconToggle from "@src/assets/icons/toggle.svg";
 import { ITokenSelect } from "@src/types/ITokenSelect";
+import { useBalanceStore } from "@src/store/balanceStore";
 import { TokenSelectModal } from "../TokenSelectModal";
+import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 
-export function TokenSelect({
-    label,
-    selectedAddress,
-    onChange,
-}: ITokenSelect) {
+export function TokenSelect({ label, selectedAddress, onChange }: ITokenSelect) {
     const [tokenModalVisible, setTokenModalVisible] = useState(false);
+    const { getBalances } = useQuery();
+    const { walletAddress } = useWalletContext();
+    const { balance } = useBalanceStore();
 
-    const selectedToken = config.assetsList.filter(
-        (item: any) => item.address === selectedAddress,
-    )[0];
+    const selectedToken = config.assetsList.filter((item: any) => item.address === selectedAddress)[0];
+
+    useEffect(() => {
+        if (!walletAddress) {
+            return;
+        }
+        getBalances();
+    }, [walletAddress]);
 
     return (
         <div>
@@ -25,21 +32,16 @@ export function TokenSelect({
                 <div className="flex items-center gap-1 ">
                     <img src={selectedToken.icon} className="w-12" />
                     <div>
-                        <div className="leading-none text-lg font-bold  mb-2">
-                            {selectedToken.symbol}
+                        <div className="leading-none text-lg font-bold  mb-2">{selectedToken.symbol}</div>
+                        <div className="leading-none">
+                            Balance: {balance.get(selectedToken.address)} {selectedToken.symbol}
                         </div>
-                        <div className="leading-none">Balance: 1000 ETH</div>
                     </div>
                 </div>
 
                 <img src={IconToggle} className="w-3" />
             </div>
-            {tokenModalVisible && (
-                <TokenSelectModal
-                    onChange={onChange}
-                    onCancel={() => setTokenModalVisible(false)}
-                />
-            )}
+            {tokenModalVisible && <TokenSelectModal onChange={onChange} onCancel={() => setTokenModalVisible(false)} />}
         </div>
     );
 }

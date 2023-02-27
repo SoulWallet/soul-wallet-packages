@@ -27,12 +27,13 @@ const GuardiansImporting = () => {
         }
         const fileJson: any = await getJsonFromFile(file);
 
+        const fileGuardians = fileJson.guardians;
         // ! just simple validation for now. please DO check this
-        if (Array.isArray(fileJson)) {
+        if (Array.isArray(fileGuardians)) {
             const parsedGuardians = [];
 
-            for (let i = 0; i < fileJson.length; i++) {
-                const { address, name } = fileJson[i];
+            for (let i = 0; i < fileGuardians.length; i++) {
+                const { address, name } = fileGuardians[i];
 
                 if (!address || !name) {
                     toast.error("Oops, something went wrong. Please check your file and try again.");

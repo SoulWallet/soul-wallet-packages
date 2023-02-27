@@ -29,13 +29,12 @@ export default function Footer() {
         // <div className="px-6 py-3 flex items-center justify-between absolute bottom-0 left-0 right-0 footer-shadow">
         <div className="px-6 py-3 flex items-center justify-between footer-shadow relative bottom-0">
             <div className="flex items-center gap-[6px]">
-                <Switch
-                    checked={isDefaultProvider}
-                    onChange={toggleDefaultProvider}
-                />
+                <Switch checked={isDefaultProvider} onChange={toggleDefaultProvider} />
                 <div
-                    className="cursor-pointer tooltip"
-                    data-tip={"Hello world"}
+                    className="cursor-pointer tooltip tooltip-right"
+                    data-tip={
+                        isDefaultProvider ? "Turn off Soul as your default wallet." : "Set Soul as your default wallet"
+                    }
                 >
                     <img src={IconInfo} className="w-4 h-4" />
                 </div>

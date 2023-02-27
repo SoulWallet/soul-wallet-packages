@@ -1,9 +1,11 @@
 import React from "react";
 import { ITokenSelectModal } from "../../types/IModal";
 import config from "@src/config";
+import { useBalanceStore } from "@src/store/balanceStore";
 import Modal from "../Modal";
 
 export function TokenSelectModal({ onCancel, onChange }: ITokenSelectModal) {
+    const { balance } = useBalanceStore();
     return (
         <Modal
             onCancel={onCancel}
@@ -20,11 +22,9 @@ export function TokenSelectModal({ onCancel, onChange }: ITokenSelectModal) {
                 >
                     <img src={item.icon} className="w-8 h-8" />
                     <div className="text-black">
-                        <div className="text-black text-lg mb-[2px] font-bold leading-none">
-                            {item.symbol}
-                        </div>
+                        <div className="text-black text-lg mb-[2px] font-bold leading-none">{item.symbol}</div>
                         <div className="text-xs">
-                            Balance: 100000 {item.symbol}
+                            Balance: {balance.get(item.address)} {item.symbol}
                         </div>
                     </div>
                 </div>

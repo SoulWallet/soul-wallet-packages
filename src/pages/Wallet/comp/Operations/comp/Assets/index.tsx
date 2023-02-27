@@ -1,35 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useQuery from "@src/hooks/useQuery";
+import { useBalanceStore } from "@src/store/balanceStore";
 import IconChevronRight from "@src/assets/chevron-right.svg";
-import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";
 
 export default function Assets() {
     const { walletAddress } = useWalletContext();
-    const { getEthBalance } = useQuery();
-    const [balanceMapping, setBalanceMapping] = useState<any>({});
-    const erc20Contract = useErc20Contract();
-
-    const getBalances = async () => {
-        config.assetsList.forEach(async (item) => {
-            // fix getBalance
-            let balance: string = "0";
-            if (item.symbol === "ETH") {
-                balance = await getEthBalance();
-            } else {
-                balance = await erc20Contract.balanceOf(item.address);
-            }
-
-            setBalanceMapping((prev: any) => {
-                return {
-                    ...prev,
-                    [item.address]: balance,
-                };
-            });
-        });
-    };
+    const { balance } = useBalanceStore();
+    const { getBalances } = useQuery();
 
     useEffect(() => {
         if (!walletAddress) {
@@ -49,7 +29,7 @@ export default function Assets() {
                     <div className="flex items-center gap-2">
                         <img src={item.icon} className="w-10" />
                         <div className="text-sm flex items-center gap-1">
-                            <span>{balanceMapping[item.address] || 0}</span>
+                            <span>{balance.get(item.address) || 0}</span>
                             <span>{item.symbol}</span>
                         </div>
                     </div>
