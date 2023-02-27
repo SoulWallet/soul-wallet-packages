@@ -233,16 +233,11 @@ export default function useWallet() {
         // await executeOperation(setGuardianOp, actionName);
     };
 
-    const deleteWallet = async () => {
-        await keystore.delete();
-    };
-
     return {
         activateWallet,
         initRecoverWallet,
         recoverWallet,
         generateWalletAddress,
-        deleteWallet,
         updateGuardian,
     };
 }

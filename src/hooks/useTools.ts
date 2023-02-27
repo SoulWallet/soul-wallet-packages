@@ -99,7 +99,7 @@ export default function useTools() {
             baseFeeInGwei = ethers.utils.parseUnits(fee.estimatedBaseFee, "gwei").toString();
         }
 
-        const requiredPrefund = op.requiredPrefund(baseFeeInGwei) * 1.2;
+        const requiredPrefund = op.requiredPrefund(baseFeeInGwei).mul(1.2);
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
 
         if (!tokenAddress) {
