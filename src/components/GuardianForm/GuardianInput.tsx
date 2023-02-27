@@ -19,7 +19,8 @@ const OperationTypeIconMap = {
 };
 
 export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
-    const { guardians, addGuardian, removeGuardian, updateAddressById, updateNameById } = useGuardianContext((s) => s);
+    const { guardians, addGuardian, removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } =
+        useGuardianContext((s) => s);
 
     const [operationType, setOperationType] = useState<OperationType>(OperationType.Create);
 
@@ -27,6 +28,7 @@ export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
         updateNameById(id, value);
     };
     const handleAddressChange = (value: string) => {
+        updateErrorMsgById(id);
         updateAddressById(id, value);
     };
 
