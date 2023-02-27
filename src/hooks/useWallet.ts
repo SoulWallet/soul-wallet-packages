@@ -26,8 +26,7 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (paymaster = false) => {
-        console.log("paymaster", paymaster);
+    const activateWallet = async () => {
         const actionName = "Activate Wallet";
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
@@ -46,7 +45,8 @@ export default function useWallet() {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            paymaster ? config.contracts.paymaster : config.zeroAddress,
+            "0x",
+            // paymaster ? config.contracts.paymaster : config.zeroAddress,
             maxFeePerGas,
             maxPriorityFeePerGas,
         );

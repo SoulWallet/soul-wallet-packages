@@ -73,10 +73,7 @@ export const WalletContextProvider = ({ children }: any) => {
             try {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
-                // if user want to pay with paymaster
-                if (paymasterAndData) {
-                    operation.paymasterAndData = paymasterAndData;
-                }
+                operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
 
                 // if it's activate wallet, and user would like to approve first
                 if (actionName === "Activate Wallet") {
