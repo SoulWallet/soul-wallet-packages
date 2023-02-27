@@ -29,7 +29,7 @@ export interface GuardianStore {
     removeGuardian: (idx: string) => void;
     updateNameById: (idx: string, name: string) => void;
     updateAddressById: (idx: string, address: string) => void;
-    updateErrorMsgById: (idx: string, msg: string) => void;
+    updateErrorMsgById: (idx: string, msg?: string) => void;
 }
 
 const createGuardianSlice = immer<GuardianStore>((set) => ({
