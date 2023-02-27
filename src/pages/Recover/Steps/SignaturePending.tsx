@@ -135,18 +135,19 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
                 </Button>
             </div>
 
-            <ModalV2 visible={showShareModal} className="bg-white text-black">
+            <ModalV2 visible={true} className="bg-white text-black">
                 <div>
                     <div className="flex flex-row justify-between">
                         <h1 className="font-bold text-xl">Share recovery URL to your guardians</h1>
                         <Icon src={closeIcon} onClick={handleCloseShareModal} className="cursor-pointer" />
                     </div>
+
                     <p className="my-5">
                         Share recovery URL to your guardiansShare this link with your guardians for them to connect
                         wallet and sign.
                     </p>
 
-                    <div>
+                    <div className="flex flex-col">
                         <a target="_blank" href={shareUrl} className="text-purple break-words" rel="noreferrer">
                             {shareUrl}
                         </a>
