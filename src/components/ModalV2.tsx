@@ -19,7 +19,7 @@ const ModalV2 = ({ visible, children, id = nanoid(), className }: IProps) => {
         <>
             {/* {maskCloseable ? <input type="checkbox" id={id} className="modal-toggle" /> : null} */}
 
-            <div className={"modal " + modalClassName} id={id}>
+            <div className={"modal " + modalClassName ?? ""} id={id}>
                 <div className={"modal-box " + className}>{children}</div>
             </div>
         </>
