@@ -161,7 +161,7 @@ export default function SignPage() {
             } catch (err) {
                 console.log(err);
             } finally {
-                window.close();
+                // window.close();
             }
         }
     };

@@ -65,19 +65,19 @@ const providerToInject = {
 };
 
 window.ethereum = providerToInject;
-// window.soul = providerToInject;
+window.soul = providerToInject;
 
-const checkProvider = async () => {
-    console.log("check provider", window.ethereum);
+// const checkProvider = async () => {
+//     console.log("check provider", window.ethereum);
 
-    // should get this from store
-    const isDefaultProvider = true;
+//     // should get this from store
+//     const isDefaultProvider = true;
 
-    if (isDefaultProvider && !window.ethereum.isSoul) {
-        window.ethereum = providerToInject;
-    }
-};
+//     if (isDefaultProvider && !window.ethereum.isSoul) {
+//         window.ethereum = providerToInject;
+//     }
+// };
 
-setInterval(() => {
-    checkProvider();
-}, 3000);
+// setInterval(() => {
+//     checkProvider();
+// }, 3000);
