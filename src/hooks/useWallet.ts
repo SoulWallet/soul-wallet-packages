@@ -6,7 +6,7 @@ import useLib from "./useLib";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
-import { getLocalStorage, removeLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -46,7 +46,6 @@ export default function useWallet() {
             config.guardianDelay,
             guardianInitCode.address,
             "0x",
-            // paymaster ? config.contracts.paymaster : config.zeroAddress,
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
@@ -55,8 +54,8 @@ export default function useWallet() {
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
+        console.log("before", guardiansList);
         const guardianInitCode = getGuardianInitCode(guardiansList);
-
         const wAddress = soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
             config.contracts.entryPoint,
