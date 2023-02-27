@@ -66,13 +66,8 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
     }, []);
 
     return (
-        <div className="pt-6 pb-8 flex flex-col gap-4">
-            <InputWrapper
-                label="Enter Wallet Address"
-                value={address}
-                onChange={handleChangeAddress}
-                className="w-base"
-            />
+        <div className="pt-6 pb-8 flex flex-col gap-4 w-[650px]">
+            <InputWrapper label="Enter Wallet Address" value={address} onChange={handleChangeAddress} />
             <PayTokenSelect value={payToken} onChange={handleChangePayToken} />
             <Dropdown
                 label="Select Network"
