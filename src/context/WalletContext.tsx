@@ -128,9 +128,13 @@ export const WalletContextProvider = ({ children }: any) => {
     }, [walletAddress]);
 
     const checkLocked = async () => {
+        const current = lockedModal.current;
+
         const res = await keystore.checkLocked();
+
         if (res) {
-            await lockedModal.current.show();
+            console.log("ready to show");
+            await current.show();
         }
     };
 
@@ -150,6 +154,7 @@ export const WalletContextProvider = ({ children }: any) => {
         setCheckingLocked(false);
 
         if (location.hash.indexOf("mode=web") === -1) {
+            console.log(current, "cur??");
             checkLocked();
         }
     }, [location.hash, lockedModal.current]);

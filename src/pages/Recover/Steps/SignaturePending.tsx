@@ -111,6 +111,10 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
     useEffect(() => {
         getInfo();
+        const intervalId = setInterval(() => {
+            getInfo();
+        }, 5000);
+        return () => clearInterval(intervalId);
     }, []);
 
     return (
