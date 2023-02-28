@@ -4,6 +4,7 @@ import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
+import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeystore from "@src/hooks/useKeystore";
 import { useSearchParams } from "react-router-dom";
@@ -15,6 +16,7 @@ export default function SignPage() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { walletAddress, ethersProvider, account } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
+    const { getGasPrice } = useQuery();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
     const keystore = useKeystore();
@@ -37,14 +39,16 @@ export default function SignPage() {
                 },
             ];
 
-            let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+            const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-            const maxFeePerGas = ethers.utils
-                .parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei")
-                .toString();
-            const maxPriorityFeePerGas = ethers.utils
-                .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
-                .toString();
+            // let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+
+            // const maxFeePerGas = ethers.utils
+            //     .parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei")
+            //     .toString();
+            // const maxPriorityFeePerGas = ethers.utils
+            //     .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
+            //     .toString();
 
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 ethersProvider,
