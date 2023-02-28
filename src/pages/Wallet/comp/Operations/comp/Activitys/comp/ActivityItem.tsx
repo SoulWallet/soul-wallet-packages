@@ -30,7 +30,7 @@ export default function ActivityItem({ item }: any) {
                 ? "activate"
                 : callDataDecode
                 ? callDataDecode.functionName
-                : "Contract Interfact";
+                : "Contract Interfaction";
 
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;
 

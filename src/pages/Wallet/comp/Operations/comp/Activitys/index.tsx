@@ -43,7 +43,7 @@ export default function Activities() {
                 </div>
             )}
             {historyList.map((item: any) => (
-                <ActivityItem item={item} />
+                <ActivityItem item={item} key={historyList.trxHash} />
             ))}
         </div>
     );
