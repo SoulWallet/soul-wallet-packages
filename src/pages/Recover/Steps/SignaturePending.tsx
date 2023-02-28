@@ -63,14 +63,14 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
     const doRecover = async () => {
         const finalSignatureList = signatureList.filter((item: any) => !!item.signature);
+        const finalGuardianList = signatureList.map((item: any) => item.address);
         // TODO, 0x should be removed
         // finalSignatureList.forEach((item: any) => {
         //     item.signature = `0x${item.signature}`;
         // });
-
         setRecoveringWallet(true);
         // GET OP
-        await recoverWallet(opDetail, finalSignatureList, opHash);
+        await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
         setRecoveringWallet(false);
         // TOOD, add success page
     };

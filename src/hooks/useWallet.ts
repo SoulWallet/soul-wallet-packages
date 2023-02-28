@@ -22,12 +22,12 @@ export default function useWallet() {
     const { guardians } = useGlobalStore();
     const keystore = useKeystore();
 
-    const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
-
     const { soulWalletLib } = useLib();
 
     const activateWallet = async () => {
         const actionName = "Activate Wallet";
+
+        const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
@@ -151,7 +151,7 @@ export default function useWallet() {
         }
     };
 
-    const recoverWallet = async (transferOp: any, signatureList: any, opHash: string) => {
+    const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
         const actionName = "Recover Wallet";
 
@@ -165,10 +165,6 @@ export default function useWallet() {
         const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
 
         const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
-
-        console.log("guardianInfo", guardianInfo);
-
-        console.log("guardianInitCode", guardianInitCode);
 
         if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
             throw new Error("Guardian address not match");
