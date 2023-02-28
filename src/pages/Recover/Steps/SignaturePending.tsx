@@ -135,7 +135,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
                 </Button>
             </div>
 
-            <ModalV2 visible={true} className="bg-white text-black">
+            <ModalV2 visible={showShareModal} className="bg-white text-black">
                 <div>
                     <div className="flex flex-row justify-between">
                         <h1 className="font-bold text-xl">Share recovery URL to your guardians</h1>

@@ -8,7 +8,6 @@ import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
-import useWallet from "@src/hooks/useWallet";
 import useLib from "@src/hooks/useLib";
 const web3 = new Web3(config.provider);
 
