@@ -25,7 +25,12 @@ export default function ActivityItem({ item }: any) {
 
         const callDataDecode = (await decodeCalldata(callData))[0];
 
-        const functionName = item.userOp.initCode !== "0x" ? "activate" : callDataDecode.functionName;
+        const functionName =
+            item.userOp.initCode !== "0x"
+                ? "activate"
+                : callDataDecode
+                ? callDataDecode.functionName
+                : "Contract Interfact";
 
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;
 
