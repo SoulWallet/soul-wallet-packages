@@ -24,7 +24,7 @@ const ResaveGuardians = () => {
     return (
         <FullscreenContainer>
             <div className="flex flex-col pb-14">
-                <h1 className="text-lg text-black">Save your new guardians</h1>
+                <h1 className="text-lg text-black font-bold">Save your new guardians</h1>
                 <p className="tip-text my-4">
                     Congratulations! You have updated your guardians. We strongly recommend you to make sure you have
                     the copy saved.

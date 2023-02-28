@@ -46,7 +46,7 @@ export default function InputWrapper({
     };
 
     return (
-        <div className={classNames("flex flex-col w-full", className)}>
+        <div className={classNames("flex flex-col ", className)}>
             <label className="tip-text mb-1 " htmlFor={label}>
                 {label}
             </label>
