@@ -25,12 +25,13 @@ export default function useTransaction() {
 
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+
         const op = await soulWalletLib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
             nonce,
+            config.contracts.entryPoint,
             "0x",
-            config.contracts.paymaster,
             maxFeePerGas,
             maxPriorityFeePerGas,
             to,
