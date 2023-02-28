@@ -78,7 +78,7 @@ const providerToInject = {
     ...provider,
 };
 
-// window.ethereum = providerToInject;
+window.ethereum = providerToInject;
 window.soul = providerToInject;
 
 // const checkProvider = async () => {
