@@ -3,12 +3,12 @@ import Icon from "@src/components/Icon";
 import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
 import React, { useEffect, useState } from "react";
-import BN from "bignumber.js";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
 import api from "@src/lib/api";
 import useWallet from "@src/hooks/useWallet";
-import { getLocalStorage, removeLocalStorage } from "@src/lib/tools";
+import { getLocalStorage } from "@src/lib/tools";
+import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 
 enum SignatureStatusEn {
     Signed = 1,
@@ -43,6 +43,7 @@ const SignatureItem = ({ address, status }: ISignaturesItem) => (
 );
 
 const SignaturePending = ({ onChange }: ISignaturePending) => {
+    const dispatch = useStepDispatchContext();
     const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
     const { recoverWallet } = useWallet();
@@ -68,7 +69,11 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         // GET OP
         await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
         setRecoveringWallet(false);
-        // TOOD, add success page
+
+        dispatch({
+            type: StepActionTypeEn.JumpToTargetStep,
+            payload: RecoverStepEn.Completed,
+        });
     };
 
     const getList = async (opHash: string) => {

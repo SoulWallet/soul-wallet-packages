@@ -6,7 +6,7 @@ import GuardiansSetting from "../Create/Steps/GuardiansSetting";
 import GuardiansSaving from "../Create/Steps/GuardiansSaving";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import DefaultSetting from "../Create/Steps/DefaultSetting";
-import Completion from "../Create/Steps/Completion";
+import StepCompletion from "@src/components/StepCompletion";
 
 type StepNodeInfo = {
     title: string;
@@ -34,7 +34,7 @@ const StepComponent = () => {
             },
             [CreateStepEn.Completed]: {
                 title: "Congratulation! Your Soul Wallet is created.",
-                element: <Completion />,
+                element: <StepCompletion />,
             },
         };
     }, []);

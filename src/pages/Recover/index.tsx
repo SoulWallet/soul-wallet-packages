@@ -15,6 +15,7 @@ import GuardiansChecking from "./Steps/GuardiansChecking";
 import GuardiansImporting from "./Steps/GuardiansImporting";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
+import StepCompletion from "@src/components/StepCompletion";
 
 type StepNodeInfo = {
     title: string;
@@ -59,6 +60,10 @@ const StepComponent = () => {
                 title: `Waiting Signature (${recoverStatus}) `,
                 element: <SignaturePending onChange={setRecoverStatus} />,
             },
+            [RecoverStepEn.Completed]: {
+                title: "Congratulation! Your Soul Wallet is recovered.",
+                element: <StepCompletion />,
+            },
         };
     }, [walletAddress, payToken, recoverStatus]);
 
@@ -82,7 +87,7 @@ const StepComponent = () => {
 
     return (
         <div>
-            <ProgressNavBar title={stepNodeMap[current].title} maxStep={RecoverStepEn.SignaturePending} />
+            <ProgressNavBar title={stepNodeMap[current].title} maxStep={RecoverStepEn.Completed} />
             {stepNodeMap[current].element}
         </div>
     );

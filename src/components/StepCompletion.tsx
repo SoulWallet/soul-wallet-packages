@@ -2,7 +2,7 @@ import Button from "@src/components/Button";
 import useBrowser from "@src/hooks/useBrowser";
 import React from "react";
 
-const Completion = () => {
+const StepCompletion = () => {
     const { goPlugin } = useBrowser();
     const handleToMyWallet = () => {
         goPlugin();
@@ -24,4 +24,4 @@ const Completion = () => {
     );
 };
 
-export default Completion;
+export default StepCompletion;
