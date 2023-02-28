@@ -20,11 +20,11 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
             for (let i = 0; i < guardians.length; i++) {
                 if (guardians[i].address.length && addressList.includes(guardians[i].address)) {
                     updateErrorMsgById(guardians[i].id, "Duplicate address");
-                    return reject();
+                    return reject("Duplicate address");
                 }
                 if (!ethers.utils.isAddress(guardians[i].address)) {
                     updateErrorMsgById(guardians[i].id, "Invalid address");
-                    return reject();
+                    return reject("Invalid address");
                 }
                 addressList.push(guardians[i].address);
             }

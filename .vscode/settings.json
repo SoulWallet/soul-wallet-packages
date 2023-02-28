@@ -1,4 +1,5 @@
 {
-  "editor.formatOnSave": true,
-  "css.lint.unknownAtRules": "ignore"
+    "editor.formatOnSave": true,
+    "css.lint.unknownAtRules": "ignore",
+    "cSpell.words": ["Resave"]
 }

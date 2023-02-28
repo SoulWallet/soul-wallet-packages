@@ -12,6 +12,7 @@ import useKeystore from "./hooks/useKeystore";
 import CreatePage from "./pages/Create";
 import RecoverPage from "./pages/Recover";
 import EditGuardians from "./pages/EditGuardians";
+import ResaveGuardians from "./pages/ResaveGuardians";
 
 export default function PluginRouter() {
     const location = useLocation();
@@ -56,6 +57,7 @@ export default function PluginRouter() {
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/recover" element={<RecoverPage />} />
                 <Route path="/edit-guardians" element={<EditGuardians />} />
+                <Route path="/resave-guardians" element={<ResaveGuardians />} />
                 <Route path="*" element={<Wallet />} />
             </Routes>
         </div>

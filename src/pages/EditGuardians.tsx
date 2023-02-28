@@ -9,12 +9,14 @@ import { useGlobalStore } from "@src/store/global";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import React, { useRef } from "react";
+import useBrowser from "@src/hooks/useBrowser";
 
 const EditGuardians = () => {
     const { guardians, updateFinalGuardians } = useGlobalStore();
     const { updateGuardian } = useWallet();
     const formRef = useRef<IGuardianFormHandler>(null);
     const [payToken, setPayToken] = useState<string>(config.zeroAddress);
+    const { replaceCurrentTab } = useBrowser();
 
     const handleClickConfirm = async () => {
         const guardianList: GuardianItem[] = (await formRef.current?.submit()) as GuardianItem[];
@@ -27,6 +29,7 @@ const EditGuardians = () => {
 
         // if success update, update global state
         updateFinalGuardians(guardianList);
+        replaceCurrentTab("/resave-guardians");
     };
 
     const handleChangePayToken = (val: string | number) => {
