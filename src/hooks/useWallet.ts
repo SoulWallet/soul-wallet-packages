@@ -166,6 +166,10 @@ export default function useWallet() {
 
         const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
 
+        console.log("guardianInfo", guardianInfo);
+
+        console.log("guardianInitCode", guardianInitCode);
+
         if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
             throw new Error("Guardian address not match");
         }

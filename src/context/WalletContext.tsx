@@ -45,6 +45,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState("");
+    const [checkingLocked, setCheckingLocked] = useState(true);
     const [walletType, setWalletType] = useState("");
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
@@ -146,7 +147,8 @@ export const WalletContextProvider = ({ children }: any) => {
         if (!current || !location.hash) {
             return;
         }
-        // important todo, this doesn't work
+        setCheckingLocked(false);
+
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();
         }
@@ -167,6 +169,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 showLocked,
             }}
         >
+            {/* {checkingLocked ? "checking" : children} */}
             {children}
             <SignTransaction ref={signModal} />
             <Locked ref={lockedModal} />
