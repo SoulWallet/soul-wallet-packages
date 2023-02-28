@@ -8,3 +8,4 @@ play.ts
 .DS_Store
 .zip
 .npmrc
+.vscode

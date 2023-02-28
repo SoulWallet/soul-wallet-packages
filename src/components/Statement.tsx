@@ -13,11 +13,13 @@ const Statement = () => {
                 Soul Wallet.
                 <ul className="flex flex-col gap-y-2 list-decimal pl-8">
                     <li>
-                        We released an internal test version, which wants to collect more feedback to improve our
-                        product. We want you to know firstly: this version is{" "}
-                        <strong>NOT A PRODUCT VERSION FOR REAL</strong> . Please make sure you have the relevant
-                        encryption knowledge and asset management skills to <strong>FULL CONTROL this TEST</strong> .
-                        Otherwise, otherwise you run the risk of losing all your assets. Thank you for taking our test!
+                        We have released an internal test version of alpha to gather more feedback to improve our
+                        product. First of all, we want you to know that this release is{" "}
+                        <strong>NOT A NATURAL VERSION OF THE PRODUCT</strong>. Second, please ensure you have the
+                        relevant encryption knowledge and asset management <strong>SKILLS TO FULLY CONTROL</strong> his
+                        test. Even so, you may still <strong>RUN THE RISK OF LOSING ALL YOUR ASSETS</strong> Please{" "}
+                        <strong>DO NOT TRANSFER TOO MANY ASSETS</strong> for the sake of testing, and thank you for
+                        participating in our test!
                     </li>
                     <li>
                         Market Risks: Digital assets such as cryptocurrencies can experience significant price
@@ -32,12 +34,12 @@ const Statement = () => {
                         result in the loss of user funds.
                     </li>
                     <li>
-                        Technological Risks: Soul Wallet is in its alpha stage, which means that the Soul Wallet and all
-                        related software, including blockchain software and smart-contracts, are experimental. Soul
-                        Wallet is provided on an “as is” and “as available” basis, without warranty of any kind, either
-                        expressed or implied, including, without limitation, warranties that the Soul Wallet or any
-                        related software are free of defects, vulnerabilities, merchantable, fit for a particular
-                        purpose or non-infringing.
+                        3. Technological Risks: Soul Wallet is in its alpha stage, which means that the Soul Wallet and
+                        all related software, including blockchain software and smart-contracts, are experimental. Soul
+                        Wallet is provided on an &quot;as is&quot; and &quot;as available&quot; basis, without warranty
+                        of any kind, either expressed or implied, including, without limitation, warranties that the
+                        Soul Wallet or any related software are free of defects, vulnerabilities, merchantable, fit for
+                        a particular purpose or non-infringing.
                     </li>
                     <li>
                         Software Weaknesses Risks: Although we make reasonable efforts to ensure that the Soul Wallet
