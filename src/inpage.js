@@ -23,13 +23,27 @@ const soulMiddleware = createSoulMiddleware({
             throw new Error("Failed to execute");
         }
     },
-    processEthSignMessage: () => {},
-    processTypedMessage: () => {},
-    processTypedMessageV3: () => {},
-    processTypedMessageV4: () => {},
-    processPersonalMessage: () => {},
-    processDecryptMessage: () => {},
-    processEncryptionPublicKey: () => {},
+    processEthSignMessage: () => {
+        console.log("sign.");
+    },
+    processTypedMessage: () => {
+        console.log("sign.");
+    },
+    processTypedMessageV3: () => {
+        console.log("sign.");
+    },
+    processTypedMessageV4: () => {
+        console.log("sign.");
+    },
+    processPersonalMessage: () => {
+        console.log("sign.");
+    },
+    processDecryptMessage: () => {
+        console.log("sign.");
+    },
+    processEncryptionPublicKey: () => {
+        console.log("sign.");
+    },
 });
 
 const engine = new JsonRpcEngine();
@@ -51,7 +65,7 @@ const provider = providerFromEngine(engine);
 // todo, should do some check if to inject the provider
 
 const providerToInject = {
-    chainId: config.chainId.toString(16),
+    chainId: config.chainIdHex,
     isMetaMask: true,
     isSoul: true,
     request: async (call) => {

@@ -30,8 +30,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const doActivate = async () => {
         setLoading(true);
         try {
-            // pay with usdc, IMPORTANT TODO
-            await activateWallet(true);
+            await activateWallet();
             getWalletType();
             toast.success("Account activated");
         } catch (err) {

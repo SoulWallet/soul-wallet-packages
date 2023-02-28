@@ -6,7 +6,7 @@ import useLib from "./useLib";
 import { ethers } from "ethers";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
-import { getLocalStorage, removeLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -17,27 +17,28 @@ import { GuardianItem } from "@src/lib/type";
 export default function useWallet() {
     const { account, executeOperation, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, getWalletType } = useQuery();
-    const { getGuardianInitCode, getFeeCost } = useTools();
+    const { getGasPrice, getWalletType, getFeeCost } = useQuery();
+    const { getGuardianInitCode } = useTools();
     const { guardians } = useGlobalStore();
     const keystore = useKeystore();
 
-    const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
-
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (paymaster = false) => {
-        console.log("paymaster", paymaster);
+    const activateWallet = async () => {
         const actionName = "Activate Wallet";
+
+        const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        const fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-        const maxFeePerGas = ethers.utils.parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei").toString();
-        const maxPriorityFeePerGas = ethers.utils
-            .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
-            .toString();
+        // const fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
+
+        // const maxFeePerGas = ethers.utils.parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei").toString();
+        // const maxPriorityFeePerGas = ethers.utils
+        //     .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
+        //     .toString();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -46,7 +47,7 @@ export default function useWallet() {
             config.upgradeDelay,
             config.guardianDelay,
             guardianInitCode.address,
-            paymaster ? config.contracts.paymaster : config.zeroAddress,
+            "0x",
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
@@ -55,8 +56,8 @@ export default function useWallet() {
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
+        console.log("before", guardiansList);
         const guardianInitCode = getGuardianInitCode(guardiansList);
-
         const wAddress = soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
             config.contracts.entryPoint,
@@ -106,7 +107,8 @@ export default function useWallet() {
 
     const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-        const currentFee = await getGasPrice();
+        // const currentFee = await getGasPrice();
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         const newOwner = await getLocalStorage("stagingAccount");
 
@@ -118,8 +120,8 @@ export default function useWallet() {
             nonce,
             config.contracts.entryPoint,
             usePaymaster ? config.contracts.paymaster : config.zeroAddress,
-            currentFee,
-            currentFee,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
             newOwner,
         );
 
@@ -149,7 +151,7 @@ export default function useWallet() {
         }
     };
 
-    const recoverWallet = async (transferOp: any, signatureList: any, opHash: string) => {
+    const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
         const actionName = "Recover Wallet";
 
@@ -189,7 +191,8 @@ export default function useWallet() {
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
         const actionName = "Update Guardian";
-        const currentFee = await getGasPrice();
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
         const usePaymaster = payToken !== config.zeroAddress;
@@ -202,8 +205,8 @@ export default function useWallet() {
             nonce,
             config.contracts.entryPoint,
             usePaymaster ? config.contracts.paymaster : config.zeroAddress,
-            currentFee,
-            currentFee,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
         );
 
         if (!setGuardianOp) {

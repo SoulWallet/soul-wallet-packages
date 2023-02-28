@@ -2,6 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from
 import BN from "bignumber.js";
 import cn from "classnames";
 import useLib from "@src/hooks/useLib";
+import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { ICostItem } from "@src/types/IAssets";
 import config from "@src/config";
@@ -43,7 +44,8 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [signType, setSignType] = useState<SignTypeEn>();
     const [activePaymasterData, setActivePaymasterData] = useState({});
     const { soulWalletLib } = useLib();
-    const { getFeeCost, decodeCalldata } = useTools();
+    const { decodeCalldata } = useTools();
+    const { getFeeCost } = useQuery();
 
     useImperativeHandle(ref, () => ({
         async show(operation: any, _actionName: string, origin: string, keepVisible: boolean) {

@@ -8,7 +8,6 @@ import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
-import useWallet from "@src/hooks/useWallet";
 import useLib from "@src/hooks/useLib";
 const web3 = new Web3(config.provider);
 
@@ -46,6 +45,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState("");
+    const [checkingLocked, setCheckingLocked] = useState(true);
     const [walletType, setWalletType] = useState("");
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
@@ -73,10 +73,7 @@ export const WalletContextProvider = ({ children }: any) => {
             try {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
-                // if user want to pay with paymaster
-                if (paymasterAndData) {
-                    operation.paymasterAndData = paymasterAndData;
-                }
+                operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
 
                 // if it's activate wallet, and user would like to approve first
                 if (actionName === "Activate Wallet") {
@@ -131,9 +128,13 @@ export const WalletContextProvider = ({ children }: any) => {
     }, [walletAddress]);
 
     const checkLocked = async () => {
+        const current = lockedModal.current;
+
         const res = await keystore.checkLocked();
+
         if (res) {
-            await lockedModal.current.show();
+            console.log("ready to show");
+            await current.show();
         }
     };
 
@@ -150,7 +151,8 @@ export const WalletContextProvider = ({ children }: any) => {
         if (!current || !location.hash) {
             return;
         }
-        // important todo, this doesn't work
+        setCheckingLocked(false);
+
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();
         }
@@ -171,6 +173,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 showLocked,
             }}
         >
+            {/* {checkingLocked ? "checking" : children} */}
             {children}
             <SignTransaction ref={signModal} />
             <Locked ref={lockedModal} />

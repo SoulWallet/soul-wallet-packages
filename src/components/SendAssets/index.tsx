@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import config from "@src/config";
+import BN from "bignumber.js";
 import IconClose from "@src/assets/icons/close.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import useErc20Contract from "@src/contract/useErc20Contract";
 import useTransaction from "@src/hooks/useTransaction";
-import useQuery from "@src/hooks/useQuery";
 import { useNavigate } from "react-router-dom";
+import { useBalanceStore } from "@src/store/balanceStore";
 import cn from "classnames";
 import { Input } from "../Input";
 import { TokenSelect } from "../TokenSelect";
@@ -26,20 +26,18 @@ interface ISendAssets {
     tokenAddress: string;
 }
 
-export default function SendAssets({ tokenAddress }: ISendAssets) {
+export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const navigate = useNavigate();
     const [step, setStep] = useState<number>(0);
     const [sending, setSending] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>("");
-    const [balance, setBalance] = useState<string>("");
+    const { balance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
     const { web3 } = useWalletContext();
-    const { getEthBalance } = useQuery();
 
     const { sendErc20, sendEth } = useTransaction();
-    const erc20Contract = useErc20Contract();
 
     const confirmAddress = () => {
         if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
@@ -54,7 +52,10 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
             toast.error("Amount not valid");
             return;
         }
-        if (amount > balance) {
+
+        const tokenBalance = balance.get(tokenAddress);
+
+        if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
             toast.error("Balance not enough");
             return;
         }
@@ -71,23 +72,25 @@ export default function SendAssets({ tokenAddress }: ISendAssets) {
         }
     };
 
-    const getBalance = async () => {
-        let res = "";
-        if (tokenAddress === config.zeroAddress) {
-            res = await getEthBalance();
-        } else {
-            res = await erc20Contract.balanceOf(tokenAddress);
-        }
-        setBalance(res);
-    };
+    // const getBalance = async () => {
+    //     let res = "";
+    //     if (tokenAddress === config.zeroAddress) {
+    //         res = await getEthBalance();
+    //     } else {
+    //         res = await erc20Contract.balanceOf(tokenAddress);
+    //     }
+
+    //     console.log("balance is", res);
+    //     setBalance(res);
+    // };
 
     const goBack = () => {
         navigate("/wallet");
     };
 
-    useEffect(() => {
-        getBalance();
-    }, []);
+    // useEffect(() => {
+    //     getBalance();
+    // }, []);
 
     return (
         <div className={cn("flex flex-col justify-between", step === 1 && "pb-[100px]")}>

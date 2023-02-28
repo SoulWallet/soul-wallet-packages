@@ -13,7 +13,7 @@ import PasswordResetting from "./Steps/PasswordResetting";
 import SignaturePending from "./Steps/SignaturePending";
 import GuardiansChecking from "./Steps/GuardiansChecking";
 import GuardiansImporting from "./Steps/GuardiansImporting";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 
 type StepNodeInfo = {
@@ -28,8 +28,10 @@ const StepComponent = () => {
     const [payToken, setPayToken] = useState("");
     const [recoverStatus, setRecoverStatus] = useState("n/m");
 
-    const onRecoverSubmit = (wAddress: string, pToken: string) => {
+    const onRecoverSubmit = async (wAddress: string, pToken: string) => {
         setWalletAddress(wAddress);
+        // todo, remove somewhere else
+        await setLocalStorage("walletAddress", wAddress);
         setPayToken(pToken);
     };
 

@@ -98,7 +98,7 @@ dependencies:
   axios: 0.27.2
   bignumber.js: 9.1.1
   classnames: 2.3.2
-  daisyui: 2.51.1_gbtt6ss3tbiz4yjtvdr6fbrj44
+  daisyui: 2.51.2_gbtt6ss3tbiz4yjtvdr6fbrj44
   eth-block-tracker: 4.4.3_@babel+core@7.21.0
   eth-json-rpc-filters: 5.1.0
   eth-json-rpc-infura: 5.1.0
@@ -122,7 +122,7 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.1_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/503e7ea7594aef55993166bb6009860f1bc34b6e
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/2233a2d09155a98f35c06ffb01cd767ac7d147e7
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
@@ -1657,17 +1657,18 @@ packages:
     resolution: {integrity: sha512-hldFFYuf49ed7DAakWVXSJODuq3pzJEguD8tQ7h+sGkM18vja+OFoJI9krnGmgzyuZC2ETX0NOIcCTy31v2Mtg==}
     dev: false
 
-  /@chainsafe/persistent-merkle-tree/0.5.0:
-    resolution: {integrity: sha512-l0V1b5clxA3iwQLXP40zYjyZYospQLZXzBVIhhr9kDg/1qHZfzzHw0jj4VPBijfYCArZDlPkRi1wZaV2POKeuw==}
+  /@chainsafe/persistent-merkle-tree/0.4.2:
+    resolution: {integrity: sha512-lLO3ihKPngXLTus/L7WHKaw9PnNJWizlOF1H9NNzHP6Xvh82vzg9F2bzkXhYIFshMZ2gTCEz8tq6STe7r5NDfQ==}
     dependencies:
       '@chainsafe/as-sha256': 0.3.1
     dev: false
 
-  /@chainsafe/ssz/0.10.1:
-    resolution: {integrity: sha512-IdDOblRmH/aYqSJknAjTuT2Y2FEctofyXvmFzbJZkQ/XgYWyFELI3IFR3P2T2VNxeAgl6QOqcVbe+cGRL7Mxpw==}
+  /@chainsafe/ssz/0.9.4:
+    resolution: {integrity: sha512-77Qtg2N1ayqs4Bg/wvnWfg5Bta7iy7IRh8XqXh7oNMeP2HBbBwx8m6yTpA8p0EHItWPEBkgZd5S5/LSlp3GXuQ==}
     dependencies:
       '@chainsafe/as-sha256': 0.3.1
-      '@chainsafe/persistent-merkle-tree': 0.5.0
+      '@chainsafe/persistent-merkle-tree': 0.4.2
+      case: 1.6.3
     dev: false
 
   /@cnakazawa/watch/1.0.4:
@@ -1894,11 +1895,11 @@ packages:
       ethereumjs-util: 7.1.5
     dev: false
 
-  /@ethereumjs/util/8.0.4:
-    resolution: {integrity: sha512-tX2k9fG6eWBq5qby3VT1KgQT8iqnmwMYeDPJ/oyVdOcYKTiCBdkSBNtCWLh0vp3bIWUOjNRyPdwsYu73CyFCNA==}
+  /@ethereumjs/util/8.0.5:
+    resolution: {integrity: sha512-259rXKK3b3D8HRVdRmlOEi6QFvwxdt304hhrEAmpZhsj7ufXEOTIc9JRZPMnXatKjECokdLNBcDOFBeBSzAIaw==}
     engines: {node: '>=14'}
     dependencies:
-      '@chainsafe/ssz': 0.10.1
+      '@chainsafe/ssz': 0.9.4
       '@ethereumjs/rlp': 4.0.1
       ethereum-cryptography: 1.2.0
     dev: false
@@ -2545,7 +2546,7 @@ packages:
     resolution: {integrity: sha512-RU6fG/H6/UlBol221uBkq5C7w3TwLK611nEZliO2u+kO0vHKGBXnIPlhI0tzKUigjhUeOd9mhCNbNvhh0LKt9Q==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@ethereumjs/util': 8.0.4
+      '@ethereumjs/util': 8.0.5
       bn.js: 4.12.0
       ethereum-cryptography: 1.2.0
       ethjs-util: 0.1.6
@@ -6437,6 +6438,11 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /case/1.6.3:
+    resolution: {integrity: sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==}
+    engines: {node: '>= 0.8.0'}
+    dev: false
+
   /caseless/0.12.0:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
     dev: false
@@ -7144,8 +7150,8 @@ packages:
       es5-ext: 0.10.62
       type: 1.2.0
 
-  /daisyui/2.51.1_gbtt6ss3tbiz4yjtvdr6fbrj44:
-    resolution: {integrity: sha512-rMtdB8Rh8Ghd3+FDlMe63Caw+IopKIf7tviJGEx8gkjj5H+RCvU1bEbjx6DHsMsu477Gv5aafrLIdoUL+iMRrw==}
+  /daisyui/2.51.2_gbtt6ss3tbiz4yjtvdr6fbrj44:
+    resolution: {integrity: sha512-Jnfknn9HrOBNzj1kUI9g/kqNSA5oP5B/r6X4Ff/cdMO27glisO2Oi9QAO8hKwMN9LzfWGdfyqvJGvc3Ji78CXA==}
     peerDependencies:
       autoprefixer: ^10.0.2
       postcss: ^8.1.6
@@ -16195,8 +16201,8 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/503e7ea7594aef55993166bb6009860f1bc34b6e:
-    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/503e7ea7594aef55993166bb6009860f1bc34b6e}
+  github.com/proofofsoulprotocol/soulwalletlib/2233a2d09155a98f35c06ffb01cd767ac7d147e7:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/2233a2d09155a98f35c06ffb01cd767ac7d147e7}
     name: soul-wallet-lib
     version: 0.1.0-alpha.17
     dependencies:

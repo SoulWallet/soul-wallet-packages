@@ -21,17 +21,19 @@ export default function useTransaction() {
 
     const sendEth = async (to: string, amount: string) => {
         const actionName = "Send ETH";
-        const currentFee = await getGasPrice();
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+
         const op = await soulWalletLib.Tokens.ETH.transfer(
             ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            config.contracts.paymaster,
-            currentFee,
-            currentFee,
+            "0x",
+            maxFeePerGas,
+            maxPriorityFeePerGas,
             to,
             amountInWei,
         );
@@ -41,7 +43,8 @@ export default function useTransaction() {
 
     const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
         const actionName = "Send Assets";
-        const currentFee = await getGasPrice();
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+
         // get decimals `locally`
         const decimals = config.assetsList.filter((item: any) => item.address === tokenAddress)[0].decimals;
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
@@ -51,9 +54,9 @@ export default function useTransaction() {
             walletAddress,
             nonce,
             config.contracts.entryPoint,
-            config.contracts.paymaster,
-            currentFee,
-            currentFee,
+            "0x",
+            maxFeePerGas,
+            maxPriorityFeePerGas,
             tokenAddress,
             to,
             amountInWei,

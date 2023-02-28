@@ -145,7 +145,8 @@ export default class KeyStore {
      * check if user is locked
      */
     public async checkLocked(): Promise<boolean> {
-        return !(await this.getPassword()) && (await getLocalStorage(this.keyStoreKey));
+        const storedKeystore = await getLocalStorage(this.keyStoreKey);
+        return !(await this.getPassword()) && storedKeystore && !this._privateKey;
     }
 
     public async getSigner(provider: any) {

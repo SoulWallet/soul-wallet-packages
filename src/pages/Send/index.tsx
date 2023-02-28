@@ -10,7 +10,7 @@ export default function Send() {
     return (
         <>
             <Navbar />
-            <SendAssets tokenAddress={tokenAddress} />
+            {tokenAddress && <SendAssets tokenAddress={tokenAddress} />}
         </>
     );
 }

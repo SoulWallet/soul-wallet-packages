@@ -39,12 +39,15 @@ const getTransactionReceipt = async (params: any) => {
 };
 
 const getTransactionByHash = async (params: any) => {
-    const tx = await ethersProvider.getTransaction(params[0]);
-    return tx;
+    return await ethersProvider.getTransaction(params[0]);
+};
+
+const signTypedDataV4 = async (params: any) => {
+    console.log("sign params", params);
 };
 
 const chainId = async () => {
-    return "0x5";
+    return config.chainIdHex;
 };
 
 const blockNumber = async () => {
@@ -80,5 +83,7 @@ export default async function handleRequests(call: any) {
         case "eth_getTransactionByHash":
             return await getTransactionByHash(params);
         // TODO, signature
+        case "eth_signTypedData_v4":
+            return await signTypedDataV4(params);
     }
 }

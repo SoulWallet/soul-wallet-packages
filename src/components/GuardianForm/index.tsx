@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import GuardianInput from "./GuardianInput";
+import { ethers } from "ethers";
 import { GuardianContext, useGuardianContext } from "@src/context/hooks/useGuardianContext";
 import { GuardianItem } from "@src/lib/type";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
@@ -19,6 +20,10 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
             for (let i = 0; i < guardians.length; i++) {
                 if (guardians[i].address.length && addressList.includes(guardians[i].address)) {
                     updateErrorMsgById(guardians[i].id, "Duplicate address");
+                    return reject();
+                }
+                if (!ethers.utils.isAddress(guardians[i].address)) {
+                    updateErrorMsgById(guardians[i].id, "Invalid address");
                     return reject();
                 }
                 addressList.push(guardians[i].address);

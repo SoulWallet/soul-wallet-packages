@@ -69,7 +69,7 @@ export default function Launch() {
                             authorized ? "cursor-pointer" : "cursor-not-allowed opacity-70",
                         )}
                         onClick={() => {
-                            goWebsite("/recover?mode=web");
+                            goWebsite("/recover");
                             handleJumpToTargetStep(RecoverStepEn.ResetPassword);
                         }}
                     >
