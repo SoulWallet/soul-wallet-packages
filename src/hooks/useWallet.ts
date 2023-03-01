@@ -196,7 +196,7 @@ export default function useWallet() {
 
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
-        const usePaymaster = payToken !== config.zeroAddress;
+        // const usePaymaster = payToken !== config.zeroAddress;
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
         const setGuardianOp = await soulWalletLib.Guardian.setGuardian(
@@ -205,7 +205,8 @@ export default function useWallet() {
             guardianInitCode.address,
             nonce,
             config.contracts.entryPoint,
-            usePaymaster ? config.contracts.paymaster : config.zeroAddress,
+            "0x",
+            // usePaymaster ? config.contracts.paymaster : config.zeroAddress,
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
@@ -214,7 +215,7 @@ export default function useWallet() {
             throw new Error("setGuardianOp is null");
         }
 
-        setGuardianOp.paymasterAndData = await addPaymasterData(setGuardianOp);
+        setGuardianOp.paymasterAndData = await addPaymasterData(setGuardianOp, payToken);
 
         const opHash = setGuardianOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
 
