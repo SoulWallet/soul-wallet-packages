@@ -1,11 +1,11 @@
 /**
- * Goerli
+ * Arbitrum Goerli
  */
 
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
 
-export const usdcAddress = "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35";
+export const usdcAddress = "0xe34a90dF83c29c28309f58773C41122d4E8C757A";
 
 export const assetsList = [
     {
@@ -27,12 +27,12 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
+    provider: `https://goerli-rollup.arbitrum.io/rpc`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
-    scanUrl: "https://goerli.etherscan.io",
+    scanUrl: "https://goerli.arbiscan.io/",
     // should it override state when we set new?
-    defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
+    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
     defaultSalt: 0,
     feeMultiplier: 3,
     // IMPORTANT TODO, remove
@@ -51,7 +51,7 @@ export default {
         walletLogic: "0x7b133bC3bFA502E7510B21B798796641fD76e9fb",
         guardianLogic: "0x0C549EDdf533F3f63e1E5C2Ae2fbEa805F432078",
         entryPoint: "0xA19e1F46d9CFbc1557300bb93F96D76EA1FF2a69",
-        paymaster: "0xec6ef1336500Dc91660C367A2F86A7414b9d472c",
+        paymaster: "0x2468548008E7Aa766b9fFE66402892AC13Cbeb12",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };
