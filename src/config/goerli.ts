@@ -5,12 +5,6 @@
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
 
-import Icon1inch from "@src/assets/dapps/1inch.svg";
-import IconAave from "@src/assets/dapps/aave.svg";
-import IconCurve from "@src/assets/dapps/curve.png";
-import IconUniswap from "@src/assets/dapps/uniswap.svg";
-import IconYearn from "@src/assets/dapps/yearn.svg";
-
 export const infuraId = "36edb4e805524ba696b5b83b3e23ad18";
 
 export const usdcAddress = "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35";
@@ -32,43 +26,9 @@ export const assetsList = [
     },
 ];
 
-export const dappsList = [
-    {
-        icon: Icon1inch,
-        title: "1inch",
-        category: "DeFi",
-        link: "https://app.1inch.io",
-    },
-    {
-        icon: IconUniswap,
-        title: "Uniswap",
-        category: "DeFi",
-        link: "https://app.uniswap.org/",
-    },
-    {
-        icon: IconCurve,
-        title: "Curve",
-        category: "DeFi",
-        link: "https://curve.fi",
-    },
-    {
-        icon: IconYearn,
-        title: "Yearn",
-        category: "DeFi",
-        link: "https://yearn.finance/",
-    },
-    {
-        icon: IconAave,
-        title: "Aave",
-        category: "DeFi",
-        link: "https://app.aave.com/",
-    },
-];
-
 export default {
     assetsList,
-    dappsList,
-    recoverUrl: "http://localhost:8000/recover",
+    recoverUrl: "http://soulwallets.me/recover",
     provider: `https://goerli.infura.io/v3/${infuraId}`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
@@ -80,7 +40,6 @@ export default {
     // IMPORTANT TODO, remove
     maxCostMultiplier: 5,
     defaultTip: 10 * 10 ** 9,
-    // TODO,
     upgradeDelay: 10,
     guardianDelay: 100,
     guardianSalt: "",
