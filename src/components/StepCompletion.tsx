@@ -11,8 +11,7 @@ const StepCompletion = () => {
         <div className="tip-text mx-0 pb-6">
             <p className="mt-2 mb-3 mx-0">
                 Now you can use your wallet address to receive any cryptos, <br />
-                and unlock full services by receiving xxx ETH/ xxx USDC (fee <br />
-                for wallet deployment and gas fee).
+                and unlock full services by activiting your wallet.
             </p>
 
             <p className="text-warnRed">Warning: This is a beta version. Do NOT put in too much money.</p>

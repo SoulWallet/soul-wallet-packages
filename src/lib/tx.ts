@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { notify } from "@src/lib/tools";
+import { toast } from "material-react-toastify";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
@@ -26,6 +27,8 @@ export const executeTransaction = async (
 
             // failed to simulate
             if (simulateResult.status && simulateResult.result) {
+                console.log('error');
+                toast(simulateResult.result.reason);
                 throw Error(simulateResult.result.reason);
             }
 
