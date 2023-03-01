@@ -47,7 +47,7 @@ export default function Launch() {
                     disabled={!authorized}
                     href="/popup.html#/create?mode=web"
                     className="w-full btn btn-purple btn-purple-primary"
-                    onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD)}
+                    onClick={() => authorized && handleJumpToTargetStep(CreateStepEn.CreatePWD)}
                 >
                     Create Wallet
                 </Button>
@@ -56,7 +56,7 @@ export default function Launch() {
                     href="/popup.html#/create?mode=web"
                     disabled={!authorized}
                     className="btn w-full btn-purple mt-5 mb-4 cursor-not-allowed"
-                    onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
+                    onClick={() => authorized && handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
                 >
                     Import Wallet
                 </Button>
