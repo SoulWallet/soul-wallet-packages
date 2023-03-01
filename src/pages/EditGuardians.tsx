@@ -59,7 +59,7 @@ const EditGuardians = () => {
             </>
 
             <div className="w-full flex flex-col justify-center items-center my-5">
-                <Button type="primary" disabled={updating} className="w-base mb-2#4D4D4D" onClick={handleClickConfirm}>
+                <Button type="primary" loading={updating} className="w-base mb-2#4D4D4D" onClick={handleClickConfirm}>
                     Confirm Guardians
                 </Button>
                 <span className="text-base text-gray60 ">Notice: you may cancel this change in the next 24 hrs.</span>
