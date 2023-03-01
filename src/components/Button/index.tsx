@@ -30,9 +30,15 @@ export default function Button({ className, onClick, children, loading, disabled
         }
     };
 
+    let moreProps: any = {};
+
+    if (!disabled) {
+        moreProps.href = href;
+    }
+
     return (
         <a
-            href={href}
+            {...moreProps}
             onClick={doClick}
             className={cn(
                 "btn font-bold text-xl py-1 leading-none",
