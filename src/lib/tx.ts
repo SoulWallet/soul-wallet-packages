@@ -28,7 +28,7 @@ export const executeTransaction = async (
             // failed to simulate
             if (simulateResult.status && simulateResult.result) {
                 console.log('error');
-                toast(simulateResult.result.reason);
+                toast.error(simulateResult.result.reason);
                 throw Error(simulateResult.result.reason);
             }
 
