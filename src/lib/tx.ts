@@ -42,7 +42,6 @@ export const executeTransaction = async (
             bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
                 console.log("receipt: ", receipt);
                 const txHash: string = receipt.receipt.transactionHash;
-                console.log("receive tab id", tabId);
                 if (tabId) {
                     browser.tabs.sendMessage(Number(tabId), {
                         target: "soul",
