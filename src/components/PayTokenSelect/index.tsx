@@ -20,7 +20,6 @@ export default function PayTokenSelect({ value, onChange }: IPayTokenSelect) {
         if (!walletAddress) {
             return;
         }
-        console.log("cat");
         getBalances();
     }, [walletAddress]);
 
