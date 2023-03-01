@@ -14,6 +14,7 @@ import useBrowser from "@src/hooks/useBrowser";
 const EditGuardians = () => {
     const { guardians, updateFinalGuardians } = useGlobalStore();
     const { updateGuardian } = useWallet();
+    const [updating, setUpdating] = useState(false);
     const formRef = useRef<IGuardianFormHandler>(null);
     const [payToken, setPayToken] = useState<string>(config.zeroAddress);
     const { replaceCurrentTab } = useBrowser();
@@ -25,8 +26,10 @@ const EditGuardians = () => {
         }
 
         const guardianAddressList = guardianList.map((item: GuardianItem) => item.address);
-        await updateGuardian(guardianAddressList, payToken);
 
+        setUpdating(true)
+        await updateGuardian(guardianAddressList, payToken);
+        setUpdating(false)
         // if success update, update global state
         updateFinalGuardians(guardianList);
         replaceCurrentTab("/resave-guardians");
@@ -56,7 +59,7 @@ const EditGuardians = () => {
             </>
 
             <div className="w-full flex flex-col justify-center items-center my-5">
-                <Button type="primary" className="w-base mb-2#4D4D4D" onClick={handleClickConfirm}>
+                <Button type="primary" disabled={updating} className="w-base mb-2#4D4D4D" onClick={handleClickConfirm}>
                     Confirm Guardians
                 </Button>
                 <span className="text-base text-gray60 ">Notice: you may cancel this change in the next 24 hrs.</span>
