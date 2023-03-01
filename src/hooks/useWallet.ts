@@ -190,6 +190,7 @@ export default function useWallet() {
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
+        console.log('pay token is', payToken)
         const actionName = "Update Guardian";
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
