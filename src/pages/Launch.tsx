@@ -34,10 +34,12 @@ export default function Launch() {
     };
 
     const handleJumpToTargetStep = (targetStep: number) => {
-        dispatch({
-            type: StepActionTypeEn.JumpToTargetStep,
-            payload: targetStep,
-        });
+        if (authorized) {
+            dispatch({
+                type: StepActionTypeEn.JumpToTargetStep,
+                payload: targetStep,
+            });
+        }
     };
 
     return (
@@ -47,16 +49,16 @@ export default function Launch() {
                     disabled={!authorized}
                     href="/popup.html#/create?mode=web"
                     className="w-full btn btn-purple btn-purple-primary"
-                    onClick={() => authorized && handleJumpToTargetStep(CreateStepEn.CreatePWD)}
+                    onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD)}
                 >
                     Create Wallet
                 </Button>
 
                 <Button
-                    href="/popup.html#/create?mode=web"
-                    disabled={!authorized}
-                    className="btn w-full btn-purple mt-5 mb-4 cursor-not-allowed"
-                    onClick={() => authorized && handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
+                    // href="/popup.html#/create?mode=web"
+                    disabled={true} // disable import wallet button for now
+                    className="btn w-full btn-purple mt-5 mb-4"
+                    onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}
                 >
                     Import Wallet
                 </Button>

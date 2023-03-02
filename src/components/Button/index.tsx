@@ -30,7 +30,7 @@ export default function Button({ className, onClick, children, loading, disabled
         }
     };
 
-    let moreProps: any = {};
+    const moreProps: any = {};
 
     if (!disabled) {
         moreProps.href = href;
