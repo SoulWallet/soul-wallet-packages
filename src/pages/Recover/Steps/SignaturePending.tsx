@@ -9,6 +9,7 @@ import api from "@src/lib/api";
 import useWallet from "@src/hooks/useWallet";
 import { getLocalStorage } from "@src/lib/tools";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import ErrorBlock from "@src/components/ErrorBlock";
 
 enum SignatureStatusEn {
     Signed = 1,
@@ -43,6 +44,8 @@ const SignatureItem = ({ address, status }: ISignaturesItem) => (
 );
 
 const SignaturePending = ({ onChange }: ISignaturePending) => {
+    // TODO: setHasError(true) when something wrong
+    const [hasError, setHasError] = useState(false);
     const dispatch = useStepDispatchContext();
     const [loadingList, setLoadingList] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
@@ -118,7 +121,9 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         return () => clearInterval(intervalId);
     }, []);
 
-    return (
+    return hasError ? (
+        <ErrorBlock onRefresh={getInfo} />
+    ) : (
         <div className="relative pb-100 -mx-4">
             <div>
                 {signatureList.map((item: ISignaturesItem, idx: number) => (
