@@ -34,7 +34,7 @@ export default function Activities() {
     return (
         <div className="pt-2">
             {!loading && (!historyList || historyList.length === 0) && (
-                <div className="text-center py-6">You don't have any activities yet.</div>
+                <div className="text-center py-6">You don't have any activities yet</div>
             )}
             {/* {loading && <img src={LogoLoading} />} */}
             {loading && (

@@ -17,7 +17,7 @@ const sendTransaction = async (params: any) => {
 
     const opData: any = await Bus.send("approve", "approveTransaction", param);
 
-    opData.actionName = "Transaction";
+    // opData.actionName = "Transaction";
 
     try {
         return await Bus.send("execute", "signTransaction", opData);

@@ -180,7 +180,7 @@ export default function useWallet() {
         op.signature = signature;
 
         await Runtime.send("execute", {
-            actionName,
+            // actionName,
             operation: op.toJSON(),
             opHash,
             bundlerUrl,
@@ -228,7 +228,7 @@ export default function useWallet() {
         setGuardianOp.signWithSignature(account, signature || "");
 
         await Runtime.send("execute", {
-            actionName,
+            // actionName,
             operation: setGuardianOp.toJSON(),
             opHash,
             bundlerUrl,

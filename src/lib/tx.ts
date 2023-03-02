@@ -12,7 +12,6 @@ const soulWalletLib = new SoulWalletLib();
 
 export const executeTransaction = async (
     operation: any,
-    actionName: any,
     tabId: any,
     bundlerUrl: string = "https://bundler-eth-goerli.soulwallets.me/rpc",
 ) => {
