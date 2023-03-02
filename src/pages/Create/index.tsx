@@ -1,16 +1,18 @@
 import PasswordSetting from "@src/pages/Create/Steps/PasswordSetting";
 import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
-import React, { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import GuardiansSetting from "../Create/Steps/GuardiansSetting";
 import GuardiansSaving from "../Create/Steps/GuardiansSaving";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import DefaultSetting from "../Create/Steps/DefaultSetting";
 import StepCompletion from "@src/components/StepCompletion";
+import GuardianHint from "@src/components/GuardianHint";
 
 type StepNodeInfo = {
     title: string;
-    element: JSX.Element;
+    element: ReactNode;
+    hint?: ReactNode;
 };
 
 const StepComponent = () => {
@@ -23,6 +25,7 @@ const StepComponent = () => {
             [CreateStepEn.SetupGuardians]: {
                 title: "Set up Guardians",
                 element: <GuardiansSetting />,
+                hint: <GuardianHint />,
             },
             [CreateStepEn.SaveGuardianList]: {
                 title: "Save Guardian List",
@@ -45,7 +48,11 @@ const StepComponent = () => {
 
     return (
         <div>
-            <ProgressNavBar title={stepNodeMap[current].title} maxStep={CreateStepEn.Completed} />
+            <ProgressNavBar
+                title={stepNodeMap[current].title}
+                maxStep={CreateStepEn.Completed}
+                hint={stepNodeMap[current]?.hint}
+            />
             {stepNodeMap[current].element}
         </div>
     );

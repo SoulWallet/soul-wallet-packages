@@ -14,7 +14,7 @@ const StepCompletion = () => {
                 and unlock full services by activiting your wallet.
             </p>
 
-            <p className="text-warnRed">Warning: This is a beta version. Do NOT put in too much money.</p>
+            <p className="text-warnRed">Warning: This is a alpha version. Do NOT put in too much money.</p>
 
             <Button type="primary" onClick={handleToMyWallet} className="mt-2 w-full">
                 See My Wallet
