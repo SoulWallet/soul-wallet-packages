@@ -1,15 +1,33 @@
-import React from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
+import { toast } from "material-react-toastify";
+import useWallet from "@src/hooks/useWallet";
 import PageTitle from "@src/components/PageTitle";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
-    const { walletAddress } = useWalletContext();
+    const { walletAddress,  walletType, getWalletType } = useWalletContext();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const {activateWallet} = useWallet()
+
+    const doActivate = async () => {
+        setLoading(true);
+        try {
+            await activateWallet();
+            getWalletType();
+            toast.success("Account activated");
+        } catch (err) {
+            toast.error("Failed to activate account");
+            console.log("activate error", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -25,8 +43,8 @@ export default function ActivateWallet() {
                     </div>
                 </div>
 
-                <Button onClick={() => {}} type="primary">
-                    Next
+                <Button onClick={doActivate} type="primary" className="w-full" >
+                    Activate
                 </Button>
             </div>
         </>

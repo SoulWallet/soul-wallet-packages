@@ -1,5 +1,5 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "Soul Wallet",
     "description": "Soul Wallet",
     "version": "0.0.1",
@@ -12,11 +12,8 @@
         "default_popup": "popup.html"
     },
     "background": {
-        "service_worker": "js/background.js",
-        "type": "module"
-    },
-    "content_security_policy": {
-        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+        "scripts": ["js/background.js"],
+        "persistent": true
     },
     "content_scripts": [
         {
@@ -24,12 +21,7 @@
             "js": ["js/contentScripts.js"]
         }
     ],
-    "web_accessible_resources": [
-        {
-            "matches": ["<all_urls>"],
-            "resources": ["js/inpage.js"]
-        }
-    ],
+    "web_accessible_resources": ["js/inpage.js"],
     "icons": {
         "16": "icon-16.png",
         "48": "icon-48.png",

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "material-react-toastify";
+import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountSettingModal from "../AccountSettingModal";
 import AddressIcon from "../AddressIcon";
@@ -21,6 +22,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
     const { walletType, getWalletType } = useWalletContext();
     const { activateWallet } = useWallet();
+    const navigate = useNavigate();
 
     const doCopy = () => {
         copyText(account);
@@ -72,7 +74,11 @@ export default function AccountInfo({ account, action }: IProps) {
 
             {action === "activate" && walletType === "eoa" && (
                 <div className="px-6 py-4 w-full">
-                    <Button type={"primary"} onClick={doActivate} className="w-full" loading={loading}>
+                    {/* <Button type={"primary"} onClick={() => navigate('/activate-wallet')} className="w-full" loading={loading}>
+                        Activate wallet
+                    </Button> */}
+
+                    <Button type={"primary"} onClick={() => doActivate()} className="w-full" loading={loading}>
                         Activate wallet
                     </Button>
                 </div>
