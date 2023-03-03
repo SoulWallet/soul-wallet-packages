@@ -85,3 +85,12 @@ browser.runtime.onInstalled.addListener((details) => {
             break;
     }
 });
+
+
+browser.runtime.onStartup.addListener((details)=> {
+    console.log('browser started', details)
+})
+
+browser.runtime.onSuspend.addListener(details => {
+    console.log('suspened', details)
+})

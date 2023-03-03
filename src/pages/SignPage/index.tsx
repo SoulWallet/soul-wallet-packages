@@ -140,7 +140,7 @@ export default function SignPage() {
                     operation.paymasterAndData = paymasterAndData;
                 }
 
-                const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
+                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
                 const signature = await keystore.sign(userOpHash);
 

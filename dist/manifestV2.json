@@ -3,13 +3,14 @@
     "name": "Soul Wallet",
     "description": "Soul Wallet",
     "version": "0.0.1",
-    "action": {
+    "browser_action": {
         "default_icon": {
             "16": "icon-16.png",
             "48": "icon-48.png",
             "128": "icon-128.png"
         },
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_title": "Soul Wallet"
     },
     "background": {
         "scripts": ["js/background.js"],

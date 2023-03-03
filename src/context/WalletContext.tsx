@@ -93,7 +93,7 @@ export const WalletContextProvider = ({ children }: any) => {
                     operation.callData = approveCallData.callData;
                 }
 
-                const userOpHash = operation.getUserOpHash(config.contracts.entryPoint, config.chainId);
+                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
                 const signature = await keystore.sign(userOpHash);
 

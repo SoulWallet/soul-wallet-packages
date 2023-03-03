@@ -131,7 +131,7 @@ export default function useWallet() {
 
         op.paymasterAndData = await addPaymasterData(op, payToken);
 
-        const opHash = op.getUserOpHash(config.contracts.entryPoint, config.chainId);
+        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
         const guardiansList = guardians.map((item) => item.address);
 
@@ -217,7 +217,7 @@ export default function useWallet() {
 
         setGuardianOp.paymasterAndData = await addPaymasterData(setGuardianOp, payToken);
 
-        const opHash = setGuardianOp.getUserOpHash(config.contracts.entryPoint, config.chainId);
+        const opHash = setGuardianOp.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
         const signature = await keystore.sign(opHash);
 
