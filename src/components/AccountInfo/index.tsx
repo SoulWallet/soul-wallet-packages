@@ -20,8 +20,7 @@ export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
-    const { walletType, getWalletType } = useWalletContext();
-    const { activateWallet } = useWallet();
+    const { walletType } = useWalletContext();
     const navigate = useNavigate();
 
     const doCopy = () => {
@@ -29,27 +28,13 @@ export default function AccountInfo({ account, action }: IProps) {
         setCopied(true);
     };
 
-    // const doActivate = async () => {
-    //     setLoading(true);
-    //     try {
-    //         await activateWallet();
-    //         getWalletType();
-    //         toast.success("Account activated");
-    //     } catch (err) {
-    //         toast.error("Failed to activate account");
-    //         console.log("activate error", err);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     return (
         <div className="flex flex-col items-center justify-between">
             <div className="flex items-center justify-between pt-[18px] pb-5 px-6 w-full border-b border-color">
                 <div>
                     <div className="text-black font-bold text-lg mb-2 text-left">Account 1</div>
                     <div
-                        className="gap-2 flex items-center cursor-pointer tooltip address"
+                        className="gap-1 flex items-center cursor-pointer tooltip address"
                         data-tip={copied ? "Copied" : "Click to copy"}
                         onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
                         onClick={doCopy}

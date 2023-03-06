@@ -105,6 +105,10 @@
         @apply rounded-lg bg-[#fafafa] border border-[#e0e0e0];
     }
 
+    .address{
+        @apply font-sans;
+    }
+
     .input::placeholder {
         color: rgba(0, 0, 0, .4);
     }

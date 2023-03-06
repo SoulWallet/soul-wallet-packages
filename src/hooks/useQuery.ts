@@ -50,18 +50,8 @@ export default function useQuery() {
     };
 
     const getGasPrice = async () => {
-        // const gas = await web3.eth.getGasPrice();
-        // const gasMultiplied = new BN(gas).times(config.feeMultiplier).integerValue().toNumber();
-
         if (config.support1559) {
             const feeRaw = await ethersProvider.getFeeData();
-
-            console.log("fee is", {
-                baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
-                maxFeePerGas: feeRaw.maxFeePerGas?.toString() || "",
-                maxPriorityFeePerGas: feeRaw.maxPriorityFeePerGas?.toString() || "",
-            });
-
             return {
                 baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
                 maxFeePerGas: feeRaw.maxFeePerGas?.toString() || "",
@@ -70,11 +60,6 @@ export default function useQuery() {
         } else {
             const feeRaw = await ethersProvider.getGasPrice();
 
-            console.log("fee is", {
-                baseFeePerGas: undefined,
-                maxFeePerGas: feeRaw?.toString() || "",
-                maxPriorityFeePerGas: feeRaw?.toString() || "",
-            });
             return {
                 baseFeePerGas: undefined,
                 maxFeePerGas: feeRaw?.toString() || "",
@@ -86,7 +71,12 @@ export default function useQuery() {
 
     const getFeeCost = async (op: any, tokenAddress?: string) => {
         const fee = await getGasPrice();
-        const requiredPrefund = op.requiredPrefund(fee.baseFeePerGas).mul(120).div(100);
+        const {baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas} = fee
+        
+        console.log('calcL2GasPrice')
+        await op.calcL2GasPrice(ethersProvider, baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas, config.contracts.entryPoint);
+
+        const requiredPrefund = op.requiredPrefund(baseFeePerGas).mul(120).div(100);
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
         if (!tokenAddress) {
             return {
@@ -108,6 +98,8 @@ export default function useQuery() {
             "exchangePrice: " + ethers.utils.formatUnits(exchangePrice.price, exchangePrice.decimals),
             "USDC/ETH",
         );
+
+  
         // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
         const requiredUSDC = requiredPrefund
             .mul(exchangePrice.price)

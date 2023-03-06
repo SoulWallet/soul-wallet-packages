@@ -33,13 +33,10 @@ export default {
     scanUrl: "https://goerli.arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
-    defaultSalt: 0,
-    feeMultiplier: 3,
     // IMPORTANT TODO, remove
     maxCostMultiplier: 5,
-    defaultTip: 10 * 10 ** 9,
     upgradeDelay: 10,
-    guardianDelay: 100,
+    guardianDelay: 10,
     guardianSalt: "",
     chainId: 421613,
     chainIdHex: (421613).toString(16),
@@ -49,10 +46,10 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        walletLogic: "0x7b133bC3bFA502E7510B21B798796641fD76e9fb",
-        guardianLogic: "0x0C549EDdf533F3f63e1E5C2Ae2fbEa805F432078",
-        entryPoint: "0xA19e1F46d9CFbc1557300bb93F96D76EA1FF2a69",
-        paymaster: "0x2468548008E7Aa766b9fFE66402892AC13Cbeb12",
+        walletLogic: "0x4b7E8091c329059eD05885A0aa9D6A7F366440ea",
+        guardianLogic: "0x9c092644ffCdd129695598672E71760611eE5eF3",
+        entryPoint: "0x0576a174D229E3cFA37253523E645A78A0C91B57",
+        paymaster: "0x7E828b1BEeB30C4dB36E268A94daBC0111E80600",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };

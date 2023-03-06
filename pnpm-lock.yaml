@@ -122,12 +122,12 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.8.2_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/e2a62427f3501f4d63e1f81f76187010c41cb93f
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/e009e2bd56a6415b358ad421dd352d2324a23d88
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.8.2
   webextension-polyfill: 0.9.0
-  zustand: 4.3.5_immer@9.0.19+react@17.0.2
+  zustand: 4.3.6_immer@9.0.19+react@17.0.2
 
 devDependencies:
   '@babel/core': 7.21.0
@@ -3311,7 +3311,7 @@ packages:
       case-sensitive-paths-webpack-plugin: 2.4.0
       core-js: 3.29.0
       css-loader: 5.2.7_webpack@5.75.0
-      fork-ts-checker-webpack-plugin: 6.5.2_e7unsjmvxtn2mdejqwafrsmwjq
+      fork-ts-checker-webpack-plugin: 6.5.3_e7unsjmvxtn2mdejqwafrsmwjq
       glob: 7.2.3
       glob-promise: 3.4.0_glob@7.2.3
       html-webpack-plugin: 5.5.0_webpack@5.75.0
@@ -3558,7 +3558,7 @@ packages:
       express: 4.18.2
       file-system-cache: 1.1.0
       find-up: 5.0.0
-      fork-ts-checker-webpack-plugin: 6.5.2_2f3rpvdv4ln3zmlg3d6nxogk3m
+      fork-ts-checker-webpack-plugin: 6.5.3_2f3rpvdv4ln3zmlg3d6nxogk3m
       fs-extra: 9.1.0
       glob: 7.2.3
       handlebars: 4.7.7
@@ -4293,7 +4293,7 @@ packages:
       aria-query: 5.1.3
       chalk: 4.1.2
       dom-accessibility-api: 0.5.16
-      lz-string: 1.4.4
+      lz-string: 1.5.0
       pretty-format: 27.5.1
     dev: true
 
@@ -5524,7 +5524,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.5
-      caniuse-lite: 1.0.30001458
+      caniuse-lite: 1.0.30001460
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -5536,7 +5536,7 @@ packages:
     hasBin: true
     dependencies:
       browserslist: 4.21.5
-      caniuse-lite: 1.0.30001458
+      caniuse-lite: 1.0.30001460
       normalize-range: 0.1.2
       num2fraction: 1.2.2
       picocolors: 0.2.1
@@ -6180,8 +6180,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001458
-      electron-to-chromium: 1.4.317
+      caniuse-lite: 1.0.30001460
+      electron-to-chromium: 1.4.320
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
 
@@ -6423,8 +6423,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite/1.0.30001458:
-    resolution: {integrity: sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==}
+  /caniuse-lite/1.0.30001460:
+    resolution: {integrity: sha512-Bud7abqjvEjipUkpLs4D7gR0l8hBYBHoa+tGtKJHvT2AYzLp1z7EmVkUT4ERpVUfca8S2HGIVs883D8pUH1ZzQ==}
 
   /capture-exit/2.0.0:
     resolution: {integrity: sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==}
@@ -7551,8 +7551,8 @@ packages:
   /ee-first/1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium/1.4.317:
-    resolution: {integrity: sha512-JhCRm9v30FMNzQSsjl4kXaygU+qHBD0Yh7mKxyjmF0V8VwYVB6qpBRX28GyAucrM9wDCpSUctT6FpMUQxbyKuA==}
+  /electron-to-chromium/1.4.320:
+    resolution: {integrity: sha512-h70iRscrNluMZPVICXYl5SSB+rBKo22XfuIS1ER0OQxQZpKTnFpuS6coj7wY9M/3trv7OR88rRMOlKmRvDty7Q==}
 
   /elliptic/6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -8766,8 +8766,8 @@ packages:
       - supports-color
     dev: true
 
-  /fork-ts-checker-webpack-plugin/6.5.2_2f3rpvdv4ln3zmlg3d6nxogk3m:
-    resolution: {integrity: sha512-m5cUmF30xkZ7h4tWUgTAcEaKmUW7tfyUyTqNNOz7OxWJ0v1VWKTcOvH8FWHUwSjlW/356Ijc9vi3XfcPstpQKA==}
+  /fork-ts-checker-webpack-plugin/6.5.3_2f3rpvdv4ln3zmlg3d6nxogk3m:
+    resolution: {integrity: sha512-SbH/l9ikmMWycd5puHJKTkZJKddF4iRLyW3DeZ08HTI7NGyLS38MXd/KGgeWumQO7YNQbW2u/NtPT2YowbPaGQ==}
     engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
       eslint: '>= 6'
@@ -8798,8 +8798,8 @@ packages:
       webpack: 4.46.0_webpack-cli@4.10.0
     dev: true
 
-  /fork-ts-checker-webpack-plugin/6.5.2_e7unsjmvxtn2mdejqwafrsmwjq:
-    resolution: {integrity: sha512-m5cUmF30xkZ7h4tWUgTAcEaKmUW7tfyUyTqNNOz7OxWJ0v1VWKTcOvH8FWHUwSjlW/356Ijc9vi3XfcPstpQKA==}
+  /fork-ts-checker-webpack-plugin/6.5.3_e7unsjmvxtn2mdejqwafrsmwjq:
+    resolution: {integrity: sha512-SbH/l9ikmMWycd5puHJKTkZJKddF4iRLyW3DeZ08HTI7NGyLS38MXd/KGgeWumQO7YNQbW2u/NtPT2YowbPaGQ==}
     engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
       eslint: '>= 6'
@@ -11167,8 +11167,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lz-string/1.4.4:
-    resolution: {integrity: sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==}
+  /lz-string/1.5.0:
+    resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
     dev: true
 
@@ -11546,7 +11546,7 @@ packages:
     engines: {node: '>=4'}
     deprecated: This package is broken and no longer maintained. 'mkdirp' itself supports promises now, please switch to that.
     dependencies:
-      mkdirp: 2.1.4
+      mkdirp: 2.1.5
     dev: false
 
   /mkdirp/0.5.6:
@@ -11561,8 +11561,8 @@ packages:
     hasBin: true
     dev: true
 
-  /mkdirp/2.1.4:
-    resolution: {integrity: sha512-Cy9cV4pRSl1o10i1dURTuRt4T04l0DkS1WZrT+Jir886OqOVkSv4FbOA7pgjhS8kEUrmm4kCRvv5var2iOCxpA==}
+  /mkdirp/2.1.5:
+    resolution: {integrity: sha512-jbjfql+shJtAPrFoKxHOXip4xS+kul9W3OzfzzrqueWK2QMGon2bFH2opl6W9EagBThjEz+iysyi/swOoVfB/w==}
     engines: {node: '>=10'}
     hasBin: true
     dev: false
@@ -16171,8 +16171,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zustand/4.3.5_immer@9.0.19+react@17.0.2:
-    resolution: {integrity: sha512-2iPUzfwx+g3f0PagOMz2vDO9mZzEp2puFpNe7vrAymVPOEIEUjCPkC4/zy84eAscxIWmTU4j9g6upXYkJdzEFQ==}
+  /zustand/4.3.6_immer@9.0.19+react@17.0.2:
+    resolution: {integrity: sha512-6J5zDxjxLE+yukC2XZWf/IyWVKnXT9b9HUv09VJ/bwGCpKNcaTqp7Ws28Xr8jnbvnZcdRaidztAPsXFBIqufiw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
@@ -16201,10 +16201,10 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/e2a62427f3501f4d63e1f81f76187010c41cb93f:
-    resolution: {commit: e2a62427f3501f4d63e1f81f76187010c41cb93f, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
+  github.com/proofofsoulprotocol/soulwalletlib/e009e2bd56a6415b358ad421dd352d2324a23d88:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/e009e2bd56a6415b358ad421dd352d2324a23d88}
     name: soul-wallet-lib
-    version: 0.1.0-alpha.20
+    version: 0.1.0-alpha.23
     dependencies:
       dotenv: 8.6.0
       ethereumjs-util: 7.1.5

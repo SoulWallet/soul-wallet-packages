@@ -75,24 +75,6 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
 
-                // if it's activate wallet, and user would like to approve first
-                if (actionName === "Activate Wallet") {
-                    const approveData: any = [
-                        {
-                            token: config.tokens.usdc,
-                            spender: config.contracts.paymaster,
-                        },
-                    ];
-                    const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
-                        ethersProvider,
-                        walletAddress,
-                        approveData,
-                    );
-
-                    operation.callGasLimit = approveCallData.callGasLimit;
-                    operation.callData = approveCallData.callData;
-                }
-
                 const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
                 const signature = await keystore.sign(userOpHash);

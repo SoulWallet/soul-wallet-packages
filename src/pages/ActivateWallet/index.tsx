@@ -22,7 +22,7 @@ export default function ActivateWallet() {
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
-    const { getTokenByAddress } = useQuery();
+    const { getTokenByAddress, getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { activateWallet } = useWallet();
@@ -33,6 +33,7 @@ export default function ActivateWallet() {
         try {
             await activateWallet(payToken);
             getWalletType();
+            navigate("/wallet");
             toast.success("Account activated");
         } catch (err) {
             toast.error("Failed to activate account");
@@ -73,9 +74,21 @@ export default function ActivateWallet() {
         setMaxCost(requireAmount);
     };
 
+    const checkBalance = async () => {
+        getBalances();
+    };
+
     useEffect(() => {
         onPayTokenChange();
     }, [payToken]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            checkBalance();
+        }, 3000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <>

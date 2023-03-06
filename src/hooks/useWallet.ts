@@ -31,7 +31,7 @@ export default function useWallet() {
 
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-        const activateOp = soulWalletLib.activateWalletOp(
+        const op = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
             config.contracts.entryPoint,
             account,
@@ -42,12 +42,27 @@ export default function useWallet() {
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
+        // TODO, need user's approve
+        const approveData: any = [
+            {
+                token: config.tokens.usdc,
+                spender: config.contracts.paymaster,
+            },
+        ];
+        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
+            ethersProvider,
+            walletAddress,
+            approveData,
+        );
+
+        op.callGasLimit = approveCallData.callGasLimit;
+        op.callData = approveCallData.callData;
 
         // only get the cost
         if (costOnly) {
-            return await getFeeCost(activateOp, payToken === config.zeroAddress ? "" : payToken);
+            return await getFeeCost(op, payToken === config.zeroAddress ? "" : payToken);
         } else {
-            await directSignAndSend(activateOp, payToken);
+            await directSignAndSend(op, payToken);
         }
     };
 
@@ -110,14 +125,15 @@ export default function useWallet() {
 
         const usePaymaster = payToken !== config.zeroAddress;
 
+        // TODO, times 1.2
         const op = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
             nonce,
             config.contracts.entryPoint,
             usePaymaster ? config.contracts.paymaster : config.zeroAddress,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
+            new BN(maxFeePerGas).times(1.2).toFixed(0),
+            new BN(maxPriorityFeePerGas).times(1.2).toFixed(0),
             newOwner,
         );
 
@@ -149,7 +165,7 @@ export default function useWallet() {
 
     const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
-        const actionName = "Recover Wallet";
+        // const actionName = "Recover Wallet";
 
         signatureList.forEach((item: any) => {
             // TODO, need to judge

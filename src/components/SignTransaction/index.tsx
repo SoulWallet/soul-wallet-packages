@@ -168,6 +168,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <>
                         <div className="px-6 py-4">
                             <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
+                            <div className="h-2" />
                             <CostItem label="Total cost" loading={loadingFee} memo={`Max: ${feeCost}`} />
                         </div>
                     </>
