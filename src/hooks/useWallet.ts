@@ -24,7 +24,7 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (payToken: string) => {
+    const activateWallet = async (payToken: string, costOnly: boolean = false) => {
         const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
@@ -43,9 +43,12 @@ export default function useWallet() {
             maxPriorityFeePerGas,
         );
 
-        directSignAndSend(activateOp, payToken);
-
-        // await executeOperation(activateOp, actionName);
+        // only get the cost
+        if (costOnly) {
+            return await getFeeCost(activateOp, payToken === config.zeroAddress ? "" : payToken);
+        } else {
+            directSignAndSend(activateOp, payToken);
+        }
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {

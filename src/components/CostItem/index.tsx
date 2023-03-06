@@ -17,7 +17,7 @@ export default function CostItem({ label, value, memo, loading, align = EnAlign.
             {!loading && (
                 <>
                     {value && <div className="text-black text-lg font-bold mt-2 leading-none">{value}</div>}
-                    {memo && <div className="text-black text-sm mt-2 leading-none">{memo}</div>}
+                    {memo && <div className="text-black text-sm mt-3 leading-none">{memo}</div>}
                 </>
             )}
         </div>

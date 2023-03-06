@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
@@ -8,6 +8,8 @@ import CostItem from "@src/components/CostItem";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
+import { useBalanceStore } from "@src/store/balanceStore";
+import useQuery from "@src/hooks/useQuery";
 import PageTitle from "@src/components/PageTitle";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
@@ -15,17 +17,21 @@ import ApprovePaymaster from "@src/components/ApprovePaymaster";
 import { EnAlign } from "@src/types/IAssets";
 
 export default function ActivateWallet() {
-    const { walletAddress, walletType, getWalletType } = useWalletContext();
+    const { walletAddress, getWalletType } = useWalletContext();
     const [step, setStep] = useState(0);
+    const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
+    const [payTokenSymbol, setPayTokenSymbol] = useState("");
+    const { getTokenByAddress } = useQuery();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { activateWallet } = useWallet();
+    const { balance } = useBalanceStore();
 
     const doActivate = async () => {
         setLoading(true);
         try {
-            await activateWallet("0x");
+            await activateWallet(payToken);
             getWalletType();
             toast.success("Account activated");
         } catch (err) {
@@ -36,6 +42,17 @@ export default function ActivateWallet() {
         }
     };
 
+    const goNext = () => {
+        const userBalance = balance.get(payToken) || 0;
+        console.log("maaaa", userBalance, maxCost);
+        if (userBalance < maxCost) {
+            toast.error("Balance not enough");
+            return;
+        } else {
+            setStep(1);
+        }
+    };
+
     const goBack = () => {
         if (step === 0) {
             navigate("/wallet");
@@ -43,6 +60,22 @@ export default function ActivateWallet() {
             setStep(0);
         }
     };
+
+    const onPayTokenChange = async () => {
+        if (!payToken) {
+            return;
+        }
+        setMaxCost("");
+        const token = getTokenByAddress(payToken);
+        setPayTokenSymbol(token.symbol);
+        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
+        console.log("cost is", requireAmount, requireAmountInWei);
+        setMaxCost(requireAmount);
+    };
+
+    useEffect(() => {
+        onPayTokenChange();
+    }, [payToken]);
 
     return (
         <>
@@ -55,7 +88,11 @@ export default function ActivateWallet() {
                     <>
                         <div className="bg-gray20 px-6 py-4">
                             <div className="text-gray60 mb-1">To deploy wallet on {config.chainName} require</div>
-                            <CostItem value={"0.0001ETH"} memo={`$ 5.00 USD`} align={EnAlign.Left} />
+                            <CostItem
+                                value={maxCost ? `${maxCost} ${payTokenSymbol}` : "Loading..."}
+                                memo={`$ 10.00 USD`}
+                                align={EnAlign.Left}
+                            />
                             <div className="h-5" />
                             <TokenSelect
                                 label="Gas"
@@ -81,13 +118,13 @@ export default function ActivateWallet() {
                         <div className="mb-6">
                             <Address value={walletAddress} />
                         </div>
-                        <CostItem label="Total Cost" memo={`Max: 123`} />
+                        <CostItem label="Total Cost" memo={`Max: ${maxCost} ${payTokenSymbol}`} />
                     </div>
                 )}
 
                 <div className="sign-bottom">
                     {step === 0 && (
-                        <Button type="primary" className="flex-1 w-full" onClick={() => setStep(1)}>
+                        <Button disabled={!maxCost} type="primary" className="flex-1 w-full" onClick={goNext}>
                             Next
                         </Button>
                     )}

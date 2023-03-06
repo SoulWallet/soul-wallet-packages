@@ -19,6 +19,14 @@ export default function useQuery() {
 
     const { verifyAddressFormat } = useTools();
 
+    /**
+     * Get token info by tokenAddress
+     * @param tokenAddress 
+     */
+    const getTokenByAddress = (tokenAddress: string) => {
+        return config.assetsList.filter(item => item.address === tokenAddress)[0]
+    }
+
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
         return new BN(res).shiftedBy(-18).toString();
@@ -128,5 +136,6 @@ export default function useQuery() {
         getGasPrice,
         getFeeCost,
         getWalletType,
+        getTokenByAddress,
     };
 }
