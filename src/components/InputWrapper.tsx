@@ -7,7 +7,7 @@ import Button from "./Button";
 
 interface IProps {
     label: string;
-    size?: "s" | "m";
+    size?: "s" | "m" | "xs";
     value?: string;
     placeholder?: string;
     errorMsg?: string;
@@ -22,6 +22,7 @@ interface IProps {
 }
 
 const InputStyleMap = {
+    xs: "h-6 text-base px-2",
     s: "h-8 text-sm px-3",
     m: "h-12 text-base px-6",
 };
@@ -47,7 +48,7 @@ export default function InputWrapper({
 
     return (
         <div className={classNames("flex flex-col ", className)}>
-            <label className="tip-text mb-1 " htmlFor={label}>
+            <label className="tip-text mb-1" htmlFor={label}>
                 {label}
             </label>
 

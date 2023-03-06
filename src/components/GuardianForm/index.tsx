@@ -39,7 +39,7 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
     });
 
     return (
-        <div className="w-full flex flex-col gap-y-6 min-h-fit max-h-64 overflow-y-scroll ">
+        <div className="w-full flex flex-col gap-y-3 min-h-fit max-h-64 overflow-y-scroll ">
             {guardians.map((item) => (
                 <GuardianInput key={item.id} {...item} />
             ))}
