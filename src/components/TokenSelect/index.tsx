@@ -4,10 +4,11 @@ import { ITokenSelect } from "@src/types/ITokenSelect";
 import { useBalanceStore } from "@src/store/balanceStore";
 import { TokenSelectModal } from "../TokenSelectModal";
 import useQuery from "@src/hooks/useQuery";
+import InfoTip from "../InfoTip";
 import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 
-export function TokenSelect({ label, selectedAddress, onChange }: ITokenSelect) {
+export function TokenSelect({ label, labelTip, selectedAddress, onChange }: ITokenSelect) {
     const [tokenModalVisible, setTokenModalVisible] = useState(false);
     const { getBalances } = useQuery();
     const { walletAddress } = useWalletContext();
@@ -24,7 +25,10 @@ export function TokenSelect({ label, selectedAddress, onChange }: ITokenSelect) 
 
     return (
         <div>
-            <div className="mb-2 text-gray60">{label}</div>
+            <div className="mb-2 text-gray60 flex items-center gap-1">
+                <span>{label}</span>
+                {labelTip && <InfoTip title={labelTip} />}
+            </div>
             <div
                 onClick={() => setTokenModalVisible(true)}
                 className="token-select p-2 pr-3 flex items-center justify-between text-black cursor-pointer"

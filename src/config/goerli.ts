@@ -43,6 +43,7 @@ export default {
     guardianSalt: "",
     chainId: 5,
     chainIdHex: (5).toString(16),
+    chainName: 'Goerli',
     support1559: true,
     tokens: {
         usdc: usdcAddress,

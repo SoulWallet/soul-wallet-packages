@@ -41,8 +41,9 @@ export default {
     upgradeDelay: 10,
     guardianDelay: 100,
     guardianSalt: "",
-    chainId: 5,
-    chainIdHex: (5).toString(16),
+    chainId: 421613,
+    chainIdHex: (421613).toString(16),
+    chainName: 'Arb Goerli',
     support1559: true,
     tokens: {
         usdc: usdcAddress,

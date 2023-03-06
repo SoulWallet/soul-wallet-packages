@@ -29,19 +29,19 @@ export default function AccountInfo({ account, action }: IProps) {
         setCopied(true);
     };
 
-    const doActivate = async () => {
-        setLoading(true);
-        try {
-            await activateWallet();
-            getWalletType();
-            toast.success("Account activated");
-        } catch (err) {
-            toast.error("Failed to activate account");
-            console.log("activate error", err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const doActivate = async () => {
+    //     setLoading(true);
+    //     try {
+    //         await activateWallet();
+    //         getWalletType();
+    //         toast.success("Account activated");
+    //     } catch (err) {
+    //         toast.error("Failed to activate account");
+    //         console.log("activate error", err);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     return (
         <div className="flex flex-col items-center justify-between">
@@ -74,13 +74,12 @@ export default function AccountInfo({ account, action }: IProps) {
 
             {action === "activate" && walletType === "eoa" && (
                 <div className="px-6 py-4 w-full">
-                    {/* <Button type={"primary"} onClick={() => navigate('/activate-wallet')} className="w-full" loading={loading}>
-                        Activate wallet
-                    </Button> */}
-
-                    <Button type={"primary"} onClick={() => doActivate()} className="w-full" loading={loading}>
+                    <Button type={"primary"} onClick={() => navigate('/activate-wallet')} className="w-full" loading={loading}>
                         Activate wallet
                     </Button>
+                    {/* <Button type={"primary"} onClick={() => doActivate()} className="w-full" loading={loading}>
+                        Activate wallet
+                    </Button> */}
                 </div>
             )}
 

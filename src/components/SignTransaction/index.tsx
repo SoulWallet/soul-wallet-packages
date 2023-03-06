@@ -4,8 +4,8 @@ import cn from "classnames";
 import useLib from "@src/hooks/useLib";
 import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import { ICostItem } from "@src/types/IAssets";
 import config from "@src/config";
+import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
@@ -17,16 +17,6 @@ enum SignTypeEn {
     Message,
     Account,
 }
-
-const CostItem = ({ label, value, memo }: ICostItem) => {
-    return (
-        <div>
-            <div className="text-gray60">{label}</div>
-            {value && <div className="text-black text-lg font-bold mt-2">{value}</div>}
-            {memo && <div className="text-black text-sm mt-2">{memo}</div>}
-        </div>
-    );
-};
 
 const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const { walletAddress = "" } = useWalletContext(); // ! check this
@@ -178,9 +168,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <>
                         <div className="px-6 py-4">
                             <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
-                        </div>
-                        <div className="flex flex-col gap-5 justify-end text-right px-6 pb-4">
-                            <CostItem label="Gas fee" memo={loadingFee ? "Loading fee" : `Max: ${feeCost}`} />
+                            <CostItem label="Total cost" loading={loadingFee} memo={`Max: ${feeCost}`} />
                         </div>
                     </>
                 )}

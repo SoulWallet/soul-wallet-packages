@@ -24,21 +24,12 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async () => {
-        const actionName = "Activate Wallet";
-
+    const activateWallet = async (payToken: string) => {
         const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-
-        // const fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
-
-        // const maxFeePerGas = ethers.utils.parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei").toString();
-        // const maxPriorityFeePerGas = ethers.utils
-        //     .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
-        //     .toString();
 
         const activateOp = soulWalletLib.activateWalletOp(
             config.contracts.walletLogic,
@@ -52,7 +43,9 @@ export default function useWallet() {
             maxPriorityFeePerGas,
         );
 
-        await executeOperation(activateOp, actionName);
+        directSignAndSend(activateOp, payToken);
+
+        // await executeOperation(activateOp, actionName);
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
@@ -173,7 +166,6 @@ export default function useWallet() {
         const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
             guardianInitCode.address,
             signatureList,
-            0,
             isGuardianDeployed ? "0x" : guardianInitCode.initCode,
         );
 
@@ -190,13 +182,10 @@ export default function useWallet() {
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
-        console.log('pay token is', payToken)
-        const actionName = "Update Guardian";
+        console.log("pay token is", payToken);
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-
-        // const usePaymaster = payToken !== config.zeroAddress;
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
         const setGuardianOp = await soulWalletLib.Guardian.setGuardian(
@@ -215,9 +204,17 @@ export default function useWallet() {
             throw new Error("setGuardianOp is null");
         }
 
-        setGuardianOp.paymasterAndData = await addPaymasterData(setGuardianOp, payToken);
+        directSignAndSend(setGuardianOp, payToken);
 
-        const opHash = setGuardianOp.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
+        // replace global store
+
+        // await executeOperation(setGuardianOp, actionName);
+    };
+
+    const directSignAndSend = async (op: any, payToken: string) => {
+        op.paymasterAndData = await addPaymasterData(op, payToken);
+
+        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
         const signature = await keystore.sign(opHash);
 
@@ -225,18 +222,14 @@ export default function useWallet() {
             throw new Error("Failed to sign");
         }
 
-        setGuardianOp.signWithSignature(account, signature || "");
+        op.signWithSignature(account, signature || "");
 
         await Runtime.send("execute", {
             // actionName,
-            operation: setGuardianOp.toJSON(),
+            operation: op.toJSON(),
             opHash,
             bundlerUrl,
         });
-
-        // replace global store
-
-        // await executeOperation(setGuardianOp, actionName);
     };
 
     return {
@@ -245,5 +238,6 @@ export default function useWallet() {
         recoverWallet,
         generateWalletAddress,
         updateGuardian,
+        directSignAndSend,
     };
 }

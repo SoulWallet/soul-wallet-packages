@@ -7,10 +7,12 @@ import { copyText } from "@src/lib/tools";
 interface IReceiveCode {
     walletAddress: string;
     addressTop?: boolean;
+    imgWidth?: string;
 }
 
 export default function ReceiveCode({
     walletAddress,
+    imgWidth = 'w-44',
     addressTop = false,
 }: IReceiveCode) {
     const [copied, setCopied] = useState<boolean>(false);
@@ -45,7 +47,7 @@ export default function ReceiveCode({
                     addressTop ? "flex-col-reverse" : "flex-col",
                 )}
             >
-                <img src={imgSrc} className="w-44 mx-auto block" />
+                <img src={imgSrc} className={cn("mx-auto block", imgWidth)} />
                 <div className="opacity-50 break-words w-4/5 mx-auto text-center text-black">
                     {walletAddress}
                 </div>

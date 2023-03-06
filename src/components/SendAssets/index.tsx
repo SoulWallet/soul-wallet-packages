@@ -6,6 +6,7 @@ import IconClose from "@src/assets/icons/close.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
 import { useNavigate } from "react-router-dom";
+import Address from "../Address";
 import { useBalanceStore } from "@src/store/balanceStore";
 import cn from "classnames";
 import { Input } from "../Input";
@@ -114,10 +115,9 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                 )}
                 {step === 1 && (
                     <div>
-                        <div className="rounded-lg bg-gray20 mx-6 break-words p-3 address text-[rgba(0,0,0,.6)]">
-                            {receiverAddress}
+                        <div className="mx-6">
+                            <Address value={receiverAddress} />
                         </div>
-
                         <div className="bg-gray20 my-6 px-6">
                             <div className="pt-4">
                                 <TokenSelect label="Asset" selectedAddress={sendToken} onChange={setSendToken} />
@@ -145,7 +145,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                 </div>
             )}
             {step === 1 && (
-                <div className="flex gap-4 px-6 py-4 footer-shadow fixed bottom-0 left-0 right-0 bg-white">
+                <div className="sign-bottom">
                     <Button type="reject" className="flex-1 w-full" onClick={goBack}>
                         Reject
                     </Button>
