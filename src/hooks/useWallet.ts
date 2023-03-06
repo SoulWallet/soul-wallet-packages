@@ -47,7 +47,7 @@ export default function useWallet() {
         if (costOnly) {
             return await getFeeCost(activateOp, payToken === config.zeroAddress ? "" : payToken);
         } else {
-            directSignAndSend(activateOp, payToken);
+            await directSignAndSend(activateOp, payToken);
         }
     };
 
@@ -207,7 +207,7 @@ export default function useWallet() {
             throw new Error("setGuardianOp is null");
         }
 
-        directSignAndSend(setGuardianOp, payToken);
+        await directSignAndSend(setGuardianOp, payToken);
 
         // replace global store
 
