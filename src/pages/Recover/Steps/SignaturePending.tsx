@@ -2,6 +2,7 @@ import Button from "@src/components/Button";
 import Icon from "@src/components/Icon";
 import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
+import loadingGif from "@src/assets/skeleton_loading.gif";
 import React, { useEffect, useState } from "react";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
@@ -126,9 +127,11 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     ) : (
         <div className="relative pb-100 -mx-4">
             <div>
-                {signatureList.map((item: ISignaturesItem, idx: number) => (
-                    <SignatureItem key={idx} {...item} />
-                ))}
+                {recoveringWallet ? (
+                    <img src={loadingGif} className="p-6" />
+                ) : (
+                    signatureList.map((item: ISignaturesItem, idx: number) => <SignatureItem key={idx} {...item} />)
+                )}
             </div>
             <div className="bg-white relative inset-x-0 bottom-0 w-full h-[100px] flex flex-row items-center justify-evenly gap-x-5 rounded-b-md px-4">
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>
