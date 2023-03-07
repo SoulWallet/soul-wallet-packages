@@ -21,11 +21,11 @@ export default function useQuery() {
 
     /**
      * Get token info by tokenAddress
-     * @param tokenAddress 
+     * @param tokenAddress
      */
     const getTokenByAddress = (tokenAddress: string) => {
-        return config.assetsList.filter(item => item.address === tokenAddress)[0]
-    }
+        return config.assetsList.filter((item) => item.address === tokenAddress)[0];
+    };
 
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
@@ -71,12 +71,20 @@ export default function useQuery() {
 
     const getFeeCost = async (op: any, tokenAddress?: string) => {
         const fee = await getGasPrice();
-        const {baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas} = fee
-        
-        console.log('calcL2GasPrice')
-        await op.calcL2GasPrice(ethersProvider, baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas, config.contracts.entryPoint);
+        const { baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas } = fee;
 
-        const requiredPrefund = op.requiredPrefund(baseFeePerGas).mul(120).div(100);
+        // const prefundBaseFee = baseFeePerGas ? new BN(baseFeePerGas).times(1.2).toFixed(0) : maxFeePerGas;
+
+        await op.calcL2GasPrice(
+            ethersProvider,
+            baseFeePerGas,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            config.contracts.entryPoint,
+        );
+
+        // const requiredPrefund = op.requiredPrefund(prefundBaseFee);
+        const requiredPrefund = op.requiredPrefund();
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
         if (!tokenAddress) {
             return {
@@ -99,7 +107,6 @@ export default function useQuery() {
             "USDC/ETH",
         );
 
-  
         // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
         const requiredUSDC = requiredPrefund
             .mul(exchangePrice.price)

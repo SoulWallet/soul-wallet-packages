@@ -11,6 +11,7 @@ import useWallet from "@src/hooks/useWallet";
 import { useBalanceStore } from "@src/store/balanceStore";
 import useQuery from "@src/hooks/useQuery";
 import PageTitle from "@src/components/PageTitle";
+import BN from "bignumber.js";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import ApprovePaymaster from "@src/components/ApprovePaymaster";
@@ -45,8 +46,7 @@ export default function ActivateWallet() {
 
     const goNext = () => {
         const userBalance = balance.get(payToken) || 0;
-        console.log("maaaa", userBalance, maxCost);
-        if (userBalance < maxCost) {
+        if (new BN(userBalance).isLessThan(maxCost)) {
             toast.error("Balance not enough");
             return;
         } else {
@@ -66,11 +66,11 @@ export default function ActivateWallet() {
         if (!payToken) {
             return;
         }
+        // TODO, clear previous request
         setMaxCost("");
         const token = getTokenByAddress(payToken);
         setPayTokenSymbol(token.symbol);
         const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
-        console.log("cost is", requireAmount, requireAmountInWei);
         setMaxCost(requireAmount);
     };
 
