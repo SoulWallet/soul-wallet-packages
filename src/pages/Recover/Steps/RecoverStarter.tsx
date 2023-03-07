@@ -17,6 +17,10 @@ const NetworkOptions: OptionItem[] = [
         label: "Goerli",
         value: 5,
     },
+    {
+        label: "Arbitrum Goerli",
+        value: 421613,
+    },
 ];
 
 interface IRecoverStarter {

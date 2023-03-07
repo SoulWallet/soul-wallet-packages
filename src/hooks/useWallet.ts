@@ -3,7 +3,6 @@ import useKeystore from "./useKeystore";
 import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import useLib from "./useLib";
-import { ethers } from "ethers";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
@@ -67,8 +66,8 @@ export default function useWallet() {
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
-        console.log("before", guardiansList);
         const guardianInitCode = getGuardianInitCode(guardiansList);
+
         const wAddress = soulWalletLib.calculateWalletAddress(
             config.contracts.walletLogic,
             config.contracts.entryPoint,

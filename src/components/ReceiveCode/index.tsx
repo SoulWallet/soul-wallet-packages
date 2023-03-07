@@ -48,7 +48,7 @@ export default function ReceiveCode({
                 )}
             >
                 <img src={imgSrc} className={cn("mx-auto block", imgWidth)} />
-                <div className="opacity-50 break-words w-5/6 mx-auto text-center text-black">
+                <div className="opacity-50 break-words w-5/6 mx-auto text-center text-black address">
                     {walletAddress}
                 </div>
             </div>

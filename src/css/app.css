@@ -106,7 +106,7 @@
     }
 
     .address{
-        @apply font-sans;
+        @apply font-mono;
     }
 
     .input::placeholder {

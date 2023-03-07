@@ -34,7 +34,7 @@ export default {
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
     // IMPORTANT TODO, remove
-    maxCostMultiplier: 5,
+    maxCostMultiplier: 2,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",

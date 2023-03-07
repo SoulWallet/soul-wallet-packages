@@ -40,7 +40,7 @@ const SignatureItem = ({ address, status }: ISignaturesItem) => (
             <span className="text-black text-xl">Guardian</span>
             <span className={"text-base " + SignatureStatusMap[status].color}>{SignatureStatusMap[status].text}</span>
         </div>
-        <p className="text-gray80 whitespace-nowrap mt-2">{address}</p>
+        <p className="text-gray80 address whitespace-nowrap mt-2">{address}</p>
     </div>
 );
 
@@ -48,7 +48,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     // TODO: setHasError(true) when something wrong
     const [hasError, setHasError] = useState(false);
     const dispatch = useStepDispatchContext();
-    const [loadingList, setLoadingList] = useState(false);
+    const [loadingList, setLoadingList] = useState(true);
     const [showShareModal, setShowShareModal] = useState(false);
     const { recoverWallet } = useWallet();
     const [signatureList, setSignatureList] = useState<any>([]);
@@ -81,7 +81,6 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     };
 
     const getList = async (opHash: string) => {
-        setLoadingList(true);
         setShareUrl(`${config.recoverUrl}/${opHash}`);
         const res: any = await api.recovery.get(opHash);
         let signedNum = 0;
@@ -98,7 +97,6 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         // important TODO
         setProgress(Math.ceil((signedNum / res.data.signatures.length) * 100));
         onChange(`${signedNum}/${res.data.signatures.length}`);
-        setLoadingList(false);
     };
 
     const getDetail = async (opHash: string) => {
@@ -107,17 +105,22 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         setOpHash(res.data.opHash);
     };
 
-    const getInfo = async () => {
+    const getInfo = async (showLoading: boolean = false) => {
         const opHash = await getLocalStorage("recoverOpHash");
-
-        getList(opHash);
-        getDetail(opHash);
+        // if (showLoading) {
+        //     setLoadingList(true);
+        // }
+        await getList(opHash);
+        await getDetail(opHash);
+        if (showLoading) {
+            setLoadingList(false);
+        }
     };
 
     useEffect(() => {
-        getInfo();
+        getInfo(true);
         const intervalId = setInterval(() => {
-            getInfo();
+            getInfo(false);
         }, 5000);
         return () => clearInterval(intervalId);
     }, []);
@@ -127,11 +130,9 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     ) : (
         <div className="relative pb-100 -mx-4">
             <div>
-                {recoveringWallet ? (
-                    <img src={loadingGif} className="p-6" />
-                ) : (
-                    signatureList.map((item: ISignaturesItem, idx: number) => <SignatureItem key={idx} {...item} />)
-                )}
+                {loadingList && <img src={loadingGif} className="p-6" />}
+                {!loadingList &&
+                    signatureList.map((item: ISignaturesItem, idx: number) => <SignatureItem key={idx} {...item} />)}
             </div>
             <div className="bg-white relative inset-x-0 bottom-0 w-full h-[100px] flex flex-row items-center justify-evenly gap-x-5 rounded-b-md px-4">
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>

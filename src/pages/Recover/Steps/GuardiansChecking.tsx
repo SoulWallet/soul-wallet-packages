@@ -14,6 +14,7 @@ interface IGuardianChecking {
 }
 
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
+    const [loading, setLoading] = useState(false);
     const { initRecoverWallet } = useWallet();
     // const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
 
@@ -37,15 +38,17 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     const handleAskSignature = async () => {
         handleCheckGuardianAddresses();
         try {
+            setLoading(true)
             const guardians = (await formRef.current?.submit()) as GuardianItem[];
             await initRecoverWallet(walletAddress, guardians, payToken);
-
             dispatch({
                 type: StepActionTypeEn.JumpToTargetStep,
                 payload: RecoverStepEn.SignaturePending,
             });
         } catch (error) {
             console.error(error);
+        }finally{
+            setLoading(false)
         }
     };
     return (
@@ -53,7 +56,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
             {/* TODO: pass init data from file parsing? */}
             <GuardianForm ref={formRef} guardians={cachedGuardians} />
 
-            <Button type="primary" className="w-base mx-auto my-6" onClick={handleAskSignature}>
+            <Button type="primary" loading={loading} className="w-base mx-auto my-6" onClick={handleAskSignature}>
                 Ask For Signature
             </Button>
 

@@ -64,7 +64,7 @@ export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
                 <InputWrapper
                     value={address}
                     size="xs"
-                    className="w-base"
+                    className="w-base address"
                     label="Address"
                     onChange={handleAddressChange}
                     errorMsg={errorMsg}
