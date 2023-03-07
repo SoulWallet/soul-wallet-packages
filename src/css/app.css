@@ -247,6 +247,10 @@
     .pwd-indicator {
         @apply flex-1 bg-slate-300;
     }
+
+    .guardian-inputer{
+        @apply h-[88px] flex flex-row items-center;
+    }
 }
 
 @font-face {

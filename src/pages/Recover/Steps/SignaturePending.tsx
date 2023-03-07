@@ -105,7 +105,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         setOpHash(res.data.opHash);
     };
 
-    const getInfo = async (showLoading: boolean = false) => {
+    const getInfo = async (showLoading = false) => {
         const opHash = await getLocalStorage("recoverOpHash");
         // if (showLoading) {
         //     setLoadingList(true);
