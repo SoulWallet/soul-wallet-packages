@@ -46,18 +46,26 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
     });
 
     return (
-        <div className="w-full grid grid-cols-2 gap-3 min-h-fit max-h-64 overflow-y-scroll min-w-[980px]">
-            {guardians.map((item) => (
-                <GuardianInput key={item.id} {...item} />
-            ))}
+        <div>
+            <div className="w-full grid grid-cols-2 gap-3 min-h-fit max-h-64 overflow-y-scroll min-w-[980px]">
+                {guardians.map((item) => (
+                    <GuardianInput key={item.id} {...item} />
+                ))}
 
-            <div
-                onClick={handleAddGuardian}
-                className="guardian-inputer mr-8 cursor-pointer justify-center bg-[#F3F3F3] rounded-2xl border border-dashed border-[#BFBFBF]"
-            >
-                <Icon src={PlusIcon} />
-                <span className="ml-2 font-bold text-green">Add Guardian</span>
+                <div
+                    onClick={handleAddGuardian}
+                    className="guardian-inputer mr-8 cursor-pointer justify-center bg-[#F3F3F3] rounded-2xl border border-dashed border-[#BFBFBF]"
+                >
+                    <Icon src={PlusIcon} />
+                    <span className="ml-2 font-bold text-green">Add Guardian</span>
+                </div>
             </div>
+
+            {/* TODO: '2' here is changeable? */}
+            <p className="mt-7 text-sm text-black">
+                Any Wallet recovery requires the signature of: <span className="text-purple font-medium">2</span> out of{" "}
+                {guardians.length} guardians
+            </p>
         </div>
     );
 });
