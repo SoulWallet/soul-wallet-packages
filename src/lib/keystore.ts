@@ -158,11 +158,11 @@ export default class KeyStore {
     }
 
     /**
-     * sign a message
+     * sign a hash
      * @param message
      * @returns signature, null is failed or keystore not unlocked
      */
-    public async sign(message: string): Promise<string | null> {
+    public async sign(hash: string): Promise<string | null> {
         if (!this._privateKey) {
             return null;
         }
@@ -173,6 +173,46 @@ export default class KeyStore {
         // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
         const signer = new ethers.Wallet(this._privateKey);
 
-        return await signer.signMessage(ethers.utils.arrayify(message));
+        return await signer.signMessage(ethers.utils.arrayify(hash));
+    }
+
+    /**
+     * sign a message
+     * @param message
+     * @returns signature, null is failed or keystore not unlocked
+     */
+    public async signMessage(message: string): Promise<string | null> {
+        if (!this._privateKey) {
+            return null;
+        }
+        // const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
+        // const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
+        // var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
+        // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
+        // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
+        const signer = new ethers.Wallet(this._privateKey);
+
+        return await signer.signMessage(message);
+    }
+
+    /**
+     * sign a typed data
+     * @param typedData
+     * @returns signature, null is failed or keystore not unlocked
+     */
+    public async signMessageV4(typedData: any): Promise<string | null> {
+        if (!this._privateKey) {
+            return null;
+        }
+
+        console.log('tttt', typedData.domain, typedData.types, typedData.value)
+        // const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
+        // const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
+        // var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
+        // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
+        // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
+        const signer = new ethers.Wallet(this._privateKey);
+
+        return await signer._signTypedData(typedData.domain, typedData.types, typedData.value);
     }
 }

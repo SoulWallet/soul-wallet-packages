@@ -32,13 +32,20 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [feeCost, setFeeCost] = useState("");
     const [activeOperation, setActiveOperation] = useState("");
     const [signType, setSignType] = useState<SignTypeEn>();
+    const [messageToSign, setMessageToSign] = useState("");
     const [activePaymasterData, setActivePaymasterData] = useState({});
     const { soulWalletLib } = useLib();
     const { decodeCalldata } = useTools();
     const { getFeeCost } = useQuery();
 
     useImperativeHandle(ref, () => ({
-        async show(operation: any, _actionName: string, origin: string, keepVisible: boolean) {
+        async show(
+            operation: any,
+            _actionName: string,
+            origin: string,
+            keepVisible: boolean,
+            _messageToSign: string = "",
+        ) {
             setActionName(_actionName);
             setOrigin(origin);
 
@@ -46,18 +53,20 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (_actionName === "getAccounts") {
                 setSignType(SignTypeEn.Account);
+            } else if (_actionName === "signMessage" || _actionName === "signMessageV4") {
+                setSignType(SignTypeEn.Message);
             } else {
                 setSignType(SignTypeEn.Transaction);
             }
-            // TODO, sign msg to be added
-            // else{
-            // }
 
-            // todo, there's a problem when sendETH
             if (operation) {
                 setActiveOperation(operation);
                 const callDataDecode = decodeCalldata(operation.callData);
                 setDecodedData(callDataDecode);
+            }
+
+            if (_messageToSign) {
+                setMessageToSign(_messageToSign);
             }
 
             return new Promise((resolve, reject) => {
@@ -91,6 +100,10 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             setVisible(false);
             setSigning(false);
         }
+    };
+
+    const onSign = async () => {
+        promiseInfo.resolve();
     };
 
     const getFeeCostAndPaymasterData = async () => {
@@ -143,6 +156,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                 <div className="px-6">
                     {signType === SignTypeEn.Account && <PageTitle title={`Get Account`} />}
                     {signType === SignTypeEn.Transaction && <PageTitle title={`Signature Request`} />}
+                    {signType === SignTypeEn.Message && <PageTitle title={`Sign Message`} />}
                 </div>
                 <div className="info-box">
                     <div className="mb-2 text-gray60">Account</div>
@@ -160,11 +174,13 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                 </div>
                 <div className="info-box">
                     <div className="mb-2 text-gray60">Message</div>
-                    <div className="font-bold">
-                        {actionName ? actionName : decodedData ? JSON.stringify(decodedData) : ""}
+                    <div className="max-h-44 overflow-y-auto">
+                        {signType === SignTypeEn.Account && "Get Accounts"}
+                        {signType === SignTypeEn.Transaction && (decodedData ? JSON.stringify(decodedData) : "")}
+                        {signType === SignTypeEn.Message && messageToSign}
                     </div>
                 </div>
-                {actionName !== "getAccounts" && (
+                {signType === SignTypeEn.Transaction && (
                     <>
                         <div className="px-6 py-4">
                             <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
@@ -198,6 +214,11 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                         loading={signing}
                         disabled={loadingFee}
                     >
+                        Sign
+                    </Button>
+                )}
+                {signType === SignTypeEn.Message && (
+                    <Button type="primary" className="!w-1/2" onClick={onSign}>
                         Sign
                     </Button>
                 )}

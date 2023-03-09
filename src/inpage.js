@@ -32,8 +32,11 @@ const soulMiddleware = createSoulMiddleware({
     processTypedMessageV3: () => {
         console.log("sign.");
     },
-    processTypedMessageV4: () => {
-        console.log("sign.");
+    processTypedMessageV4: async (params) => {
+        console.log(params);
+        return await Bus.send("signMessageV4", "signMessageV4", {
+            data: params.data,
+        });
     },
     processPersonalMessage: () => {
         console.log("sign.");
@@ -50,12 +53,12 @@ const engine = new JsonRpcEngine();
 
 engine.push(soulMiddleware);
 
-engine.push(
-    createInfuraMiddleware({
-        network: "goerli",
-        projectId: "be71e669fc24426aa39ca6c212bf58c9",
-    }),
-);
+// engine.push(
+//     createInfuraMiddleware({
+//         network: "goerli",
+//         projectId: "be71e669fc24426aa39ca6c212bf58c9",
+//     }),
+// );
 
 const provider = providerFromEngine(engine);
 

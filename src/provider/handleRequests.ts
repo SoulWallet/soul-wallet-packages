@@ -17,8 +17,6 @@ const sendTransaction = async (params: any) => {
 
     const opData: any = await Bus.send("approve", "approveTransaction", param);
 
-    // opData.actionName = "Transaction";
-
     try {
         return await Bus.send("execute", "signTransaction", opData);
     } catch (err) {
@@ -43,7 +41,16 @@ const getTransactionByHash = async (params: any) => {
 };
 
 const signTypedDataV4 = async (params: any) => {
-    console.log("sign params", params);
+    // console.log("sign params", params);
+    // return await Bus.send("signMessage", "signMessageV4", {
+    //     data: params.data,
+    // });
+};
+
+const personalSign = async (params: any) => {
+    return await Bus.send("signMessage", "signMessage", {
+        data: ethers.utils.toUtf8String(params[0]),
+    });
 };
 
 const chainId = async () => {
@@ -83,6 +90,8 @@ export default async function handleRequests(call: any) {
         case "eth_getTransactionByHash":
             return await getTransactionByHash(params);
         // TODO, signature
+        case "personal_sign":
+            return await personalSign(params);
         case "eth_signTypedData_v4":
             return await signTypedDataV4(params);
     }

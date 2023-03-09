@@ -39,8 +39,8 @@ export default {
     guardianDelay: 10,
     guardianSalt: "",
     chainId: 421613,
-    chainIdHex: (421613).toString(16),
-    chainName: 'Arb Goerli',
+    chainIdHex: `0x${(421613).toString(16)}`,
+    chainName: "Arb Goerli",
     support1559: true,
     tokens: {
         usdc: usdcAddress,

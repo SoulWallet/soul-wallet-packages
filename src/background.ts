@@ -54,6 +54,22 @@ browser.runtime.onMessage.addListener(async (msg) => {
             });
             break;
 
+        case "signMessage":
+            browser.windows.create({
+                url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}&data=${msg.data.data}`,
+                type: "popup",
+                ...msg.pos,
+            });
+            break;
+
+        case "signMessageV4":
+            browser.windows.create({
+                url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}&data=${msg.data.data}`,
+                type: "popup",
+                ...msg.pos,
+            });
+            break;
+
         case "execute":
             const { operation, userOpHash, tabId, bundlerUrl } = msg.data;
 
@@ -86,11 +102,10 @@ browser.runtime.onInstalled.addListener((details) => {
     }
 });
 
+browser.runtime.onStartup.addListener((details) => {
+    console.log("browser started", details);
+});
 
-browser.runtime.onStartup.addListener((details)=> {
-    console.log('browser started', details)
-})
-
-browser.runtime.onSuspend.addListener(details => {
-    console.log('suspened', details)
-})
+browser.runtime.onSuspend.addListener((details) => {
+    console.log("suspened", details);
+});

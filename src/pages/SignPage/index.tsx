@@ -101,7 +101,7 @@ export default function SignPage() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        const { actionType, origin, tabId } = searchParams;
+        const { actionType, origin, tabId, data } = searchParams;
 
         const currentSignModal = signModal.current;
 
@@ -112,9 +112,9 @@ export default function SignPage() {
 
         console.log("tab id is", tabId);
 
-        // TODO, 1. need to check if account is locked.
-        if (actionType === "getAccounts") {
-            try {
+        try {
+            // TODO, 1. need to check if account is locked.
+            if (actionType === "getAccounts") {
                 await currentSignModal.show("", actionType, origin, true);
                 await saveAccountsAllowed(searchParams.origin || "");
                 await browser.runtime.sendMessage({
@@ -124,13 +124,7 @@ export default function SignPage() {
                     data: walletAddress,
                     tabId: searchParams.tabId,
                 });
-            } catch (err) {
-                console.log(err);
-            } finally {
-                window.close();
-            }
-        } else if (actionType === "approveTransaction") {
-            try {
+            } else if (actionType === "approveTransaction") {
                 // IMPORTANT TODO, move to signModal
                 const operation = await formatOperation();
 
@@ -162,11 +156,37 @@ export default function SignPage() {
                         bundlerUrl,
                     },
                 });
-            } catch (err) {
-                console.log(err);
-            } finally {
-                window.close();
+            } else if (actionType === "signMessage") {
+                await currentSignModal.show("", actionType, origin, true, data);
+
+                const signature = await keystore.signMessage(data);
+
+                await browser.runtime.sendMessage({
+                    target: "soul",
+                    type: "response",
+                    action: "signMessage",
+                    data: signature,
+                    tabId: searchParams.tabId,
+                });
+            } else if (actionType === "signMessageV4") {
+                const parsedData = JSON.parse(data);
+
+                await currentSignModal.show("", actionType, origin, true, data);
+
+                const signature = await keystore.signMessageV4(parsedData);
+
+                await browser.runtime.sendMessage({
+                    target: "soul",
+                    type: "response",
+                    action: "signMessageV4",
+                    data: signature,
+                    tabId: searchParams.tabId,
+                });
             }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            window.close();
         }
     };
 
