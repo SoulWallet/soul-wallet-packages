@@ -26,16 +26,19 @@ export const executeTransaction = async (
 
             // failed to simulate
             if (simulateResult.status && simulateResult.result) {
-                console.log('error');
-                toast.error(simulateResult.result.reason);
+                console.log("error");
+                // toast.error(simulateResult.result.reason);
+                notify("Bundler Error", simulateResult.result.reason);
                 throw Error(simulateResult.result.reason);
             }
 
             const bundlerEvent = bundler.sendUserOperation(operation, 1000 * 60 * 3);
             bundlerEvent.on("error", (err: any) => {
+                notify("Bundler Error", "");
                 console.log(err);
             });
             bundlerEvent.on("send", (userOpHash: string) => {
+                notify("Trsanction sent", "Your transaction was sent to bundler");
                 console.log("send: " + userOpHash);
             });
             bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
