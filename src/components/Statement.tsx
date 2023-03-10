@@ -16,8 +16,8 @@ const Statement = () => {
                         We have released an internal test version of alpha to gather more feedback to improve our
                         product. First of all, we want you to know that this release is{" "}
                         <strong>NOT A NATURAL VERSION OF THE PRODUCT</strong>. Second, please ensure you have the
-                        relevant encryption knowledge and asset management <strong>SKILLS TO FULLY CONTROL</strong> his
-                        test. Even so, you may still <strong>RUN THE RISK OF LOSING ALL YOUR ASSETS</strong> Please{" "}
+                        relevant encryption knowledge and asset management <strong>SKILLS TO FULLY CONTROL</strong> this
+                        test. Even so, you may still <strong>RUN THE RISK OF LOSING ALL YOUR ASSETS</strong>. Please{" "}
                         <strong>DO NOT TRANSFER TOO MANY ASSETS</strong> for the sake of testing, and thank you for
                         participating in our test!
                     </li>
