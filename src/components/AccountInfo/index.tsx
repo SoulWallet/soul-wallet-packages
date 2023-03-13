@@ -35,7 +35,7 @@ export default function AccountInfo({ account, action }: IProps) {
                     <div className="text-black font-bold text-lg mb-2 text-left">Account 1</div>
                     <div
                         className="gap-1 flex items-center cursor-pointer tooltip address"
-                        data-tip={copied ? "Copied" : "Click address"}
+                        data-tip={copied ? "Copied" : "Copy address"}
                         onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
                         onClick={doCopy}
                     >

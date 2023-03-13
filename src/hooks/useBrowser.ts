@@ -1,10 +1,12 @@
 import browser from "webextension-polyfill";
 
 export default function useBrowser() {
-    const goPlugin = async () => {
+    const goPlugin = async (route: string) => {
+        console.log('route is', route)
+        console.log(`route, chrome-extension://${browser.runtime.id}/popup.html#${route}`)
         browser.windows.create({
             type: "popup",
-            url: `chrome-extension://${browser.runtime.id}/popup.html#`,
+            url: `chrome-extension://${browser.runtime.id}/popup.html#${route}`,
             width: 360,
             height: 600 + 28, // 28 is title bar
             top: 0,

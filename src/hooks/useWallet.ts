@@ -14,7 +14,7 @@ import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
-    const { account, executeOperation, ethersProvider, getAccount, walletAddress } = useWalletContext();
+    const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost } = useQuery();
     const { getGuardianInitCode } = useTools();
@@ -41,6 +41,7 @@ export default function useWallet() {
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
+
         // TODO, need user's approve
         const approveData: any = [
             {
@@ -48,6 +49,7 @@ export default function useWallet() {
                 spender: config.contracts.paymaster,
             },
         ];
+
         const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
             ethersProvider,
             walletAddress,

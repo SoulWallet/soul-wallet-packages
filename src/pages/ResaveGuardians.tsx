@@ -21,10 +21,6 @@ const ResaveGuardians = () => {
     //     }, 2000);
     // };
 
-    const handleToMyWallet = () => {
-        goPlugin();
-    };
-
     return (
         <FullscreenContainer>
             <div className="flex flex-col pb-14">
@@ -36,7 +32,7 @@ const ResaveGuardians = () => {
 
                 <GuardiansSaver onSave={handleSaved} />
 
-                <Button className="w-base mt-14 mx-auto" type="primary" disabled={!saved} onClick={handleToMyWallet}>
+                <Button className="w-base mt-14 mx-auto" type="primary" disabled={!saved} onClick={() => goPlugin('')}>
                     See My Wallet
                 </Button>
             </div>

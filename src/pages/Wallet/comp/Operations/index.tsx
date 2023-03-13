@@ -7,7 +7,7 @@ import Activitys from "./comp/Activitys";
 const tabs = ["assets", "activity", "Dapps"];
 
 export default function Operations() {
-    const { walletType, getWalletType } = useWalletContext();
+    const { walletType } = useWalletContext();
     const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
     return (

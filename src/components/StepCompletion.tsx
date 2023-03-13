@@ -4,9 +4,7 @@ import React from "react";
 
 const StepCompletion = () => {
     const { goPlugin } = useBrowser();
-    const handleToMyWallet = () => {
-        goPlugin();
-    };
+
     return (
         <div className="tip-text mx-0 pb-6">
             <p className="mt-2 mb-3 mx-0">
@@ -14,10 +12,13 @@ const StepCompletion = () => {
                 and unlock full services by activiting your wallet.
             </p>
 
-            <p className="text-warnRed">Warning: This is a alpha version. Do NOT put in too much money.</p>
+            <p className="text-warnRed mt-16">Warning: This is a alpha version. Do NOT put in too much money.</p>
 
-            <Button type="primary" onClick={handleToMyWallet} className="mt-2 w-full">
-                See My Wallet
+            <Button type="primary" onClick={() => goPlugin("/activate-wallet")} className="mt-2 w-full">
+                Activate Wallet
+            </Button>
+            <Button type="link" onClick={() => goPlugin("")} className="mt-2 w-full">
+                Activate Later
             </Button>
         </div>
     );
