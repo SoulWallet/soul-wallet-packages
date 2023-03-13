@@ -48,11 +48,11 @@ const StepComponent = () => {
                 element: <PasswordResetting />,
             },
             [RecoverStepEn.GuardiansImporting]: {
-                title: "Import guardians from file",
+                title: "Import Guardian Address File",
                 element: <GuardiansImporting />,
             },
             [RecoverStepEn.GuardiansChecking]: {
-                title: "Enter Guardians address",
+                title: "Enter Guardian Address",
                 element: <GuardiansChecking walletAddress={walletAddress} payToken={payToken} />,
             },
             // TODO: dynamic change n/m

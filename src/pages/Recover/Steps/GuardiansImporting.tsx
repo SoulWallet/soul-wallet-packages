@@ -61,7 +61,7 @@ const GuardiansImporting = () => {
             <FileUploader onFileChange={handleFileParseResult} />
 
             <Button type="primary" className="w-base mx-auto mt-6" disabled={!fileValid} onClick={handleNext}>
-                Check guardians parsing results
+                Check Guardians
             </Button>
 
             <a className="skip-text mx-auto self-center mt-4 mb-6" onClick={handleNext}>

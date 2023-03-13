@@ -4,6 +4,7 @@ import ModalV2 from "@src/components/ModalV2";
 import Statement, { AUTHORIZED_STORAGE_KEY } from "@src/components/Statement";
 import { StepActionTypeEn, useStepDispatchContext, CreateStepEn, RecoverStepEn } from "@src/context/StepContext";
 import useBrowser from "@src/hooks/useBrowser";
+import IconClose from '@src/assets/icons/close.svg';
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
@@ -88,7 +89,8 @@ export default function Launch() {
             </div>
 
             {/* Risk Disclosure Statement Modal */}
-            <ModalV2 visible={showModal} className="bg-white min-w-[800px]">
+            <ModalV2 visible={showModal} className="bg-white min-w-[800px] relative">
+                <img src={IconClose} className="absolute right-6 top-6 cursor-pointer" onClick={handleCloseModal} />
                 <div className="flex flex-col items-center gap-4 px-2">
                     <Statement />
                     {!authorized ? (

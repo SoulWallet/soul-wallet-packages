@@ -12,7 +12,7 @@ const StepCompletion = () => {
                 and unlock full services by activiting your wallet.
             </p>
 
-            <p className="text-warnRed mt-16">Warning: This is a alpha version. Do NOT put in too much money.</p>
+            <p className="text-warnRed mt-16">Warning: This is an alpha version. DO NOT put too much money in.</p>
 
             <Button type="primary" onClick={() => goPlugin("/activate-wallet")} className="mt-2 w-full">
                 Activate Wallet

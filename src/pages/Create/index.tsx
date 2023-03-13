@@ -36,7 +36,7 @@ const StepComponent = () => {
                 element: <DefaultSetting />,
             },
             [CreateStepEn.Completed]: {
-                title: "Congratulation! Your Soul Wallet is created.",
+                title: "Congratulation, your Soul Wallet is created!",
                 element: <StepCompletion />,
             },
         };
