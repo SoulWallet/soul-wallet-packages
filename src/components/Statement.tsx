@@ -5,7 +5,7 @@ const Statement = () => {
     return (
         <div className="flex flex-col items-center gap-4 px-2">
             <div className="text-2xl font-bold text-gray70">Risk Disclosure Statement</div>
-            <div className="text-gray70 text-left whitespace-pre-line flex flex-col gap-2 max-h-96 overflow-y-scroll">
+            <div className="text-gray70 text-left whitespace-pre-line flex flex-col gap-2 max-h-96 overflow-y-auto">
                 Soul Wallet (&quot;Soulwallet App&quot;, &quot;we&quot; or &quot;us&quot;) is a blockchain-based
                 smart-contract wallet service that allows users to store and manage their digital assets. However, like
                 all blockchain services, Soul Wallet comes with a certain level of risk. By using Soul Wallet, you
