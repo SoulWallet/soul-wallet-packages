@@ -55,7 +55,7 @@ export default function ReceiveCode({
             <div
                 className="flex gap-1 items-center justify-center tooltip cursor-pointer"
                 onClick={doCopy}
-                data-tip={copied ? "Copied" : "Click to copy"}
+                data-tip={copied ? "Copied" : "Copy address"}
                 onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
             >
                 <img src={IconCopy} />

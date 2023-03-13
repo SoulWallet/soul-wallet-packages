@@ -53,10 +53,13 @@ const EditGuardians = () => {
 
             <GuardianForm ref={formRef} guardians={guardians} />
 
-            <>
+            {guardians && <>
                 <h1 className="text-black mt-6 mb-1">Threshold</h1>
-                <p>Any Wallet recovery requires the signature of: 2</p>
-            </>
+                <p>
+                Any Wallet recovery requires the signature of: <span className="text-purple font-medium">{Math.ceil(guardians.length / 2)}</span> out of{" "}
+                {guardians.length} guardians
+                </p>
+            </>}
 
             <div className="w-full flex flex-col justify-center items-center my-5">
                 <Button type="primary" loading={updating} className="w-base mb-2#4D4D4D" onClick={handleClickConfirm}>

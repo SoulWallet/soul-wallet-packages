@@ -63,7 +63,7 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
 
             {/* TODO: '2' here is changeable? */}
             <p className="mt-7 text-sm text-black">
-                Any Wallet recovery requires the signature of: <span className="text-purple font-medium">2</span> out of{" "}
+                Any Wallet recovery requires the signature of: <span className="text-purple font-medium">{Math.ceil(guardians.length / 2)}</span> out of{" "}
                 {guardians.length} guardians
             </p>
         </div>
