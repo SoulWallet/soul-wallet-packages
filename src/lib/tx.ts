@@ -1,10 +1,8 @@
 import { SoulWalletLib, IUserOpReceipt } from "soul-wallet-lib";
 import { ethers } from "ethers";
-// import ky from "ky";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { notify } from "@src/lib/tools";
-import { toast } from "material-react-toastify";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
@@ -13,7 +11,7 @@ const soulWalletLib = new SoulWalletLib();
 export const executeTransaction = async (
     operation: any,
     tabId: any,
-    bundlerUrl: string = "https://bundler-eth-goerli.soulwallets.me/rpc",
+    bundlerUrl: any,
 ) => {
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 

@@ -9,6 +9,7 @@ import Locked from "@src/components/Locked";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
 import useLib from "@src/hooks/useLib";
+import useQuery from "@src/hooks/useQuery";
 const web3 = new Web3(config.provider);
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
@@ -42,6 +43,7 @@ export const WalletContext = createContext<IWalletContext>({
 
 export const WalletContextProvider = ({ children }: any) => {
     const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
+    const { estimateUserOperationGas } = useQuery();
 
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState("");
@@ -50,7 +52,6 @@ export const WalletContextProvider = ({ children }: any) => {
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeystore();
-    const { soulWalletLib } = useLib();
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
@@ -74,6 +75,8 @@ export const WalletContextProvider = ({ children }: any) => {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
                 operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
+
+                await estimateUserOperationGas(operation);
 
                 const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 

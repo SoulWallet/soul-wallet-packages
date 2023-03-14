@@ -16,7 +16,7 @@ export default function SignPage() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { walletAddress, ethersProvider, account } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice } = useQuery();
+    const { getGasPrice, estimateUserOperationGas } = useQuery();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
     const keystore = useKeystore();
@@ -40,15 +40,6 @@ export default function SignPage() {
             ];
 
             const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-
-            // let fee: any = (await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId))?.medium;
-
-            // const maxFeePerGas = ethers.utils
-            //     .parseUnits(Number(fee.suggestedMaxFeePerGas).toFixed(9), "gwei")
-            //     .toString();
-            // const maxPriorityFeePerGas = ethers.utils
-            //     .parseUnits(Number(fee.suggestedMaxPriorityFeePerGas).toFixed(9), "gwei")
-            //     .toString();
 
             const operation: any = await soulWalletLib.Utils.fromTransaction(
                 ethersProvider,
@@ -133,6 +124,8 @@ export default function SignPage() {
                 if (paymasterAndData) {
                     operation.paymasterAndData = paymasterAndData;
                 }
+
+                await estimateUserOperationGas(operation);
 
                 const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 

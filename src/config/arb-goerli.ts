@@ -46,10 +46,10 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        walletLogic: "0x4b7E8091c329059eD05885A0aa9D6A7F366440ea",
-        guardianLogic: "0x9c092644ffCdd129695598672E71760611eE5eF3",
+        walletLogic: "0x9F8241410C00a24Bf2eFE5bf42226645fb1F3839",
+        guardianLogic: "0x1277450427963DeB16CfEB8c58C4aC55F33A5c89",
         entryPoint: "0x0576a174D229E3cFA37253523E645A78A0C91B57",
-        paymaster: "0x7E828b1BEeB30C4dB36E268A94daBC0111E80600",
+        paymaster: "0xB6Bc5912cF87c29524c82Bc3E1dF1C98e2AAAf59",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };

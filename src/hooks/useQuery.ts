@@ -15,7 +15,7 @@ export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
     const { setBalance } = useBalanceStore();
     const erc20Contract = useErc20Contract();
-    const { soulWalletLib } = useLib();
+    const { soulWalletLib, bundler } = useLib();
 
     const { verifyAddressFormat } = useTools();
 
@@ -49,6 +49,18 @@ export default function useQuery() {
         });
     };
 
+    const estimateUserOperationGas = async(userOp: any) => {
+        const estimateData:any = await bundler.eth_estimateUserOperationGas(userOp);
+        console.log('call gas limit', userOp.callGasLimit)
+        if (new BN(userOp.callGasLimit).isEqualTo(0)) {
+            // IMPORTANT TODO, check if this works
+            userOp.callGasLimit = estimateData.callGasLimit;
+        }
+        userOp.preVerificationGas = estimateData.preVerificationGas;
+        userOp.verificationGasLimit = estimateData.verificationGas;
+    }
+
+
     const getGasPrice = async () => {
         if (config.support1559) {
             const feeRaw = await ethersProvider.getFeeData();
@@ -66,25 +78,17 @@ export default function useQuery() {
                 maxPriorityFeePerGas: feeRaw?.toString() || "",
             };
         }
-        // return gasMultiplied;
     };
 
     const getFeeCost = async (op: any, tokenAddress?: string) => {
-        const fee = await getGasPrice();
-        const { baseFeePerGas, maxFeePerGas, maxPriorityFeePerGas } = fee;
+        await estimateUserOperationGas(op);
 
-        // const prefundBaseFee = baseFeePerGas ? new BN(baseFeePerGas).times(1.2).toFixed(0) : maxFeePerGas;
+        const _requiredPrefund = op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
 
-        await op.calcL2GasPrice(
-            ethersProvider,
-            baseFeePerGas,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            config.contracts.entryPoint,
-        );
+        console.log('require prefund', _requiredPrefund);
 
-        // const requiredPrefund = op.requiredPrefund(prefundBaseFee);
-        const requiredPrefund = op.requiredPrefund();
+        const requiredPrefund = new BN(_requiredPrefund.requiredPrefund).minus(_requiredPrefund.deposit).toString();
+
         console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
         if (!tokenAddress) {
             return {
@@ -136,5 +140,6 @@ export default function useQuery() {
         getFeeCost,
         getWalletType,
         getTokenByAddress,
+        estimateUserOperationGas,
     };
 }

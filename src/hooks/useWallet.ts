@@ -16,12 +16,12 @@ import { GuardianItem } from "@src/lib/type";
 export default function useWallet() {
     const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, getWalletType, getFeeCost } = useQuery();
+    const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas, } = useQuery();
     const { getGuardianInitCode } = useTools();
     const { guardians } = useGlobalStore();
     const keystore = useKeystore();
 
-    const { soulWalletLib } = useLib();
+    const { soulWalletLib, bundler } = useLib();
 
     const activateWallet = async (payToken: string, costOnly: boolean = false) => {
         const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
@@ -105,8 +105,6 @@ export default function useWallet() {
                 maxUSDC,
             );
 
-            // op.paymasterAndData = paymasterAndData;
-
             console.log(`need ${maxUSDCFormatted} USDC`);
 
             return paymasterAndData;
@@ -126,7 +124,6 @@ export default function useWallet() {
 
         const usePaymaster = payToken !== config.zeroAddress;
 
-        // TODO, times 1.2
         const op = await soulWalletLib.Guardian.transferOwner(
             ethersProvider,
             walletAddress,
@@ -143,6 +140,8 @@ export default function useWallet() {
         }
 
         op.paymasterAndData = await addPaymasterData(op, payToken);
+
+        await estimateUserOperationGas(op);
 
         const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
@@ -192,7 +191,6 @@ export default function useWallet() {
         op.signature = signature;
 
         await Runtime.send("execute", {
-            // actionName,
             operation: op.toJSON(),
             opHash,
             bundlerUrl,
@@ -215,24 +213,18 @@ export default function useWallet() {
             nonce,
             config.contracts.entryPoint,
             "0x",
-            // usePaymaster ? config.contracts.paymaster : config.zeroAddress,
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
 
-        if (!setGuardianOp) {
-            throw new Error("setGuardianOp is null");
-        }
-
         await directSignAndSend(setGuardianOp, payToken);
 
-        // replace global store
-
-        // await executeOperation(setGuardianOp, actionName);
     };
 
     const directSignAndSend = async (op: any, payToken: string) => {
         op.paymasterAndData = await addPaymasterData(op, payToken);
+
+        await estimateUserOperationGas(op);
 
         const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
 
@@ -245,7 +237,6 @@ export default function useWallet() {
         op.signWithSignature(account, signature || "");
 
         await Runtime.send("execute", {
-            // actionName,
             operation: op.toJSON(),
             opHash,
             bundlerUrl,
