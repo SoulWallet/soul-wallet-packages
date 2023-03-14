@@ -120,9 +120,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             setActivePaymasterData("");
             setFeeCost(`${requireAmount} ETH`);
         } else {
-            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier);
+            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
-            const maxUSDCFormatted = BN(requireAmount).multipliedBy(config.maxCostMultiplier).toFixed(4);
+            const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
 
             const paymasterAndData = soulWalletLib.getPaymasterData(
                 config.contracts.paymaster,

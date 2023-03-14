@@ -84,7 +84,7 @@ export default function useQuery() {
     const getFeeCost = async (op: any, tokenAddress?: string) => {
         await estimateUserOperationGas(op);
 
-        const _requiredPrefund = op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
+        const _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
 
         console.log("require prefund", _requiredPrefund);
 

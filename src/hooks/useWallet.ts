@@ -9,7 +9,7 @@ import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
-import { UserOperation } from "soul-wallet-lib";
+import { SignatureMode, UserOperation } from "soul-wallet-lib";
 import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
 
@@ -21,7 +21,7 @@ export default function useWallet() {
     const { guardians } = useGlobalStore();
     const keystore = useKeystore();
 
-    const { soulWalletLib, bundler } = useLib();
+    const { soulWalletLib } = useLib();
 
     const activateWallet = async (payToken: string, costOnly: boolean = false) => {
         const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
@@ -91,9 +91,9 @@ export default function useWallet() {
         );
 
         if (payToken !== config.zeroAddress) {
-            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier);
+            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
-            const maxUSDCFormatted = BN(requireAmount).multipliedBy(config.maxCostMultiplier).toFixed(4);
+            const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
 
             const paymasterAndData = soulWalletLib.getPaymasterData(
                 config.contracts.paymaster,
@@ -137,13 +137,22 @@ export default function useWallet() {
 
         await estimateUserOperationGas(op);
 
-        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
-
         const guardiansList = guardians.map((item) => item.address);
 
+        const guardianInitCode = getGuardianInitCode(guardiansList);
+
+        const opHash = op.getUserOpHashWithTimeRange(
+            config.contracts.entryPoint,
+            config.chainId,
+            guardianInitCode.address,
+            SignatureMode.guardian,
+        );
+
+        console.log('op hash', opHash)
         const res: any = await api.recovery.create({
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
+            guardianAddress: guardianInitCode.address,
             newOwner,
             guardians: guardiansList,
             userOp: JSON.parse(op.toJSON()),

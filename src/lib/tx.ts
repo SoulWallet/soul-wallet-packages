@@ -1,4 +1,4 @@
-import { SoulWalletLib, IUserOpReceipt } from "soul-wallet-lib";
+import { SoulWalletLib, IUserOpReceipt, IFailedOp, IValidationResult } from "soul-wallet-lib";
 import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
@@ -8,31 +8,48 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const soulWalletLib = new SoulWalletLib();
 
-export const executeTransaction = async (
-    operation: any,
-    tabId: any,
-    bundlerUrl: any,
-) => {
+export const executeTransaction = async (operation: any, tabId: any, bundlerUrl: any) => {
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
     await bundler.init();
 
     return new Promise(async (resolve, reject) => {
         try {
-            const simulateResult: any = await bundler.simulateValidation(operation);
+            // const simulateResult: any = await bundler.simulateValidation(operation);
 
-            // IMPORTANT TODO, catch errors and return
-            console.log(`SimulateValidation:`, simulateResult);
+            // // IMPORTANT TODO, catch errors and return
+            // console.log(`SimulateValidation:`, simulateResult);
 
-            // failed to simulate
-            if (simulateResult.status && simulateResult.result) {
-                console.log("error");
-                // toast.error(simulateResult.result.reason);
-                notify("Bundler Error", simulateResult.result.reason);
-                throw Error(simulateResult.result.reason);
+            // // failed to simulate
+            // if (simulateResult.status && simulateResult.result) {
+            //     console.log("error");
+            //     // toast.error(simulateResult.result.reason);
+            //     notify("Bundler Error", simulateResult.result.reason);
+            //     throw Error(simulateResult.result.reason);
+            // }
+
+            const validation = await bundler.simulateValidation(operation);
+            if (validation.status !== 0) {
+                if (validation.status === 1) {
+                    const result = validation.result as IFailedOp;
+                    const errMsg = result.reason;
+                    notify("Bundler Error", errMsg);
+                    throw new Error(errMsg);
+                } else {
+                    const errMsg = `error code:${validation.status}`;
+                    notify("Bundler Error", errMsg);
+                    throw new Error(errMsg);
+                }
             }
 
-            const bundlerEvent = bundler.sendUserOperation(operation, 1000 * 60 * 3);
+            const result = validation.result as IValidationResult;
+            if (result.returnInfo.sigFailed) {
+                const errMsg = `signature error`;
+                notify("Bundler Error", errMsg);
+                throw new Error(errMsg);
+            }
+
+            const bundlerEvent = bundler.sendUserOperation(operation);
             bundlerEvent.on("error", (err: any) => {
                 notify("Bundler Error", "");
                 console.log(err);

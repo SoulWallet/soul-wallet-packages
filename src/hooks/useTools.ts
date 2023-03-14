@@ -21,7 +21,7 @@ export default function useTools() {
             return soulWalletLib.Guardian.calculateGuardianAndInitCode(
                 config.contracts.guardianLogic,
                 guardiansList,
-                Math.round(guardiansList.length / 2),
+                Math.ceil(guardiansList.length / 2),
                 config.guardianSalt,
             );
         }
