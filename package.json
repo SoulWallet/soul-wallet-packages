@@ -66,9 +66,6 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@metamask/eth-json-rpc-infura": "^7.0.0",
-        "@metamask/post-message-stream": "^6.0.0",
-        "@metamask/providers": "^10.2.1",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
         "@zxcvbn-ts/core": "^2.2.1",
