@@ -15,6 +15,8 @@ export const executeTransaction = async (
 ) => {
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
+    await bundler.init();
+
     return new Promise(async (resolve, reject) => {
         try {
             const simulateResult: any = await bundler.simulateValidation(operation);

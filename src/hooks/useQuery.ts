@@ -49,17 +49,18 @@ export default function useQuery() {
         });
     };
 
-    const estimateUserOperationGas = async(userOp: any) => {
-        const estimateData:any = await bundler.eth_estimateUserOperationGas(userOp);
-        console.log('call gas limit', userOp.callGasLimit)
+    const estimateUserOperationGas = async (userOp: any) => {
+        // TODO, remove await bundler
+        const b = await bundler;
+        const estimateData: any = await b.eth_estimateUserOperationGas(userOp);
+        console.log("call gas limit", userOp.callGasLimit);
         if (new BN(userOp.callGasLimit).isEqualTo(0)) {
             // IMPORTANT TODO, check if this works
             userOp.callGasLimit = estimateData.callGasLimit;
         }
         userOp.preVerificationGas = estimateData.preVerificationGas;
         userOp.verificationGasLimit = estimateData.verificationGas;
-    }
-
+    };
 
     const getGasPrice = async () => {
         if (config.support1559) {
@@ -85,15 +86,17 @@ export default function useQuery() {
 
         const _requiredPrefund = op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
 
-        console.log('require prefund', _requiredPrefund);
+        console.log("require prefund", _requiredPrefund);
 
-        const requiredPrefund = new BN(_requiredPrefund.requiredPrefund).minus(_requiredPrefund.deposit).toString();
+        const requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
 
-        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredPrefund), "ETH");
+        const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : BigNumber.from(0);
+
+        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredFinalPrefund), "ETH");
         if (!tokenAddress) {
             return {
-                requireAmountInWei: requiredPrefund,
-                requireAmount: ethers.utils.formatEther(requiredPrefund),
+                requireAmountInWei: requiredFinalPrefund,
+                requireAmount: ethers.utils.formatEther(requiredFinalPrefund),
             };
         }
 
@@ -112,7 +115,7 @@ export default function useQuery() {
         );
 
         // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
-        const requiredUSDC = requiredPrefund
+        const requiredUSDC = requiredFinalPrefund
             .mul(exchangePrice.price)
             .mul(BigNumber.from(10).pow(tokenDecimals))
             .div(BigNumber.from(10).pow(exchangePrice.decimals))
