@@ -26,11 +26,9 @@ export default function useTransaction() {
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
-        const op = await soulWalletLib.Tokens.ETH.transfer(
-            ethersProvider,
+        const op = soulWalletLib.Tokens.ETH.transfer(
             walletAddress,
             nonce,
-            config.contracts.entryPoint,
             "0x",
             maxFeePerGas,
             maxPriorityFeePerGas,
@@ -49,11 +47,9 @@ export default function useTransaction() {
         const decimals = config.assetsList.filter((item: any) => item.address === tokenAddress)[0].decimals;
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-        const op = await soulWalletLib.Tokens.ERC20.transfer(
-            ethersProvider,
+        const op = soulWalletLib.Tokens.ERC20.transfer(
             walletAddress,
             nonce,
-            config.contracts.entryPoint,
             "0x",
             maxFeePerGas,
             maxPriorityFeePerGas,

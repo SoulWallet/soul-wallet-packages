@@ -78,7 +78,7 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 await estimateUserOperationGas(operation);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
+                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
 
                 const signature = await keystore.sign(userOpHash);
 

@@ -41,9 +41,7 @@ export default function SignPage() {
 
             const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-            const operation: any = await soulWalletLib.Utils.fromTransaction(
-                ethersProvider,
-                config.contracts.entryPoint,
+            const operation: any = soulWalletLib.Utils.fromTransaction(
                 rawTxs,
                 nonce,
                 maxFeePerGas,
@@ -127,7 +125,7 @@ export default function SignPage() {
 
                 await estimateUserOperationGas(operation);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
+                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
 
                 const signature = await keystore.sign(userOpHash);
 

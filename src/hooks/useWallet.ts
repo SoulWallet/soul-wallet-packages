@@ -16,7 +16,7 @@ import { GuardianItem } from "@src/lib/type";
 export default function useWallet() {
     const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas, } = useQuery();
+    const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
     const { getGuardianInitCode } = useTools();
     const { guardians } = useGlobalStore();
     const keystore = useKeystore();
@@ -50,11 +50,7 @@ export default function useWallet() {
             },
         ];
 
-        const approveCallData = await soulWalletLib.Tokens.ERC20.getApproveCallData(
-            ethersProvider,
-            walletAddress,
-            approveData,
-        );
+        const approveCallData = soulWalletLib.Tokens.ERC20.getApproveCallData(approveData);
 
         op.callGasLimit = approveCallData.callGasLimit;
         op.callData = approveCallData.callData;
@@ -124,11 +120,9 @@ export default function useWallet() {
 
         const usePaymaster = payToken !== config.zeroAddress;
 
-        const op = await soulWalletLib.Guardian.transferOwner(
-            ethersProvider,
+        const op = soulWalletLib.Guardian.transferOwner(
             walletAddress,
             nonce,
-            config.contracts.entryPoint,
             usePaymaster ? config.contracts.paymaster : config.zeroAddress,
             new BN(maxFeePerGas).times(1.2).toFixed(0),
             new BN(maxPriorityFeePerGas).times(1.2).toFixed(0),
@@ -143,7 +137,7 @@ export default function useWallet() {
 
         await estimateUserOperationGas(op);
 
-        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
+        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
 
         const guardiansList = guardians.map((item) => item.address);
 
@@ -206,19 +200,16 @@ export default function useWallet() {
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
-        const setGuardianOp = await soulWalletLib.Guardian.setGuardian(
-            ethersProvider,
+        const setGuardianOp = soulWalletLib.Guardian.setGuardian(
             walletAddress,
             guardianInitCode.address,
             nonce,
-            config.contracts.entryPoint,
             "0x",
             maxFeePerGas,
             maxPriorityFeePerGas,
         );
 
         await directSignAndSend(setGuardianOp, payToken);
-
     };
 
     const directSignAndSend = async (op: any, payToken: string) => {
@@ -226,7 +217,7 @@ export default function useWallet() {
 
         await estimateUserOperationGas(op);
 
-        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId);
+        const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
 
         const signature = await keystore.sign(opHash);
 
