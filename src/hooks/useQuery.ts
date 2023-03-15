@@ -64,6 +64,14 @@ export default function useQuery() {
 
     const getGasPrice = async () => {
         if (config.support1559) {
+            // if it's arb goerli, set fixed
+            if (config.chainId === 421613) {
+                return {
+                    baseFeePerGas: config.defaultGasPrice,
+                    maxFeePerGas: config.defaultGasPrice,
+                    maxPriorityFeePerGas: config.defaultGasPrice,
+                };
+            }
             const feeRaw = await ethersProvider.getFeeData();
             return {
                 baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
@@ -82,11 +90,11 @@ export default function useQuery() {
     };
 
     const getFeeCost = async (op: any, tokenAddress?: string) => {
+        op.paymasterAndData = tokenAddress || "0x"
+
         await estimateUserOperationGas(op);
 
         const _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
-
-        console.log("require prefund", _requiredPrefund);
 
         const requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
 

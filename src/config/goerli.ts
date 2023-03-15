@@ -34,13 +34,14 @@ export default {
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
     // IMPORTANT TODO, remove
-    maxCostMultiplier: 200,
+    maxCostMultiplier: 110,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
     chainId: 5,
     chainIdHex: (5).toString(16),
     chainName: 'Goerli',
+    defaultGasPrice: "1700000000",
     support1559: true,
     tokens: {
         usdc: usdcAddress,

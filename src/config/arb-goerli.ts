@@ -27,18 +27,20 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://goerli-rollup.arbitrum.io/rpc`,
+    // provider: `https://goerli-rollup.arbitrum.io/rpc`,
+    provider: `https://arbitrum-goerli.public.blastapi.io`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://goerli.arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
     // IMPORTANT TODO, remove
-    maxCostMultiplier: 200,
+    maxCostMultiplier: 110,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
     chainId: 421613,
+    defaultGasPrice: "1700000000",
     chainIdHex: `0x${(421613).toString(16)}`,
     chainName: "Arb Goerli",
     support1559: true,
