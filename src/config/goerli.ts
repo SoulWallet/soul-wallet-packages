@@ -41,7 +41,9 @@ export default {
     chainId: 5,
     chainIdHex: (5).toString(16),
     chainName: 'Goerli',
-    defaultGasPrice: "1700000000",
+    defaultBaseFee: "100000000",
+    defaultMaxFee: "1700000000",
+    defaultMaxPriorityFee: "1500000000",
     support1559: true,
     tokens: {
         usdc: usdcAddress,

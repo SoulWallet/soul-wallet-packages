@@ -34,13 +34,14 @@ export default {
     scanUrl: "https://goerli.arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
-    // IMPORTANT TODO, remove
-    maxCostMultiplier: 110,
+    maxCostMultiplier: 120,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
     chainId: 421613,
-    defaultGasPrice: "1700000000",
+    defaultBaseFee: "100000000",
+    defaultMaxFee: "1700000000",
+    defaultMaxPriorityFee: "1500000000",
     chainIdHex: `0x${(421613).toString(16)}`,
     chainName: "Arb Goerli",
     support1559: true,

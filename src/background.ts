@@ -75,13 +75,17 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
-            await executeTransaction(parsedOperation, tabId, bundlerUrl);
+            try {
+                await executeTransaction(parsedOperation, tabId, bundlerUrl);
 
-            // send msg back
-            browser.runtime.sendMessage({
-                target: "soul",
-                data: userOpHash,
-            });
+                // send msg back
+                browser.runtime.sendMessage({
+                    target: "soul",
+                    data: userOpHash,
+                });
+            } catch (err) {
+                notify("Error", err);
+            }
     }
 });
 

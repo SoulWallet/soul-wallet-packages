@@ -15,20 +15,8 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
 
     return new Promise(async (resolve, reject) => {
         try {
-            // const simulateResult: any = await bundler.simulateValidation(operation);
-
-            // // IMPORTANT TODO, catch errors and return
-            // console.log(`SimulateValidation:`, simulateResult);
-
-            // // failed to simulate
-            // if (simulateResult.status && simulateResult.result) {
-            //     console.log("error");
-            //     // toast.error(simulateResult.result.reason);
-            //     notify("Bundler Error", simulateResult.result.reason);
-            //     throw Error(simulateResult.result.reason);
-            // }
-
             const validation = await bundler.simulateValidation(operation);
+            console.log('validation result', validation)
             if (validation.status !== 0) {
                 if (validation.status === 1) {
                     const result = validation.result as IFailedOp;

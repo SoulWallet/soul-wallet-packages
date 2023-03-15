@@ -67,9 +67,9 @@ export default function useQuery() {
             // if it's arb goerli, set fixed
             if (config.chainId === 421613) {
                 return {
-                    baseFeePerGas: config.defaultGasPrice,
-                    maxFeePerGas: config.defaultGasPrice,
-                    maxPriorityFeePerGas: config.defaultGasPrice,
+                    baseFeePerGas: config.defaultBaseFee,
+                    maxFeePerGas: config.defaultMaxFee,
+                    maxPriorityFeePerGas: config.defaultMaxPriorityFee,
                 };
             }
             const feeRaw = await ethersProvider.getFeeData();
