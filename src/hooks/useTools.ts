@@ -3,7 +3,7 @@ import useLib from "./useLib";
 import api from "@src/lib/api";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
-import IconContract from "@src/assets/activities/Contract.svg";
+import IconContract from "@src/assets/activities/contract.svg";
 import IconActivate from "@src/assets/activities/activate.svg";
 import IconAdd from "@src/assets/activities/add.svg";
 import { toast } from "material-react-toastify";
