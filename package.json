@@ -96,7 +96,7 @@
         "react-jazzicon": "^1.0.4",
         "react-router-dom": "^6.3.0",
         "shortid": "^2.2.16",
-        "soul-wallet-lib": "github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.26",
+        "soul-wallet-lib": "github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.27",
         "svg-inline-loader": "^0.8.2",
         "util": "^0.12.4",
         "web3": "^1.7.5",
