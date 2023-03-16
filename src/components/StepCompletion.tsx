@@ -33,7 +33,7 @@ const StepCompletion = ({ mode }: IStepCompletion) => {
 
             {mode === EnHandleMode.Recover && (
                 <>
-                    <Button type="link" onClick={() => goPlugin("")} className="mt-2 w-full">
+                    <Button type="primary" onClick={() => goPlugin("")} className="mt-2 w-full">
                         See my wallet
                     </Button>
                 </>
