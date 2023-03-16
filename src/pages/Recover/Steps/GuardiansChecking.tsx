@@ -7,6 +7,7 @@ import ModalV2 from "@src/components/ModalV2";
 import useWallet from "@src/hooks/useWallet";
 import { useRecoveryContext } from "@src/context/RecoveryContext";
 import { GuardianItem } from "@src/lib/type";
+import { notify } from "@src/lib/tools";
 
 interface IGuardianChecking {
     walletAddress: string;
@@ -16,7 +17,6 @@ interface IGuardianChecking {
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     const [loading, setLoading] = useState(false);
     const { initRecoverWallet } = useWallet();
-    // const temporaryGuardians = storage ? JSON.parse(storage) : undefined;
 
     const formRef = useRef<IGuardianFormHandler>(null);
     const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
@@ -46,6 +46,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
                 payload: RecoverStepEn.SignaturePending,
             });
         } catch (error) {
+            notify("Error", "Failed to init recover request")
             console.error(error);
         }finally{
             setLoading(false)

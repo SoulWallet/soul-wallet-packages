@@ -35,7 +35,7 @@ const GuardiansImporting = () => {
             for (let i = 0; i < fileGuardians.length; i++) {
                 const { address, name } = fileGuardians[i];
 
-                if (!address || !name) {
+                if (!address) {
                     toast.error("Oops, something went wrong. Please check your file and try again.");
                     return;
                 }

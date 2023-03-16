@@ -4,3 +4,9 @@ export type GuardianItem = {
     address: string;
     errorMsg?: string;
 };
+
+
+export enum EnHandleMode {
+    Create,
+    Recover,
+}

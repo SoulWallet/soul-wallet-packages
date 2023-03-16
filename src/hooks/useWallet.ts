@@ -5,7 +5,7 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -148,7 +148,7 @@ export default function useWallet() {
             SignatureMode.guardian,
         );
 
-        console.log('op hash', opHash)
+        console.log("op hash", opHash);
         const res: any = await api.recovery.create({
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
@@ -203,7 +203,6 @@ export default function useWallet() {
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
-        console.log("pay token is", payToken);
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
@@ -233,6 +232,8 @@ export default function useWallet() {
         if (!signature) {
             throw new Error("Failed to sign");
         }
+
+        console.log('sig', signature)
 
         op.signWithSignature(account, signature || "");
 

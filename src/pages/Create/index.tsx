@@ -1,6 +1,7 @@
 import PasswordSetting from "@src/pages/Create/Steps/PasswordSetting";
 import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
 import React, { ReactNode, useMemo } from "react";
+import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import GuardiansSetting from "../Create/Steps/GuardiansSetting";
 import GuardiansSaving from "../Create/Steps/GuardiansSaving";
@@ -37,7 +38,7 @@ const StepComponent = () => {
             },
             [CreateStepEn.Completed]: {
                 title: "Congratulation, your Soul Wallet is created!",
-                element: <StepCompletion />,
+                element: <StepCompletion mode={EnHandleMode.Create} />,
             },
         };
     }, []);

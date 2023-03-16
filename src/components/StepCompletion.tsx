@@ -1,8 +1,14 @@
 import Button from "@src/components/Button";
 import useBrowser from "@src/hooks/useBrowser";
 import React from "react";
+import {EnHandleMode} from '@src/lib/type'
 
-const StepCompletion = () => {
+
+interface IStepCompletion {
+    mode: EnHandleMode;
+}
+
+const StepCompletion = ({ mode }: IStepCompletion) => {
     const { goPlugin } = useBrowser();
 
     return (
@@ -14,12 +20,24 @@ const StepCompletion = () => {
 
             <p className="text-warnRed mt-16">Warning: This is an alpha version. DO NOT put too much money in.</p>
 
-            <Button type="primary" onClick={() => goPlugin("/activate-wallet")} className="mt-2 w-full">
-                Activate Wallet
-            </Button>
-            <Button type="link" onClick={() => goPlugin("")} className="mt-2 w-full">
-                Activate Later
-            </Button>
+            {mode === EnHandleMode.Create && (
+                <>
+                    <Button type="primary" onClick={() => goPlugin("/activate-wallet")} className="mt-2 w-full">
+                        Activate Wallet
+                    </Button>
+                    <Button type="link" onClick={() => goPlugin("")} className="mt-2 w-full">
+                        Activate Later
+                    </Button>
+                </>
+            )}
+
+            {mode === EnHandleMode.Recover && (
+                <>
+                    <Button type="link" onClick={() => goPlugin("")} className="mt-2 w-full">
+                        See my wallet
+                    </Button>
+                </>
+            )}
         </div>
     );
 };

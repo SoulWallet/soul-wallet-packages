@@ -10,6 +10,7 @@ import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import React, { useRef } from "react";
 import useBrowser from "@src/hooks/useBrowser";
+import { notify } from "@src/lib/tools";
 
 const EditGuardians = () => {
     const { guardians, updateFinalGuardians } = useGlobalStore();
@@ -27,12 +28,16 @@ const EditGuardians = () => {
 
         const guardianAddressList = guardianList.map((item: GuardianItem) => item.address);
 
-        setUpdating(true)
-        await updateGuardian(guardianAddressList, payToken);
-        setUpdating(false)
-        // if success update, update global state
-        updateFinalGuardians(guardianList);
-        replaceCurrentTab("/resave-guardians");
+        setUpdating(true);
+        try {
+            await updateGuardian(guardianAddressList, payToken);
+            updateFinalGuardians(guardianList);
+            replaceCurrentTab("/resave-guardians");
+        } catch (err) {
+            notify("Error", "Failed to update guardians");
+        } finally {
+            setUpdating(false);
+        }
     };
 
     const handleChangePayToken = (val: string | number) => {
@@ -52,7 +57,7 @@ const EditGuardians = () => {
             </div>
 
             <GuardianForm ref={formRef} guardians={guardians} />
-{/* 
+            {/* 
             {guardians && <>
                 <h1 className="text-black mt-6 mb-1">Threshold</h1>
                 <p>

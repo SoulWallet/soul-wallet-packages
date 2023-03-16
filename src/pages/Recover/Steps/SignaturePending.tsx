@@ -8,7 +8,7 @@ import { toast } from "material-react-toastify";
 import config from "@src/config";
 import api from "@src/lib/api";
 import useWallet from "@src/hooks/useWallet";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, notify } from "@src/lib/tools";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import ErrorBlock from "@src/components/ErrorBlock";
 
@@ -69,15 +69,19 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     const doRecover = async () => {
         const finalSignatureList = signatureList.filter((item: any) => !!item.signature);
         const finalGuardianList = signatureList.map((item: any) => item.address);
-        setRecoveringWallet(true);
-        // GET OP
-        await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
-        setRecoveringWallet(false);
 
-        dispatch({
-            type: StepActionTypeEn.JumpToTargetStep,
-            payload: RecoverStepEn.Completed,
-        });
+        try {
+            setRecoveringWallet(true);
+            await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
+            dispatch({
+                type: StepActionTypeEn.JumpToTargetStep,
+                payload: RecoverStepEn.Completed,
+            });
+        } catch (err) {
+            notify("Error", "Failed to recover");
+        } finally {
+            setRecoveringWallet(false);
+        }
     };
 
     const getList = async (opHash: string) => {

@@ -16,6 +16,8 @@ import GuardiansImporting from "./Steps/GuardiansImporting";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 import StepCompletion from "@src/components/StepCompletion";
+import {EnHandleMode} from '@src/lib/type'
+
 
 type StepNodeInfo = {
     title: string;
@@ -62,7 +64,7 @@ const StepComponent = () => {
             },
             [RecoverStepEn.Completed]: {
                 title: "Congratulation! Your Soul Wallet is recovered.",
-                element: <StepCompletion />,
+                element: <StepCompletion mode={EnHandleMode.Recover} />,
             },
         };
     }, [walletAddress, payToken, recoverStatus]);

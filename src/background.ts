@@ -6,7 +6,7 @@
  */
 
 import browser from "webextension-polyfill";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, notify } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
@@ -75,17 +75,13 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             const parsedOperation = UserOperation.fromJSON(operation);
 
-            try {
-                await executeTransaction(parsedOperation, tabId, bundlerUrl);
+            await executeTransaction(parsedOperation, tabId, bundlerUrl);
 
-                // send msg back
-                browser.runtime.sendMessage({
-                    target: "soul",
-                    data: userOpHash,
-                });
-            } catch (err) {
-                notify("Error", err);
-            }
+            // send msg back
+            browser.runtime.sendMessage({
+                target: "soul",
+                data: userOpHash,
+            });
     }
 });
 
