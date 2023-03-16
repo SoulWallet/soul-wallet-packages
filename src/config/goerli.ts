@@ -26,7 +26,7 @@ export const assetsList = [
 
 export default {
     assetsList,
-    recoverUrl: "http://soulwallets.me/recover",
+    recoverUrl: "http://soulwallet.io/recover",
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",

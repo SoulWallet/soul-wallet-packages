@@ -26,7 +26,7 @@ export const assetsList = [
 
 export default {
     assetsList,
-    recoverUrl: "http://soulwallets.me/recover",
+    recoverUrl: "http://soulwallet.io/recover",
     // provider: `https://goerli-rollup.arbitrum.io/rpc`,
     provider: `https://arbitrum-goerli.public.blastapi.io`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
