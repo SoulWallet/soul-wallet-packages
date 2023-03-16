@@ -19,7 +19,7 @@ export const assetsList = [
         icon: IconUSDC,
         symbol: "USDC",
         address: usdcAddress,
-        decimals: 6,
+        decimals: 18,
         payable: true,
     },
 ];
