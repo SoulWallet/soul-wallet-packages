@@ -6,8 +6,7 @@ interface ISettingLinks {
 }
 
 export default function SettingLinks({ onChange }: ISettingLinks) {
-    const linksStyle =
-        "text-black leading-none hover:bg-gray40 cursor-pointer px-6 py-3";
+    const linksStyle = "text-black leading-none hover:bg-gray40 cursor-pointer px-6 py-3";
     return (
         <div className="pt-4 pb-6 flex flex-col">
             <a className={linksStyle} onClick={() => onChange(1)}>
@@ -16,14 +15,10 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
             <a className={linksStyle} onClick={() => onChange(2)}>
                 Bundler URL
             </a>
-            <a
-                target="_blank"
-                href={config.socials.telegram}
-                className={linksStyle}
-            >
+            <a target="_blank" href={config.socials.telegram} className={linksStyle}>
                 Support
             </a>
-            <a target="_blank" className={linksStyle}>
+            <a target="_blank" href={config.socials.website} className={linksStyle}>
                 About
             </a>
         </div>

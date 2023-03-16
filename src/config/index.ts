@@ -42,6 +42,7 @@ export const dappsList = [
 export default {
     walletName: "Soul Wallet",
     socials: {
+        website: "https://www.soulwallet.io",
         telegram: "https://t.me/+XFUHusXFdTYyODQ9",
     },
     dappsList,
