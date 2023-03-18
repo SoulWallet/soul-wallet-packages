@@ -125,7 +125,11 @@ export default function SignPage() {
 
                 await estimateUserOperationGas(operation);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
+                const userOpHash = operation.getUserOpHashWithTimeRange(
+                    config.contracts.entryPoint,
+                    config.chainId,
+                    account,
+                );
 
                 const signature = await keystore.sign(userOpHash);
 

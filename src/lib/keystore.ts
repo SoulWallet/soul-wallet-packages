@@ -16,7 +16,6 @@ import sigUtil, { TypedDataUtils } from "@metamask/eth-sig-util";
 const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
 
 const web3 = new Web3();
-// import * as ethUtil from 'ethereumjs-util';
 
 import {
     setLocalStorage,
@@ -191,7 +190,7 @@ export default class KeyStore {
             return null;
         }
 
-        const signHash = `0x${Buffer.from(message).toString("hex")}`;
+        const signHash = ethers.utils.keccak256(Buffer.from(message, "utf-8"));
 
         return await this.getPackedSignature(signHash);
     }
@@ -206,10 +205,7 @@ export default class KeyStore {
             return null;
         }
 
-        const signBuffer = TypedDataUtils.eip712Hash(typedData, sigUtil.SignTypedDataVersion.V4);
-
-        // transform typed data into bytes32
-        console.log("signHash buffer", signBuffer);
+        const signBuffer = TypedDataUtils.eip712Hash(typedData as any, "V4" as any);
 
         const signHash = `0x${Buffer.from(signBuffer).toString("hex")}`;
 
