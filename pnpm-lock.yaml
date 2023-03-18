@@ -4,6 +4,7 @@ specifiers:
   '@babel/core': ^7.11.6
   '@babel/preset-env': ^7.11.5
   '@babel/preset-typescript': ^7.10.4
+  '@metamask/eth-sig-util': ^5.0.2
   '@storybook/addon-essentials': ^6.4.9
   '@storybook/addon-interactions': ^6.4.9
   '@storybook/builder-webpack5': ^6.4.9
@@ -82,6 +83,7 @@ specifiers:
   zustand: ^4.3.3
 
 dependencies:
+  '@metamask/eth-sig-util': 5.0.2
   '@types/qrcode': 1.5.0
   '@types/react-router-dom': 5.3.3
   '@zxcvbn-ts/core': 2.2.1
@@ -16078,7 +16080,7 @@ packages:
     dev: false
 
   github.com/proofofsoulprotocol/soulwalletlib/ff888b1f1e52fec4c0dc8070202d65de19b5397a:
-    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/ff888b1f1e52fec4c0dc8070202d65de19b5397a}
+    resolution: {commit: ff888b1f1e52fec4c0dc8070202d65de19b5397a, repo: git+ssh://git@github.com/proofofsoulprotocol/soulwalletlib.git, type: git}
     name: soul-wallet-lib
     version: 0.1.0-alpha.27
     dependencies:

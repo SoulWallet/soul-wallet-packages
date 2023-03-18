@@ -9,6 +9,11 @@
 
 import { ethers } from "ethers";
 import Web3 from "web3";
+import config from "@src/config";
+import { SoulWalletLib } from "soul-wallet-lib";
+import sigUtil, { TypedDataUtils } from "@metamask/eth-sig-util";
+
+const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
 
 const web3 = new Web3();
 // import * as ethUtil from 'ethereumjs-util';
@@ -181,18 +186,14 @@ export default class KeyStore {
      * @param message
      * @returns signature, null is failed or keystore not unlocked
      */
-    public async signMessage(message: string): Promise<string | null> {
+    public async signMessage(message: string): Promise<string | null | undefined> {
         if (!this._privateKey) {
             return null;
         }
-        // const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
-        // const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
-        // var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
-        // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
-        // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
-        const signer = new ethers.Wallet(this._privateKey);
 
-        return await signer.signMessage(message);
+        const signHash = `0x${Buffer.from(message).toString("hex")}`;
+
+        return await this.getPackedSignature(signHash);
     }
 
     /**
@@ -200,19 +201,32 @@ export default class KeyStore {
      * @param typedData
      * @returns signature, null is failed or keystore not unlocked
      */
-    public async signMessageV4(typedData: any): Promise<string | null> {
+    public async signMessageV4(typedData: any): Promise<string | null | undefined> {
         if (!this._privateKey) {
             return null;
         }
 
-        console.log('tttt', typedData.domain, typedData.types, typedData.value)
-        // const messageHex = Buffer.from(ethers.utils.arrayify(message)).toString('hex');
-        // const personalMessage = ethUtil.hashPersonalMessage(ethUtil.toBuffer(ethUtil.addHexPrefix(messageHex)));
-        // var privateKey = Buffer.from(this._privateKey.substring(2), "hex");
-        // const signature1 = ethUtil.ecsign(personalMessage, privateKey);
-        // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
-        const signer = new ethers.Wallet(this._privateKey);
+        const signBuffer = TypedDataUtils.eip712Hash(typedData, sigUtil.SignTypedDataVersion.V4);
 
-        return await signer._signTypedData(typedData.domain, typedData.types, typedData.value);
+        // transform typed data into bytes32
+        console.log("signHash buffer", signBuffer);
+
+        const signHash = `0x${Buffer.from(signBuffer).toString("hex")}`;
+
+        return await this.getPackedSignature(signHash);
+    }
+
+    public async getPackedSignature(hashMsg: any) {
+        const ownerAddress = await this.getAddress();
+        const packedHash = soulWalletLib.EIP1271.packHashMessageWithTimeRange(hashMsg, ownerAddress);
+        const signature = await this.sign(packedHash);
+        if (signature) {
+            return soulWalletLib.EIP1271.encodeSignature(ownerAddress, signature);
+        }
+        // const selector = await walletContract.isValidSignature(
+        //     hashMsg,
+        //     packedSignature
+        // );
+        // expect(selector).to.equal("0x1626ba7e");
     }
 }
