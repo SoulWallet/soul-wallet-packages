@@ -2,6 +2,7 @@ import React from "react";
 import { ITokenSelectModal } from "../../types/IModal";
 import config from "@src/config";
 import { useBalanceStore } from "@src/store/balanceStore";
+import { ITokenItem } from "@src/lib/type";
 import Modal from "../Modal";
 
 export function TokenSelectModal({ onCancel, onChange }: ITokenSelectModal) {
@@ -11,7 +12,7 @@ export function TokenSelectModal({ onCancel, onChange }: ITokenSelectModal) {
             onCancel={onCancel}
             className="left-6 right-6 top-0 bottom-0 m-auto flex flex-col h-[350px] py-3 overflow-hidden"
         >
-            {config.assetsList.map((item: any) => (
+            {config.assetsList.map((item: ITokenItem) => (
                 <div
                     key={item.address}
                     className="py-2 px-4 hover:bg-gray40 cursor-pointer flex items-center gap-1"

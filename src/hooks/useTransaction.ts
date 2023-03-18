@@ -6,6 +6,7 @@ import useWalletContext from "../context/hooks/useWalletContext";
 import useLib from "./useLib";
 import useQuery from "./useQuery";
 import BN from "bignumber.js";
+import { ITokenItem } from "@src/lib/type";
 import useKeystore from "./useKeystore";
 import config from "@src/config";
 
@@ -44,7 +45,7 @@ export default function useTransaction() {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         // get decimals `locally`
-        const decimals = config.assetsList.filter((item: any) => item.address === tokenAddress)[0].decimals;
+        const decimals = config.assetsList.filter((item: ITokenItem) => item.address === tokenAddress)[0].decimals;
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
         const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
         const op = soulWalletLib.Tokens.ERC20.transfer(

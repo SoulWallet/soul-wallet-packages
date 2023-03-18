@@ -7,6 +7,7 @@ import BN from "bignumber.js";
 import { ethers, BigNumber } from "ethers";
 import useTools from "./useTools";
 import useLib from "./useLib";
+import { ITokenItem } from "@src/lib/type";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import { useBalanceStore } from "@src/store/balanceStore";
 import config from "@src/config";
@@ -24,7 +25,7 @@ export default function useQuery() {
      * @param tokenAddress
      */
     const getTokenByAddress = (tokenAddress: string) => {
-        return config.assetsList.filter((item) => item.address === tokenAddress)[0];
+        return config.assetsList.filter((item: any) => item.address === tokenAddress)[0];
     };
 
     const getEthBalance = async () => {
@@ -37,7 +38,7 @@ export default function useQuery() {
         if (!walletAddress) {
             return;
         }
-        config.assetsList.forEach(async (item) => {
+        config.assetsList.forEach(async (item: ITokenItem) => {
             let balanceNum: string = "0";
             if (item.symbol === "ETH") {
                 balanceNum = await getEthBalance();

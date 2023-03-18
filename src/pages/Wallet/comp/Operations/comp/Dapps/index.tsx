@@ -4,7 +4,7 @@ import config from "@src/config";
 export default function Dapps() {
     return (
         <div className=" grid grid-cols-2 gap-y-2 gap-x-3 px-6 pt-3">
-            {config.dappsList.map((item) => (
+            {config.dappsList.map((item: any) => (
                 <a
                     target="_blank"
                     href={item.link}

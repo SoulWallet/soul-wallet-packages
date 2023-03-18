@@ -6,6 +6,7 @@ import { TokenSelectModal } from "../TokenSelectModal";
 import useQuery from "@src/hooks/useQuery";
 import InfoTip from "../InfoTip";
 import config from "@src/config";
+import { ITokenItem } from "@src/lib/type";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 
 export function TokenSelect({ label, labelTip, selectedAddress, onChange }: ITokenSelect) {
@@ -14,7 +15,7 @@ export function TokenSelect({ label, labelTip, selectedAddress, onChange }: ITok
     const { walletAddress } = useWalletContext();
     const { balance } = useBalanceStore();
 
-    const selectedToken = config.assetsList.filter((item: any) => item.address === selectedAddress)[0];
+    const selectedToken = config.assetsList.filter((item: ITokenItem) => item.address === selectedAddress)[0];
 
     useEffect(() => {
         if (!walletAddress) {

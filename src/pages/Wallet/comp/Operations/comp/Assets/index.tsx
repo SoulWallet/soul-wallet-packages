@@ -4,6 +4,7 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import useQuery from "@src/hooks/useQuery";
 import { useBalanceStore } from "@src/store/balanceStore";
 import IconChevronRight from "@src/assets/chevron-right.svg";
+import { ITokenItem } from "@src/lib/type";
 import config from "@src/config";
 
 export default function Assets() {
@@ -20,7 +21,7 @@ export default function Assets() {
 
     return (
         <div>
-            {config.assetsList.map((item) => (
+            {config.assetsList.map((item: ITokenItem) => (
                 <Link
                     to={`/send/${item.address}`}
                     key={item.symbol}

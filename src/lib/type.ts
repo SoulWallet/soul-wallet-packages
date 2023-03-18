@@ -5,8 +5,15 @@ export type GuardianItem = {
     errorMsg?: string;
 };
 
-
 export enum EnHandleMode {
     Create,
     Recover,
+}
+
+export interface ITokenItem {
+    icon: any;
+    symbol: string;
+    address: string;
+    decimals: number;
+    payable: boolean;
 }
