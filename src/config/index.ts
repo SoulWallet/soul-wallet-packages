@@ -1,4 +1,5 @@
 // TODO, chain should be direved from .env
+console.log('process', process.env)
 import envConf from "./arb-goerli";
 import Icon1inch from "@src/assets/dapps/1inch.svg";
 import IconAave from "@src/assets/dapps/aave.svg";
