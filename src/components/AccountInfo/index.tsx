@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { toast } from "material-react-toastify";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountSettingModal from "../AccountSettingModal";
 import AddressIcon from "../AddressIcon";
 import cn from "classnames";
-import useWallet from "@src/hooks/useWallet";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
@@ -62,9 +60,6 @@ export default function AccountInfo({ account, action }: IProps) {
                     <Button type={"primary"} onClick={() => navigate('/activate-wallet')} className="w-full" loading={loading}>
                         Activate wallet
                     </Button>
-                    {/* <Button type={"primary"} onClick={() => doActivate()} className="w-full" loading={loading}>
-                        Activate wallet
-                    </Button> */}
                 </div>
             )}
 

@@ -56,8 +56,7 @@ export default function useQuery() {
         const estimateData: any = await b.eth_estimateUserOperationGas(userOp);
         console.log("call gas limit", userOp.callGasLimit);
         if (new BN(userOp.callGasLimit).isEqualTo(0)) {
-            // IMPORTANT TODO, check if this works
-            userOp.callGasLimit = estimateData.callGasLimit;
+            userOp.callGasLimit = BigNumber.from(estimateData.callGasLimit).add(21000).toHexString();
         }
         userOp.preVerificationGas = estimateData.preVerificationGas;
         userOp.verificationGasLimit = estimateData.verificationGas;
@@ -72,13 +71,29 @@ export default function useQuery() {
                     maxFeePerGas: config.defaultMaxFee,
                     maxPriorityFeePerGas: config.defaultMaxPriorityFee,
                 };
+            } else if (config.chainId === 42161) {
+                return {
+                    baseFeePerGas: config.defaultBaseFee,
+                    maxFeePerGas: config.defaultMaxFee,
+                    maxPriorityFeePerGas: config.defaultMaxPriorityFee,
+                };
             }
-            const feeRaw = await ethersProvider.getFeeData();
+
+            const res = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+
             return {
-                baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
-                maxFeePerGas: feeRaw.maxFeePerGas?.toString() || "",
-                maxPriorityFeePerGas: feeRaw.maxPriorityFeePerGas?.toString() || "",
+                baseFeePerGas: ethers.utils.parseUnits(res?.estimatedBaseFee || "0.1", "gwei").toString(),
+                maxFeePerGas: ethers.utils.parseUnits(res?.medium.suggestedMaxFeePerGas || "0.135", "gwei").toString(),
+                maxPriorityFeePerGas: ethers.utils
+                    .parseUnits(res?.medium.suggestedMaxPriorityFeePerGas || "0", "gwei")
+                    .toString(),
             };
+            // const feeRaw = await ethersProvider.getFeeData();
+            // return {
+            //     baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
+            //     maxFeePerGas: feeRaw.maxFeePerGas?.toString() || "",
+            //     maxPriorityFeePerGas: feeRaw.maxPriorityFeePerGas?.toString() || "",
+            // };
         } else {
             const feeRaw = await ethersProvider.getGasPrice();
 
@@ -91,7 +106,7 @@ export default function useQuery() {
     };
 
     const getFeeCost = async (op: any, tokenAddress?: string) => {
-        op.paymasterAndData = tokenAddress || "0x"
+        op.paymasterAndData = tokenAddress || "0x";
 
         await estimateUserOperationGas(op);
 

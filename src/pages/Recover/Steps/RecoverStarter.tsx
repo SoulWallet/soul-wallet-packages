@@ -18,6 +18,10 @@ const NetworkOptions: OptionItem[] = [
         value: 5,
     },
     {
+        label: "Arbitrum",
+        value: 42161,
+    },
+    {
         label: "Arbitrum Goerli",
         value: 421613,
     },

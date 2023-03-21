@@ -103,7 +103,7 @@ export default function ActivateWallet() {
                             <div className="text-gray60 mb-1">To deploy wallet on {config.chainName} require</div>
                             <CostItem
                                 value={maxCost ? `${maxCost} ${payTokenSymbol}` : "Loading..."}
-                                memo={`$ 10.00 USD`}
+                                // memo={`$ 10.00 USD`}
                                 align={EnAlign.Left}
                             />
                             <div className="h-5" />

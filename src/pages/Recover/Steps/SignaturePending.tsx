@@ -126,7 +126,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         const intervalId = setInterval(() => {
             getInfo(false);
         }, 5000);
-        return () => clearInterval(intervalId);
+        // return () => clearInterval(intervalId);
     }, []);
 
     return hasError ? (

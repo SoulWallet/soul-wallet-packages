@@ -3,6 +3,7 @@ import IconAave from "@src/assets/dapps/aave.svg";
 import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
 import IconYearn from "@src/assets/dapps/yearn.svg";
+// import envConf from './arb-goerli'
 
 export const dappsList = [
     {
@@ -45,7 +46,5 @@ export default {
     },
     dappsList,
     zeroAddress: "0x0000000000000000000000000000000000000000",
-    //todo, move to .env
-    // ...envConf,
-    ...require(`./${process.env.CHAIN}`),
+    ...require(`./${process.env.CHAIN}`).default,
 };

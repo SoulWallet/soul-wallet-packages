@@ -26,6 +26,7 @@ browser.runtime.onMessage.addListener(async (msg) => {
             const walletAddress = await getLocalStorage("walletAddress");
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
+            // IMPORTANT TODO, also need to check lock state
             if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
                 browser.tabs.sendMessage(Number(tab.id), {
                     target: "soul",
@@ -77,11 +78,11 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             await executeTransaction(parsedOperation, tabId, bundlerUrl);
 
-            // send msg back
             browser.runtime.sendMessage({
                 target: "soul",
                 data: userOpHash,
             });
+            break;
     }
 });
 

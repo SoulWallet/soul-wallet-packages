@@ -33,7 +33,6 @@ const soulMiddleware = createSoulMiddleware({
         console.log("sign.");
     },
     processTypedMessageV4: async (params) => {
-        console.log(params);
         return await Bus.send("signMessageV4", "signMessageV4", {
             data: params.data,
         });

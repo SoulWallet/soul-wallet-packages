@@ -1,5 +1,6 @@
 import Bus from "../lib/Bus";
 import { ethers } from "ethers";
+import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
@@ -45,12 +46,29 @@ const signTypedDataV4 = async (params: any) => {
     // return await Bus.send("signMessage", "signMessageV4", {
     //     data: params.data,
     // });
+    // console.log('Or', params)
+
+    return await Bus.send("signMessageV4", "signMessageV4", {
+        data: params[1],
+    });
 };
 
 const personalSign = async (params: any) => {
     return await Bus.send("signMessage", "signMessage", {
         data: ethers.utils.toUtf8String(params[0]),
     });
+};
+
+const personalRecover = async (params: any) => {
+    // console.log("params", params);
+    // const walletAddress = await Bus.send("getAccounts", "getAccounts");
+    // const walletContract = new ethers.Contract(walletAddress as string, WalletABI);
+    // const isValid = await walletContract.isValidSignature(params[0], params[1]);
+    // console.log("is valid", isValid);
+    // return "0xA43A022A6283b1d5CD602f3834C611074af85124";
+    // return await Bus.send("personalRecover", "personalRecover", {
+    //     data: params
+    // });
 };
 
 const chainId = async () => {
@@ -89,10 +107,14 @@ export default async function handleRequests(call: any) {
             return await getTransactionReceipt(params);
         case "eth_getTransactionByHash":
             return await getTransactionByHash(params);
-        // TODO, signature
         case "personal_sign":
             return await personalSign(params);
+        case "personal_ecRecover":
+            return await personalRecover(params);
         case "eth_signTypedData_v4":
             return await signTypedDataV4(params);
+        case "wallet_switchEthereumChain":
+            console.log("Not supported yet");
+            return true;
     }
 }

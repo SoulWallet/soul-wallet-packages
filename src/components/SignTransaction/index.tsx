@@ -62,6 +62,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             if (operation) {
                 setActiveOperation(operation);
                 const callDataDecode = decodeCalldata(operation.callData);
+                
                 setDecodedData(callDataDecode);
             }
 
@@ -124,11 +125,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
 
-            const paymasterAndData = soulWalletLib.getPaymasterData(
-                config.contracts.paymaster,
-                config.tokens.usdc,
-                maxUSDC,
-            );
+            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
 
             setActivePaymasterData(paymasterAndData);
 

@@ -14,6 +14,7 @@ export const assetsList = [
         address: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         payable: true,
+        paymaster: false,
     },
     {
         icon: IconUSDC,
@@ -21,6 +22,7 @@ export const assetsList = [
         address: usdcAddress,
         decimals: 6,
         payable: true,
+        paymaster: true,
     },
 ];
 
@@ -40,7 +42,7 @@ export default {
     guardianSalt: "",
     chainId: 5,
     chainIdHex: (5).toString(16),
-    chainName: 'Goerli',
+    chainName: "Goerli",
     defaultBaseFee: "100000000",
     defaultMaxFee: "1700000000",
     defaultMaxPriorityFee: "1500000000",

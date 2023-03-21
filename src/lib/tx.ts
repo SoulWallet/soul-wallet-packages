@@ -55,7 +55,6 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
                     });
                 }
 
-                // TODO, what if fail, add error hint
                 notify("Trsanction success", "Your transaction was confirmed on chain");
 
                 resolve(receipt.receipt);

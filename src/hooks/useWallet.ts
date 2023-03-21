@@ -5,7 +5,7 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
-import { getLocalStorage, notify, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -43,12 +43,12 @@ export default function useWallet() {
         );
 
         // TODO, need user's approve
-        const approveData: any = [
-            {
-                token: config.tokens.usdc,
+        const approveData = config.assetsList
+            .filter((item: any) => item.payable)
+            .map((item: any) => ({
+                token: item.address,
                 spender: config.contracts.paymaster,
-            },
-        ];
+            }));
 
         const approveCallData = soulWalletLib.Tokens.ERC20.getApproveCallData(approveData);
 
@@ -95,13 +95,9 @@ export default function useWallet() {
 
             const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
 
-            const paymasterAndData = soulWalletLib.getPaymasterData(
-                config.contracts.paymaster,
-                config.tokens.usdc,
-                maxUSDC,
-            );
+            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
 
-            console.log(`need ${maxUSDCFormatted} USDC`);
+            console.log(`need ${maxUSDCFormatted} USD`);
 
             return paymasterAndData;
         } else {
@@ -199,7 +195,10 @@ export default function useWallet() {
             bundlerUrl,
         });
 
+        console.log('before replace')
         await keystore.replaceAddress();
+        console.log('after replace')
+
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
@@ -232,8 +231,6 @@ export default function useWallet() {
         if (!signature) {
             throw new Error("Failed to sign");
         }
-
-        console.log('sig', signature)
 
         op.signWithSignature(account, signature || "");
 

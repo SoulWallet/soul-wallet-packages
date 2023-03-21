@@ -43,7 +43,7 @@ export default forwardRef<any>((props, ref) => {
         <div
             ref={ref}
             className={cn(
-                "h-full pt-11 pb-4 text-center flex flex-col justify-between  z-30 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-scroll",
+                "h-full pt-11 pb-8 text-center flex flex-col justify-between  z-30 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-scroll",
                 !visible && "hidden",
             )}
         >
@@ -73,14 +73,14 @@ export default forwardRef<any>((props, ref) => {
                     Recover Wallet
                 </a>
 
-                <div
+                {/* <div
                     className="mt-8 text-slate-500 text-sm cursor-pointer"
                     onClick={() => {
                         goWebsite("/launch");
                     }}
                 >
                     Go to Start Page {"(for test use)"}
-                </div>
+                </div> */}
             </div>
         </div>
     );

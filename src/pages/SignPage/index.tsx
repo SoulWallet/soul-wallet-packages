@@ -164,12 +164,16 @@ export default function SignPage() {
                     tabId: searchParams.tabId,
                 });
             } else if (actionType === "signMessageV4") {
+                console.log('data to parse', data)
                 const parsedData = JSON.parse(data);
 
                 await currentSignModal.show("", actionType, origin, true, data);
 
+                console.log('p', parsedData)
+
                 const signature = await keystore.signMessageV4(parsedData);
 
+                console.log('p sig', signature)
                 await browser.runtime.sendMessage({
                     target: "soul",
                     type: "response",
