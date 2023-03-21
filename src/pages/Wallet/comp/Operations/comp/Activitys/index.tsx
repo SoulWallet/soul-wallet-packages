@@ -45,8 +45,8 @@ export default function Activities() {
                     <img src={IconLoading} className="w-full" />
                 </div>
             )}
-            {historyList.map((item: any) => (
-                <ActivityItem item={item} key={historyList.trxHash} />
+            {historyList.map((item: any, index: number) => (
+                <ActivityItem key={index} item={item} />
             ))}
         </div>
     );
