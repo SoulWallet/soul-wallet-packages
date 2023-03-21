@@ -69,20 +69,20 @@ const providerToInject = {
 };
 
 const injectProvider = async () => {
-
     window.ethereum = providerToInject;
     window.soul = providerToInject;
-
-    // console.log('before', Bus)
+    // console.log("before");
     // const shouldInject = await Bus.send("shouldInject", "shouldInject");
-    // console.log('afterrr')
+    // console.log("afterrr", shouldInject);
     // if (shouldInject) {
     //     window.ethereum = providerToInject;
     //     window.soul = providerToInject;
     // }
 };
 
-injectProvider();
+setTimeout(()=>{
+    injectProvider();
+}, 3000)
 // const checkProvider = async () => {
 //     console.log("check provider", window.ethereum);
 

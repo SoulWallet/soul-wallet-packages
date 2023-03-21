@@ -1,10 +1,4 @@
 // @ts-nocheck
-/**
- * @notice
- * 1. web3.js is not compatiable with service worker
- *
- */
-
 import browser from "webextension-polyfill";
 import { getLocalStorage } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
@@ -45,6 +39,26 @@ browser.runtime.onMessage.addListener(async (msg) => {
             }
 
             break;
+
+        case "shouldInject":
+            const userAllowed = await getLocalStorage("shouldInject");
+
+            await browser.tabs.sendMessage(Number(tab.id), {
+                target: "soul",
+                type: "response",
+                action: "shouldInject",
+                data: userAllowed,
+                tabId: tab.id,
+            });
+            // await browser.runtime.sendMessage({
+            //     target: "soul",
+            //     type: "response",
+            //     action: "shouldInject",
+            //     data: userAllowed,
+            //     tabId: tab.id,
+            // });
+            break;
+
         case "approve":
             const { origin, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = msg.data;
 
@@ -81,18 +95,6 @@ browser.runtime.onMessage.addListener(async (msg) => {
             browser.runtime.sendMessage({
                 target: "soul",
                 data: userOpHash,
-            });
-            break;
-
-        case "shouldInject":
-            const userAllowed = await getLocalStorage("shouldInject");
-            console.log('return tab id', tab.id)
-            browser.runtime.sendMessage({
-                target: "soul",
-                data: userAllowed,
-                type: "response",
-                action: "shouldInject",
-                tabId: tab.id,
             });
             break;
     }

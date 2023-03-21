@@ -18,7 +18,6 @@ export default function Footer() {
 
     const checkShouldInject = async () => {
         const res: any = await getLocalStorage("shouldInject");
-        console.log("should inject local", res);
         setShouldInject(res);
     };
 

@@ -38,6 +38,7 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
 
             const bundlerEvent = bundler.sendUserOperation(operation);
             bundlerEvent.on("error", (err: any) => {
+                notify("Bundler Error", "");
                 throw new Error("Bundler Error");
             });
             bundlerEvent.on("send", (userOpHash: string) => {
