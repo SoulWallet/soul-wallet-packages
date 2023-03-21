@@ -4,7 +4,7 @@
  * @Autor: z.cejay@gmail.com
  * @Date: 2023-03-16 14:21:18
  * @LastEditors: cejay
- * @LastEditTime: 2023-03-16 14:36:50
+ * @LastEditTime: 2023-03-21 23:48:50
  */
 /**
  * Arbitrum Goerli
@@ -1407,7 +1407,7 @@ export default {
     scanUrl: "https://arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-main.soulwallets.me/rpc",
-    maxCostMultiplier: 130,
+    maxCostMultiplier: 120,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
