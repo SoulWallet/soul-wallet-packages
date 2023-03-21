@@ -4,7 +4,6 @@ import { persist } from "zustand/middleware";
 
 interface ISettingStore {
     bundlerUrl: string;
-    isDefaultProvider: boolean;
 }
 
 export const useSettingStore = create<ISettingStore>()(

@@ -6,7 +6,7 @@
  */
 
 import browser from "webextension-polyfill";
-import { getLocalStorage, notify } from "@src/lib/tools";
+import { getLocalStorage } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
@@ -85,8 +85,8 @@ browser.runtime.onMessage.addListener(async (msg) => {
             break;
 
         case "shouldInject":
-            const userAllowed = await browser.storage.local.get("shouldInject");
-
+            const userAllowed = await getLocalStorage("shouldInject");
+            console.log('return tab id', tab.id)
             browser.runtime.sendMessage({
                 target: "soul",
                 data: userAllowed,

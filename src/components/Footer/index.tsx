@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Switch from "../Switch";
 import { shallow } from "zustand/shallow";
 import browser from "webextension-polyfill";
+import { getLocalStorage } from "@src/lib/tools";
 import { useSettingStore } from "@src/store/settingStore";
 import IconHelp from "../../assets/icons/help.svg";
 import config from "@src/config";
@@ -16,7 +17,7 @@ export default function Footer() {
     };
 
     const checkShouldInject = async () => {
-        const res: any = await browser.storage.local.get("shouldInject");
+        const res: any = await getLocalStorage("shouldInject");
         console.log("should inject local", res);
         setShouldInject(res);
     };
