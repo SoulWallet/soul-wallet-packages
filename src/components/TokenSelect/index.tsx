@@ -46,7 +46,9 @@ export function TokenSelect({ label, labelTip, selectedAddress, onChange, ethOnl
 
                 <img src={IconToggle} className="w-3" />
             </div>
-            {tokenModalVisible && <TokenSelectModal ethOnly={ethOnly} onChange={onChange} onCancel={() => setTokenModalVisible(false)} />}
+            {tokenModalVisible && (
+                <TokenSelectModal ethOnly={ethOnly} onChange={onChange} onCancel={() => setTokenModalVisible(false)} />
+            )}
         </div>
     );
 }

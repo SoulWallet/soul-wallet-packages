@@ -68,7 +68,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-test-renderer: ^17.0.2
   shortid: ^2.2.16
-  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.28
+  soul-wallet-lib: github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.29
   style-loader: ^3.3.1
   svg-inline-loader: ^0.8.2
   tailwindcss: ^3.0.8
@@ -115,7 +115,7 @@ dependencies:
   react-jazzicon: 1.0.4_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.9.0_sfoxds7t5ydpegc3knd667wn6m
   shortid: 2.2.16
-  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/8c215e1608e258ef2d66f2e41421287f8cede218
+  soul-wallet-lib: github.com/proofofsoulprotocol/soulwalletlib/bb85165b5e3644dd602c268646ba81f9a907352c
   svg-inline-loader: 0.8.2
   util: 0.12.5
   web3: 1.9.0
@@ -5471,7 +5471,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.5
-      caniuse-lite: 1.0.30001468
+      caniuse-lite: 1.0.30001469
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -5483,7 +5483,7 @@ packages:
     hasBin: true
     dependencies:
       browserslist: 4.21.5
-      caniuse-lite: 1.0.30001468
+      caniuse-lite: 1.0.30001469
       normalize-range: 0.1.2
       num2fraction: 1.2.2
       picocolors: 0.2.1
@@ -6127,7 +6127,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001468
+      caniuse-lite: 1.0.30001469
       electron-to-chromium: 1.4.334
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
@@ -6370,8 +6370,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite/1.0.30001468:
-    resolution: {integrity: sha512-zgAo8D5kbOyUcRAgSmgyuvBkjrGk5CGYG5TYgFdpQv+ywcyEpo1LOWoG8YmoflGnh+V+UsNuKYedsoYs0hzV5A==}
+  /caniuse-lite/1.0.30001469:
+    resolution: {integrity: sha512-Rcp7221ScNqQPP3W+lVOYDyjdR6dC+neEQCttoNr5bAyz54AboB4iwpnWgyi8P4YUsPybVzT4LgWiBbI3drL4g==}
 
   /capture-exit/2.0.0:
     resolution: {integrity: sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==}
@@ -16089,7 +16089,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
+    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:
@@ -16097,10 +16097,10 @@ packages:
       ethereumjs-util: 6.2.1
     dev: false
 
-  github.com/proofofsoulprotocol/soulwalletlib/8c215e1608e258ef2d66f2e41421287f8cede218:
-    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/8c215e1608e258ef2d66f2e41421287f8cede218}
+  github.com/proofofsoulprotocol/soulwalletlib/bb85165b5e3644dd602c268646ba81f9a907352c:
+    resolution: {tarball: https://codeload.github.com/proofofsoulprotocol/soulwalletlib/tar.gz/bb85165b5e3644dd602c268646ba81f9a907352c}
     name: soul-wallet-lib
-    version: 0.1.0-alpha.28
+    version: 0.1.0-alpha.29
     dependencies:
       dotenv: 8.6.0
       ethereumjs-util: 7.1.5
