@@ -9,7 +9,7 @@ import config from "@src/config";
 import { ITokenItem } from "@src/lib/type";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 
-export function TokenSelect({ label, labelTip, selectedAddress, onChange }: ITokenSelect) {
+export function TokenSelect({ label, labelTip, selectedAddress, onChange, ethOnly }: ITokenSelect) {
     const [tokenModalVisible, setTokenModalVisible] = useState(false);
     const { getBalances } = useQuery();
     const { walletAddress } = useWalletContext();
@@ -46,7 +46,7 @@ export function TokenSelect({ label, labelTip, selectedAddress, onChange }: ITok
 
                 <img src={IconToggle} className="w-3" />
             </div>
-            {tokenModalVisible && <TokenSelectModal onChange={onChange} onCancel={() => setTokenModalVisible(false)} />}
+            {tokenModalVisible && <TokenSelectModal ethOnly={ethOnly} onChange={onChange} onCancel={() => setTokenModalVisible(false)} />}
         </div>
     );
 }

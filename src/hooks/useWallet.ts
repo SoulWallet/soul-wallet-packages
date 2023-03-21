@@ -23,7 +23,7 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (payToken: string, costOnly: boolean = false) => {
+    const activateWallet = async (payToken: string, paymasterApproved: boolean, costOnly: boolean = false) => {
         const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
@@ -42,18 +42,19 @@ export default function useWallet() {
             maxPriorityFeePerGas,
         );
 
-        // TODO, need user's approve
-        const approveData = config.assetsList
-            .filter((item: any) => item.payable)
-            .map((item: any) => ({
-                token: item.address,
-                spender: config.contracts.paymaster,
-            }));
+        if (paymasterApproved) {
+            const approveData = config.assetsList
+                .filter((item: any) => item.payable)
+                .map((item: any) => ({
+                    token: item.address,
+                    spender: config.contracts.paymaster,
+                }));
 
-        const approveCallData = soulWalletLib.Tokens.ERC20.getApproveCallData(approveData);
+            const approveCallData = soulWalletLib.Tokens.ERC20.getApproveCallData(approveData);
 
-        op.callGasLimit = approveCallData.callGasLimit;
-        op.callData = approveCallData.callData;
+            op.callGasLimit = approveCallData.callGasLimit;
+            op.callData = approveCallData.callData;
+        }
 
         // only get the cost
         if (costOnly) {
@@ -195,10 +196,9 @@ export default function useWallet() {
             bundlerUrl,
         });
 
-        console.log('before replace')
+        console.log("before replace");
         await keystore.replaceAddress();
-        console.log('after replace')
-
+        console.log("after replace");
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {

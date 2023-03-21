@@ -11,6 +11,7 @@ export interface IAccountSettingModal {
 }
 
 export interface ITokenSelectModal {
+    ethOnly: boolean;
     onChange: (val: string) => void;
     onCancel: () => void;
 }

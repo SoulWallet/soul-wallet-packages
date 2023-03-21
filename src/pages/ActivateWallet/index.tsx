@@ -22,6 +22,7 @@ export default function ActivateWallet() {
     const [step, setStep] = useState(0);
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
+    const [paymasterApproved, setPaymasterApproved] = useState(true);
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
     const { getTokenByAddress, getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ export default function ActivateWallet() {
     const doActivate = async () => {
         setLoading(true);
         try {
-            await activateWallet(payToken);
+            await activateWallet(payToken, paymasterApproved, false);
             getWalletType();
             navigate("/wallet");
             toast.success("Account activated");
@@ -67,7 +68,7 @@ export default function ActivateWallet() {
         setMaxCost("");
         const token = getTokenByAddress(payToken);
         setPayTokenSymbol(token.symbol);
-        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
+        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, paymasterApproved, true);
         setMaxCost(requireAmount);
     };
 
@@ -90,6 +91,12 @@ export default function ActivateWallet() {
         return () => clearInterval(intervalId);
     }, []);
 
+    useEffect(() => {
+        if (!paymasterApproved) {
+            setPayToken(config.zeroAddress);
+        }
+    }, [paymasterApproved]);
+
     return (
         <>
             <Navbar />
@@ -109,6 +116,7 @@ export default function ActivateWallet() {
                             <div className="h-5" />
                             <TokenSelect
                                 label="Gas"
+                                ethOnly={!paymasterApproved}
                                 labelTip="Hell world"
                                 selectedAddress={payToken}
                                 onChange={setPayToken}
@@ -121,7 +129,7 @@ export default function ActivateWallet() {
                             </div>
                         </div>
                         <div className="px-6">
-                            <ApprovePaymaster />
+                            <ApprovePaymaster value={paymasterApproved} onChange={setPaymasterApproved} />
                         </div>
                     </>
                 )}

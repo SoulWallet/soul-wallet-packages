@@ -36,9 +36,9 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
                     <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>
                         Download guardian list
                     </a>
-                    <a className={cn(linksStyle, "flex justify-between items-center")}>
+                    {/* <a className={cn(linksStyle, "flex justify-between items-center")}>
                         <ApprovePaymaster />
-                    </a>
+                    </a> */}
                     <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
                         View on explorer
                     </a>
