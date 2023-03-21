@@ -15,7 +15,6 @@ import IconUSDC from "@src/assets/tokens/usdc.svg";
 import IconDAI from "@src/assets/tokens/dai.png";
 import IconUSDT from "@src/assets/tokens/usdt.png";
 
-const paymasterToken_USDMC = "0x8Da746c5641a8720b641685E3679F4B7f294df2C";
 const paymasterToken_DAI = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
 const paymasterToken_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
 const paymasterToken_USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
@@ -29,15 +28,6 @@ export const assetsList = [
         decimals: 18,
         payable: true,
         paymaster: false,
-    },
-    {
-        icon: IconUSDC,
-        symbol: "Soul USD",
-        address: paymasterToken_USDMC,
-        name: "USDMC",
-        decimals: 6,
-        payable: true,
-        paymaster: true,
     },
     {
         icon: IconDAI,
@@ -1429,7 +1419,6 @@ export default {
     chainName: "Arbitrum",
     support1559: true,
     tokens: {
-        usdmc: paymasterToken_USDMC,
         usdc: paymasterToken_USDC,
         dai: paymasterToken_DAI,
         usdt: paymasterToken_USDT,
