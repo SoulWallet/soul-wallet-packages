@@ -80,9 +80,7 @@ const injectProvider = async () => {
     // }
 };
 
-setTimeout(()=>{
-    injectProvider();
-}, 3000)
+injectProvider();
 // const checkProvider = async () => {
 //     console.log("check provider", window.ethereum);
 
