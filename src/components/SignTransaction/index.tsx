@@ -61,8 +61,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (operation) {
                 setActiveOperation(operation);
-                const callDataDecode = decodeCalldata(operation.callData);
-                
+                const callDataDecode = (await decodeCalldata(operation.callData))[0];
                 setDecodedData(callDataDecode);
             }
 
@@ -173,7 +172,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <div className="mb-2 text-gray60">Message</div>
                     <div className="max-h-44 overflow-y-auto">
                         {signType === SignTypeEn.Account && "Get Accounts"}
-                        {signType === SignTypeEn.Transaction && (decodedData ? JSON.stringify(decodedData) : "")}
+                        {signType === SignTypeEn.Transaction && (
+                            <div className="capitalize">{decodedData ? decodedData.functionName : ""}</div>
+                        )}
                         {signType === SignTypeEn.Message && messageToSign}
                     </div>
                 </div>
