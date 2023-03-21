@@ -57,6 +57,7 @@ export default function useQuery() {
         console.log("call gas limit", userOp.callGasLimit);
         if (new BN(userOp.callGasLimit).isEqualTo(0)) {
             userOp.callGasLimit = BigNumber.from(estimateData.callGasLimit).add(21000).toHexString();
+            console.log('changed call gas limit to', userOp.callGasLimit)
         }
         userOp.preVerificationGas = estimateData.preVerificationGas;
         userOp.verificationGasLimit = estimateData.verificationGas;

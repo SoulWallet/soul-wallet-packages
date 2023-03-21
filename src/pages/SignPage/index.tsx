@@ -22,7 +22,7 @@ export default function SignPage() {
     const keystore = useKeystore();
 
     const formatOperation: any = async () => {
-        const { data, from, to, value } = searchParams;
+        const { data, from, to, value, gas } = searchParams;
 
         let fromAddress: any = ethers.utils.getAddress(from);
 
@@ -33,7 +33,7 @@ export default function SignPage() {
                 {
                     data: data,
                     from: fromAddress,
-                    // gas,
+                    gasLimit: gas,
                     to,
                     value,
                 },

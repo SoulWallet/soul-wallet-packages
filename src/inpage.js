@@ -14,7 +14,7 @@ const soulMiddleware = createSoulMiddleware({
         return [res];
     },
     processTransaction: async (txData) => {
-        console.log("readyt to process in processTransaction");
+        console.log("readyt to process in processTransaction", txData);
         const opData = await Bus.send("approve", "approveTransaction", txData);
         // opData.actionName = "Transaction";
         try {
