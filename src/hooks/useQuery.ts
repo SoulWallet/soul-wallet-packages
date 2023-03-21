@@ -111,9 +111,14 @@ export default function useQuery() {
 
         await estimateUserOperationGas(op);
 
-        const _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
+        let _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
 
-        const requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
+        let requiredPrefund;
+        if( op.paymasterAndData === '0x'){
+            requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
+        }else{
+            requiredPrefund =  _requiredPrefund.requiredPrefund;
+        }
 
         const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : BigNumber.from(0);
 
