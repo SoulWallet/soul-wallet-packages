@@ -20,11 +20,11 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
             if (validation.status !== 0) {
                 if (validation.status === 1) {
                     const result = validation.result as IFailedOp;
-                    // notify("Bundler Error", errMsg);
+                    notify("Bundler Error", result.reason);
                     throw new Error(result.reason);
                 } else {
                     const errMsg = `error code:${validation.status}`;
-                    // notify("Bundler Error", errMsg);
+                    notify("Bundler Error", validation.result.reason);
                     throw new Error(errMsg);
                 }
             }

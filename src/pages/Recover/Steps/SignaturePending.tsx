@@ -111,9 +111,6 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
     const getInfo = async (showLoading = false) => {
         const opHash = await getLocalStorage("recoverOpHash");
-        // if (showLoading) {
-        //     setLoadingList(true);
-        // }
         await getList(opHash);
         await getDetail(opHash);
         if (showLoading) {
@@ -126,7 +123,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         const intervalId = setInterval(() => {
             getInfo(false);
         }, 5000);
-        // return () => clearInterval(intervalId);
+        return () => clearInterval(intervalId);
     }, []);
 
     return hasError ? (

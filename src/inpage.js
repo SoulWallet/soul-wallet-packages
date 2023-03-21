@@ -3,7 +3,7 @@ import Bus from "./lib/Bus";
 import config from "../src/config";
 import { JsonRpcEngine } from "json-rpc-engine";
 import { providerFromEngine } from "eth-json-rpc-middleware";
-import createInfuraMiddleware from "eth-json-rpc-infura";
+// import createInfuraMiddleware from "eth-json-rpc-infura";
 import createSoulMiddleware from "./provider/createSoulMiddleware";
 // import shouldInjectProvider from "./provider/provider-injection";
 import handleRequests from "./provider/handleRequests";
@@ -52,19 +52,7 @@ const engine = new JsonRpcEngine();
 
 engine.push(soulMiddleware);
 
-// engine.push(
-//     createInfuraMiddleware({
-//         network: "goerli",
-//         projectId: "be71e669fc24426aa39ca6c212bf58c9",
-//     }),
-// );
-
 const provider = providerFromEngine(engine);
-
-// if (!shouldInjectProvider()) {
-//     return;
-// }
-// todo, should do some check if to inject the provider
 
 const providerToInject = {
     chainId: config.chainIdHex,
@@ -80,9 +68,15 @@ const providerToInject = {
     ...provider,
 };
 
-window.ethereum = providerToInject;
-window.soul = providerToInject;
+const injectProvider = async () => {
+    const shouldInject = await Bus.send("shouldInject", "shouldInject");
+    if (shouldInject) {
+        window.ethereum = providerToInject;
+        window.soul = providerToInject;
+    }
+};
 
+injectProvider();
 // const checkProvider = async () => {
 //     console.log("check provider", window.ethereum);
 

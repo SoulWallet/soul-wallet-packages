@@ -83,6 +83,18 @@ browser.runtime.onMessage.addListener(async (msg) => {
                 data: userOpHash,
             });
             break;
+
+        case "shouldInject":
+            const userAllowed = await browser.storage.local.get("shouldInject");
+
+            browser.runtime.sendMessage({
+                target: "soul",
+                data: userAllowed,
+                type: "response",
+                action: "shouldInject",
+                tabId: tab.id,
+            });
+            break;
     }
 });
 

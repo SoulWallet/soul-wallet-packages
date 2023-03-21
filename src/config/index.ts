@@ -7,35 +7,35 @@ import IconYearn from "@src/assets/dapps/yearn.svg";
 
 export const dappsList = [
     {
-        icon: Icon1inch,
-        title: "1inch",
-        category: "DeFi",
-        link: "https://app.1inch.io",
-    },
-    {
         icon: IconUniswap,
         title: "Uniswap",
         category: "DeFi",
-        link: "https://app.uniswap.org/",
+        link: "https://uniswap.dapp.soulwallet.io",
     },
-    {
-        icon: IconCurve,
-        title: "Curve",
-        category: "DeFi",
-        link: "https://curve.fi",
-    },
-    {
-        icon: IconYearn,
-        title: "Yearn",
-        category: "DeFi",
-        link: "https://yearn.finance/",
-    },
-    {
-        icon: IconAave,
-        title: "Aave",
-        category: "DeFi",
-        link: "https://app.aave.com/",
-    },
+    // {
+    //     icon: Icon1inch,
+    //     title: "1inch",
+    //     category: "DeFi",
+    //     link: "https://app.1inch.io",
+    // },
+    // {
+    //     icon: IconCurve,
+    //     title: "Curve",
+    //     category: "DeFi",
+    //     link: "https://curve.fi",
+    // },
+    // {
+    //     icon: IconYearn,
+    //     title: "Yearn",
+    //     category: "DeFi",
+    //     link: "https://yearn.finance/",
+    // },
+    // {
+    //     icon: IconAave,
+    //     title: "Aave",
+    //     category: "DeFi",
+    //     link: "https://app.aave.com/",
+    // },
 ];
 
 export default {

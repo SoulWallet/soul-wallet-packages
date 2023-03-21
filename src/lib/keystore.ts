@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 import Web3 from "web3";
 import config from "@src/config";
 import { SoulWalletLib } from "soul-wallet-lib";
-import sigUtil, { TypedDataUtils } from "@metamask/eth-sig-util";
+import { TypedDataUtils } from "@metamask/eth-sig-util";
 
 const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
 

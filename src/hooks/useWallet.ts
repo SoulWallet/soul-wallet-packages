@@ -165,10 +165,9 @@ export default function useWallet() {
 
     const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
-        // const actionName = "Recover Wallet";
 
         signatureList.forEach((item: any) => {
-            // TODO, need to judge
+            // IMPORTANT TODO, need to judge
             item.contract = false;
         });
 
