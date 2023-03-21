@@ -1417,7 +1417,7 @@ export default {
     scanUrl: "https://arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-main.soulwallets.me/rpc",
-    maxCostMultiplier: 120,
+    maxCostMultiplier: 130,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
