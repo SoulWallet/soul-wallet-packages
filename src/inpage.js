@@ -69,13 +69,17 @@ const providerToInject = {
 };
 
 const injectProvider = async () => {
-    console.log('before', Bus)
-    const shouldInject = await Bus.send("shouldInject", "shouldInject");
-    console.log('afterrr')
-    if (shouldInject) {
-        window.ethereum = providerToInject;
-        window.soul = providerToInject;
-    }
+
+    window.ethereum = providerToInject;
+    window.soul = providerToInject;
+
+    // console.log('before', Bus)
+    // const shouldInject = await Bus.send("shouldInject", "shouldInject");
+    // console.log('afterrr')
+    // if (shouldInject) {
+    //     window.ethereum = providerToInject;
+    //     window.soul = providerToInject;
+    // }
 };
 
 injectProvider();
