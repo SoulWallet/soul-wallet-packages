@@ -19,6 +19,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontSize: {
+                xxs: ["0.625rem", "1rem"],
+            },
             colors: {
                 redLight: "#EB5858",
                 warnRed: "#FE7575",

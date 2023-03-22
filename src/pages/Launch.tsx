@@ -4,7 +4,7 @@ import ModalV2 from "@src/components/ModalV2";
 import Statement, { AUTHORIZED_STORAGE_KEY } from "@src/components/Statement";
 import { StepActionTypeEn, useStepDispatchContext, CreateStepEn, RecoverStepEn } from "@src/context/StepContext";
 import useBrowser from "@src/hooks/useBrowser";
-import IconClose from '@src/assets/icons/close.svg';
+import IconClose from "@src/assets/icons/close.svg";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
@@ -72,6 +72,7 @@ export default function Launch() {
                             authorized ? "cursor-pointer" : "cursor-not-allowed opacity-70",
                         )}
                         onClick={() => {
+                            if (!authorized) return;
                             goWebsite("/recover");
                             handleJumpToTargetStep(RecoverStepEn.ResetPassword);
                         }}

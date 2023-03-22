@@ -13,6 +13,7 @@ interface IProps {
     errorMsg?: string;
     visible?: boolean;
     className?: string;
+    errorMsgClassName?: string;
     toggleVisibility?: () => void;
     onChange: (value: string) => void;
     buttonText?: string;
@@ -34,6 +35,7 @@ export default function InputWrapper({
     value,
     placeholder,
     errorMsg,
+    errorMsgClassName,
     visible,
     toggleVisibility,
     onChange,
@@ -64,7 +66,9 @@ export default function InputWrapper({
                         errorMsg && "border-alarmRed",
                     )}
                 />
-                <span className="absolute top-[50px] left-0 text-alarmRed text-xs">{errorMsg}</span>
+                <span className={`absolute top-[50px] left-0 text-alarmRed text-xs ${errorMsgClassName}`}>
+                    {errorMsg}
+                </span>
                 {visible !== undefined && (
                     <Icon
                         src={visible ? EyeOpen : EyeClose}
