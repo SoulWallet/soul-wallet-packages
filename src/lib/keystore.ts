@@ -10,6 +10,7 @@
 import { ethers } from "ethers";
 import Web3 from "web3";
 import config from "@src/config";
+import { getMessageType } from "@src/lib/tools";
 import { SoulWalletLib } from "soul-wallet-lib";
 import { TypedDataUtils } from "@metamask/eth-sig-util";
 
@@ -88,9 +89,7 @@ export default class KeyStore {
         const stagingKeystore = await getLocalStorage("stagingKeystore");
         const stagingPw = await getLocalStorage("stagingPw");
         await removeLocalStorage("stagingAccount");
-        // await removeLocalStorage("accountsAllowed");
         await removeLocalStorage("recoverOpHash");
-        // await clearLocalStorage();
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
         await setSessionStorage("pw", stagingPw);
     }
@@ -190,7 +189,14 @@ export default class KeyStore {
             return null;
         }
 
-        const signHash = ethers.utils.keccak256(Buffer.from(message, "utf-8"));
+        let signHash = null;
+
+        if (getMessageType(message) === "hash") {
+            signHash = message;
+            console.log("heyeeee");
+        } else {
+            signHash = ethers.utils.keccak256(Buffer.from(message, "utf-8"));
+        }
 
         return await this.getPackedSignature(signHash);
     }

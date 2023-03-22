@@ -42,7 +42,7 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
                 throw new Error("Bundler Error");
             });
             bundlerEvent.on("send", (userOpHash: string) => {
-                notify("Trsanction sent", "Your transaction was sent to bundler");
+                notify("Transaction sent", "Your transaction was sent to bundler");
                 console.log("sent: " + userOpHash);
             });
             bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
@@ -58,7 +58,7 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
                     });
                 }
 
-                notify("Trsanction success", "Your transaction was confirmed on chain");
+                notify("Transaction success", "Your transaction was confirmed on chain");
 
                 resolve(receipt.receipt);
             });

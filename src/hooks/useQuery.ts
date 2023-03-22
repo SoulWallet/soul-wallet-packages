@@ -57,10 +57,10 @@ export default function useQuery() {
         console.log("call gas limit", userOp.callGasLimit);
         if (new BN(userOp.callGasLimit).isEqualTo(0)) {
             userOp.callGasLimit = BigNumber.from(estimateData.callGasLimit).add(21000).toHexString();
-            console.log('changed call gas limit to', userOp.callGasLimit)
+            console.log("changed call gas limit to", userOp.callGasLimit);
         }
         userOp.preVerificationGas = estimateData.preVerificationGas;
-        userOp.verificationGasLimit = estimateData.verificationGas;
+        userOp.verificationGasLimit = BigNumber.from(estimateData.verificationGas).add(21000).toHexString();
     };
 
     const getGasPrice = async () => {
@@ -114,10 +114,10 @@ export default function useQuery() {
         let _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
 
         let requiredPrefund;
-        if( op.paymasterAndData === '0x'){
+        if (op.paymasterAndData === "0x") {
             requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
-        }else{
-            requiredPrefund =  _requiredPrefund.requiredPrefund;
+        } else {
+            requiredPrefund = _requiredPrefund.requiredPrefund;
         }
 
         const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : BigNumber.from(0);

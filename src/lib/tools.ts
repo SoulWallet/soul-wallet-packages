@@ -107,3 +107,11 @@ export const validateEmail = (email?: string) => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return emialRegex.test(String(email).toLowerCase());
 };
+
+export const getMessageType = (msg: string) => {
+    if (msg.startsWith("0x") && msg.length === 66) {
+        return "hash";
+    } else {
+        return "text";
+    }
+};

@@ -1,6 +1,7 @@
 import Bus from "../lib/Bus";
 import { ethers } from "ethers";
-import WalletABI from "@src/abi/Wallet.json";
+import { getMessageType } from "./tools";
+// import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
@@ -54,8 +55,10 @@ const signTypedDataV4 = async (params: any) => {
 };
 
 const personalSign = async (params: any) => {
+    const msg = params[0];
+    const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
     return await Bus.send("signMessage", "signMessage", {
-        data: ethers.utils.toUtf8String(params[0]),
+        data: msgToSign,
     });
 };
 

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, notify } from "@src/lib/tools";
 import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
@@ -95,6 +95,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 });
             } catch (err) {
                 console.log('err', err);
+                // notify("")
                 throw Error("User rejected");
             }
         }

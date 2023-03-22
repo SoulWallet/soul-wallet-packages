@@ -166,10 +166,9 @@ export default function useWallet() {
     const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
         const op = UserOperation.fromJSON(JSON.stringify(transferOp));
 
-        signatureList.forEach((item: any) => {
-            // IMPORTANT TODO, need to judge
-            item.contract = false;
-        });
+        for (let i = 0; i < signatureList.length; i++) {
+            signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
+        }
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
