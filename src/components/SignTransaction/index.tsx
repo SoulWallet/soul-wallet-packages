@@ -169,7 +169,11 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <div className="font-bold text-lg">{origin}</div>
                 </div>
                 <div className="info-box">
-                    <div className="mb-2 text-gray60">Message</div>
+                    <div className="mb-2 text-gray60">
+                        {signType === SignTypeEn.Account && "Account"}
+                        {signType === SignTypeEn.Transaction && "Transaction"}
+                        {signType === SignTypeEn.Message && "Message"}
+                    </div>
                     <div className="max-h-44 overflow-y-auto">
                         {signType === SignTypeEn.Account && "Get Accounts"}
                         {signType === SignTypeEn.Transaction && (

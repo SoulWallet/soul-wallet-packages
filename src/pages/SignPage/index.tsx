@@ -99,8 +99,6 @@ export default function SignPage() {
             return;
         }
 
-        console.log("tab id is", tabId);
-
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
