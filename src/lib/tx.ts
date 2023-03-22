@@ -32,7 +32,10 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
             }
 
             const result = validation.result as IValidationResult;
+            console.log('result', result)
+
             if (result.returnInfo.sigFailed) {
+                notify("Signature Error", "");
                 throw new Error(`signature error`);
             }
 

@@ -170,6 +170,8 @@ export default function useWallet() {
             signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
         }
 
+        console.log('sig list', signatureList)
+
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
         const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";

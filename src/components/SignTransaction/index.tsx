@@ -177,7 +177,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <div className="max-h-44 overflow-y-auto">
                         {signType === SignTypeEn.Account && "Get Accounts"}
                         {signType === SignTypeEn.Transaction && (
-                            <div className="capitalize">{decodedData ? decodedData.functionName : ""}</div>
+                            <div className="capitalize">Decoded: {decodedData ? decodedData.functionName : ""}</div>
                         )}
                         {signType === SignTypeEn.Message && messageToSign}
                     </div>
