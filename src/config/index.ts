@@ -1,8 +1,8 @@
-import Icon1inch from "@src/assets/dapps/1inch.svg";
+// import Icon1inch from "@src/assets/dapps/1inch.svg";
 import IconAave from "@src/assets/dapps/aave.svg";
-import IconCurve from "@src/assets/dapps/curve.png";
+// import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
-import IconYearn from "@src/assets/dapps/yearn.svg";
+// import IconYearn from "@src/assets/dapps/yearn.svg";
 // import envConf from './arb-goerli'
 
 export const dappsList = [
@@ -11,6 +11,12 @@ export const dappsList = [
         title: "Uniswap",
         category: "DeFi",
         link: "https://uniswap.dapp.soulwallet.io",
+    },
+    {
+        icon: IconAave,
+        title: "Aave",
+        category: "DeFi",
+        link: "https://app.aave.com/",
     },
     // {
     //     icon: Icon1inch,
@@ -29,12 +35,6 @@ export const dappsList = [
     //     title: "Yearn",
     //     category: "DeFi",
     //     link: "https://yearn.finance/",
-    // },
-    // {
-    //     icon: IconAave,
-    //     title: "Aave",
-    //     category: "DeFi",
-    //     link: "https://app.aave.com/",
     // },
 ];
 
