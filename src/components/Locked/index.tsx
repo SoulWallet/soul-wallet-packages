@@ -32,6 +32,7 @@ export default forwardRef<any>((props, ref) => {
             setUnlocking(true);
             await keyStore.unlock(password);
             setVisible(false);
+            setPassword('');
         } catch (err) {
             setPasswordError("Wrong password. Try again.");
         } finally {
