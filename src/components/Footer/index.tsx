@@ -26,7 +26,6 @@ export default function Footer() {
     }, []);
 
     return (
-        // <div className="px-6 py-3 flex items-center justify-between absolute bottom-0 left-0 right-0 footer-shadow">
         <div className="px-6 py-3 flex items-center justify-between footer-shadow relative bottom-0">
             <div className="flex items-center gap-[6px]">
                 <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
