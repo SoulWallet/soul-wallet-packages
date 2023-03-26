@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "@src/assets/logo.svg";
 import WalletSettingModal from "../WalletSettingModal";
+import ChainSelect from "../ChainSelect";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import IconMenu from "@src/assets/menu.svg";
 
@@ -23,6 +24,8 @@ export function Navbar({ backUrl }: IProps) {
                     <img src={Logo} className="w-8" />
                 </Link>
             )}
+
+            <ChainSelect />
 
             {!backUrl && (
                 <a className="btn btn-ghost btn-circle" onClick={() => setSettingVisible(true)}>

@@ -18,7 +18,7 @@ import ApprovePaymaster from "@src/components/ApprovePaymaster";
 import { EnAlign } from "@src/types/IAssets";
 
 export default function ActivateWallet() {
-    const { walletAddress, getWalletType, account } = useWalletContext();
+    const { walletAddress, getWalletType, account, walletType } = useWalletContext();
     const [step, setStep] = useState(0);
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
@@ -29,6 +29,12 @@ export default function ActivateWallet() {
     const navigate = useNavigate();
     const { activateWallet } = useWallet();
     const { balance } = useBalanceStore();
+
+    useEffect(() => {
+        if (walletType === "contract") {
+            navigate("/wallet");
+        }
+    }, [walletType]);
 
     const doActivate = async () => {
         setLoading(true);
@@ -89,6 +95,10 @@ export default function ActivateWallet() {
         }, 3000);
 
         return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        getWalletType();
     }, []);
 
     useEffect(() => {

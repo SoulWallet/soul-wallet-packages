@@ -90,6 +90,7 @@ export default function useTools() {
         });
         if (res.code === 200) {
             toast.success("Success");
+            return res;
         }
     };
 

@@ -193,7 +193,6 @@ export default class KeyStore {
 
         if (getMessageType(message) === "hash") {
             signHash = message;
-            console.log("heyeeee");
         } else {
             signHash = ethers.utils.keccak256(Buffer.from(message, "utf-8"));
         }

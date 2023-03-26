@@ -20,7 +20,7 @@ interface IWalletContext {
     // eoa, contract
     walletType: string;
     walletAddress: string;
-    getWalletType: () => Promise<void>;
+    getWalletType: () => Promise<string>;
     getAccount: () => Promise<void>;
     executeOperation: (operation: any, actionName?: string, gasFormatted?: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
@@ -33,7 +33,9 @@ export const WalletContext = createContext<IWalletContext>({
     account: "",
     walletType: "",
     walletAddress: "",
-    getWalletType: async () => {},
+    getWalletType: async () => {
+        return "";
+    },
     getAccount: async () => {},
     executeOperation: async () => {},
     replaceAddress: async () => {},
@@ -61,7 +63,9 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const getWalletType = async () => {
         const contractCode = await web3.eth.getCode(walletAddress);
-        setWalletType(contractCode !== "0x" ? "contract" : "eoa");
+        const wType = contractCode !== "0x" ? "contract" : "eoa";
+        setWalletType(wType);
+        return wType;
     };
 
     const executeOperation = async (
@@ -77,7 +81,11 @@ export const WalletContextProvider = ({ children }: any) => {
 
                 await estimateUserOperationGas(operation);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
+                const userOpHash = operation.getUserOpHashWithTimeRange(
+                    config.contracts.entryPoint,
+                    config.chainId,
+                    account,
+                );
 
                 const signature = await keystore.sign(userOpHash);
 
@@ -94,7 +102,7 @@ export const WalletContextProvider = ({ children }: any) => {
                     bundlerUrl,
                 });
             } catch (err) {
-                console.log('err', err);
+                console.log("err", err);
                 // notify("")
                 throw Error("User rejected");
             }

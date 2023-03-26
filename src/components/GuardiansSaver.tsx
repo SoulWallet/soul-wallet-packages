@@ -50,9 +50,11 @@ const GuardiansSaver = ({ onSave }: IProps) => {
 
             const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
-            await emailJsonFile(jsonToSave, email);
+            const res: any = await emailJsonFile(jsonToSave, email);
 
-            onSave(); // only call onSave() when email is sent successfully
+            if (res.code === 200) {
+                onSave();
+            }
         } catch {
             // maybe toast error message?
         } finally {
