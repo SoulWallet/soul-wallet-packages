@@ -28,7 +28,7 @@ export function TokenSelect({ label, labelTip, selectedAddress, onChange, ethOnl
         <div>
             <div className="mb-2 text-gray60 flex items-center gap-1">
                 <span>{label}</span>
-                {labelTip && <InfoTip title={labelTip} />}
+                {labelTip && <InfoTip title={labelTip} className="gas-tooltip" />}
             </div>
             <div
                 onClick={() => setTokenModalVisible(true)}

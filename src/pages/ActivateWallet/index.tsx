@@ -117,7 +117,7 @@ export default function ActivateWallet() {
                             <TokenSelect
                                 label="Gas"
                                 ethOnly={!paymasterApproved}
-                                labelTip="Hell world"
+                                labelTip="Gas fees are paid to crypto miners who process transactions on the network. They are set by the network and fluctuate based on network traffic and transaction complexity. Soul Wallet does not profit from gas fees."
                                 selectedAddress={payToken}
                                 onChange={setPayToken}
                             />

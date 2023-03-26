@@ -39,7 +39,7 @@ export default function AccountInfo({ account, action }: IProps) {
                     >
                         <img src={IconCopy} className="w-4" />
                         <span className="opacity-50 text-base text-black">
-                            {account.slice(0, 4)}...{account.slice(-4)}
+                            {account.slice(0, 5)}...{account.slice(-4)}
                         </span>
                     </div>
                 </div>

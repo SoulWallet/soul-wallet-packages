@@ -329,3 +329,7 @@ body {
     animation          : progress 3s infinite ease-in-out;
     animation-direction: normal;
 }
+
+.gas-tooltip::before{
+    max-width: 240px;
+}
