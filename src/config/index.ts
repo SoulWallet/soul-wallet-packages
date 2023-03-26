@@ -10,7 +10,7 @@ export const dappsList = [
         icon: IconUniswap,
         title: "Uniswap",
         category: "DeFi",
-        link: "https://uniswap.dapp.soulwallet.io",
+        link: "https://soul-dapp-uniswap.vercel.app",
     },
     {
         icon: IconAave,

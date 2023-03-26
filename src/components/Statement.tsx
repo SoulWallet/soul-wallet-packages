@@ -34,7 +34,7 @@ const Statement = () => {
                         result in the loss of user funds.
                     </li>
                     <li>
-                        3. Technological Risks: Soul Wallet is in its alpha stage, which means that the Soul Wallet and
+                        Technological Risks: Soul Wallet is in its alpha stage, which means that the Soul Wallet and
                         all related software, including blockchain software and smart-contracts, are experimental. Soul
                         Wallet is provided on an &quot;as is&quot; and &quot;as available&quot; basis, without warranty
                         of any kind, either expressed or implied, including, without limitation, warranties that the
