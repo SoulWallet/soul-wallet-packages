@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import ActivityItem from "./comp/ActivityItem";
-import LogoLoading from "@src/assets/logo-loading.gif";
 import IconEmpty from "@src/assets/empty.svg";
 import IconLoading from "@src/assets/activity-loading.gif";
 import useWalletContext from "@src/context/hooks/useWalletContext";

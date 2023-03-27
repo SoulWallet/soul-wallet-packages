@@ -1,11 +1,12 @@
 import React, { createContext, useState, useEffect, createRef } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
-import { getLocalStorage, notify } from "@src/lib/tools";
+import { getLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
+import Loading from "@src/components/Loading";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
 import useQuery from "@src/hooks/useQuery";
@@ -126,8 +127,9 @@ export const WalletContextProvider = ({ children }: any) => {
 
         const res = await keystore.checkLocked();
 
+        setCheckingLocked(false);
+
         if (res) {
-            console.log("ready to show");
             await current.show();
         }
     };
@@ -142,13 +144,15 @@ export const WalletContextProvider = ({ children }: any) => {
 
     useEffect(() => {
         const current = lockedModal.current;
-        if (!current || !location.hash) {
+
+        if (!current || !location) {
             return;
         }
-        setCheckingLocked(false);
 
         if (location.hash.indexOf("mode=web") === -1) {
             checkLocked();
+        } else {
+            setCheckingLocked(false);
         }
     }, [location.hash, lockedModal.current]);
 
@@ -167,8 +171,7 @@ export const WalletContextProvider = ({ children }: any) => {
                 showLocked,
             }}
         >
-            {/* {checkingLocked ? "checking" : children} */}
-            {children}
+            {!!checkingLocked ? "" : children}
             <SignTransaction ref={signModal} />
             <Locked ref={lockedModal} />
         </WalletContext.Provider>

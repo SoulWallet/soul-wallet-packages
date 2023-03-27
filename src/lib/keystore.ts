@@ -224,10 +224,5 @@ export default class KeyStore {
         if (signature) {
             return soulWalletLib.EIP1271.encodeSignature(ownerAddress, signature);
         }
-        // const selector = await walletContract.isValidSignature(
-        //     hashMsg,
-        //     packedSignature
-        // );
-        // expect(selector).to.equal("0x1626ba7e");
     }
 }
