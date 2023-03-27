@@ -98,7 +98,6 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
             }
         });
         setSignatureList(res.data.signatures);
-        // important TODO
         setProgress(Math.ceil((signedNum / res.data.signatures.length) * 100));
         onChange(`${signedNum}/${res.data.signatures.length}`);
     };
@@ -109,21 +108,24 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         setOpHash(res.data.opHash);
     };
 
-    const getInfo = async (showLoading = false) => {
+    const getInfo = async (init = false) => {
         const opHash = await getLocalStorage("recoverOpHash");
         await getList(opHash);
-        await getDetail(opHash);
-        if (showLoading) {
+        if (init) {
+            await getDetail(opHash);
             setLoadingList(false);
         }
     };
 
     useEffect(() => {
-        getInfo(true);
         const intervalId = setInterval(() => {
             getInfo(false);
         }, 5000);
         return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        getInfo(true);
     }, []);
 
     return hasError ? (

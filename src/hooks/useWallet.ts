@@ -85,7 +85,6 @@ export default function useWallet() {
     };
 
     const addPaymasterData: any = async (op: any, payToken: string) => {
-        // important todo, extract
         const { requireAmountInWei, requireAmount } = await getFeeCost(
             op,
             payToken === config.zeroAddress ? "" : payToken,

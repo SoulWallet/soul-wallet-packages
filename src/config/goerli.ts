@@ -35,7 +35,6 @@ export default {
     scanUrl: "https://goerli.etherscan.io",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
-    // IMPORTANT TODO, remove
     maxCostMultiplier: 110,
     upgradeDelay: 10,
     guardianDelay: 10,

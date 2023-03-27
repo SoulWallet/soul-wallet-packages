@@ -33,12 +33,10 @@ const StepComponent = () => {
 
     const onRecoverSubmit = async (wAddress: string, pToken: string) => {
         setWalletAddress(wAddress);
-        // todo, remove somewhere else
         await setLocalStorage("walletAddress", wAddress);
         setPayToken(pToken);
     };
 
-    // TODO: guardians & signed
     const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
         return {
             [RecoverStepEn.Start]: {
