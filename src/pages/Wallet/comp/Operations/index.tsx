@@ -28,7 +28,7 @@ export default function Operations() {
                     ))}
                 </div>
 
-                <div className={cn("overflow-y-auto", walletType === "eoa" ? "h-[150px]" : "h-[230px]")}>
+                <div className={cn("overflow-y-auto", walletType === "eoa" ? "h-[230px]" : "h-[290px]")}>
                     {activeTabIndex === 0 && <Assets />}
                     {activeTabIndex === 1 && <Activitys />}
                     {activeTabIndex === 2 && <Dapps />}

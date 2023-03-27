@@ -27,13 +27,19 @@ export default function Footer() {
 
     return (
         <div className="px-6 py-3 flex items-center justify-between footer-shadow relative bottom-0">
-            <div className="flex items-center gap-[6px]">
+            <div className="flex items-center gap-[6px] relative z-10">
                 <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
                 <InfoTip
                     title={shouldInject ? "Turn off Soul as your default wallet." : "Set Soul as your default wallet"}
                 />
             </div>
-            <a href={config.socials.telegram} target="_blank">
+            <div
+                className="flex items-center gap-1 absolute left-0 right-0 cursor-pointer tooltip tooltip-top  justify-center text-xs font-bold text-[#737373]"
+                data-tip="Test case only, please don't put too much money in"
+            >
+                Alpha Version
+            </div>
+            <a href={config.socials.telegram} target="_blank" className="relative z-10">
                 <img src={IconHelp} className="w-6 h-6" />
             </a>
         </div>

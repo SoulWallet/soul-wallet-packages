@@ -28,7 +28,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
     return (
         <div className="flex flex-col items-center justify-between">
-            <div className="flex items-center justify-between pt-[18px] pb-5 px-6 w-full border-b border-color">
+            <div className="flex items-center justify-between pt-[18px] pb-4 px-6 w-full">
                 <div>
                     <div className="text-black font-bold text-lg mb-2 text-left">Account 1</div>
                     <div
@@ -56,8 +56,13 @@ export default function AccountInfo({ account, action }: IProps) {
             </div>
 
             {action === "activate" && walletType === "eoa" && (
-                <div className="px-6 py-4 w-full">
-                    <Button type={"primary"} onClick={() => navigate('/activate-wallet')} className="w-full" loading={loading}>
+                <div className="px-6 pb-3 w-full">
+                    <Button
+                        type={"primary"}
+                        onClick={() => navigate("/activate-wallet")}
+                        className="w-full"
+                        loading={loading}
+                    >
                         Activate wallet
                     </Button>
                 </div>
