@@ -55,7 +55,6 @@ const StepComponent = () => {
                 title: "Enter Guardian Address",
                 element: <GuardiansChecking walletAddress={walletAddress} payToken={payToken} />,
             },
-            // TODO: dynamic change n/m
             [RecoverStepEn.SignaturePending]: {
                 title: `Waiting Signature (${recoverStatus}) `,
                 element: <SignaturePending onChange={setRecoverStatus} />,

@@ -51,7 +51,6 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
     };
 
     const handleNext = () => {
-        // TODO: add some check
         if (!address || !payToken) {
             return;
         }

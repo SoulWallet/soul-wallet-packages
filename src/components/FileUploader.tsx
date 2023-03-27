@@ -64,7 +64,6 @@ const FileUploader = ({ onFileChange }: IFileUploaderProps) => {
                     </>
                 )}
 
-                {/* TODO: tip */}
                 {status === UploadStatusEn.Success && <>Success</>}
             </div>
 

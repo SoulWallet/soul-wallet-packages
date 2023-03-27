@@ -13,7 +13,6 @@ interface IProps {
     action: string;
 }
 
-// todo, add loading for whole page before get account
 export default function AccountInfo({ account, action }: IProps) {
     const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);

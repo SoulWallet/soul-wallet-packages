@@ -70,7 +70,7 @@ export default function ActivateWallet() {
     };
 
     const onPayTokenChange = async () => {
-        // TODO, clear previous request
+        // important TODO, clear previous request
         setMaxCost("");
         const token = getTokenByAddress(payToken);
         setPayTokenSymbol(token.symbol);

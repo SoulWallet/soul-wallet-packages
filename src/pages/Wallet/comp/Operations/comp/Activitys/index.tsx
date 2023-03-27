@@ -17,13 +17,8 @@ export default function Activities() {
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
             walletAddress: walletAddress,
-            // TODO, add pagination
-            // option: {
-
-            // }
         });
         setLoading(false);
-        // formatHistory(res.data.ops);
         setHistoryList(res.data.ops);
     };
 

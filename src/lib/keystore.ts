@@ -128,12 +128,6 @@ export default class KeyStore {
 
     public async delete(): Promise<void> {
         this._privateKey = null;
-        // TODO, remove all localstorage
-        // await removeLocalStorage(this.keyStoreKey);
-        // await removeSessionStorage("pw");
-        // await removeLocalStorage("stagingAccount");
-        // await removeLocalStorage("stagingKeystore");
-        // await removeLocalStorage("stagingPw");
         await clearLocalStorage();
     }
 

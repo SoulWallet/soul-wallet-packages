@@ -1,6 +1,7 @@
 import config from "@src/config";
 import useLib from "./useLib";
 import api from "@src/lib/api";
+import QRCode from "qrcode";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
@@ -132,6 +133,10 @@ export default function useTools() {
         }
     };
 
+    const generateQrCode = async (text: string) => {
+        return await QRCode.toDataURL(text, { margin: 2 });
+    };
+
     return {
         getGuardianInitCode,
         verifyAddressFormat,
@@ -141,5 +146,6 @@ export default function useTools() {
         formatGuardianFile,
         getIconMapping,
         getJsonFromFile,
+        generateQrCode,
     };
 }
