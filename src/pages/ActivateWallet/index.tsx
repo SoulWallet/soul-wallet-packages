@@ -98,8 +98,11 @@ export default function ActivateWallet() {
     }, []);
 
     useEffect(() => {
+        if (!walletAddress) {
+            return;
+        }
         getWalletType();
-    }, []);
+    }, [walletAddress]);
 
     useEffect(() => {
         if (!paymasterApproved) {

@@ -1,17 +1,14 @@
 import browser from "webextension-polyfill";
+import { openWindow } from "@src/lib/tools";
 
 export default function useBrowser() {
     const goPlugin = async (route: string) => {
-        console.log('route is', route)
-        console.log(`route, chrome-extension://${browser.runtime.id}/popup.html#${route}`)
-        browser.windows.create({
-            type: "popup",
-            url: `chrome-extension://${browser.runtime.id}/popup.html#${route}`,
-            width: 360,
-            height: 600 + 28, // 28 is title bar
-            top: 0,
-            left: window.screen.width - 360,
+        const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
         });
+        const windowWidth = tabs[0].width;
+        openWindow(`chrome-extension://${browser.runtime.id}/popup.html#${route}`, windowWidth || window.screen.width);
     };
 
     const getFullscreenUrl = (path: string) => {

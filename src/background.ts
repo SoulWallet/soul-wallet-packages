@@ -1,15 +1,18 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
-import { getLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, openWindow } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
-browser.runtime.onMessage.addListener(async (msg) => {
+browser.runtime.onMessage.addListener(async (msg, sender) => {
     // get current active tab
-    const [tab] = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-    });
+    // const [tab] = await browser.tabs.query({
+    //     active: true,
+    //     currentWindow: true,
+    // });
+
+    const senderTabId = sender.tab?.id;
+    const windowWidth = sender.tab?.width;
 
     switch (msg.type) {
         case "response":
@@ -22,20 +25,15 @@ browser.runtime.onMessage.addListener(async (msg) => {
 
             // IMPORTANT TODO, also need to check lock state
             if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
-                browser.tabs.sendMessage(Number(tab.id), {
+                browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",
                     action: "getAccounts",
                     data: walletAddress,
-                    tabId: tab.id,
+                    tabId: senderTabId,
                 });
             } else {
-                // if user never allowed access
-                browser.windows.create({
-                    url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}`,
-                    type: "popup",
-                    ...msg.pos,
-                });
+                openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}`, windowWidth);
             }
 
             break;
@@ -43,46 +41,32 @@ browser.runtime.onMessage.addListener(async (msg) => {
         case "shouldInject":
             const userAllowed = await getLocalStorage("shouldInject");
 
-            await browser.tabs.sendMessage(Number(tab.id), {
+            await browser.tabs.sendMessage(Number(senderTabId), {
                 target: "soul",
                 type: "response",
                 action: "shouldInject",
                 data: userAllowed,
-                tabId: tab.id,
+                tabId: senderTabId,
             });
-            // await browser.runtime.sendMessage({
-            //     target: "soul",
-            //     type: "response",
-            //     action: "shouldInject",
-            //     data: userAllowed,
-            //     tabId: tab.id,
-            // });
+
             break;
 
         case "approve":
             const { origin, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = msg.data;
 
-            browser.windows.create({
-                url: `${msg.url}&tabId=${tab.id}&origin=${origin}&data=${data}&from=${from}&to=${to}&value=${value}&gas=${gas}&maxFeePerGas=${maxFeePerGas}&maxPriorityFeePerGas=${maxPriorityFeePerGas}`,
-                type: "popup",
-                ...msg.pos,
-            });
+            openWindow(
+                `${msg.url}&tabId=${senderTabId}&origin=${origin}&data=${data}&from=${from}&to=${to}&value=${value}&gas=${gas}&maxFeePerGas=${maxFeePerGas}&maxPriorityFeePerGas=${maxPriorityFeePerGas}`,
+                windowWidth,
+            );
+
             break;
 
         case "signMessage":
-            browser.windows.create({
-                url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}&data=${msg.data.data}`,
-                type: "popup",
-                ...msg.pos,
-            });
+            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}`, windowWidth);
             break;
 
         case "signMessageV4":
-            browser.windows.create({
-                url: `${msg.url}&tabId=${tab.id}&origin=${msg.data.origin}&data=${msg.data.data}`,
-                type: "popup",
-                ...msg.pos,
-            });
+            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}`, windowWidth);
             break;
 
         case "execute":

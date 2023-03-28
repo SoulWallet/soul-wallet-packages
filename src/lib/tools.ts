@@ -11,6 +11,18 @@ export function notify(title: string, message: string) {
     });
 }
 
+// open browser window especially for background
+export function openWindow(url: string, windowWidth: number) {
+    browser.windows.create({
+        url,
+        type: "popup",
+        width: 360,
+        height: 600 + 28, // 28 is title bar
+        top: 0,
+        left: windowWidth - 360,
+    });
+}
+
 export function copyText(value: string) {
     const copied = document.createElement("input");
     copied.setAttribute("value", value);
