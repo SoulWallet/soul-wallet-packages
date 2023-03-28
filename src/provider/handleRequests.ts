@@ -7,6 +7,7 @@ import config from "@src/config";
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const getAccounts = async () => {
+    console.log("get account 2");
     return [await Bus.send("getAccounts", "getAccounts")];
 };
 
@@ -88,7 +89,7 @@ const ethCall = async (params: any) => {
 
 export default async function handleRequests(call: any) {
     const { method, params } = call;
-    console.log("got request", call);
+    console.log("provider req", call);
     switch (method) {
         case "eth_chainId":
             return await chainId();

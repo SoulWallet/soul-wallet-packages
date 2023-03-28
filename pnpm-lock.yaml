@@ -54,6 +54,7 @@ specifiers:
   json-rpc-middleware-stream: ^2.1.1
   loglevel: ^1.8.1
   material-react-toastify: 1.0.1
+  mitt: ^3.0.0
   nanoid: ^4.0.1
   node-polyfill-webpack-plugin: ^2.0.1
   obj-multiplex: ^1.0.0
@@ -105,6 +106,7 @@ dependencies:
   json-rpc-middleware-stream: 2.1.1
   loglevel: 1.8.1
   material-react-toastify: 1.0.1_sfoxds7t5ydpegc3knd667wn6m
+  mitt: 3.0.0
   nanoid: 4.0.1
   node-polyfill-webpack-plugin: 2.0.1_webpack@5.76.2
   obj-multiplex: 1.0.0
@@ -11453,6 +11455,10 @@ packages:
       through2: 2.0.5
     dev: true
 
+  /mitt/3.0.0:
+    resolution: {integrity: sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==}
+    dev: false
+
   /mixin-deep/1.3.2:
     resolution: {integrity: sha512-WRoDn//mXBiJ1H40rqa3vH0toePwSsGb45iInWlTySa+Uu4k3tYUSxa2v1KqAiLtvlrSzaExqS1gtk96A9zvEA==}
     engines: {node: '>=0.10.0'}
@@ -16089,7 +16095,7 @@ packages:
     dev: true
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
+    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:

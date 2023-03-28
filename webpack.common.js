@@ -6,7 +6,7 @@ module.exports = {
     entry: {
         background: path.join(__dirname, "src/background.ts"),
         contentScripts: path.join(__dirname, "src/contentScripts.ts"),
-        inpage: path.join(__dirname, "src/inpage.js"),
+        inpage: path.join(__dirname, "src/inpage.ts"),
         // inject2: path.join(__dirname, "src/inject2.ts"),
         popup: path.join(__dirname, "src/popup/index.tsx"),
     },

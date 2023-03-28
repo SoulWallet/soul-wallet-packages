@@ -5,7 +5,7 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import api from "@src/lib/api";
 import BN from "bignumber.js";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -169,7 +169,7 @@ export default function useWallet() {
             signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
         }
 
-        console.log('sig list', signatureList)
+        console.log("sig list", signatureList);
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
@@ -216,6 +216,8 @@ export default function useWallet() {
         );
 
         await directSignAndSend(setGuardianOp, payToken);
+
+        await removeLocalStorage("recoverOpHash");
     };
 
     const directSignAndSend = async (op: any, payToken: string) => {

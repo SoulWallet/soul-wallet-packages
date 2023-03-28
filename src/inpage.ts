@@ -1,16 +1,21 @@
 // @ts-nocheck
 import Bus from "./lib/Bus";
-import config from "../src/config";
+import config from "./config";
 import { JsonRpcEngine } from "json-rpc-engine";
 import { providerFromEngine } from "eth-json-rpc-middleware";
+import mitt from "mitt";
 // import createInfuraMiddleware from "eth-json-rpc-infura";
 import createSoulMiddleware from "./provider/createSoulMiddleware";
 // import shouldInjectProvider from "./provider/provider-injection";
 import handleRequests from "./provider/handleRequests";
 
+const emitter = mitt();
+
 const soulMiddleware = createSoulMiddleware({
     getAccounts: async () => {
+        console.log("get account 1");
         const res = await Bus.send("getAccounts", "getAccounts");
+        emitter.emit("connect", res);
         return [res];
     },
     processTransaction: async (txData) => {
@@ -65,18 +70,37 @@ const providerToInject = {
         const res = await Bus.send("getAccounts", "getAccounts");
         return [res];
     },
+    on: (eventName) => {
+        console.log("listen to event name", eventName);
+        // message
+        // connect
+        // error
+        // disconnect
+        // close
+        // accountsChanged
+        // chainChanged
+        emitter.on(eventName, (data) => {
+            console.log("got event name", eventName);
+            return data;
+        });
+    },
     ...provider,
 };
 
-const injectProvider = async () => {
-    const shouldInject = await Bus.send("shouldInject", "shouldInject");
-    if (shouldInject) {
-        window.ethereum = providerToInject;
-        window.soul = providerToInject;
-    }
-};
+window.ethereum = providerToInject;
+window.soul = providerToInject;
 
-injectProvider();
+
+// const proxiedProvider = new Proxy(providerToInject, {});
+// const injectProvider = async () => {
+//     const shouldInject = await Bus.send("shouldInject", "shouldInject");
+//     if (shouldInject) {
+//         window.ethereum = providerToInject;
+//         window.soul = providerToInject;
+//     }
+// };
+
+// injectProvider();
 // const checkProvider = async () => {
 //     console.log("check provider", window.ethereum);
 

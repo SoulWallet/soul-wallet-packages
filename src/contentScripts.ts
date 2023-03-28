@@ -1,6 +1,17 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
 
+function injectScript(file, node) {
+    console.log("ready to inject");
+    var th = document.getElementsByTagName(node)[0];
+    var s = document.createElement("script");
+    s.setAttribute("type", "text/javascript");
+    s.setAttribute("src", file);
+    th.insertBefore(s, th.children[0]);
+}
+
+injectScript(browser.runtime.getURL("js/inpage.js"), "html");
+
 function sendMessage(data) {
     data.url = `chrome-extension://${browser.runtime.id}/popup.html#/sign?action=${data.action}`;
     data.pos = {
@@ -11,16 +22,6 @@ function sendMessage(data) {
     };
     browser.runtime.sendMessage(data);
 }
-
-function injectScript(file, node) {
-    var th = document.getElementsByTagName(node)[0];
-    var s = document.createElement("script");
-    s.setAttribute("type", "text/javascript");
-    s.setAttribute("src", file);
-    th.insertBefore(s, th.children[0]);
-}
-
-injectScript(browser.runtime.getURL("js/inpage.js"), "html");
 
 // pass message to background
 window.addEventListener(
