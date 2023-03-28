@@ -4,6 +4,7 @@ specifiers:
   '@babel/core': ^7.11.6
   '@babel/preset-env': ^7.11.5
   '@babel/preset-typescript': ^7.10.4
+  '@metamask/eth-sig-util': ^5.0.2
   '@storybook/addon-essentials': ^6.4.9
   '@storybook/addon-interactions': ^6.4.9
   '@storybook/builder-webpack5': ^6.4.9
@@ -44,7 +45,6 @@ specifiers:
   eth-json-rpc-filters: ^5.0.0
   eth-json-rpc-infura: ^5.1.0
   eth-json-rpc-middleware: ^9.0.1
-  eth-sig-util: ^3.0.1
   ethereumjs-util: ^7.1.5
   ethers: ^5.7.1
   immer: ^9.0.19
@@ -85,6 +85,7 @@ specifiers:
   zustand: ^4.3.3
 
 dependencies:
+  '@metamask/eth-sig-util': 5.0.2
   '@types/qrcode': 1.5.0
   '@types/react-router-dom': 5.3.3
   '@zxcvbn-ts/core': 2.2.1
@@ -98,7 +99,6 @@ dependencies:
   eth-json-rpc-filters: 5.1.0
   eth-json-rpc-infura: 5.1.0
   eth-json-rpc-middleware: 9.0.1
-  eth-sig-util: 3.0.1
   ethereumjs-util: 7.1.5
   ethers: 5.7.2
   immer: 9.0.21
@@ -8118,16 +8118,6 @@ packages:
       ethereumjs-util: 5.2.1
     dev: false
 
-  /eth-sig-util/3.0.1:
-    resolution: {integrity: sha512-0Us50HiGGvZgjtWTyAI/+qTzYPMLy5Q451D0Xy68bxq1QMWdoOddDwGvsqcFT27uohKgalM9z/yxplyt+mY2iQ==}
-    deprecated: Deprecated in favor of '@metamask/eth-sig-util'
-    dependencies:
-      ethereumjs-abi: 0.6.8
-      ethereumjs-util: 5.2.1
-      tweetnacl: 1.0.3
-      tweetnacl-util: 0.15.1
-    dev: false
-
   /ethereum-bloom-filters/1.0.10:
     resolution: {integrity: sha512-rxJ5OFN3RwjQxDcFP2Z5+Q9ho4eIdEmSc2ht0fCu8Se9nbXjZ7/031uXoUYJ87KHCOdVeiUuwSnoS7hmYAGVHA==}
     dependencies:
@@ -8161,13 +8151,6 @@ packages:
       '@noble/secp256k1': 1.7.1
       '@scure/bip32': 1.1.5
       '@scure/bip39': 1.1.1
-    dev: false
-
-  /ethereumjs-abi/0.6.8:
-    resolution: {integrity: sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA==}
-    dependencies:
-      bn.js: 4.12.0
-      ethereumjs-util: 6.2.1
     dev: false
 
   /ethereumjs-util/5.2.1:

@@ -44,7 +44,7 @@ export default function useWallet() {
 
         if (paymasterApproved) {
             const approveData = config.assetsList
-                .filter((item: any) => item.payable)
+                .filter((item: any) => item.paymaster)
                 .map((item: any) => ({
                     token: item.address,
                     spender: config.contracts.paymaster,

@@ -15,8 +15,6 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
 
     return new Promise(async (resolve, reject) => {
         try {
-            debugger;
-
             const validation = await bundler.simulateValidation(operation);
 
             console.log("validation result", validation);

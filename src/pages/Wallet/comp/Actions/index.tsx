@@ -9,7 +9,7 @@ import IconSendLight from "@src/assets/icons/send-light.svg";
 
 const Button = ({ icon, iconLight, title, onClick }: any) => (
     <a
-        className="bg-gray20 hover:bg-blue group transition-all hover:text-white py-2 px-5 flex cursor-pointer justify-center items-center gap-2 rounded-[20px]"
+        className="bg-[#f2f2f2] hover:bg-blue group transition-all hover:text-white py-2 px-5 flex cursor-pointer justify-center items-center gap-2 rounded-[20px]"
         onClick={onClick}
     >
         <img src={icon} className="w-6 h-6 group-hover:hidden" />

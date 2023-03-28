@@ -203,7 +203,6 @@ export default class KeyStore {
         if (!this._privateKey) {
             return null;
         }
-
         const signBuffer = TypedDataUtils.eip712Hash(typedData as any, "V4" as any);
 
         const signHash = `0x${Buffer.from(signBuffer).toString("hex")}`;

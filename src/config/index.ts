@@ -18,6 +18,18 @@ export const dappsList = [
         category: "DeFi",
         link: "https://app.aave.com/",
     },
+    {
+        icon: IconAave,
+        title: "SushiSwap",
+        category: "DeFi",
+        link: "https://www.sushi.com/swap",
+    },
+    {
+        icon: IconAave,
+        title: "GMX",
+        category: "DeFi",
+        link: "https://app.gmx.io/",
+    },
     // {
     //     icon: Icon1inch,
     //     title: "1inch",

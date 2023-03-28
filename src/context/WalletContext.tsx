@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
-import Loading from "@src/components/Loading";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
 import useQuery from "@src/hooks/useQuery";
