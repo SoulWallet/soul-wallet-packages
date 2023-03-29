@@ -8,6 +8,7 @@ import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
 import config from "@src/config";
 import useKeystore from "@src/hooks/useKeystore";
+import { notify } from "@src/lib/tools";
 import useQuery from "@src/hooks/useQuery";
 const web3 = new Web3(config.provider);
 
@@ -102,9 +103,8 @@ export const WalletContextProvider = ({ children }: any) => {
                     bundlerUrl,
                 });
             } catch (err) {
-                console.log("err", err);
-                // notify("")
-                throw Error("User rejected");
+                notify("Error", String(err));
+                throw Error(String(err));
             }
         }
     };

@@ -91,19 +91,19 @@ export default function useWallet() {
         );
 
         if (payToken !== config.zeroAddress) {
-            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
+            const maxUSD = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
-            const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
+            const maxUSDFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
 
-            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
+            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSD);
 
-            console.log(`need ${maxUSDCFormatted} USD`);
+            console.log(`need ${maxUSDFormatted} USD`);
 
-            return paymasterAndData;
+            return { paymasterAndData, requireAmountInWei: maxUSD, requireAmount: maxUSDFormatted };
         } else {
             // op.paymasterAndData = "0x";
             console.log(`need ${requireAmount} ETH`);
-            return "0x";
+            return { paymasterAndData: "0x", requireAmountInWei, requireAmount };
         }
     };
 
@@ -129,7 +129,11 @@ export default function useWallet() {
             throw new Error("recoveryOp is null");
         }
 
-        op.paymasterAndData = await addPaymasterData(op, payToken);
+        const { paymasterAndData, requireAmountInWei } = await addPaymasterData(op, payToken);
+
+        console.log('PPPPP', paymasterAndData)
+
+        op.paymasterAndData = paymasterAndData;
 
         await estimateUserOperationGas(op);
 
@@ -146,6 +150,8 @@ export default function useWallet() {
 
         console.log("op hash", opHash);
         const res: any = await api.recovery.create({
+            tokenAddress: payToken,
+            amountInWei: requireAmountInWei.toString(),
             chainId: config.chainId,
             entrypointAddress: config.contracts.entryPoint,
             guardianAddress: guardianInitCode.address,
@@ -168,8 +174,6 @@ export default function useWallet() {
         for (let i = 0; i < signatureList.length; i++) {
             signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
         }
-
-        console.log("sig list", signatureList);
 
         const guardianInitCode = getGuardianInitCode(guardiansList);
 
@@ -221,7 +225,9 @@ export default function useWallet() {
     };
 
     const directSignAndSend = async (op: any, payToken: string) => {
-        op.paymasterAndData = await addPaymasterData(op, payToken);
+        const { paymasterAndData } = await addPaymasterData(op, payToken);
+
+        op.paymasterAndData = paymasterAndData;
 
         await estimateUserOperationGas(op);
 

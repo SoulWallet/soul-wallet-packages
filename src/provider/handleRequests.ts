@@ -58,6 +58,7 @@ const signTypedDataV4 = async (params: any) => {
 const personalSign = async (params: any) => {
     const msg = params[0];
     const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
+
     return await Bus.send("signMessage", "signMessage", {
         data: msgToSign,
     });

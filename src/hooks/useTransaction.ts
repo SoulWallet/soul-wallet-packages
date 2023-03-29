@@ -37,7 +37,11 @@ export default function useTransaction() {
             amountInWei,
         );
 
-        await executeOperation(op, actionName);
+        try {
+            await executeOperation(op, actionName);
+        } catch (err) {
+            console.warn(err);
+        }
     };
 
     const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
@@ -63,7 +67,11 @@ export default function useTransaction() {
             return;
         }
 
-        await executeOperation(op, actionName);
+        try {
+            await executeOperation(op, actionName);
+        } catch (err) {
+            console.warn(err);
+        }
     };
 
     return {

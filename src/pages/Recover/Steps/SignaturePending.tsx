@@ -5,6 +5,8 @@ import closeIcon from "@src/assets/icons/close.svg";
 import loadingGif from "@src/assets/skeleton_loading.gif";
 import React, { useEffect, useState } from "react";
 import { toast } from "material-react-toastify";
+import BN from "bignumber.js";
+import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";
 import api from "@src/lib/api";
 import useWallet from "@src/hooks/useWallet";
@@ -57,6 +59,11 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     const [opDetail, setOpDetail] = useState<any>({});
     const [opHash, setOpHash] = useState("");
     const [recoveringWallet, setRecoveringWallet] = useState(false);
+    const [recoverTokenAddress, setRecoverTokenAddress] = useState("");
+    const [recoverTokenSymbol, setRecoverTokenSymbol] = useState("");
+    const [needAmount, setNeedAmount] = useState("");
+    const [userBalance, setUserBalance] = useState("");
+    const { balanceOf } = useErc20Contract();
 
     const handleOpenShareModal = () => {
         setShowShareModal(true);
@@ -104,8 +111,22 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
     const getDetail = async (opHash: string) => {
         const res = await api.recovery.getOp(opHash);
+
+        const tokenInfo = config.assetsList.filter((item: any) => item.address === res.data.tokenAddress)[0];
+
+        const { decimals } = tokenInfo;
+
+        const amountFormatted = new BN(res.data.amountInWei).shiftedBy(-decimals).toString();
+
+        // setNeedAmountString(`${amountFormatted} ${tokenInfo.symbol}`);
+        setRecoverTokenSymbol(tokenInfo.symbol);
+        setNeedAmount(amountFormatted);
+        setRecoverTokenAddress(res.data.tokenAddress);
+
         setOpDetail(res.data.userOp);
         setOpHash(res.data.opHash);
+
+        getUserBalance(res.data.tokenAddress);
     };
 
     const getInfo = async (init = false) => {
@@ -116,6 +137,25 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
             setLoadingList(false);
         }
     };
+
+    const getUserBalance = async (tokenAddress: string) => {
+        if (!tokenAddress) {
+            return;
+        }
+        const res = await balanceOf(tokenAddress);
+        setUserBalance(res);
+    };
+
+    useEffect(() => {
+        if (!recoverTokenAddress) {
+            return;
+        }
+
+        const intervalId = setInterval(() => {
+            getUserBalance(recoverTokenAddress);
+        }, 5000);
+        return () => clearInterval(intervalId);
+    }, [recoverTokenAddress]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -131,11 +171,24 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     return hasError ? (
         <ErrorBlock onRefresh={getInfo} />
     ) : (
-        <div className="relative pb-100 -mx-4">
+        <div className="relative pb-100 -mx-4 bg-white">
             <div>
                 {loadingList && <img src={loadingGif} className="p-6" />}
                 {!loadingList &&
                     signatureList.map((item: ISignaturesItem, idx: number) => <SignatureItem key={idx} {...item} />)}
+            </div>
+            <div className="mt-8 px-6 text-lg">
+                This wallet address require{" "}
+                <span className="text-[#3E58FA]">
+                    {needAmount} {recoverTokenSymbol}
+                </span>{" "}
+                fee to recover.
+                <br />
+                You current balance is{" "}
+                <span className="text-[#3E58FA]">
+                    {userBalance} {recoverTokenSymbol}
+                </span>
+                .
             </div>
             <div className="bg-white relative inset-x-0 bottom-0 w-full h-[100px] flex flex-row items-center justify-evenly gap-x-5 rounded-b-md px-4">
                 <Button className="w-[calc(50%-12px)]" onClick={handleOpenShareModal}>
@@ -145,7 +198,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
                     className="w-[calc(50%-12px)]"
                     loading={recoveringWallet}
                     type="primary"
-                    disabled={progress < 50}
+                    disabled={progress < 50 || new BN(userBalance).isLessThan(needAmount)}
                     onClick={doRecover}
                 >
                     Recover

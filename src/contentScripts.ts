@@ -2,7 +2,6 @@
 import browser from "webextension-polyfill";
 
 function injectScript(file, node) {
-    console.log("ready to inject");
     var th = document.getElementsByTagName(node)[0];
     var s = document.createElement("script");
     s.setAttribute("type", "text/javascript");

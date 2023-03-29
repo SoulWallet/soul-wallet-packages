@@ -2,16 +2,12 @@
 import IconAave from "@src/assets/dapps/aave.svg";
 // import IconCurve from "@src/assets/dapps/curve.png";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
+import IconSushiswap from "@src/assets/dapps/sushiswap.svg";
+import IconGmx from "@src/assets/dapps/gmx.svg";
 // import IconYearn from "@src/assets/dapps/yearn.svg";
 // import envConf from './arb-goerli'
 
 export const dappsList = [
-    {
-        icon: IconUniswap,
-        title: "Uniswap",
-        category: "DeFi",
-        link: "https://uniswap-soulw.vercel.app/#/swap",
-    },
     {
         icon: IconAave,
         title: "Aave",
@@ -19,16 +15,22 @@ export const dappsList = [
         link: "https://app.aave.com/",
     },
     {
-        icon: IconAave,
+        icon: IconSushiswap,
         title: "SushiSwap",
         category: "DeFi",
         link: "https://www.sushi.com/swap",
     },
     {
-        icon: IconAave,
+        icon: IconGmx,
         title: "GMX",
         category: "DeFi",
         link: "https://app.gmx.io/",
+    },
+    {
+        icon: IconUniswap,
+        title: "Uniswap",
+        category: "DeFi",
+        link: "https://uniswap-soulw.vercel.app/#/swap",
     },
     // {
     //     icon: Icon1inch,

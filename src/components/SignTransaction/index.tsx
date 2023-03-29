@@ -144,7 +144,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         <div
             ref={ref}
             className={cn(
-                "flex flex-col justify-between pb-6 text-base h-full z-20 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-auto",
+                "flex flex-col justify-between pb-6 text-base h-full z-20 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-hidden",
                 !visible && "hidden",
             )}
         >

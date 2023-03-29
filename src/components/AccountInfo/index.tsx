@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountSettingModal from "../AccountSettingModal";
+import {toast} from 'material-react-toastify'
 import AddressIcon from "../AddressIcon";
 import cn from "classnames";
 import { copyText } from "@src/lib/tools";
@@ -14,7 +15,7 @@ interface IProps {
 }
 
 export default function AccountInfo({ account, action }: IProps) {
-    const [copied, setCopied] = useState<boolean>(false);
+    // const [copied, setCopied] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
     const { walletType } = useWalletContext();
@@ -22,7 +23,8 @@ export default function AccountInfo({ account, action }: IProps) {
 
     const doCopy = () => {
         copyText(account);
-        setCopied(true);
+        // setCopied(true);
+        toast.success('Copied');
     };
 
     return (
@@ -32,8 +34,7 @@ export default function AccountInfo({ account, action }: IProps) {
                     <div className="text-black font-bold text-lg mb-2 text-left">Account 1</div>
                     <div
                         className="gap-1 flex items-center cursor-pointer tooltip address"
-                        data-tip={copied ? "Copied" : "Copy address"}
-                        onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
+                        data-tip="Copy address"
                         onClick={doCopy}
                     >
                         <img src={IconCopy} className="w-4" />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
+import {toast} from 'material-react-toastify'
 import IconCopy from "@src/assets/copy.svg";
 import useTools from "@src/hooks/useTools";
 import { copyText } from "@src/lib/tools";
@@ -11,13 +12,14 @@ interface IReceiveCode {
 }
 
 export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressTop = false }: IReceiveCode) {
-    const [copied, setCopied] = useState<boolean>(false);
+    // const [copied, setCopied] = useState<boolean>(false);
     const [imgSrc, setImgSrc] = useState<string>("");
     const { generateQrCode } = useTools();
 
     const doCopy = () => {
         copyText(walletAddress);
-        setCopied(true);
+        // setCopied(true);
+        toast.success('Copied')
     };
 
     const generateQR = async (text: string) => {
@@ -46,8 +48,8 @@ export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressT
             <div
                 className="flex gap-1 items-center justify-center tooltip gap-tooltip cursor-pointer"
                 onClick={doCopy}
-                data-tip={copied ? "Copied" : "Copy address"}
-                onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
+                // data-tip={copied ? "Copied" : "Copy address"}
+                // onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
             >
                 <img src={IconCopy} />
                 <span>Copy</span>

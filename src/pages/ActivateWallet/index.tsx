@@ -44,7 +44,7 @@ export default function ActivateWallet() {
             navigate("/wallet");
             toast.success("Account activated");
         } catch (err) {
-            toast.error("Failed to activate account");
+            toast.error(String(err));
             console.log("activate error", err);
         } finally {
             setLoading(false);

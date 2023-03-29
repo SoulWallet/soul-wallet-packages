@@ -54,7 +54,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             return;
         }
 
-        const tokenBalance = balance.get(tokenAddress);
+        const tokenBalance = balance.get(sendToken);
 
         if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
             toast.error("Balance not enough");
@@ -62,10 +62,10 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         }
         setSending(true);
         try {
-            if (tokenAddress === config.zeroAddress) {
+            if (sendToken === config.zeroAddress) {
                 await sendEth(receiverAddress, amount);
             } else {
-                await sendErc20(tokenAddress, receiverAddress, amount);
+                await sendErc20(sendToken, receiverAddress, amount);
             }
             goBack();
         } finally {
