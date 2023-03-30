@@ -103,8 +103,12 @@ export const WalletContextProvider = ({ children }: any) => {
                     bundlerUrl,
                 });
             } catch (err) {
-                notify("Error", String(err));
-                throw Error(String(err));
+                if (err === "User reject") {
+                    console.warn("User rejected");
+                } else {
+                    notify("Error", String(err));
+                    throw Error(String(err));
+                }
             }
         }
     };

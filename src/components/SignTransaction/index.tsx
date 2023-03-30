@@ -23,7 +23,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
-    const [actionName, setActionName] = useState<string>("");
+    // const [actionName, setActionName] = useState<string>("");
     const [origin, setOrigin] = useState<string>("");
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});
@@ -46,7 +46,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             keepVisible: boolean,
             _messageToSign: string = "",
         ) {
-            setActionName(_actionName);
+            // setActionName(_actionName);
             setOrigin(origin);
 
             setKeepModalVisible(keepVisible || false);
@@ -80,7 +80,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     }));
 
     const onReject = async () => {
-        promiseInfo.reject();
+        promiseInfo.reject("User reject");
         if (!keepModalVisible) {
             setVisible(false);
             setSigning(false);

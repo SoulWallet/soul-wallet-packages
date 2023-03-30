@@ -1424,10 +1424,10 @@ export default {
         usdt: paymasterToken_USDT,
     },
     contracts: {
-        walletLogic: "0x9F8241410C00a24Bf2eFE5bf42226645fb1F3839",
-        guardianLogic: "0x1277450427963DeB16CfEB8c58C4aC55F33A5c89",
+        walletLogic: "0x37E74B160Aeb56E958A34f0e441cAB3023ff4784",
+        guardianLogic: "0xebf0e763d87BA132AfC22f25437a71E130292FAD ",
         entryPoint: "0x0576a174D229E3cFA37253523E645A78A0C91B57",
-        paymaster: "0xB6Bc5912cF87c29524c82Bc3E1dF1C98e2AAAf59",
+        paymaster: "0x7F9b24C77f8806C6334981B4D1d9070c8d4B9c91",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
     },
 };
