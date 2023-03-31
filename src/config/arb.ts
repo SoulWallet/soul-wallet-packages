@@ -1425,7 +1425,7 @@ export default {
     },
     contracts: {
         walletLogic: "0x37E74B160Aeb56E958A34f0e441cAB3023ff4784",
-        guardianLogic: "0xebf0e763d87BA132AfC22f25437a71E130292FAD ",
+        guardianLogic: "0xebf0e763d87BA132AfC22f25437a71E130292FAD",
         entryPoint: "0x0576a174D229E3cFA37253523E645A78A0C91B57",
         paymaster: "0x7F9b24C77f8806C6334981B4D1d9070c8d4B9c91",
         create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",

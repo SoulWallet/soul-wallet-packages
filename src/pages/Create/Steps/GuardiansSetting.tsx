@@ -34,6 +34,7 @@ export default function GuardiansSetting() {
             const guardianAddress = guardianList.map((item) => item.address);
 
             generateWalletAddress(eoaAddress, guardianAddress, true);
+
             handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
         } catch (err) {
             console.error(err);
