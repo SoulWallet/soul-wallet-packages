@@ -38,16 +38,32 @@ export default function useQuery() {
         if (!walletAddress) {
             return;
         }
-        config.assetsList.forEach(async (item: ITokenItem) => {
-            let balanceNum: string = "0";
-            if (item.symbol === "ETH") {
-                balanceNum = await getEthBalance();
-            } else {
-                balanceNum = await erc20Contract.balanceOf(item.address);
-            }
 
-            setBalance(item.address, balanceNum);
+        const ethBalance = await getEthBalance();
+        setBalance(config.zeroAddress, ethBalance);
+
+        const erc20Balance = await erc20Contract.batchBalanceOf(
+            config.assetsList.filter((item: any) => item.symbol !== "ETH").map((item: any) => item.address),
+        );
+
+        Object.keys(erc20Balance).forEach((key: string) => {
+            const balanceRaw = erc20Balance[key].callsReturnContext[0].returnValues[0].hex;
+
+            const balanceDecimal = erc20Balance[key].callsReturnContext[1].returnValues[0];
+
+            setBalance(key, new BN(balanceRaw).shiftedBy(-balanceDecimal).toString());
         });
+
+        // config.assetsList.forEach(async (item: ITokenItem) => {
+        //     let balanceNum: string = "0";
+        //     if (item.symbol === "ETH") {
+        //         balanceNum = await getEthBalance();
+        //     } else {
+        //         balanceNum = await erc20Contract.balanceOf(item.address);
+        //     }
+
+        //     setBalance(item.address, balanceNum);
+        // });
     };
 
     const estimateUserOperationGas = async (userOp: any) => {

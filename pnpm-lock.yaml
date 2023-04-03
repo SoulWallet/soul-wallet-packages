@@ -45,6 +45,7 @@ specifiers:
   eth-json-rpc-filters: ^5.0.0
   eth-json-rpc-infura: ^5.1.0
   eth-json-rpc-middleware: ^9.0.1
+  ethereum-multicall: ^2.16.1
   ethereumjs-util: ^7.1.5
   ethers: ^5.7.1
   immer: ^9.0.19
@@ -100,6 +101,7 @@ dependencies:
   eth-json-rpc-filters: 5.1.0
   eth-json-rpc-infura: 5.1.0
   eth-json-rpc-middleware: 9.0.1
+  ethereum-multicall: 2.16.1
   ethereumjs-util: 7.1.5
   ethers: 5.7.2
   immer: 9.0.21
@@ -8135,6 +8137,16 @@ packages:
       '@noble/secp256k1': 1.7.1
       '@scure/bip32': 1.1.5
       '@scure/bip39': 1.1.1
+    dev: false
+
+  /ethereum-multicall/2.16.1:
+    resolution: {integrity: sha512-24MgG22WGHxavIsb6E46Pa6MpkHAkP3pau6R0rQFB4m9gQIxpv5by0Gj4vx7FMjXisFbjlcxVP32hZQXYRP6Yw==}
+    dependencies:
+      '@ethersproject/providers': 5.7.2
+      ethers: 5.7.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /ethereumjs-util/5.2.1:

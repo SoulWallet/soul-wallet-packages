@@ -113,7 +113,7 @@ export default function ActivateWallet() {
     return (
         <>
             <Navbar />
-            <div className="pb-28">
+            <div className="pb-28 overflow-y-auto">
                 <div className="px-6">
                     <PageTitle title="Activate Wallet" onBack={goBack} />
                 </div>

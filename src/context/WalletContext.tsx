@@ -1,5 +1,6 @@
-import React, { createContext, useState, useEffect, createRef } from "react";
+import React, { createContext, useState, useEffect, createRef, useCallback, useMemo } from "react";
 import Web3 from "web3";
+import { Multicall, ContractCallResults, ContractCallContext } from "ethereum-multicall";
 import Runtime from "@src/lib/Runtime";
 import { getLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
@@ -17,6 +18,7 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 interface IWalletContext {
     web3: Web3;
     ethersProvider: ethers.providers.JsonRpcProvider;
+    multicall: any;
     account: string;
     // eoa, contract
     walletType: string;
@@ -31,6 +33,7 @@ interface IWalletContext {
 export const WalletContext = createContext<IWalletContext>({
     web3,
     ethersProvider,
+    multicall: {},
     account: "",
     walletType: "",
     walletAddress: "",
@@ -104,11 +107,11 @@ export const WalletContextProvider = ({ children }: any) => {
                 });
             } catch (err) {
                 if (err === "User reject") {
-                    console.warn("User rejected");
+                    console.warn(err);
                 } else {
                     notify("Error", String(err));
-                    throw Error(String(err));
                 }
+                throw Error(String(err));
             }
         }
     };
@@ -117,6 +120,14 @@ export const WalletContextProvider = ({ children }: any) => {
         await keystore.replaceAddress();
         await getAccount();
     };
+
+    const multicall = useMemo(() => {
+        if (!ethersProvider) {
+            return;
+        }
+
+        return new Multicall({ ethersProvider, tryAggregate: true });
+    }, [ethersProvider]);
 
     useEffect(() => {
         if (!walletAddress) {
@@ -164,6 +175,7 @@ export const WalletContextProvider = ({ children }: any) => {
             value={{
                 web3,
                 ethersProvider,
+                multicall,
                 account,
                 walletType,
                 walletAddress,

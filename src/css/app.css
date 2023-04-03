@@ -275,6 +275,10 @@ body {
     font-family: 'Inter';
 }
 
+.modal-box{
+    background: #fff;
+}
+
 .input:focus {
     outline: none;
     border : 1px solid #3840ff;

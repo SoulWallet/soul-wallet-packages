@@ -81,6 +81,7 @@
         "eth-json-rpc-filters": "^5.0.0",
         "eth-json-rpc-infura": "^5.1.0",
         "eth-json-rpc-middleware": "^9.0.1",
+        "ethereum-multicall": "^2.16.1",
         "ethereumjs-util": "^7.1.5",
         "ethers": "^5.7.1",
         "immer": "^9.0.19",
