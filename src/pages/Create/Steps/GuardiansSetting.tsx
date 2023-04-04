@@ -51,8 +51,7 @@ export default function GuardiansSetting() {
     return (
         <div>
             <p className="tip-text mt-6 mb-4  whitespace-pre-wrap">
-                The Safe is a MultiSig account that is controlled by its signer keys. Please refer to the respective
-                help centre article to learn more about this.
+                Guardians are a list of Ethereum wallet addresses that can help you recover your wallet.
             </p>
 
             <GuardianForm ref={formRef} />
