@@ -9,6 +9,12 @@ import IconGmx from "@src/assets/dapps/gmx.svg";
 
 export const dappsList = [
     {
+        icon: IconUniswap,
+        title: "Uniswap",
+        category: "DeFi",
+        link: "https://app.uniswap.org/#/swap",
+    },
+    {
         icon: IconAave,
         title: "Aave",
         category: "DeFi",
@@ -26,12 +32,7 @@ export const dappsList = [
         category: "DeFi",
         link: "https://app.gmx.io/",
     },
-    {
-        icon: IconUniswap,
-        title: "Uniswap",
-        category: "DeFi",
-        link: "https://uniswap-soulw.vercel.app/#/swap",
-    },
+
     // {
     //     icon: Icon1inch,
     //     title: "1inch",
