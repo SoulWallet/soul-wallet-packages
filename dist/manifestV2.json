@@ -1,32 +1,28 @@
 {
     "manifest_version": 2,
+    "version": "0.0.15",
     "name": "Soul Wallet",
-    "description": "Soul Wallet",
-    "version": "0.0.1",
-    "browser_action": {
-        "default_icon": {
-            "16": "icon-16.png",
-            "48": "icon-48.png",
-            "128": "icon-128.png"
-        },
-        "default_popup": "popup.html",
-        "default_title": "Soul Wallet"
-    },
+    "description": "Smart contract wallet for Ethereum",
+    "permissions": ["activeTab", "notifications", "storage", "background"],
     "background": {
-        "scripts": ["js/background.js"],
-        "persistent": true
+        "persistent": true,
+        "scripts": ["js/background.js"]
     },
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["js/contentScripts.js"]
-        }
-    ],
-    "web_accessible_resources": ["js/inpage.js"],
+    "browser_action": {
+        "default_title": "Soul Wallet",
+        "default_icon": "icon-128.png",
+        "default_popup": "popup.html"
+    },
     "icons": {
         "16": "icon-16.png",
         "48": "icon-48.png",
         "128": "icon-128.png"
     },
-    "permissions": ["activeTab", "notifications", "storage", "background"]
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+            "js": ["js/contentScripts.js"]
+        }
+    ],
+    "web_accessible_resources": ["*.js", "*.json"]
 }

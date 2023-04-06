@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Soul Wallet",
-    "description": "Soul Wallet",
-    "version": "0.0.1",
+    "description": "Smart contract wallet for Ethereum",
+    "version": "0.0.15",
     "action": {
         "default_icon": {
             "16": "icon-16.png",
@@ -14,9 +14,6 @@
     "background": {
         "service_worker": "js/background.js",
         "type": "module"
-    },
-    "content_security_policy": {
-        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
     },
     "content_scripts": [
         {

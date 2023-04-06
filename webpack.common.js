@@ -14,7 +14,10 @@ module.exports = {
         path: path.join(__dirname, "dist/js"),
         filename: "[name].js",
     },
-    plugins: [new NodePolyfillPlugin(), new DotEnv()],
+    plugins: [
+        new NodePolyfillPlugin(),
+        new DotEnv()
+    ],
     module: {
         rules: [
             {

@@ -150,6 +150,7 @@ export default function SignPage() {
                     },
                 });
             } else if (actionType === "signMessage") {
+
                 await currentSignModal.show("", actionType, origin, true, data);
 
                 const signature = await keystore.signMessage(data);
@@ -162,11 +163,14 @@ export default function SignPage() {
                     tabId: searchParams.tabId,
                 });
             } else if (actionType === "signMessageV4") {
+
                 const parsedData = JSON.parse(data);
 
                 await currentSignModal.show("", actionType, origin, true, data);
 
                 const signature = await keystore.signMessageV4(parsedData);
+
+                console.log('sig na', signature)
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -179,7 +183,7 @@ export default function SignPage() {
         } catch (err) {
             console.log(err);
         } finally {
-            window.close();
+            // window.close();
         }
     };
 

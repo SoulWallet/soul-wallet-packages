@@ -1,6 +1,6 @@
 {
     "name": "soul-wallet-plugin",
-    "version": "0.0.1",
+    "version": "0.0.15",
     "description": "Browser extension for soul wallet",
     "main": "index.js",
     "scripts": {
@@ -8,9 +8,7 @@
         "dev": "webpack -w --config webpack.dev.js",
         "test": "jest --config=jest.config.js",
         "lint": "eslint --fix -c ./.eslintrc.js \"src/**/*.ts*\"",
-        "prettify": "prettier --write \"src/**/*.ts*\"",
-        "story": "start-storybook -p 6006",
-        "build-story": "build-storybook"
+        "prettify": "prettier --write \"src/**/*.ts*\""
     },
     "keywords": [
         "ERC-4337",
@@ -20,23 +18,19 @@
         "react"
     ],
     "license": "MIT",
+    "resolutions": {
+        "@chainsafe/as-sha256": "0.4.0"
+      },
     "devDependencies": {
         "@babel/core": "^7.11.6",
         "@babel/preset-env": "^7.11.5",
         "@babel/preset-typescript": "^7.10.4",
-        "@storybook/addon-essentials": "^6.4.9",
-        "@storybook/addon-interactions": "^6.4.9",
-        "@storybook/builder-webpack5": "^6.4.9",
-        "@storybook/manager-webpack5": "^6.4.9",
-        "@storybook/react": "^6.4.9",
-        "@storybook/testing-library": "^0.0.7",
         "@types/chrome": "^0.0.124",
         "@types/jest": "^26.0.14",
         "@types/lodash": "^4.14.191",
         "@types/node": "^14.11.8",
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.2",
-        "@types/react-test-renderer": "^17.0.1",
         "@types/webextension-polyfill": "^0.9.0",
         "@typescript-eslint/eslint-plugin": "^4.4.1",
         "@typescript-eslint/parser": "^4.4.1",
@@ -56,7 +50,6 @@
         "postcss": "^8.4.5",
         "postcss-loader": "^6.2.1",
         "prettier": "^2.1.2",
-        "react-test-renderer": "^17.0.2",
         "style-loader": "^3.3.1",
         "tailwindcss": "^3.0.8",
         "ts-jest": "^26.4.1",
@@ -67,7 +60,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@metamask/eth-sig-util": "^5.0.2",
+        "@metamask/eth-sig-util": "^4.0.1",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
         "@zxcvbn-ts/core": "^2.2.1",
@@ -80,30 +73,22 @@
         "eth-block-tracker": "^4.4.2",
         "eth-json-rpc-filters": "^5.0.0",
         "eth-json-rpc-infura": "^5.1.0",
-        "eth-json-rpc-middleware": "^9.0.1",
         "ethereum-multicall": "^2.16.1",
         "ethereumjs-util": "^7.1.5",
         "ethers": "^5.7.1",
         "immer": "^9.0.19",
         "json-rpc-engine": "^6.1.0",
         "json-rpc-middleware-stream": "^2.1.1",
-        "loglevel": "^1.8.1",
         "material-react-toastify": "1.0.1",
-        "mitt": "^3.0.0",
         "nanoid": "^4.0.1",
         "node-polyfill-webpack-plugin": "^2.0.1",
-        "obj-multiplex": "^1.0.0",
-        "pump": "^3.0.0",
         "qrcode": "^1.5.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-jazzicon": "^1.0.4",
         "react-router-dom": "^6.3.0",
-        "shortid": "^2.2.16",
         "soul-wallet-lib": "github:proofofsoulprotocol/soulwalletlib#v0.1.0-alpha.32",
         "strict-event-emitter": "^0.5.0",
-        "svg-inline-loader": "^0.8.2",
-        "util": "^0.12.4",
         "web3": "^1.7.5",
         "webextension-polyfill": "^0.9.0",
         "zustand": "^4.3.3"
