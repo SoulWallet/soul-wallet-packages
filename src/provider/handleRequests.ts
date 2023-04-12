@@ -12,13 +12,13 @@ const getAccounts = async () => {
 };
 
 const sendTransaction = async (params: any) => {
-    let param = params[0];
+    params.forEach((item: any) => {
+        if (!item.value) {
+            item.value = "0x0";
+        }
+    });
 
-    if (!param.value) {
-        param.value = "0x0";
-    }
-
-    const opData: any = await Bus.send("approve", "approveTransaction", param);
+    const opData: any = await Bus.send("approve", "approveTransaction", { txns: params });
 
     try {
         return await Bus.send("execute", "signTransaction", opData);
@@ -44,12 +44,6 @@ const getTransactionByHash = async (params: any) => {
 };
 
 const signTypedDataV4 = async (params: any) => {
-    // console.log("sign params", params);
-    // return await Bus.send("signMessage", "signMessageV4", {
-    //     data: params.data,
-    // });
-    // console.log('Or', params)
-
     return await Bus.send("signMessageV4", "signMessageV4", {
         data: params[1],
     });

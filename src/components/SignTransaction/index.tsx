@@ -61,7 +61,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (operation) {
                 setActiveOperation(operation);
-                const callDataDecode = (await decodeCalldata(operation.callData))[0];
+                const callDataDecode = await decodeCalldata(operation.callData);
                 setDecodedData(callDataDecode);
             }
 
@@ -177,7 +177,15 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     <div className="max-h-44 overflow-y-auto">
                         {signType === SignTypeEn.Account && "Get Accounts"}
                         {signType === SignTypeEn.Transaction && (
-                            <div className="capitalize">{decodedData ? decodedData.functionName : ""}</div>
+                            <div>
+                                {decodedData && decodedData.length > 0
+                                    ? decodedData.map((item: any, index: number) => (
+                                          <span className="mr-1 capitalize" key={index}>
+                                              {index + 1}.{item.functionName}
+                                          </span>
+                                      ))
+                                    : "Contract interaction"}
+                            </div>
                         )}
                         {signType === SignTypeEn.Message && messageToSign}
                     </div>

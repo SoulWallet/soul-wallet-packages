@@ -131,8 +131,6 @@ export default function useWallet() {
 
         const { paymasterAndData, requireAmountInWei } = await addPaymasterData(op, payToken);
 
-        console.log('PPPPP', paymasterAndData)
-
         op.paymasterAndData = paymasterAndData;
 
         await estimateUserOperationGas(op);

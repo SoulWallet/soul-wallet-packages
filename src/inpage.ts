@@ -11,51 +11,7 @@ import handleRequests from "./provider/handleRequests";
 
 const emitter = new Emitter();
 
-// const soulMiddleware = createSoulMiddleware({
-//     getAccounts: async () => {
-//         console.log("get account 1");
-//         const res = await Bus.send("getAccounts", "getAccounts");
-//         // emitter.emit("connect", res);
-//         return [res];
-//     },
-//     processTransaction: async (txData) => {
-//         console.log("readyt to process in processTransaction", txData);
-//         const opData = await Bus.send("approve", "approveTransaction", txData);
-//         // opData.actionName = "Transaction";
-//         try {
-//             return await Bus.send("execute", "signTransaction", opData);
-//         } catch (err) {
-//             throw new Error("Failed to execute");
-//         }
-//     },
-//     processEthSignMessage: () => {
-//         console.log("sign.");
-//     },
-//     processTypedMessage: () => {
-//         console.log("sign.");
-//     },
-//     processTypedMessageV3: () => {
-//         console.log("sign.");
-//     },
-//     processTypedMessageV4: async (params) => {
-//         return await Bus.send("signMessageV4", "signMessageV4", {
-//             data: params.data,
-//         });
-//     },
-//     processPersonalMessage: () => {
-//         console.log("sign.");
-//     },
-//     processDecryptMessage: () => {
-//         console.log("sign.");
-//     },
-//     processEncryptionPublicKey: () => {
-//         console.log("sign.");
-//     },
-// });
-
 const engine = new JsonRpcEngine();
-
-// engine.push(soulMiddleware);
 
 const provider = engine;
 

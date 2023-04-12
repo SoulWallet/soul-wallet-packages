@@ -52,10 +52,10 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "approve":
-            const { origin, data, from, to, value, gas, maxFeePerGas, maxPriorityFeePerGas } = msg.data;
+            const { origin, txns } = msg.data;
 
             openWindow(
-                `${msg.url}&tabId=${senderTabId}&origin=${origin}&data=${data}&from=${from}&to=${to}&value=${value}&gas=${gas}&maxFeePerGas=${maxFeePerGas}&maxPriorityFeePerGas=${maxPriorityFeePerGas}`,
+                `${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}`,
                 windowWidth,
             );
 

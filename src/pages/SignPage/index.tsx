@@ -22,22 +22,12 @@ export default function SignPage() {
     const keystore = useKeystore();
 
     const formatOperation: any = async () => {
-        const { data, from, to, value, gas } = searchParams;
-
-        let fromAddress: any = ethers.utils.getAddress(from);
-
-        const nonce = await soulWalletLib.Utils.getNonce(from, ethersProvider);
+        const { txns } = searchParams;
 
         try {
-            const rawTxs = [
-                {
-                    data: data,
-                    from: fromAddress,
-                    gasLimit: gas,
-                    to,
-                    value,
-                },
-            ];
+            const rawTxs = JSON.parse(txns);
+
+            const nonce = await soulWalletLib.Utils.getNonce(rawTxs[0].from, ethersProvider);
 
             const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
@@ -64,13 +54,7 @@ export default function SignPage() {
             actionType: param.get("action"),
             tabId: param.get("tabId"),
             origin: param.get("origin"),
-            data: param.get("data"),
-            from: param.get("from"),
-            to: param.get("to"),
-            value: param.get("value"),
-            gas: param.get("gas"),
-            maxFeePerGas: param.get("maxFeePerGas"),
-            maxPriorityFeePerGas: param.get("maxPriorityFeePerGas"),
+            txns: param.get("txns"),
         });
     }, [params[0]]);
 
@@ -150,7 +134,6 @@ export default function SignPage() {
                     },
                 });
             } else if (actionType === "signMessage") {
-
                 await currentSignModal.show("", actionType, origin, true, data);
 
                 const signature = await keystore.signMessage(data);
@@ -163,14 +146,13 @@ export default function SignPage() {
                     tabId: searchParams.tabId,
                 });
             } else if (actionType === "signMessageV4") {
-
                 const parsedData = JSON.parse(data);
 
                 await currentSignModal.show("", actionType, origin, true, data);
 
                 const signature = await keystore.signMessageV4(parsedData);
 
-                console.log('sig na', signature)
+                console.log("sig na", signature);
 
                 await browser.runtime.sendMessage({
                     target: "soul",
