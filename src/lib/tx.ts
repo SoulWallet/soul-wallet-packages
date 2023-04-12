@@ -9,6 +9,8 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 const soulWalletLib = new SoulWalletLib();
 
 export const executeTransaction = async (operation: any, tabId: any, bundlerUrl: any) => {
+    console.log('User OP: ', operation)
+
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
     await bundler.init();
