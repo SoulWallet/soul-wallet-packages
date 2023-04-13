@@ -35,6 +35,14 @@ const gasPrice = async () => {
     return (await ethersProvider.getGasPrice())._hex;
 };
 
+const getCode = async (params: any) => {
+    return await ethersProvider.getCode(params[0], params[1]);
+};
+
+const getBalance = async (params: any) => {
+    return (await ethersProvider.getBalance(params[0], params[1]))._hex;
+};
+
 const getTransactionReceipt = async (params: any) => {
     return await ethersProvider.getTransactionReceipt(params[0]);
 };
@@ -100,6 +108,12 @@ export default async function handleRequests(call: any) {
             return await estimateGas(params);
         case "eth_call":
             return await ethCall(params);
+        case "eth_getCode":
+            return await getCode(params);
+        case "eth_getBalance":
+            const foo = await getBalance(params);
+            console.log("Ba", foo);
+            return foo;
         case "eth_gasPrice":
             return await gasPrice();
         case "eth_getTransactionReceipt":

@@ -195,6 +195,7 @@ export default class KeyStore {
             signHash = web3.utils.keccak256(buf)
         }
 
+
         console.log('sign hash', signHash)
 
         return await this.getPackedSignature(signHash);
