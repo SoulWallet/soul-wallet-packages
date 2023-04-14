@@ -111,9 +111,7 @@ export default async function handleRequests(call: any) {
         case "eth_getCode":
             return await getCode(params);
         case "eth_getBalance":
-            const foo = await getBalance(params);
-            console.log("Ba", foo);
-            return foo;
+            return await getBalance(params);
         case "eth_gasPrice":
             return await gasPrice();
         case "eth_getTransactionReceipt":

@@ -55,6 +55,7 @@ export default function SignPage() {
             tabId: param.get("tabId"),
             origin: param.get("origin"),
             txns: param.get("txns"),
+            data: param.get("data"),
         });
     }, [params[0]]);
 

@@ -188,17 +188,25 @@ export default class KeyStore {
         if (getMessageType(message) === "hash") {
             signHash = message;
         } else {
-            // ethers.utils.keccak256(Buffer.from(message, "utf-8"))
-            // signHash = ethers.utils.hashMessage(message);
-            const buf:any = Buffer.from(message, "utf-8")
+            signHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(message));
 
-            signHash = web3.utils.keccak256(buf)
+            const buf: any = Buffer.from(message, "utf-8");
+            const signHash2 = web3.utils.keccak256(buf);
+
+            const signHash3 = web3.utils.sha3(message);
+
+            const signHash4 = ethers.utils.hashMessage(message);
+
+            const prefix = Buffer.from("\x19Ethereum Signed Message:\n");
+            const msg = Buffer.concat([prefix, Buffer.from(String(message.length)), Buffer.from(message)]);
+            const signHash5 = web3.utils.keccak256(msg as any);
+
+            const signHash6 = web3.eth.accounts.hashMessage(message)
+
+            console.log("111111111", signHash, signHash2, signHash3, signHash4, signHash5, signHash6);
+
+            return await this.getPackedSignature(signHash4);
         }
-
-
-        console.log('sign hash', signHash)
-
-        return await this.getPackedSignature(signHash);
     }
 
     /**
@@ -212,7 +220,7 @@ export default class KeyStore {
         }
         const signBuffer = TypedDataUtils.eip712Hash(typedData as any, "V4" as any);
 
-        console.log('sign buf', signBuffer)
+        console.log("sign buf", signBuffer);
 
         const signHash = `0x${Buffer.from(signBuffer).toString("hex")}`;
 
