@@ -23,19 +23,14 @@ export default function ActivityItem({ item }: any) {
     const formatItem = async () => {
         const callData = item.userOp.callData;
 
-        const callDataDecode = (await decodeCalldata(callData))[0];
+        const callDataDecodes = await decodeCalldata(callData);
 
-        const functionName =
-            item.userOp.initCode !== "0x"
-                ? "activate"
-                : callDataDecode
-                ? callDataDecode.functionName
-                : "Contract Interfaction";
+        const functionNames = callDataDecodes.map((item: any) => item.functionName).join(", ");
 
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;
 
         setDetail({
-            functionName,
+            functionName: item.userOp.initCode !== "0x" ? "active" : functionNames,
             txHash: item.trxHash,
             status,
         });
