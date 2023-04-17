@@ -62,7 +62,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     const [recoverTokenAddress, setRecoverTokenAddress] = useState("");
     const [recoverTokenSymbol, setRecoverTokenSymbol] = useState("");
     const [needAmount, setNeedAmount] = useState("");
-    const [userBalance, setUserBalance] = useState("");
+    const [userBalance, setUserBalance] = useState("0");
     const { balanceOf } = useErc20Contract();
 
     const handleOpenShareModal = () => {

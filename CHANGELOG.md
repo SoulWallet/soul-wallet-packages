@@ -4,4 +4,4 @@
 -   Support connecting uniswap directly
 -   Remove useless dependencies
 -   Optimized manifestV2.json
--   Support multi transactions for dApp
+-   Support multiple transactions for dApp
