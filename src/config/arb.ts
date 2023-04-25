@@ -37,7 +37,7 @@ export const assetsList = [
         address: paymasterToken_MAI,
         name: "Mai Stablecoin",
         decimals: 18,
-        payable: true,
+        payable: false,
         paymaster: false,
     },
     {
