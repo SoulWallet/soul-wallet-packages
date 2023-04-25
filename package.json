@@ -20,7 +20,7 @@
     "license": "MIT",
     "resolutions": {
         "@chainsafe/as-sha256": "0.4.0"
-      },
+    },
     "devDependencies": {
         "@babel/core": "^7.11.6",
         "@babel/preset-env": "^7.11.5",
@@ -60,6 +60,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "@ensdomains/ensjs": "3.0.0-alpha.62",
         "@metamask/eth-sig-util": "^4.0.1",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",

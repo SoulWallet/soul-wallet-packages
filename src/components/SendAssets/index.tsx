@@ -12,7 +12,11 @@ import cn from "classnames";
 import { Input } from "../Input";
 import { TokenSelect } from "../TokenSelect";
 import { toast } from "material-react-toastify";
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+import { ENS } from '@ensdomains/ensjs';
+import { ethers } from "ethers";
+
+const ethersProvider = new ethers.providers.JsonRpcProvider(config.providerEth);
+const ENSInstance = new ENS()
 
 interface ErrorProps {
     receiverAddress: string;
@@ -36,15 +40,31 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const { balance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
+    const [receiverEnsAddress, setReceiverEnsAddress] = useState<string>("");
+
     const [errors, setErrors] = useState<ErrorProps>(defaultErrorValues);
     const { web3 } = useWalletContext();
 
     const { sendErc20, sendEth } = useTransaction();
 
-    const confirmAddress = () => {
-        if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
-            
+
+    const confirmAddress = async () => {
+        await ENSInstance.setProvider(ethersProvider)
+        
+        let ensAddress;
+
+        if(receiverAddress.includes(".eth")) {
+            const profile = await ENSInstance.getProfile(receiverAddress);
+            ensAddress = profile?.address;
+            if(ensAddress && web3.utils.isAddress(ensAddress)) {
+                //console.log("ensAddress", ensAddress)
+                setReceiverEnsAddress(ensAddress)
+            }
+        }
+
+        if ((!receiverAddress || !web3.utils.isAddress(receiverAddress)) && (!ensAddress || !web3.utils.isAddress(ensAddress)) ) {
             toast.error("Address not valid");
+            //console.log(receiverAddress);
             return;
         }
         setStep(1);
@@ -56,6 +76,8 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             return;
         }
 
+        let receiverResolved = (web3.utils.isAddress(receiverEnsAddress) ) ? receiverEnsAddress : receiverAddress;
+
         const tokenBalance = balance.get(sendToken);
 
         if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
@@ -65,9 +87,9 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         setSending(true);
         try {
             if (sendToken === config.zeroAddress) {
-                await sendEth(receiverAddress, amount);
+                await sendEth(receiverResolved, amount);
             } else {
-                await sendErc20(sendToken, receiverAddress, amount);
+                await sendErc20(sendToken, receiverResolved, amount);
             }
             goBack();
         } finally {

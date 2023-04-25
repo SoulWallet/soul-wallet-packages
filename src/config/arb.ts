@@ -1416,6 +1416,7 @@ export default {
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://arbiscan.io",
+    providerEth: "https://eth.llamarpc.com",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-main.soulwallets.me/rpc",
     maxCostMultiplier: 120,
