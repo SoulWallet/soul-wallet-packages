@@ -12,6 +12,7 @@ import cn from "classnames";
 import { Input } from "../Input";
 import { TokenSelect } from "../TokenSelect";
 import { toast } from "material-react-toastify";
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
 interface ErrorProps {
     receiverAddress: string;
@@ -42,6 +43,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
 
     const confirmAddress = () => {
         if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
+            
             toast.error("Address not valid");
             return;
         }

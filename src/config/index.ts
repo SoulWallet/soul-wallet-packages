@@ -4,6 +4,8 @@ import IconAave from "@src/assets/dapps/aave.svg";
 import IconUniswap from "@src/assets/dapps/uniswap.svg";
 import IconSushiswap from "@src/assets/dapps/sushiswap.svg";
 import IconGmx from "@src/assets/dapps/gmx.svg";
+import IconMai from "@src/assets/dapps/mai.png";
+
 // import IconYearn from "@src/assets/dapps/yearn.svg";
 // import envConf from './arb-goerli'
 
@@ -31,6 +33,12 @@ export const dappsList = [
         title: "GMX",
         category: "DeFi",
         link: "https://app.gmx.io/",
+    },
+    {
+        icon: IconMai,
+        title: "QiDao",
+        category: "DeFi",
+        link: "https://app.mai.finance/",
     },
 
     // {
