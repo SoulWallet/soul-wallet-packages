@@ -102,7 +102,7 @@ export default function useWallet() {
             return { paymasterAndData, requireAmountInWei: maxUSD, requireAmount: maxUSDFormatted };
         } else {
             // op.paymasterAndData = "0x";
-            console.log(`need ${requireAmount} ETH`);
+            console.log(`need ${requireAmount} ${config.chainToken}`);
             return { paymasterAndData: "0x", requireAmountInWei, requireAmount };
         }
     };

@@ -42,6 +42,8 @@ export default {
     chainId: 5,
     chainIdHex: (5).toString(16),
     chainName: "Goerli",
+    chainToken: "ETH",
+    addressPrefix: "gor:",
     defaultBaseFee: "100000000",
     defaultMaxFee: "1700000000",
     defaultMaxPriorityFee: "1500000000",

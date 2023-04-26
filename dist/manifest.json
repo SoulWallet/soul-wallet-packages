@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Soul Wallet",
     "description": "Smart contract wallet for Ethereum",
-    "version": "0.0.15",
+    "version": "0.0.17",
     "action": {
         "default_icon": {
             "16": "icon-16.png",

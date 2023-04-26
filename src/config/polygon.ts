@@ -1,21 +1,31 @@
 /**
- * Arbitrum
+ * Polygon
  */
 
-import IconETH from "@src/assets/tokens/eth.svg";
+// import IconETH from "@src/assets/tokens/eth.svg";
+import IconMATIC from "@src/assets/tokens/matic.png";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
 import IconDAI from "@src/assets/tokens/dai.png";
 import IconUSDT from "@src/assets/tokens/usdt.png";
 
-const paymasterToken_DAI = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
-const paymasterToken_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
-const paymasterToken_USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
+const paymasterToken_DAI = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+const paymasterToken_USDC = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+const paymasterToken_USDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 
 export const assetsList = [
+    // {
+    //     icon: IconETH,
+    //     name: "ETH",
+    //     symbol: "ETH",
+    //     address: "0x0000000000000000000000000000000000000000",
+    //     decimals: 18,
+    //     payable: true,
+    //     paymaster: false,
+    // },
     {
-        icon: IconETH,
-        name: "ETH",
-        symbol: "ETH",
+        icon: IconMATIC,
+        name: "MATIC",
+        symbol: "MATIC",
         address: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         payable: true,
@@ -53,24 +63,24 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://arb-mainnet-public.unifra.io`,
+    provider: `https://polygon-bor.publicnode.com`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
-    scanUrl: "https://arbiscan.io/",
+    scanUrl: "https://polygonscan.com/",
     // should it override state when we set new?
-    defaultBundlerUrl: "https://bundler-arb-main.soulwallets.me/rpc",
+    defaultBundlerUrl: "https://bundler-polygon-main.soulwallets.me/rpc",
     maxCostMultiplier: 120,
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
-    chainId: 42161,
+    chainId: 137,
     defaultBaseFee: "100000000",
     defaultMaxFee: "135000000",
     defaultMaxPriorityFee: "0",
-    chainIdHex: `0x${(42161).toString(16)}`,
-    chainName: "Arbitrum",
-    chainToken: "ETH",
-    addressPrefix: "arb:",
+    chainIdHex: `0x${(137).toString(16)}`,
+    chainName: "Polygon",
+    chainToken: "MATIC",
+    addressPrefix: "poly:",
     support1559: true,
     tokens: {
         usdc: paymasterToken_USDC,

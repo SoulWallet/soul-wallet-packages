@@ -9,7 +9,7 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 const soulWalletLib = new SoulWalletLib();
 
 export const executeTransaction = async (operation: any, tabId: any, bundlerUrl: any) => {
-    console.log('User OP: ', operation)
+    console.log("User OP: ", operation);
 
     const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
 
@@ -34,7 +34,7 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
             }
 
             const result = validation.result as IValidationResult;
-            console.log('result', result)
+            console.log("result", result);
 
             if (result.returnInfo.sigFailed) {
                 notify("Signature Error", "");
@@ -43,8 +43,9 @@ export const executeTransaction = async (operation: any, tabId: any, bundlerUrl:
 
             const bundlerEvent = bundler.sendUserOperation(operation);
             bundlerEvent.on("error", (err: any) => {
+                console.log('err', err)
                 notify("Bundler Error", "");
-                throw new Error("Bundler Error");
+                throw new Error(err);
             });
             bundlerEvent.on("send", (userOpHash: string) => {
                 notify("Transaction sent", "Your transaction was sent to bundler");

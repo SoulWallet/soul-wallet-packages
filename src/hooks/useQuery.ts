@@ -7,7 +7,6 @@ import BN from "bignumber.js";
 import { ethers, BigNumber } from "ethers";
 import useTools from "./useTools";
 import useLib from "./useLib";
-import { ITokenItem } from "@src/lib/type";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import { useBalanceStore } from "@src/store/balanceStore";
 import config from "@src/config";
@@ -18,7 +17,7 @@ export default function useQuery() {
     const erc20Contract = useErc20Contract();
     const { soulWalletLib, bundler } = useLib();
 
-    const { verifyAddressFormat } = useTools();
+    const { verifyAddressFormat, safeParseUnits } = useTools();
 
     /**
      * Get token info by tokenAddress
@@ -43,7 +42,7 @@ export default function useQuery() {
         setBalance(config.zeroAddress, ethBalance);
 
         const erc20Balance = await erc20Contract.batchBalanceOf(
-            config.assetsList.filter((item: any) => item.symbol !== "ETH").map((item: any) => item.address),
+            config.assetsList.filter((item: any) => item.symbol !== config.chainToken).map((item: any) => item.address),
         );
 
         Object.keys(erc20Balance).forEach((key: string) => {
@@ -53,17 +52,6 @@ export default function useQuery() {
 
             setBalance(key, new BN(balanceRaw).shiftedBy(-balanceDecimal).toString());
         });
-
-        // config.assetsList.forEach(async (item: ITokenItem) => {
-        //     let balanceNum: string = "0";
-        //     if (item.symbol === "ETH") {
-        //         balanceNum = await getEthBalance();
-        //     } else {
-        //         balanceNum = await erc20Contract.balanceOf(item.address);
-        //     }
-
-        //     setBalance(item.address, balanceNum);
-        // });
     };
 
     const estimateUserOperationGas = async (userOp: any) => {
@@ -95,21 +83,17 @@ export default function useQuery() {
                 };
             }
 
-            const res = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+            const res: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+
+            const baseFee = new BN(res.estimatedBaseFee).toFixed(3);
+            const maxFeePerGas = new BN(res.medium.suggestedMaxFeePerGas).toFixed(3);
+            const maxPriorityFeePerGas = new BN(res.medium.suggestedMaxPriorityFeePerGas).toFixed(3);
 
             return {
-                baseFeePerGas: ethers.utils.parseUnits(res?.estimatedBaseFee || "0.1", "gwei").toString(),
-                maxFeePerGas: ethers.utils.parseUnits(res?.medium.suggestedMaxFeePerGas || "0.135", "gwei").toString(),
-                maxPriorityFeePerGas: ethers.utils
-                    .parseUnits(res?.medium.suggestedMaxPriorityFeePerGas || "0", "gwei")
-                    .toString(),
+                baseFeePerGas: ethers.utils.parseUnits(baseFee, 9).toString(),
+                maxFeePerGas: ethers.utils.parseUnits(maxFeePerGas, 9).toString(),
+                maxPriorityFeePerGas: ethers.utils.parseUnits(maxPriorityFeePerGas, 9).toString(),
             };
-            // const feeRaw = await ethersProvider.getFeeData();
-            // return {
-            //     baseFeePerGas: feeRaw.lastBaseFeePerGas?.toString() || "",
-            //     maxFeePerGas: feeRaw.maxFeePerGas?.toString() || "",
-            //     maxPriorityFeePerGas: feeRaw.maxPriorityFeePerGas?.toString() || "",
-            // };
         } else {
             const feeRaw = await ethersProvider.getGasPrice();
 
@@ -137,7 +121,7 @@ export default function useQuery() {
 
         const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : BigNumber.from(0);
 
-        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredFinalPrefund), "ETH");
+        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredFinalPrefund), config.chainToken);
         if (!tokenAddress) {
             return {
                 requireAmountInWei: requiredFinalPrefund,
@@ -156,7 +140,7 @@ export default function useQuery() {
         // print price now
         console.log(
             "exchangePrice: " + ethers.utils.formatUnits(exchangePrice.price, exchangePrice.decimals),
-            "USDC/ETH",
+            `USDC/${config.chainToken}`,
         );
 
         // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)

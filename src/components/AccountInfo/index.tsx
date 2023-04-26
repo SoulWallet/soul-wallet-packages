@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountSettingModal from "../AccountSettingModal";
-import {toast} from 'material-react-toastify'
+import { toast } from "material-react-toastify";
+import config from "@src/config";
 import AddressIcon from "../AddressIcon";
 import cn from "classnames";
 import { copyText } from "@src/lib/tools";
@@ -22,9 +23,9 @@ export default function AccountInfo({ account, action }: IProps) {
     const navigate = useNavigate();
 
     const doCopy = () => {
-        copyText(account);
+        copyText(`${config.addressPrefix}${account}`);
         // setCopied(true);
-        toast.success('Copied');
+        toast.success("Copied");
     };
 
     return (
@@ -39,6 +40,7 @@ export default function AccountInfo({ account, action }: IProps) {
                     >
                         <img src={IconCopy} className="w-4" />
                         <span className="opacity-50 text-base text-black">
+                            {config.addressPrefix}
                             {account.slice(0, 5)}...{account.slice(-4)}
                         </span>
                     </div>

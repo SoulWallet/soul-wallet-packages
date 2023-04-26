@@ -21,7 +21,7 @@ export default function useTransaction() {
     };
 
     const sendEth = async (to: string, amount: string) => {
-        const actionName = "Send ETH";
+        const actionName = `Send ${config.chainToken}`;
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         const amountInWei = new BN(amount).shiftedBy(18).toString();

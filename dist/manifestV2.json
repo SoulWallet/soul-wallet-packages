@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "0.0.15",
+    "version": "0.0.17",
     "name": "Soul Wallet",
     "description": "Smart contract wallet for Ethereum",
     "permissions": ["activeTab", "notifications", "storage", "background"],

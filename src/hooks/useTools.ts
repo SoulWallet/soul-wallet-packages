@@ -1,6 +1,7 @@
 import config from "@src/config";
 import useLib from "./useLib";
 import api from "@src/lib/api";
+import { ethers } from "ethers";
 import QRCode from "qrcode";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
@@ -133,11 +134,16 @@ export default function useTools() {
         }
     };
 
+    const safeParseUnits = (val: string, digit: number) => {
+        return ethers.utils.parseUnits(val, digit);
+    }
+
     const generateQrCode = async (text: string) => {
         return await QRCode.toDataURL(text, { margin: 2 });
     };
 
     return {
+        safeParseUnits,
         getGuardianInitCode,
         verifyAddressFormat,
         decodeCalldata,

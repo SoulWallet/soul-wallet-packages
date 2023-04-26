@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
-import {toast} from 'material-react-toastify'
+import config from "@src/config";
+import { toast } from "material-react-toastify";
 import IconCopy from "@src/assets/copy.svg";
 import useTools from "@src/hooks/useTools";
 import { copyText } from "@src/lib/tools";
@@ -17,9 +18,9 @@ export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressT
     const { generateQrCode } = useTools();
 
     const doCopy = () => {
-        copyText(walletAddress);
+        copyText(`${config.addressPrefix}${walletAddress}`);
         // setCopied(true);
-        toast.success('Copied')
+        toast.success("Copied");
     };
 
     const generateQR = async (text: string) => {
@@ -42,15 +43,11 @@ export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressT
             <div className={cn("mb-2 flex gap-2", addressTop ? "flex-col-reverse" : "flex-col")}>
                 <img src={imgSrc} className={cn("mx-auto block", imgWidth)} />
                 <div className="opacity-50 break-words w-5/6 mx-auto text-center text-black address">
+                    {config.addressPrefix}
                     {walletAddress}
                 </div>
             </div>
-            <div
-                className="flex gap-1 items-center justify-center tooltip gap-tooltip cursor-pointer"
-                onClick={doCopy}
-                // data-tip={copied ? "Copied" : "Copy address"}
-                // onMouseLeave={() => setTimeout(() => setCopied(false), 400)}
-            >
+            <div className="flex gap-1 items-center justify-center tooltip gap-tooltip cursor-pointer" onClick={doCopy}>
                 <img src={IconCopy} />
                 <span>Copy</span>
             </div>

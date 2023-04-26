@@ -118,7 +118,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
         if (config.zeroAddress === payToken) {
             setActivePaymasterData("");
-            setFeeCost(`${requireAmount} ETH`);
+            setFeeCost(`${requireAmount} ${config.chainToken}`);
         } else {
             const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
