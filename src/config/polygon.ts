@@ -63,7 +63,7 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://polygon-bor.publicnode.com`,
+    provider: `https://rpc-mainnet.matic.quiknode.pro`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://polygonscan.com/",
