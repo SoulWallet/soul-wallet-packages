@@ -11,8 +11,9 @@ const PERCENT_SIZE = [...Array(101).keys()];
 const WIDTH_PERCENTAGE_STYLES = PERCENT_SIZE.map((i) => `w-${i}p`);
 
 module.exports = {
-    purge: ["./src/**/*.{js,jsx,ts,tsx}", "./dist/popup.html"],
     content: [
+        "./src/**/*.{js,jsx,ts,tsx}",
+        "./dist/popup.html",
         "./src/components/**/*.{html,js,tsx}",
         "./src/popup/**/*.{html,js,tsx}",
         "./src/pages/**/*.{html,js,tsx}",
@@ -60,4 +61,7 @@ module.exports = {
     },
     safelist: [...WIDTH_PERCENTAGE_STYLES],
     plugins: [require("daisyui")],
+    daisyui:{
+        logs: false,
+    }
 };
