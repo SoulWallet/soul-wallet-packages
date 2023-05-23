@@ -1,7 +1,7 @@
 import Bus from "../lib/Bus";
 import { ethers } from "ethers";
 import { getMessageType } from "./tools";
-// import WalletABI from "@src/abi/Wallet.json";
+import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
@@ -52,30 +52,44 @@ const getTransactionByHash = async (params: any) => {
 };
 
 const signTypedDataV4 = async (params: any) => {
-    return await Bus.send("signMessageV4", "signMessageV4", {
+    const res = await Bus.send("signMessageV4", "signMessageV4", {
         data: params[1],
     });
+    console.log("signTypeV4 sig: ", res);
+    return res;
 };
 
 const personalSign = async (params: any) => {
     const msg = params[0];
-    const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
-
-    return await Bus.send("signMessage", "signMessage", {
-        data: msgToSign,
+    // const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
+    // console.log('before send personal sign', msgToSign)
+    const res = await Bus.send("signMessage", "signMessage", {
+        data: msg,
     });
+    return res;
 };
 
-const personalRecover = async (params: any) => {
-    // console.log("params", params);
-    // const walletAddress = await Bus.send("getAccounts", "getAccounts");
-    // const walletContract = new ethers.Contract(walletAddress as string, WalletABI);
-    // const isValid = await walletContract.isValidSignature(params[0], params[1]);
-    // console.log("is valid", isValid);
-    // return "0xA43A022A6283b1d5CD602f3834C611074af85124";
-    // return await Bus.send("personalRecover", "personalRecover", {
-    //     data: params
-    // });
+const personalRecover = async (params: string[]) => {
+    // judge msg type
+    const msgType = getMessageType(params[0]);
+    const signature = params[1];
+
+    let msgHash = "";
+
+    if (msgType === "text") {
+        const text = ethers.utils.toUtf8String(params[0]);
+        msgHash = ethers.utils.hashMessage(text);
+    } else if (msgType === "hash") {
+        msgHash = params[0];
+    }
+
+    const walletAddress = await Bus.send("getAccounts", "getAccounts");
+    const walletContract = new ethers.Contract(walletAddress as string, WalletABI, ethersProvider);
+    const isValid = await walletContract.isValidSignature(msgHash, signature);
+
+    if (isValid === config.magicValue) {
+        return walletAddress;
+    }
 };
 
 const chainId = async () => {

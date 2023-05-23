@@ -23,7 +23,6 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
-    // const [actionName, setActionName] = useState<string>("");
     const [origin, setOrigin] = useState<string>("");
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});

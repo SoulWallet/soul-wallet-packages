@@ -59,6 +59,7 @@ export default {
         website: "https://www.soulwallet.io",
         telegram: "https://t.me/+XFUHusXFdTYyODQ9",
     },
+    magicValue: '0x1626ba7e',
     dappsList,
     zeroAddress: "0x0000000000000000000000000000000000000000",
     ...require(`./${process.env.CHAIN}`).default,

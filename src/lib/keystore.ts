@@ -197,6 +197,9 @@ export default class KeyStore {
 
             const signHash4 = ethers.utils.hashMessage(message);
 
+            console.log('msg', message)
+            console.log('hash is', signHash4)
+
             const prefix = Buffer.from("\x19Ethereum Signed Message:\n");
             const msg = Buffer.concat([prefix, Buffer.from(String(message.length)), Buffer.from(message)]);
             const signHash5 = web3.utils.keccak256(msg as any);
@@ -205,7 +208,11 @@ export default class KeyStore {
 
             console.log("111111111", signHash, signHash2, signHash3, signHash4, signHash5, signHash6);
 
-            return await this.getPackedSignature(signHash4);
+            const packedSignature = await this.getPackedSignature(signHash4);
+
+            console.log('packed signature', packedSignature)
+
+            return packedSignature;
         }
     }
 

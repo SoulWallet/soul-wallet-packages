@@ -62,7 +62,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "signMessage":
-            console.log('tab id is', msg.data.data)
             openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}`, windowWidth);
             break;
 

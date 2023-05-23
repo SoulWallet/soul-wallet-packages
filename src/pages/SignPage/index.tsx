@@ -2,7 +2,7 @@ import React, { createRef, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
-import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
+import { getLocalStorage, setLocalStorage, getMessageType } from "@src/lib/tools";
 import useLib from "@src/hooks/useLib";
 import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
@@ -135,9 +135,12 @@ export default function SignPage() {
                     },
                 });
             } else if (actionType === "signMessage") {
-                await currentSignModal.show("", actionType, origin, true, data);
 
-                const signature = await keystore.signMessage(data);
+                const msgToSign = getMessageType(data) === "hash" ? data : ethers.utils.toUtf8String(data);
+
+                await currentSignModal.show("", actionType, origin, true, msgToSign);
+
+                const signature = await keystore.signMessage(msgToSign);
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -153,7 +156,7 @@ export default function SignPage() {
 
                 const signature = await keystore.signMessageV4(parsedData);
 
-                console.log("sig na", signature);
+                console.log("v4 signature", signature);
 
                 await browser.runtime.sendMessage({
                     target: "soul",
