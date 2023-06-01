@@ -61,6 +61,7 @@
         "webpack-merge": "^5.9.0"
     },
     "dependencies": {
+        "@ensdomains/ensjs": "3.0.0-alpha.62",
         "@metamask/eth-sig-util": "^4.0.1",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
