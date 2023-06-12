@@ -4,11 +4,13 @@
     "description": "Browser extension for soul wallet",
     "main": "index.js",
     "scripts": {
-        "build": "webpack --config webpack.prod.js",
-        "dev": "webpack -w --config webpack.dev.js",
+        "reset": "mkdir -p dist && rm -rf dist/* && cp -r __dist_src/* dist",
+        "build": "pnpm reset && webpack --config webpack.prod.js",
+        "dev": "pnpm reset && webpack -w --config webpack.dev.js",
         "test": "jest --config=jest.config.js",
         "lint": "eslint --fix -c ./.eslintrc.js \"src/**/*.ts*\"",
-        "prettify": "prettier --write \"src/**/*.ts*\""
+        "prettify": "prettier --write \"src/**/*.ts*\"",
+        "bundle": "node scripts/bundle.js"
     },
     "keywords": [
         "ERC-4337",
@@ -50,6 +52,8 @@
         "postcss": "^8.4.5",
         "postcss-loader": "^6.2.1",
         "prettier": "^2.1.2",
+        "prompt": "^1.3.0",
+        "shelljs": "^0.8.5",
         "style-loader": "^3.3.1",
         "tailwindcss": "^3.0.8",
         "terser-webpack-plugin": "^5.3.9",
@@ -58,7 +62,8 @@
         "typescript": "^4.0.3",
         "webpack": "^5.83.1",
         "webpack-cli": "^5.1.1",
-        "webpack-merge": "^5.9.0"
+        "webpack-merge": "^5.9.0",
+        "zip-dir": "^2.0.0"
     },
     "dependencies": {
         "@metamask/eth-sig-util": "^4.0.1",
