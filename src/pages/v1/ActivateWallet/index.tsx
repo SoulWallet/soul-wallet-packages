@@ -10,6 +10,7 @@ import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
 import { useBalanceStore } from "@src/store/balanceStore";
 import useQuery from "@src/hooks/useQuery";
+import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
 import BN from "bignumber.js";
 import ReceiveCode from "@src/components/ReceiveCode";
@@ -26,13 +27,13 @@ export default function ActivateWallet() {
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
     const { getTokenByAddress, getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const { activateWallet } = useWallet();
+    const {navigate} = useBrowser();
     const { balance } = useBalanceStore();
 
     useEffect(() => {
         if (walletType === "contract") {
-            navigate("/wallet");
+            navigate("wallet");
         }
     }, [walletType]);
 
@@ -41,7 +42,7 @@ export default function ActivateWallet() {
         try {
             await activateWallet(payToken, paymasterApproved, false);
             getWalletType();
-            navigate("/wallet");
+            navigate("wallet");
             toast.success("Account activated");
         } catch (err) {
             toast.error(String(err));
@@ -63,7 +64,7 @@ export default function ActivateWallet() {
 
     const goBack = () => {
         if (step === 0) {
-            navigate("/wallet");
+            navigate("wallet");
         } else if (step === 1) {
             setStep(0);
         }
@@ -165,7 +166,7 @@ export default function ActivateWallet() {
 
                     {step === 1 && (
                         <>
-                            <Button type="reject" className="flex-1 w-full" onClick={() => navigate("/wallet")}>
+                            <Button type="reject" className="flex-1 w-full" onClick={() => navigate("wallet")}>
                                 Reject
                             </Button>
                             <Button type="primary" className="flex-1 w-full" onClick={doActivate} loading={loading}>

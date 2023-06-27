@@ -1,7 +1,6 @@
 const path = require("path");
 const DotEnv = require("dotenv-webpack");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -58,17 +57,5 @@ module.exports = {
         fallback: {
             fs: false,
         },
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    output: {
-                        ascii_only: true,
-                    },
-                },
-            }),
-        ],
     },
 };
