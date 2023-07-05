@@ -1,12 +1,12 @@
-import PasswordSetting from "@src/pages/Create/Steps/PasswordSetting";
+import PasswordSetting from "@src/pages/v1/Create/Steps/PasswordSetting";
 import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
 import React, { ReactNode, useMemo } from "react";
 import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
-import GuardiansSetting from "../Create/Steps/GuardiansSetting";
-import GuardiansSaving from "../Create/Steps/GuardiansSaving";
+import GuardiansSetting from "./Steps/GuardiansSetting";
+import GuardiansSaving from "./Steps/GuardiansSaving";
+import DefaultSetting from "./Steps/DefaultSetting";
 import ProgressNavBar from "@src/components/ProgressNavBar";
-import DefaultSetting from "../Create/Steps/DefaultSetting";
 import StepCompletion from "@src/components/StepCompletion";
 import GuardianHint from "@src/components/GuardianHint";
 

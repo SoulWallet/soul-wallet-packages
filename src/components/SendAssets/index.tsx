@@ -5,10 +5,10 @@ import BN from "bignumber.js";
 import IconClose from "@src/assets/icons/close.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
-import { useNavigate } from "react-router-dom";
 import Address from "../Address";
 import { useBalanceStore } from "@src/store/balanceStore";
 import cn from "classnames";
+import useBrowser from "@src/hooks/useBrowser";
 import { Input } from "../Input";
 import { TokenSelect } from "../TokenSelect";
 import { toast } from "material-react-toastify";
@@ -28,7 +28,7 @@ interface ISendAssets {
 }
 
 export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
-    const navigate = useNavigate();
+    const { navigate } = useBrowser();
     const [step, setStep] = useState<number>(0);
     const [sending, setSending] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>("");
@@ -73,25 +73,9 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         }
     };
 
-    // const getBalance = async () => {
-    //     let res = "";
-    //     if (tokenAddress === config.zeroAddress) {
-    //         res = await getEthBalance();
-    //     } else {
-    //         res = await erc20Contract.balanceOf(tokenAddress);
-    //     }
-
-    //     console.log("balance is", res);
-    //     setBalance(res);
-    // };
-
     const goBack = () => {
-        navigate("/wallet");
+        navigate("wallet");
     };
-
-    // useEffect(() => {
-    //     getBalance();
-    // }, []);
 
     return (
         <div className={cn("flex flex-col justify-between", step === 1 && "pb-[100px]")}>

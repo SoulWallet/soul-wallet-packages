@@ -9,6 +9,7 @@ import cn from "classnames";
 import { copyText } from "@src/lib/tools";
 import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
+import useBrowser from "@src/hooks/useBrowser";
 
 interface IProps {
     account: string;
@@ -17,10 +18,9 @@ interface IProps {
 
 export default function AccountInfo({ account, action }: IProps) {
     // const [copied, setCopied] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
     const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
     const { walletType } = useWalletContext();
-    const navigate = useNavigate();
+    const { navigate } = useBrowser();
 
     const doCopy = () => {
         copyText(`${config.addressPrefix}${account}`);
@@ -59,12 +59,7 @@ export default function AccountInfo({ account, action }: IProps) {
 
             {action === "activate" && walletType === "eoa" && (
                 <div className="px-6 pb-3 w-full">
-                    <Button
-                        type={"primary"}
-                        onClick={() => navigate("/activate-wallet")}
-                        className="w-full"
-                        loading={loading}
-                    >
+                    <Button type={"primary"} onClick={() => navigate("activate-wallet")} className="w-full">
                         Activate wallet
                     </Button>
                 </div>

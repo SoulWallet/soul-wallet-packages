@@ -80,7 +80,7 @@ export default {
     chainIdHex: `0x${(137).toString(16)}`,
     chainName: "Polygon",
     chainToken: "MATIC",
-    addressPrefix: "poly:",
+    addressPrefix: "matic:",
     support1559: true,
     tokens: {
         usdc: paymasterToken_USDC,

@@ -1,7 +1,7 @@
 import React from "react";
 import config from "@src/config";
 import ReceiveModal from "./comp/ReceiveModal";
-import { useNavigate } from "react-router-dom";
+import useBrowser from "@src/hooks/useBrowser";
 import IconReceive from "@src/assets/icons/receive.svg";
 import IconSend from "@src/assets/icons/send.svg";
 import IconReceiveLight from "@src/assets/icons/receive-light.svg";
@@ -19,7 +19,7 @@ const Button = ({ icon, iconLight, title, onClick }: any) => (
 );
 
 export default function Actions() {
-    const navigate = useNavigate();
+    const {navigate} = useBrowser();
     const receiveModalId = "receiveModalId";
     return (
         <div>
@@ -31,7 +31,7 @@ export default function Actions() {
                     title="Send"
                     icon={IconSend}
                     iconLight={IconSendLight}
-                    onClick={() => navigate(`/send/${config.zeroAddress}`)}
+                    onClick={() => navigate(`send/${config.zeroAddress}`)}
                 />
             </div>
             <ReceiveModal modalId={receiveModalId} />
