@@ -9,9 +9,11 @@ import RecoverPage from "@src/pages/v1/Recover";
 import EditGuardians from "@src/pages/v1/EditGuardians";
 import ResaveGuardians from "@src/pages/v1/ResaveGuardians";
 import Launch from "@src/pages/v1/Launch";
+import Passkey from "@src/pages/v1/Passkey";
 
 export default (
     <Route path="/v1">
+        <Route path="passkey" element={<Passkey />} />
         <Route path="wallet" element={<Wallet />} />
         <Route path="send/:tokenAddress" element={<Send />} />
         <Route path="sign" element={<SignPage />} />

@@ -62,6 +62,7 @@
     },
     "dependencies": {
         "@metamask/eth-sig-util": "^4.0.1",
+        "@passwordless-id/webauthn": "^1.2.4",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
         "@zxcvbn-ts/core": "^2.2.1",

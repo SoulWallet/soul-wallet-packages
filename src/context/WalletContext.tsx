@@ -158,8 +158,8 @@ export const WalletContextProvider = ({ children }: any) => {
 
     useEffect(() => {
         const current = lockedModal.current;
-
-        if (!current || !location) {
+        setCheckingLocked(false);
+        if (true || !current || !location) {
             return;
         }
 

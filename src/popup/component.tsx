@@ -8,11 +8,11 @@ import "material-react-toastify/dist/ReactToastify.css";
 export function Popup() {
     return (
         <div>
-            <WalletContextProvider>
-                <HashRouter>
+            <HashRouter>
+                <WalletContextProvider>
                     <PluginRouter />
-                </HashRouter>
-            </WalletContextProvider>
+                </WalletContextProvider>
+            </HashRouter>
             <ToastContainer position="bottom-center" />
         </div>
     );

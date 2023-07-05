@@ -37,7 +37,8 @@ export default function PluginRouter() {
     };
 
     useEffect(() => {
-        findRoute();
+        navigate("passkey");
+        // findRoute();
     }, []);
 
     return (
