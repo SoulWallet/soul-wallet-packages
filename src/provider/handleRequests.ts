@@ -1,4 +1,4 @@
-import Bus from "../lib/Bus";
+import windowBus from "../lib/windowBus";
 import { ethers } from "ethers";
 import { getMessageType } from "./tools";
 import WalletABI from "@src/abi/Wallet.json";
@@ -8,7 +8,7 @@ const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
 
 const getAccounts = async () => {
     console.log("get account 2");
-    return [await Bus.send("getAccounts", "getAccounts")];
+    return [await windowBus.send("getAccounts", "getAccounts")];
 };
 
 const sendTransaction = async (params: any) => {
@@ -18,10 +18,10 @@ const sendTransaction = async (params: any) => {
         }
     });
 
-    const opData: any = await Bus.send("approve", "approveTransaction", { txns: params });
+    const opData: any = await windowBus.send("approve", "approveTransaction", { txns: params });
 
     try {
-        return await Bus.send("execute", "signTransaction", opData);
+        return await windowBus.send("execute", "signTransaction", opData);
     } catch (err) {
         throw new Error("Failed to execute");
     }
@@ -52,7 +52,7 @@ const getTransactionByHash = async (params: any) => {
 };
 
 const signTypedDataV4 = async (params: any) => {
-    const res = await Bus.send("signMessageV4", "signMessageV4", {
+    const res = await windowBus.send("signMessageV4", "signMessageV4", {
         data: params[1],
     });
     console.log("signTypeV4 sig: ", res);
@@ -63,7 +63,7 @@ const personalSign = async (params: any) => {
     const msg = params[0];
     // const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
     // console.log('before send personal sign', msgToSign)
-    const res = await Bus.send("signMessage", "signMessage", {
+    const res = await windowBus.send("signMessage", "signMessage", {
         data: msg,
     });
     return res;
@@ -83,7 +83,7 @@ const personalRecover = async (params: string[]) => {
         msgHash = params[0];
     }
 
-    const walletAddress = await Bus.send("getAccounts", "getAccounts");
+    const walletAddress = await windowBus.send("getAccounts", "getAccounts");
     const walletContract = new ethers.Contract(walletAddress as string, WalletABI, ethersProvider);
     const isValid = await walletContract.isValidSignature(msgHash, signature);
 
@@ -106,7 +106,7 @@ const ethCall = async (params: any) => {
 
 export default async function handleRequests(call: any) {
     const { method, params } = call;
-    console.log("provider req", call);
+    console.log("provider request: ", call);
     switch (method) {
         case "eth_chainId":
             return await chainId();

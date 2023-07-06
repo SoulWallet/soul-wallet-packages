@@ -14,7 +14,6 @@ export const useGlobalStore = create<GlobalState>()(
         }),
         {
             name: "global",
-            // storage: createJSONStorage(() => sessionStorage), // cancel this comment if we need sessionStorage
         },
     ),
 );

@@ -2,8 +2,6 @@
  * For GuardianForm use ONLY
  * temporary store user's input
  * Please refer to GLOBAL store for permanent use
- *
- * TODO: cache user's input in sessionStorage - single
  */
 import { GuardianItem } from "@src/lib/type";
 import { immer } from "zustand/middleware/immer";

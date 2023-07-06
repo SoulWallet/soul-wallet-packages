@@ -3,17 +3,19 @@ import { WalletContextProvider } from "@src/context/WalletContext";
 import { ToastContainer } from "material-react-toastify";
 import { HashRouter } from "react-router-dom";
 import PluginRouter from "@src/router";
+import { ChakraProvider } from "@chakra-ui/react";
 import "material-react-toastify/dist/ReactToastify.css";
 
 export function Popup() {
     return (
-        <div>
-            <WalletContextProvider>
-                <HashRouter>
+        <ChakraProvider>
+            <HashRouter>
+                <WalletContextProvider>
                     <PluginRouter />
-                </HashRouter>
-            </WalletContextProvider>
+                </WalletContextProvider>
+            </HashRouter>
+
             <ToastContainer position="bottom-center" />
-        </div>
+        </ChakraProvider>
     );
 }

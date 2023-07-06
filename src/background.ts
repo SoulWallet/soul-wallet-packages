@@ -4,17 +4,29 @@ import { getLocalStorage, openWindow } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
-browser.runtime.onMessage.addListener(async (msg, sender) => {
-    // get current active tab
-    // const [tab] = await browser.tabs.query({
-    //     active: true,
-    //     currentWindow: true,
-    // });
+let password = null;
 
+browser.runtime.onMessage.addListener(async (msg, sender) => {
+    console.log("got msg", msg);
     const senderTabId = sender.tab?.id;
     const windowWidth = sender.tab?.width;
 
     switch (msg.type) {
+        case "set/password":
+            password = msg.data;
+            break;
+        case "get/password":
+            console.log("ready return password", msg.id);
+            // TODO, remove timeout logic
+            setTimeout(() => {
+                browser.runtime.sendMessage({
+                    id: msg.id,
+                    data: password,
+                });
+            }, 1);
+
+            break;
+
         case "response":
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
@@ -54,10 +66,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "approve":
             const { origin, txns } = msg.data;
 
-            openWindow(
-                `${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}`,
-                windowWidth,
-            );
+            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}`, windowWidth);
 
             break;
 
@@ -76,7 +85,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
             await executeTransaction(parsedOperation, tabId, bundlerUrl);
 
-            browser.runtime.sendMessage({
+            await browser.runtime.sendMessage({
                 target: "soul",
                 data: userOpHash,
             });

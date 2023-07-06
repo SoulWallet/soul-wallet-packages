@@ -61,6 +61,9 @@
         "webpack-merge": "^5.9.0"
     },
     "dependencies": {
+        "@chakra-ui/react": "^2.7.1",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
         "@metamask/eth-sig-util": "^4.0.1",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
@@ -77,6 +80,7 @@
         "ethereum-multicall": "^2.16.1",
         "ethereumjs-util": "^7.1.5",
         "ethers": "^5.7.1",
+        "framer-motion": "^10.12.18",
         "immer": "^9.0.19",
         "json-rpc-engine": "^6.1.0",
         "json-rpc-middleware-stream": "^2.1.1",

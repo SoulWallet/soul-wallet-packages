@@ -1,5 +1,5 @@
 // @ts-nocheck
-import Bus from "./lib/Bus";
+import windowBus from "./lib/windowBus";
 import config from "./config";
 import { JsonRpcEngine } from "json-rpc-engine";
 import { Emitter } from "strict-event-emitter";
@@ -24,7 +24,7 @@ const providerToInject = {
         fn(null, { result });
     },
     enable: async () => {
-        const res = await Bus.send("getAccounts", "getAccounts");
+        const res = await windowBus.send("getAccounts", "getAccounts");
         return [res];
     },
     on: (eventName) => {
@@ -49,7 +49,7 @@ const providerToInject = {
 
 // const proxiedProvider = new Proxy(providerToInject, {});
 const injectProvider = async () => {
-    const shouldInject = await Bus.send("shouldInject", "shouldInject");
+    const shouldInject = await windowBus.send("shouldInject", "shouldInject");
     if (shouldInject) {
         window.ethereum = providerToInject;
         window.soul = providerToInject;

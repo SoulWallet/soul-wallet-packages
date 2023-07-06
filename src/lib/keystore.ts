@@ -1,17 +1,10 @@
-/*
- * @Description: keystore class
- * @Version: 1.0
- * @Autor: z.cejay@gmail.com
- * @Date: 2022-08-31 20:05:46
- * @LastEditors: cejay
- * @LastEditTime: 2022-11-23 18:55:41
- */
-
 import { ethers } from "ethers";
 import Web3 from "web3";
 import config from "@src/config";
 import { getMessageType } from "@src/lib/tools";
 import { SoulWalletLib } from "soul-wallet-lib";
+import browser from 'webextension-polyfill'
+import bgBus from "./bgBus";
 import { TypedDataUtils } from "@metamask/eth-sig-util";
 
 const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
@@ -21,10 +14,6 @@ const web3 = new Web3();
 import {
     setLocalStorage,
     getLocalStorage,
-    removeSessionStorage,
-    getSessionStorage,
-    setSessionStorage,
-    // removeLocalStorage,
     clearLocalStorage,
     removeLocalStorage,
 } from "@src/lib/tools";
@@ -73,7 +62,11 @@ export default class KeyStore {
 
             if (saveKey) {
                 await setLocalStorage(this.keyStoreKey, KeystoreV3);
-                await setSessionStorage("pw", password);
+                await browser.runtime.sendMessage({
+                    target: "soul",
+                    type: 'set/password',
+                    data: password,
+                });
             } else {
                 await setLocalStorage("stagingAccount", account.address);
                 await setLocalStorage("stagingKeystore", KeystoreV3);
@@ -91,18 +84,27 @@ export default class KeyStore {
         await removeLocalStorage("stagingAccount");
         await removeLocalStorage("recoverOpHash");
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
-        await setSessionStorage("pw", stagingPw);
+        browser.runtime.sendMessage({
+            target: 'soul',
+            type: 'set/password',
+            data: stagingPw,
+        });
+        // await setSessionStorage("pw", stagingPw);
     }
 
     public async unlock(password: string): Promise<string | null> {
         if (await this.getAddress()) {
             const val = await getLocalStorage(this.keyStoreKey);
             if (val && val.address && val.crypto) {
-                const account = await web3.eth.accounts.decrypt(val, password);
+                const account = web3.eth.accounts.decrypt(val, password);
 
                 this._privateKey = account.privateKey;
 
-                await setSessionStorage("pw", password);
+                browser.runtime.sendMessage({
+                    target: 'soul',
+                    type: 'set/password',
+                    data: password,
+                });
                 return account.address;
             }
         }
@@ -111,7 +113,11 @@ export default class KeyStore {
 
     public async lock(): Promise<void> {
         this._privateKey = null;
-        await removeSessionStorage("pw");
+        browser.runtime.sendMessage({
+            target: 'soul',
+            type: 'set/password',
+            data: null,
+        });
     }
 
     public async changePassword(originalPassword: string, newPassword: string): Promise<void> {
@@ -122,7 +128,13 @@ export default class KeyStore {
             const KeystoreV3 = account.encrypt(newPassword);
 
             await setLocalStorage(this.keyStoreKey, KeystoreV3);
-            await setSessionStorage("pw", newPassword);
+
+            browser.runtime.sendMessage({
+                target: 'soul',
+                type: 'set/password',
+                data: newPassword,
+            });
+            // await setSessionStorage("pw", newPassword);
         }
     }
 
@@ -134,8 +146,8 @@ export default class KeyStore {
     /**
      * get password set by user
      */
-    public async getPassword(): Promise<string> {
-        return await getSessionStorage("pw");
+    public async getPassword(): Promise<any> {
+        return await bgBus.send('get/password')
     }
 
     /**
