@@ -1,6 +1,6 @@
 run.sh
 node_modules
-dist/js/*
+dist
 storybook-static/*
 npm-debug.log
 yarn-error.log

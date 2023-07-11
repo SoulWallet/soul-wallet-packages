@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Soul Wallet",
+  "description": "Smart contract wallet for Ethereum",
+  "version": "0.0.17",
+  "action": {
+    "default_icon": {
+      "16": "icon-16.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/contentScripts.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "js/inpage.js"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "notifications",
+    "storage",
+    "background"
+  ]
+}
