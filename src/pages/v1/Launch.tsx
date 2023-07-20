@@ -48,7 +48,7 @@ export default function Launch() {
             <div className="w-[460px] flex flex-col justify-center items-center px-12 py-10">
                 <Button
                     disabled={!authorized}
-                    href="/popup.html#/create?mode=web"
+                    href="/popup.html#/v1/create?mode=web"
                     className="w-full btn btn-purple btn-purple-primary"
                     onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD)}
                 >
@@ -56,7 +56,7 @@ export default function Launch() {
                 </Button>
 
                 <Button
-                    // href="/popup.html#/create?mode=web"
+                    // href="/popup.html#/v1/create?mode=web"
                     disabled={true} // disable import wallet button for now
                     className="btn w-full btn-purple mt-5 mb-4"
                     onClick={() => handleJumpToTargetStep(RecoverStepEn.ResetPassword)}

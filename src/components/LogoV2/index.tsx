@@ -1,6 +1,6 @@
 import React from "react";
-import Logo from "@src/assets/logo-v2.svg";
-import LogoText from "@src/assets/logo-text-v2.svg";
+import Logo from "@src/assets/logo-v3.svg";
+import LogoText from "@src/assets/logo-text-v3.svg";
 import classNames from "classnames";
 
 export default function LogoV2({ classname }: { classname?: string }) {
