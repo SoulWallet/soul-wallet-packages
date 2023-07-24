@@ -2,6 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@font-face {
+    font-family: 'Nunito';
+    font-weight: 400;
+    src        : url('../assets/fonts/Nunito/Nunito-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-weight: 600;
+    src        : url('../assets/fonts/Nunito/Nunito-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-weight: 700;
+    src        : url('../assets/fonts/Nunito/Nunito-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-weight: 800;
+    src        : url('../assets/fonts/Nunito/Nunito-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Martian';
+    font-weight: 500;
+    src        : url('../assets/fonts/Martian/static/MartianMono-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Martian';
+    font-weight: 600;
+    src        : url('../assets/fonts/Martian/static/MartianMono-SemiBold.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Nunito';
+}
+
+
 @layer components {
 
     .page-title {
@@ -79,8 +121,8 @@
         @apply text-alarmRed border-alarmRed brightness-105;
     }
 
-    .sign-bottom{
-       @apply bg-white flex gap-4  fixed bottom-0 left-0 right-0  px-6 py-4 footer-shadow;
+    .sign-bottom {
+        @apply bg-white flex gap-4 fixed bottom-0 left-0 right-0 px-6 py-4 footer-shadow;
     }
 
 
@@ -105,7 +147,7 @@
         @apply rounded-lg bg-[#fafafa] border border-[#e0e0e0];
     }
 
-    .address{
+    .address {
         @apply font-mono;
     }
 
@@ -325,34 +367,12 @@
         @apply flex-1 bg-slate-300;
     }
 
-    .guardian-inputer{
+    .guardian-inputer {
         @apply h-[88px] flex flex-row items-center;
     }
 }
 
-@font-face {
-    font-family: 'Inter';
-    font-weight: 400;
-    src        : url('../assets/fonts/Inter/Inter-Regular.ttf');
-}
-
-@font-face {
-    font-family: 'Inter';
-    font-weight: 600;
-    src        : url('../assets/fonts/Inter/Inter-SemiBold.ttf');
-}
-
-@font-face {
-    font-family: 'Inter';
-    font-weight: 700;
-    src        : url('../assets/fonts/Inter/Inter-Bold.ttf');
-}
-
-body {
-    font-family: 'Inter';
-}
-
-.modal-box{
+.modal-box {
     background: #fff;
 }
 
@@ -411,7 +431,7 @@ body {
     animation-direction: normal;
 }
 
-.gas-tooltip::before{
+.gas-tooltip::before {
     max-width: 240px;
 }
 

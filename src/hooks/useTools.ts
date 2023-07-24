@@ -6,8 +6,6 @@ import QRCode from "qrcode";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
-import IconActivate from "@src/assets/activities/activate.svg";
-import IconAdd from "@src/assets/activities/add.svg";
 import { toast } from "material-react-toastify";
 
 export default function useTools() {
@@ -125,10 +123,6 @@ export default function useTools() {
         switch (name) {
             case "transfer":
                 return IconSend;
-            case "activate":
-                return IconActivate;
-            case "Set Guardian":
-                return IconAdd;
             default:
                 return IconContract;
         }
@@ -136,7 +130,7 @@ export default function useTools() {
 
     const safeParseUnits = (val: string, digit: number) => {
         return ethers.utils.parseUnits(val, digit);
-    }
+    };
 
     const generateQrCode = async (text: string) => {
         return await QRCode.toDataURL(text, { margin: 2 });

@@ -1,39 +1,30 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Image, Flex } from "@chakra-ui/react";
 import Logo from "@src/assets/logo.svg";
 import WalletSettingModal from "../WalletSettingModal";
 import ChainSelect from "../ChainSelect";
 import IconArrowBack from "@src/assets/arrow-left.svg";
 import IconMenu from "@src/assets/menu.svg";
+import IconGear from "@src/assets/icons/gear.svg";
+import AccountSelect from "../AccountSelect";
 
 interface IProps {
     backUrl?: string;
 }
 
-export function Navbar({ backUrl }: IProps) {
-    const [settingVisible, setSettingVisible] = useState(false);
-
+export function Navbar() {
     return (
-        <div className="navbar flex items-center justify-between navbar-shadow">
-            {backUrl ? (
-                <Link to={backUrl || "/wallet"} className="btn btn-ghost btn-circle">
-                    <img src={IconArrowBack} className="w-6" />
-                </Link>
-            ) : (
-                <Link to="/wallet" className="btn btn-ghost btn-circle">
-                    <img src={Logo} className="w-8" />
-                </Link>
-            )}
-
+        <Flex align="center" justify={"space-between"} mb="16px">
             <ChainSelect />
 
-            {!backUrl && (
-                <a className="btn btn-ghost btn-circle" onClick={() => setSettingVisible(true)}>
-                    <img src={IconMenu} className="w-6 h-6" />
-                </a>
-            )}
+            <AccountSelect />
 
-            {settingVisible && <WalletSettingModal onCancel={() => setSettingVisible(false)} />}
-        </div>
+            <Image src={IconGear} w="32px" h="32px" cursor={"pointer"} />
+        </Flex>
+        // <div className="navbar flex items-center justify-between navbar-shadow">
+
+        //     {/* {settingVisible && <WalletSettingModal onCancel={() => setSettingVisible(false)} />} */}
+        // </div>
     );
 }

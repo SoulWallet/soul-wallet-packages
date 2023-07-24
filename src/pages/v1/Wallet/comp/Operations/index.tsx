@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
-import Assets from "./comp/Assets";
-import Dapps from "./comp/Dapps";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import * as abi from "@soulwallet/abi";
+import Tokens from "./comp/Tokens";
+import Nfts from "./comp/Nfts";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import Activitys from "./comp/Activitys";
-const tabs = ["assets", "activity", "Dapps"];
+
+const tabs = ["Tokens", "NFTs", "Transactions"];
 
 export default function Operations() {
     const { walletType } = useWalletContext();
@@ -12,28 +15,26 @@ export default function Operations() {
 
     return (
         <>
-            <div className="py-3 relative flex-1">
-                <div className="flex">
-                    {tabs.map((item, index) => (
-                        <a
-                            key={index}
-                            className={cn(
-                                "py-3 text-center flex-1 select-none cursor-pointer capitalize border-b border-color text-[#737373] text-sm leading-none",
-                                activeTabIndex === index && "border-blue text-blue text-base font-bold",
-                            )}
-                            onClick={() => setActiveTabIndex(index)}
-                        >
-                            {item}
-                        </a>
-                    ))}
-                </div>
-
-                <div className={cn("overflow-y-auto", walletType === "eoa" ? "h-[230px]" : "h-[290px]")}>
-                    {activeTabIndex === 0 && <Assets />}
-                    {activeTabIndex === 1 && <Activitys />}
-                    {activeTabIndex === 2 && <Dapps />}
-                </div>
-            </div>
+            <Flex align="center" gap="4" mb="4">
+                {tabs.map((item, index) => (
+                    <Text
+                        key={index}
+                        cursor={"pointer"}
+                        fontWeight={"800"}
+                        lineHeight={"1"}
+                        fontSize={"18px"}
+                        color={activeTabIndex === index ? "brand.red" : "#898989"}
+                        onClick={() => setActiveTabIndex(index)}
+                    >
+                        {item}
+                    </Text>
+                ))}
+            </Flex>
+            <Box>
+                {activeTabIndex === 0 && <Tokens />}
+                {activeTabIndex === 1 && <Nfts />}
+                {activeTabIndex === 2 && <Activitys />}
+            </Box>
         </>
     );
 }

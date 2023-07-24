@@ -4,7 +4,12 @@ import { getLocalStorage, openWindow } from "@src/lib/tools";
 import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
-let password = null;
+// TODO, change!
+let password = '111111111';
+
+setInterval(() => {
+    console.log("pas", password);
+}, 2000);
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
     console.log("got msg", msg);
@@ -16,7 +21,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             password = msg.data;
             break;
         case "get/password":
-            console.log("ready return password", msg.id);
+            console.log("ready return password", password);
             // TODO, remove timeout logic
             setTimeout(() => {
                 browser.runtime.sendMessage({

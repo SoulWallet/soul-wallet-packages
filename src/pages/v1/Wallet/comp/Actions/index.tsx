@@ -1,29 +1,35 @@
 import React from "react";
 import config from "@src/config";
-import ReceiveModal from "./comp/ReceiveModal";
-import useBrowser from "@src/hooks/useBrowser";
-import IconReceive from "@src/assets/icons/receive.svg";
-import IconSend from "@src/assets/icons/send.svg";
-import IconReceiveLight from "@src/assets/icons/receive-light.svg";
-import IconSendLight from "@src/assets/icons/send-light.svg";
+import { Box, Text, Flex, Grid, GridItem, Image } from "@chakra-ui/react";
+import IconAddFunds from "@src/assets/actions/add-funds.svg";
+import IconSend from "@src/assets/actions/send.svg";
+import IconGuardians from "@src/assets/actions/guardians.svg";
+import IconGasTokens from "@src/assets/actions/gas-tokens.svg";
+import Icon2FA from "@src/assets/actions/2fa.svg";
+import IconMore from "@src/assets/actions/more.svg";
 
-const Button = ({ icon, iconLight, title, onClick }: any) => (
-    <a
-        className="bg-[#f2f2f2] hover:bg-blue group transition-all hover:text-white py-2 px-5 flex cursor-pointer justify-center items-center gap-2 rounded-[20px]"
-        onClick={onClick}
-    >
-        <img src={icon} className="w-6 h-6 group-hover:hidden" />
-        <img src={iconLight} className="w-6 h-6 hidden group-hover:block" />
-        {title}
-    </a>
-);
+const ActionItem = ({ icon, title }: any) => {
+    return (
+        <GridItem p="10px" bg="white" rounded={"16px"} cursor={"pointer"}>
+            <Image src={icon} w="28px" h="28px" />
+            <Text fontWeight={"700"} fontSize="14px">
+                {title}
+            </Text>
+        </GridItem>
+    );
+};
 
 export default function Actions() {
-    const {navigate} = useBrowser();
-    const receiveModalId = "receiveModalId";
     return (
-        <div>
-            <div className="px-6  grid grid-cols-2 items-center gap-6">
+        <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="16px" mb="24px">
+            <ActionItem title="Add funds" icon={IconAddFunds} />
+            <ActionItem title="Send" icon={IconSend} />
+            <ActionItem title="Guardians" icon={IconGuardians} />
+            <ActionItem title="Gas tokens" icon={IconGasTokens} />
+            <ActionItem title="2FA" icon={Icon2FA} />
+            <ActionItem title="More" icon={IconMore} />
+
+            {/* <div className="px-6  grid grid-cols-2 items-center gap-6">
                 <label htmlFor={receiveModalId}>
                     <Button title="Receive" icon={IconReceive} iconLight={IconReceiveLight} />
                 </label>
@@ -34,25 +40,7 @@ export default function Actions() {
                     onClick={() => navigate(`send/${config.zeroAddress}`)}
                 />
             </div>
-            <ReceiveModal modalId={receiveModalId} />
-        </div>
-
-        // <div className=" w-full flex bg-[#fafafa]">
-        //     <label
-        //         htmlFor={receiveModalId}
-        //         className="w-1/2 select-none flex flex-col justify-center items-center cursor-pointer text-base py-6 hover:bg-gray-200"
-        //     >
-        //         <img className="w-6 mb-2" src={IconReceive} />
-        //         <div className="leading-none">Receive</div>
-        //     </label>
-        //     <Link
-        //         to={`/send/${config.zeroAddress}`}
-        //         className="w-1/2 select-none flex flex-col justify-center items-center cursor-pointer text-base py-6 hover:bg-gray-200"
-        //     >
-        //         <img className="w-6 mb-2" src={IconSend} />
-        //         <div className="leading-none">Send</div>
-        //     </Link>
-
-        // </div>
+            <ReceiveModal modalId={receiveModalId} /> */}
+        </Grid>
     );
 }

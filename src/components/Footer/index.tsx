@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Switch from "../Switch";
+import { Box, Text, Flex, Image, Tooltip } from "@chakra-ui/react";
 import { shallow } from "zustand/shallow";
 import browser from "webextension-polyfill";
+import IconConnected from "@src/assets/icons/connected.svg";
 import { getLocalStorage } from "@src/lib/tools";
 import { useSettingStore } from "@src/store/settingStore";
-import IconHelp from "../../assets/icons/help.svg";
 import config from "@src/config";
 import InfoTip from "../InfoTip";
 
@@ -26,23 +27,24 @@ export default function Footer() {
     }, []);
 
     return (
-        <div className="px-6 py-3 flex items-center justify-between footer-shadow relative bottom-0">
-            <div className="flex items-center gap-[6px] relative z-10">
+        <Flex
+            align="center"
+            justify={"space-between"}
+            bg="#d7d7d7"
+            px="5"
+            borderTop={"1px"}
+            py="10px"
+            borderColor={"#898989"}
+        >
+            <Flex bg="#fff" rounded={"20px"} px="8px">
+                <Image src={IconConnected} />
+                <Text fontFamily={"Martian"} fontWeight={"500"} fontSize={"10px"}>
+                    APP.UNISWAP.ORG
+                </Text>
+            </Flex>
+            <Tooltip label="Set Soul Wallet as default wallet for this dapp.">
                 <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
-                {/* <InfoTip
-                    title={shouldInject ? "Unset as default wallet" : "Set as default wallet"}
-                /> */}
-                <InfoTip title={"Set as default wallet"} />
-            </div>
-            <div
-                className="flex items-center gap-1 absolute left-0 right-0 cursor-pointer tooltip tooltip-top  justify-center text-xs font-bold text-[#737373]"
-                data-tip="Test case only, please don't put too much money in"
-            >
-                Alpha Version
-            </div>
-            <a href={config.socials.telegram} target="_blank" className="relative z-10">
-                <img src={IconHelp} className="w-6 h-6" />
-            </a>
-        </div>
+            </Tooltip>
+        </Flex>
     );
 }
