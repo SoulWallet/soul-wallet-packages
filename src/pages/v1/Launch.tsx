@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
   const dispatch = useStepDispatchContext();
-  const { goWebsite } = useBrowser();
+  const { goWebsite, replaceCurrentTab } = useBrowser();
   const [showModal, setShowModal] = useState(false);
 
   const getAuthorized = async () => {
@@ -38,19 +38,20 @@ export default function Launch() {
   };
 
   const handleJumpToTargetStep = (targetStep: number) => {
-    if (authorized) {
-      dispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: targetStep,
-      });
-    }
+    // if (authorized) {
+    dispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: targetStep,
+    });
+    replaceCurrentTab('/create')
+    // }
   };
 
   return (
     <FullscreenContainer>
       <Flex w="460px" direction="column" alignItems="center" padding="10px">
         <div
-          className="w-full btn-card-primary"
+          className="w-full btn-card-primary mb-5"
           onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD)}
         >
           <div><CreateWalletIcon /></div>
@@ -59,7 +60,7 @@ export default function Launch() {
         </div>
         <div
           className="w-full btn-card"
-          onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD)}
+          onClick={() => {}}
         >
           <div><RecoverWalletIcon /></div>
           <div className="w-full card-title">Social Recover</div>
