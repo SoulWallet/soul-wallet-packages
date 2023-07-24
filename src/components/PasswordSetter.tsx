@@ -67,7 +67,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         onChange={(val) => setPassword(val)}
       />
 
-      <PasswordStrengthBar className="mt-2" password={password} />
+      <PasswordStrengthBar className="mt-4" password={password} />
 
       <InputWrapper
         label=""
