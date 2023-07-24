@@ -13,15 +13,6 @@ const paymasterToken_USDC = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 const paymasterToken_USDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 
 export const assetsList = [
-    // {
-    //     icon: IconETH,
-    //     name: "ETH",
-    //     symbol: "ETH",
-    //     address: "0x0000000000000000000000000000000000000000",
-    //     decimals: 18,
-    //     payable: true,
-    //     paymaster: false,
-    // },
     {
         icon: IconMATIC,
         name: "MATIC",

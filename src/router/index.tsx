@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import cn from "classnames";
 import { Routes, useLocation } from "react-router-dom";
 import useBrowser from "../hooks/useBrowser";
+import { Box } from "@chakra-ui/react";
 import { getLocalStorage } from "@src/lib/tools";
 import useKeystore from "../hooks/useKeystore";
 import RouterV1 from "./v1";
@@ -40,9 +41,11 @@ export default function PluginRouter() {
         findRoute();
     }, []);
 
+    // TODO, judge website as well
+
     return (
-        <div className={cn("bg-white text-base", mode !== "web" && "plugin-board")}>
+        <Box bg="appBg" fontSize={"16px"} w="360px">
             <Routes>{RouterV1}</Routes>
-        </div>
+        </Box>
     );
 }

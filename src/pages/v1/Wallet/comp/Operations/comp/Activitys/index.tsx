@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ActivityItem from "./comp/ActivityItem";
+import { Box } from "@chakra-ui/react";
 import IconEmpty from "@src/assets/empty.svg";
 import IconLoading from "@src/assets/activity-loading.gif";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import soulScanApi from "@src/lib/soulScanApi";
 import config from "@src/config";
+import { Image } from "@chakra-ui/react";
 
 export default function Activities() {
     const { walletAddress } = useWalletContext();
@@ -27,21 +29,17 @@ export default function Activities() {
     }, []);
 
     return (
-        <div className="pt-2">
+        <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
             {!loading && (!historyList || historyList.length === 0) && (
                 <>
                     <img src={IconEmpty} className="w-32 mx-auto my-4 block" />
                     <div className="text-center">No activities</div>
                 </>
             )}
-            {loading && (
-                <div className="text-center py-2 px-6">
-                    <img src={IconLoading} className="w-full" />
-                </div>
-            )}
-            {historyList.map((item: any, index: number) => (
-                <ActivityItem key={index} item={item} />
+            {loading && <Image src={IconLoading} />}
+            {historyList.map((item: any, idx: number) => (
+                <ActivityItem key={idx} idx={idx} item={item} />
             ))}
-        </div>
+        </Box>
     );
 }
