@@ -58,6 +58,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         </div>
       </div>
       <InputWrapper
+        label=""
         placeholder="Set Password"
         value={password}
         visible={createPwdVisible}
@@ -69,6 +70,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
       <PasswordStrengthBar className="mt-2" password={password} />
 
       <InputWrapper
+        label=""
         className="mt-3"
         placeholder="Confirm password"
         value={confirmPwd}
