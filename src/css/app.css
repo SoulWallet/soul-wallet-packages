@@ -274,6 +274,48 @@
       font-size: 14px;
     }
 
+    .wallet-card {
+      width: 100%;
+      height: 240px;
+      padding: 20px;
+      position: relative;
+      background: radial-gradient(51.95% 100% at 100% 100%, #A3B2FF 0%, #E2FC89 100%), linear-gradient(113.16deg, rgba(244, 255, 176, 0.8) 2.41%, rgba(182, 255, 108, 0.8) 76.58%);
+      box-shadow: 0px 4.87874698638916px 9.75749397277832px 0px #0000001F;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      margin-top: -20px;
+      transform: rotate(-4deg);
+    }
+
+    .wallet-card-icon {
+      position: absolute;
+      bottom: 30px;
+      right: 30px
+    }
+
+    .wallet-card-content {
+      width: 100%;
+    }
+
+    .wallet-card-status {
+      font-size: 12px;
+      font-weight: bold;
+      background: white;
+      border-radius: 12px;
+      padding: 0 10px;
+      display: inline-block;
+    }
+
+    .wallet-card-text {
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
     .input {
         @apply rounded-full bg-black bg-opacity-5 border-transparent;
 
