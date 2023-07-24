@@ -30,7 +30,7 @@ export default function useBrowser() {
     };
 
     const getFullscreenUrl = (path: string) => {
-        return browser.runtime.getURL(`popup.html#${path}?mode=web`);
+        return browser.runtime.getURL(`popup.html#/v1${path}?mode=web`);
     };
 
  

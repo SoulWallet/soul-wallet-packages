@@ -47,43 +47,45 @@ export default function InputWrapper({
     };
 
     return (
-        <div className={classNames("flex flex-col ", className)}>
-            <label className="tip-text mb-1" htmlFor={label}>
-                {label}
-            </label>
+      <div className={classNames("flex flex-col ", className)}>
+        {label && (
+          <label className="tip-text mb-1" htmlFor={label}>
+            {label}
+          </label>
+        )}
 
-            <div className="relative">
-                <input
-                    type={visible === false ? "password" : "text"}
-                    placeholder={placeholder}
-                    value={value ?? ""}
-                    onChange={handleChange}
-                    className={classNames(
-                        "w-full rounded-3xl bg-lightWhite border border-lightGray ",
-                        InputStyleMap[size],
-                        errorMsg && "border-alarmRed",
-                    )}
-                />
-                <span className="absolute top-[50px] left-0 text-alarmRed text-xs">{errorMsg}</span>
-                {visible !== undefined && (
-                    <Icon
-                        src={visible ? EyeOpen : EyeClose}
-                        className="absolute top-3 right-3 cursor-pointer"
-                        onClick={toggleVisibility}
-                    />
-                )}
-                {buttonText && onClick ? (
-                    <Button
-                        type="primary"
-                        className="absolute right-2 top-2 w-[80px] h-8"
-                        loading={buttonLoading}
-                        disabled={buttonDisabled}
-                        onClick={onClick}
-                    >
-                        {buttonText}
-                    </Button>
-                ) : null}
-            </div>
+        <div className="relative">
+          <input
+            type={visible === false ? "password" : "text"}
+            placeholder={placeholder}
+            value={value ?? ""}
+            onChange={handleChange}
+            className={classNames(
+              "w-full rounded-2xl bg-lightWhite border border-lightGray ",
+              InputStyleMap[size],
+              errorMsg && "border-alarmRed",
+            )}
+          />
+          <span className="absolute top-[50px] left-0 text-alarmRed text-xs">{errorMsg}</span>
+          {visible !== undefined && (
+            <Icon
+              src={visible ? EyeOpen : EyeClose}
+              className="absolute top-3 right-3 cursor-pointer"
+              onClick={toggleVisibility}
+            />
+          )}
+          {buttonText && onClick ? (
+            <Button
+              type="primary"
+              className="absolute right-2 top-2 w-[80px] h-8"
+              loading={buttonLoading}
+              disabled={buttonDisabled}
+              onClick={onClick}
+            >
+              {buttonText}
+            </Button>
+          ) : null}
         </div>
+      </div>
     );
 }

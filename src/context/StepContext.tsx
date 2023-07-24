@@ -67,11 +67,11 @@ export const StepContextProvider = ({ children }: { children: ReactNode }) => {
         current: 0, // both 0 to start
     });
 
-    return (
-        <StepContext.Provider value={{ step }}>
-            <StepDispatchContext.Provider value={dispatch}>{children}</StepDispatchContext.Provider>
-        </StepContext.Provider>
-    );
+  return (
+    <StepContext.Provider value={{ step }}>
+      <StepDispatchContext.Provider value={dispatch}>{children}</StepDispatchContext.Provider>
+    </StepContext.Provider>
+  );
 };
 
 export const useStepContext = () => useContext(StepContext);
