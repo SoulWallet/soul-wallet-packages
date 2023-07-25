@@ -1,22 +1,14 @@
 import React from "react";
-import IconArrowBack from "@src/assets/arrow-left.svg";
+import { Text, TextProps } from "@chakra-ui/react";
 
-interface IPageTitle {
-    title: string;
-    onBack?: () => void;
+interface IPageTitle extends TextProps {
+    children: React.ReactNode;
 }
 
-export default function PageTitle({ title, onBack }: IPageTitle) {
+export default function PageTitle({ children, ...restProps }: IPageTitle) {
     return (
-        <div className="py-4">
-            {onBack && (
-                <img
-                    src={IconArrowBack}
-                    className="cursor-pointer w-6 mb-2"
-                    onClick={onBack}
-                />
-            )}
-            <div className="page-title">{title}</div>
-        </div>
+        <Text fontSize="20px" fontWeight="800" mb="6" {...restProps}>
+            {children}
+        </Text>
     );
 }

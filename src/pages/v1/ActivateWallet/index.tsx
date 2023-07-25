@@ -7,8 +7,11 @@ import CostItem from "@src/components/CostItem";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
+import { Box, Text, Flex, Divider } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
+import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
 import useQuery from "@src/hooks/useQuery";
+import GasSelect from "@src/components/SendAssets/comp/GasSelect";
 import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
 import BN from "bignumber.js";
@@ -19,7 +22,6 @@ import { EnAlign } from "@src/types/IAssets";
 
 export default function ActivateWallet() {
     const { walletAddress, getWalletType, account, walletType } = useWalletContext();
-    const [step, setStep] = useState(0);
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
@@ -27,14 +29,15 @@ export default function ActivateWallet() {
     const { getTokenByAddress, getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
-    const {navigate} = useBrowser();
+    const { navigate } = useBrowser();
     const { balance } = useBalanceStore();
 
-    useEffect(() => {
-        if (walletType === "contract") {
-            navigate("wallet");
-        }
-    }, [walletType]);
+    // IMPORTANT TODO, take back
+    // useEffect(() => {
+    //     if (walletType === "contract") {
+    //         navigate("wallet");
+    //     }
+    // }, [walletType]);
 
     const doActivate = async () => {
         setLoading(true);
@@ -56,16 +59,6 @@ export default function ActivateWallet() {
         if (new BN(userBalance).isLessThan(maxCost)) {
             toast.error("Balance not enough");
             return;
-        } else {
-            setStep(1);
-        }
-    };
-
-    const goBack = () => {
-        if (step === 0) {
-            navigate("wallet");
-        } else if (step === 1) {
-            setStep(0);
         }
     };
 
@@ -110,60 +103,68 @@ export default function ActivateWallet() {
         }
     }, [paymasterApproved]);
 
+    const balanceEnough = false;
+
     return (
-        <>
-            <Navbar />
-            <div className="pb-28 overflow-y-auto">
-                <div className="px-6">
-                    <PageTitle title="Activate Wallet" onBack={goBack} />
-                </div>
-                {step === 0 && (
-                    <>
-                        <div className="bg-gray20 px-6 py-4">
-                            <div className="text-gray60 mb-1">To deploy wallet on {config.chainName} require</div>
-                            <CostItem
-                                value={maxCost ? `${maxCost} ${payTokenSymbol}` : "Loading..."}
-                                // memo={`$ 10.00 USD`}
-                                align={EnAlign.Left}
-                            />
-                            <div className="h-5" />
-                            <TokenSelect
-                                label="Gas"
-                                ethOnly={!paymasterApproved}
-                                labelTip="Gas fees are paid to crypto miners who process transactions on the network. They are set by the network and fluctuate based on network traffic and transaction complexity. Soul Wallet does not profit from gas fees."
-                                selectedAddress={payToken}
-                                onChange={setPayToken}
-                            />
-                        </div>
-                        <div className="my-5 px-6">
-                            <div className="mb-1">Wallet address</div>
-                            <div className="bg-gray20 rounded-lg p-3">
-                                <ReceiveCode imgWidth="w-24" walletAddress={walletAddress} addressTop={true} />
-                            </div>
-                        </div>
-                        <div className="px-6">
-                            <ApprovePaymaster value={paymasterApproved} onChange={setPaymasterApproved} />
-                        </div>
-                    </>
-                )}
+        <Box px="5" pt="6">
+            <Navbar backUrl="wallet" />
+            <PageTitle mb="0">Activate your Soul Wallet</PageTitle>
+            <Text fontWeight={"600"} my="12px">
+                Setting up your wallet requires a fee to cover deployment gas costs. This is not a Soul Wallet service
+                charge.
+                <br />
+                <br />
+                Add any of the following tokens to your wallet, and then you can continue the activation process: ETH,
+                USDC, DAI, USDT.
+            </Text>
+            <Box bg="#fff" rounded="20px" p="3">
+                <ReceiveCode walletAddress={walletAddress} />
+                <Divider h="1px" bg="#d7d7d7" my="2" />
+                <InfoWrap gap="3">
+                    <InfoItem>
+                        <Text>Network</Text>
+                        <Text>Ethereum</Text>
+                    </InfoItem>
+                    <InfoItem>
+                        <Text>Network fee</Text>
+                        {maxCost ? (
+                            <Flex gap="2">
+                                <Text>{maxCost}</Text>
+                                <GasSelect gasToken={payToken} onChange={setPayToken} />
+                            </Flex>
+                        ) : (
+                            "Loading..."
+                        )}
+                    </InfoItem>
+                </InfoWrap>
+            </Box>
 
-                {step === 1 && (
-                    <div className="px-6">
-                        <div className="mb-6">
-                            <Address value={walletAddress} />
-                        </div>
-                        <CostItem label="Total Cost" memo={`Max: ${maxCost} ${payTokenSymbol}`} />
-                    </div>
-                )}
+            <Button
+                disabled={!maxCost || !balanceEnough}
+                w="full"
+                onClick={doActivate}
+                fontSize="20px"
+                py="4"
+                fontWeight={"800"}
+                mt="14px"
+            >
+                Activate
+            </Button>
 
-                <div className="sign-bottom">
-                    {step === 0 && (
-                        <Button disabled={!maxCost} type="primary" className="flex-1 w-full" onClick={goNext}>
-                            Next
-                        </Button>
-                    )}
+            {!balanceEnough && (
+                <Text
+                    color="#FF2096"
+                    textAlign={"center"}
+                    fontSize={"12px"}
+                    fontWeight={"500"}
+                    fontFamily={"Martian"}
+                    mt="1"
+                >
+                    Not enough {payTokenSymbol} for activation
+                </Text>
+            )}
 
-                    {step === 1 && (
+            {/* {step === 1 && (
                         <>
                             <Button type="reject" className="flex-1 w-full" onClick={() => navigate("wallet")}>
                                 Reject
@@ -172,9 +173,11 @@ export default function ActivateWallet() {
                                 Confirm
                             </Button>
                         </>
-                    )}
-                </div>
-            </div>
-        </>
+                    )} */}
+
+            {/* <div className="px-6">
+                            <ApprovePaymaster value={paymasterApproved} onChange={setPaymasterApproved} />
+                        </div> */}
+        </Box>
     );
 }

@@ -45,8 +45,10 @@ export default function Button({
       bg={"brand.red"}
       h="unset"
       _hover={{bg: "brand.red"}}
+      _disabled={{opacity: '0.5', cursor: 'not-allowed'}}
       onClick={doClick}
       rounded={"20px"}
+      isDisabled={disabled}
       {...restProps}
     >
       {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}

@@ -16,8 +16,8 @@ export function Wallet() {
             <Box p="5">
                 <Navbar />
                 <AccountCard account={walletAddress} action="activate" />
-                {walletType === "contract" && <Actions />}
-                {walletType === "eoa" && <ActivateHint />}
+                <ActivateHint />
+                {/* {walletType === "eoa" ? <ActivateHint /> : <Actions />} */}
                 <Operations />
             </Box>
             <Footer />

@@ -5,6 +5,7 @@ import { toast } from "material-react-toastify";
 import IconCopy from "@src/assets/copy.svg";
 import useTools from "@src/hooks/useTools";
 import { copyText } from "@src/lib/tools";
+import { Flex, Text, Box, Image } from "@chakra-ui/react";
 
 interface IReceiveCode {
     walletAddress: string;
@@ -12,7 +13,7 @@ interface IReceiveCode {
     imgWidth?: string;
 }
 
-export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressTop = false }: IReceiveCode) {
+export default function ReceiveCode({ walletAddress }: IReceiveCode) {
     // const [copied, setCopied] = useState<boolean>(false);
     const [imgSrc, setImgSrc] = useState<string>("");
     const { generateQrCode } = useTools();
@@ -39,18 +40,14 @@ export default function ReceiveCode({ walletAddress, imgWidth = "w-44", addressT
     }, [walletAddress]);
 
     return (
-        <div className="text-center w-full">
-            <div className={cn("mb-2 flex gap-2", addressTop ? "flex-col-reverse" : "flex-col")}>
-                <img src={imgSrc} className={cn("mx-auto block", imgWidth)} />
-                <div className="opacity-50 break-words w-5/6 mx-auto text-center text-black address">
-                    {config.addressPrefix}
-                    {walletAddress}
-                </div>
-            </div>
-            <div className="flex gap-1 items-center justify-center tooltip gap-tooltip cursor-pointer" onClick={doCopy}>
-                <img src={IconCopy} />
-                <span>Copy</span>
-            </div>
-        </div>
+        <Box textAlign={"center"}>
+            <Image src={imgSrc} mx="auto" display={"block"} w="90px" />
+            <Flex align="center" gap="1" justify={"center"}>
+                <Text fontFamily={"Martian"} fontWeight={"600"} fontSize={"14px"}>
+                    {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                </Text>
+                <Image src={IconCopy} onClick={doCopy} w="20px" h="20px" cursor={"pointer"} />
+            </Flex>
+        </Box>
     );
 }

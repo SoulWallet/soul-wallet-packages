@@ -34,7 +34,7 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
 
     return (
         <div className="px-6 pt-3 pb-8">
-            <PageTitle title="Reset login password" onBack={() => onChange(0)} />
+            <PageTitle>Reset login password</PageTitle>
             <div className="flex flex-col gap-4">
                 <Input
                     label="Original password"
