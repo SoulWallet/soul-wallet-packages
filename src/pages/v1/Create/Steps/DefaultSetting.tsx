@@ -15,6 +15,7 @@ const DefaultSetting = () => {
       payload: CreateStepEn.Completed,
     });
   };
+
   return (
     <div className="max-w-lg">
       <div className="flex flex-col items-center justify-center">

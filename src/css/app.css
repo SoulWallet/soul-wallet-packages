@@ -198,6 +198,19 @@ body {
       text-align: center;
     }
 
+    .skip-warning-section {
+      margin-bottom: 16px;
+    }
+
+    .skip-warning-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .skip-warning-text {
+
+    }
+
     .input::placeholder {
         color: rgba(0, 0, 0, .4);
     }
