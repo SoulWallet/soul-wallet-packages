@@ -1,19 +1,12 @@
 import React from "react";
 import cn from "classnames";
+import { Button as CButton, ButtonProps } from "@chakra-ui/react";
 import IconLoading from "@src/assets/loading.gif";
 
 // TODO: error & retry
 type ButtonType = "default" | "primary" | "disabled" | "error" | "reject" | "link"; // may add 'dash', 'text', 'link', etc. later
 
-const ButtonTypeStyleMap = {
-    default: "btn-purple",
-    primary: "btn-purple-primary",
-    disable: "btn-purple-disabled",
-    error: "btn-purple-error",
-    reject: "btn-purple-reject",
-};
-
-interface IProps {
+interface IProps extends Omit<ButtonProps, 'type'> {
     children: React.ReactNode;
     type?: ButtonType; // 不传使用旧button，传了代表使用淡紫色新button
     className?: string;
@@ -23,7 +16,16 @@ interface IProps {
     href?: string;
 }
 
-export default function Button({ className, onClick, children, loading, disabled, type = "default", href }: IProps) {
+export default function Button({
+    className,
+    onClick,
+    children,
+    loading,
+    disabled,
+    type = "default",
+    href,
+    ...restProps
+}: IProps) {
     const doClick = () => {
         if (!loading && !disabled) {
             onClick();
@@ -37,18 +39,26 @@ export default function Button({ className, onClick, children, loading, disabled
     }
 
     return (
-        <a
+        <CButton
             {...moreProps}
+            color="#fff"
+            bg={"brand.red"}
+            _hover={{bg: "brand.red"}}
             onClick={doClick}
-            className={cn(
-                "btn font-bold text-xl py-1 leading-none",
-                className,
-                loading && "opacity-70 bg-purple cursor-not-allowed",
-                type && `btn-purple btn-purple-${type}`,
-                disabled && ButtonTypeStyleMap["disable"],
-            )}
+            rounded={"20px"}
+            fontSize={"20px"}
+            fontWeight={"800"}
+            py="4"
+            {...restProps}
+            // className={cn(
+            //     "btn font-bold text-xl py-1 leading-none",
+            //     className,
+            //     loading && "opacity-70 bg-purple cursor-not-allowed",
+            //     type && `btn-purple btn-purple-${type}`,
+            //     disabled && ButtonTypeStyleMap["disable"],
+            // )}
         >
             {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}
-        </a>
+        </CButton>
     );
 }

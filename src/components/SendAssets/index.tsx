@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import config from "@src/config";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import IconClose from "@src/assets/icons/close.svg";
 import useWalletContext from "@src/context/hooks/useWalletContext";
@@ -78,66 +79,50 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     };
 
     return (
-        <div className={cn("flex flex-col justify-between", step === 1 && "pb-[100px]")}>
-            <div>
-                <div className={cn("p-6 flex items-center justify-between", step === 1 && "pb-3")}>
-                    <div className="page-title">Send to</div>
-                    {step === 0 && <img src={IconClose} className="w-6 h-6 cursor-pointer" onClick={goBack} />}
-                </div>
+        <Box>
+            <Text fontSize="20px" fontWeight="800" color="#1e1e1e" mb="6">
+                Send
+            </Text>
+            <Button onClick={confirmAddress} w="100%">Review</Button>
+        </Box>
+        // <div className={cn("flex flex-col justify-between", step === 1 && "pb-[100px]")}>
+        //     <div>
+        //         {step === 0 && (
+        //             <div className="px-6">
+        //                 <Input
+        //                     value={receiverAddress}
+        //                     placeholder="Search, public address"
+        //                     onChange={setReceiverAddress}
+        //                     error={errors.receiverAddress}
+        //                     onEnter={confirmAddress}
+        //                     className="address"
+        //                 />
+        //             </div>
+        //         )}
+        //         {step === 1 && (
+        //             <div>
+        //                 <div className="mx-6">
+        //                     <Address value={receiverAddress} />
+        //                 </div>
+        //                 <div className="bg-gray20 my-6 px-6">
+        //                     <div className="pt-4">
+        //                         <TokenSelect label="Asset" selectedAddress={sendToken} onChange={setSendToken} />
+        //                     </div>
+        //                     <div className="py-4">
+        //                         <Input
+        //                             label="Amount"
+        //                             value={amount}
+        //                             placeholder="Send amount"
+        //                             // memo="$ 5.00 USD"
+        //                             onChange={setAmount}
+        //                             error={errors.amount}
+        //                         />
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         )}
+        //     </div>
 
-                {step === 0 && (
-                    <div className="px-6">
-                        <Input
-                            value={receiverAddress}
-                            placeholder="Search, public address"
-                            onChange={setReceiverAddress}
-                            error={errors.receiverAddress}
-                            onEnter={confirmAddress}
-                            className="address"
-                        />
-                    </div>
-                )}
-                {step === 1 && (
-                    <div>
-                        <div className="mx-6">
-                            <Address value={receiverAddress} />
-                        </div>
-                        <div className="bg-gray20 my-6 px-6">
-                            <div className="pt-4">
-                                <TokenSelect label="Asset" selectedAddress={sendToken} onChange={setSendToken} />
-                            </div>
-                            <div className="py-4">
-                                <Input
-                                    label="Amount"
-                                    value={amount}
-                                    placeholder="Send amount"
-                                    // memo="$ 5.00 USD"
-                                    onChange={setAmount}
-                                    error={errors.amount}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {step === 0 && (
-                <div className="absolute bottom-12 left-0 right-0 text-center px-6">
-                    <Button type="primary" className="w-full" onClick={confirmAddress}>
-                        Confirm
-                    </Button>
-                </div>
-            )}
-            {step === 1 && (
-                <div className="sign-bottom">
-                    <Button type="reject" className="flex-1 w-full" onClick={goBack}>
-                        Reject
-                    </Button>
-                    <Button type="primary" className="flex-1 w-full" onClick={() => doSend()} loading={sending}>
-                        Confirm
-                    </Button>
-                </div>
-            )}
-        </div>
+        // </div>
     );
 }

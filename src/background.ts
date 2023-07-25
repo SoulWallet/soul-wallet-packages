@@ -5,10 +5,10 @@ import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
 // TODO, change!
-let password = '111111111';
+let password = null;
 
 setInterval(() => {
-    console.log("pas", password);
+    console.log("bg pass", password);
 }, 2000);
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
@@ -18,7 +18,10 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
     switch (msg.type) {
         case "set/password":
-            password = msg.data;
+            console.log('READY TO SET', msg.data);
+            if(msg.data){
+                password = msg.data;
+            }
             break;
         case "get/password":
             console.log("ready return password", password);

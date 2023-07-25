@@ -1,4 +1,5 @@
 import React from "react";
+import { Box } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Navbar } from "@src/components/Navbar";
 import SendAssets from "@src/components/SendAssets";
@@ -8,9 +9,9 @@ export default function Send() {
     const params = useParams();
     const tokenAddress = params.tokenAddress || config.zeroAddress;
     return (
-        <>
-            <Navbar />
+        <Box p="5">
+            <Navbar backUrl="wallet" />
             {tokenAddress && <SendAssets tokenAddress={tokenAddress} />}
-        </>
+        </Box>
     );
 }
