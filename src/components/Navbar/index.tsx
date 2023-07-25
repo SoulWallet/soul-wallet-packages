@@ -19,9 +19,11 @@ export function Navbar({ backUrl }: INavbar) {
     const { navigate } = useBrowser();
     if (backUrl) {
         return (
-            <Flex align="center" onClick={() => navigate(backUrl)} mb="6">
+            <Flex display={"inline-flex"} align="center" onClick={() => navigate(backUrl)} mb="6" cursor={"pointer"}>
                 <Image src={IconChevronLeft} w="20px" h="20px" />
-                <Text fontWeight="800">Back</Text>
+                <Text fontWeight="800" color="#1C1C1E">
+                    Back
+                </Text>
             </Flex>
         );
     } else {
@@ -32,7 +34,6 @@ export function Navbar({ backUrl }: INavbar) {
                 <Image src={IconGear} w="32px" h="32px" cursor={"pointer"} />
             </Flex>
             // <div className="navbar flex items-center justify-between navbar-shadow">
-
             //     {/* {settingVisible && <WalletSettingModal onCancel={() => setSettingVisible(false)} />} */}
             // </div>
         );

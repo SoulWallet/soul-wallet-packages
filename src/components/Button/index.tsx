@@ -46,9 +46,6 @@ export default function Button({
       _hover={{bg: "brand.red"}}
       onClick={doClick}
       rounded={"20px"}
-      fontSize={"20px"}
-      fontWeight={"800"}
-      py="4"
       {...restProps}
     >
       {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}

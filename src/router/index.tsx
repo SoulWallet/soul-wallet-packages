@@ -44,8 +44,8 @@ export default function PluginRouter() {
     // TODO, judge website as well
 
     return (
-      <Box bg="appBg" fontSize={"16px"} w={mode === 'web' ? '' : '360px'}>
-        <Routes>{RouterV1}</Routes>
-      </Box>
+        <Box bg="appBg" fontSize={"16px"} w={mode === "web" ? "" : "360px"} minH="600px">
+            <Routes>{RouterV1}</Routes>
+        </Box>
     );
 }
