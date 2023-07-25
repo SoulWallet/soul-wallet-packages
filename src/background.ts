@@ -109,7 +109,7 @@ browser.runtime.onInstalled.addListener((details) => {
         case "install":
             // installed
             browser.tabs.create({
-                url: browser.runtime.getURL("popup.html#/launch?mode=web"),
+                url: browser.runtime.getURL("popup.html#/v1/launch?mode=web"),
             });
             break;
         case "update":

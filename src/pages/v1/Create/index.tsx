@@ -11,60 +11,60 @@ import StepCompletion from "@src/components/StepCompletion";
 import GuardianHint from "@src/components/GuardianHint";
 
 type StepNodeInfo = {
-    title: string;
-    element: ReactNode;
-    hint?: ReactNode;
+  title: string;
+  element: ReactNode;
+  hint?: ReactNode;
 };
 
 const StepComponent = () => {
-    const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
-        return {
-            [CreateStepEn.CreatePWD]: {
-                title: "Get Started",
-                element: <PasswordSetting />,
-            },
-            [CreateStepEn.SetupGuardians]: {
-                title: "Set up Guardians",
-                element: <GuardiansSetting />,
-                hint: <GuardianHint />,
-            },
-            [CreateStepEn.SaveGuardianList]: {
-                title: "Save Guardian List",
-                element: <GuardiansSaving />,
-            },
-            [CreateStepEn.SetSoulWalletAsDefault]: {
-                title: "Set as default plugin wallet",
-                element: <DefaultSetting />,
-            },
-            [CreateStepEn.Completed]: {
-                title: "Congratulation, your Soul Wallet is created!",
-                element: <StepCompletion mode={EnHandleMode.Create} />,
-            },
-        };
-    }, []);
+  const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
+    return {
+      [CreateStepEn.CreatePWD]: {
+        title: "Get Started",
+        element: <PasswordSetting />,
+      },
+      [CreateStepEn.SetupGuardians]: {
+        title: "Set up Guardians",
+        element: <GuardiansSetting />,
+        hint: <GuardianHint />,
+      },
+      [CreateStepEn.SaveGuardianList]: {
+        title: "Save Guardian List",
+        element: <GuardiansSaving skipped={true} />,
+      },
+      [CreateStepEn.SetSoulWalletAsDefault]: {
+        title: "Set as default plugin wallet",
+        element: <DefaultSetting />,
+      },
+      [CreateStepEn.Completed]: {
+        title: "Congratulation, your Soul Wallet is created!",
+        element: <StepCompletion mode={EnHandleMode.Create} />,
+      },
+    };
+  }, []);
 
-    const {
-        step: { current },
-    } = useStepContext();
+  const {
+    step: { current },
+  } = useStepContext();
 
-    return (
-        <div>
-            <ProgressNavBar
-                title={stepNodeMap[current].title}
-                maxStep={CreateStepEn.Completed}
-                hint={stepNodeMap[current]?.hint}
-            />
-            {stepNodeMap[current].element}
-        </div>
-    );
+  return (
+    <div>
+      {/* <ProgressNavBar
+          title={stepNodeMap[current].title}
+          maxStep={CreateStepEn.Completed}
+          hint={stepNodeMap[current]?.hint}
+          /> */}
+      {stepNodeMap[current].element}
+    </div>
+  );
 };
 
 export default function CreatePage() {
-    return (
-        <FullscreenContainer>
-            <StepContextProvider>
-                <StepComponent />
-            </StepContextProvider>
-        </FullscreenContainer>
-    );
+  return (
+    <FullscreenContainer>
+      <StepContextProvider>
+        <StepComponent />
+      </StepContextProvider>
+    </FullscreenContainer>
+  );
 }

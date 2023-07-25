@@ -8,36 +8,46 @@ import { useGuardianContext } from "@src/context/hooks/useGuardianContext";
 type IProps = GuardianItem;
 
 export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
-    const { removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } = useGuardianContext((s) => s);
+  const { removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } = useGuardianContext((s) => s);
 
-    const handleNameChange = (value: string) => {
-        updateNameById(id, value);
-    };
-    const handleAddressChange = (value: string) => {
-        updateErrorMsgById(id);
-        updateAddressById(id, value);
-    };
+  const handleNameChange = (value: string) => {
+    updateNameById(id, value);
+  };
+  const handleAddressChange = (value: string) => {
+    updateErrorMsgById(id);
+    updateAddressById(id, value);
+  };
 
-    const handleDelete = () => {
-        removeGuardian(id);
-    };
+  const handleDelete = () => {
+    removeGuardian(id);
+  };
 
-    // TODO: address input width better larger than 468
-    return (
-        <div className="guardian-inputer">
-            <div className="bg-[#F3F3F3] rounded-2xl px-6 py-4 text-sm flex flex-row gap-3 mr-2">
-                <InputWrapper value={name} size="s" className="w-sm" label="Name" onChange={handleNameChange} />
-                <InputWrapper
-                    value={address}
-                    size="s"
-                    className="w-[268px] address"
-                    label="Address"
-                    onChange={handleAddressChange}
-                    errorMsg={errorMsg}
-                />
-            </div>
+  // TODO: address input width better larger than 468
+  return (
+    <div className="guardian-inputer">
+      <div className="bg-[#F3F3F3] rounded-2xl text-sm flex flex-row w-full">
+        <InputWrapper
+          placeholder="Enter guardian address"
+          value={address}
+          size="s"
+          className="address-input-wrapper"
+          inputClassName="address-input"
+          label=""
+          onChange={handleAddressChange}
+          errorMsg={errorMsg}
+        />
+        <InputWrapper
+          placeholder="Assign nickname"
+          value={name}
+          size="s"
+          className="name-input-wrapper"
+          inputClassName="name-input"
+          label=""
+          onChange={handleNameChange}
+        />
+      </div>
 
-            <Icon src={MinusIcon} className="cursor-pointer" onClick={handleDelete} />
-        </div>
-    );
+      {/* <Icon src={MinusIcon} className="cursor-pointer" onClick={handleDelete} /> */}
+    </div>
+  );
 }

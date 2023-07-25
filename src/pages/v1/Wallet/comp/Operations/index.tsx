@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import { Box, Flex, Text } from "@chakra-ui/react";
-import * as abi from "@soulwallet/abi";
+// import * as abi from "@soulwallet/abi";
 import Tokens from "./comp/Tokens";
 import Nfts from "./comp/Nfts";
 import useWalletContext from "@src/context/hooks/useWalletContext";

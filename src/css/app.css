@@ -147,8 +147,68 @@ body {
         @apply rounded-lg bg-[#fafafa] border border-[#e0e0e0];
     }
 
-    .address {
-        @apply font-mono;
+    .address-input-wrapper {
+      @apply font-mono;
+      border-right: 1px solid #D7D7D7;
+      border-radius: 0;
+      flex: 1;
+    }
+
+    .name-input-wrapper {
+      @apply font-mono;
+      border-radius: 0;
+      flex: 1;
+    }
+
+    .address-input, .name-input, .amount-input {
+      border-radius: 0 !important;
+      border-width: 0 !important;
+      height: 48px !important;
+      background: white !important;
+    }
+
+    .address-input {
+      border-top-left-radius: 1em !important;
+      border-bottom-left-radius: 1em !important;
+    }
+
+    .name-input {
+      border-top-right-radius: 1em !important;
+      border-bottom-right-radius: 1em !important;
+    }
+
+    .save-gardian-section {
+      @apply: flex flex-col items-center justify-center;
+      padding: 20px;
+    }
+
+    .save-gardian-section-byself {
+      border-right: 1px solid #D7D7D7;
+    }
+
+    .save-gardian-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .save-gardian-text {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .skip-warning-section {
+      margin-bottom: 16px;
+    }
+
+    .skip-warning-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .skip-warning-text {
+
     }
 
     .input::placeholder {
@@ -189,7 +249,7 @@ body {
     }
 
     .skip-text {
-        @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
+        @apply text-[#898989] text-base cursor-pointer font-bold;
     }
 
     .btn-purple {
@@ -237,7 +297,7 @@ body {
     }
 
     .skip-text {
-        @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
+        @apply text-[#898989] text-base cursor-pointer font-bold;
     }
 
     .btn-purple {
@@ -281,6 +341,100 @@ body {
         @apply bg-[#FE7575] border-[#FE7575] brightness-105;
     }
 
+    .btn-card-primary {
+      @apply bg-[#E3FD8A] rounded-lg text-black cursor-pointer p-4 border-2 border-transparent;
+      box-shadow: 0px 4px 4px 0px #0000001A;
+      border-radius: 10px;
+    }
+
+    .btn-card-primary:hover {
+      @apply bg-[#E3FD8A] rounded-lg text-black border-2 border-black;
+    }
+
+    .btn-card {
+      @apply bg-[white] rounded-lg text-black cursor-pointer p-4 border-2 border-transparent;
+      box-shadow: 0px 4px 4px 0px #0000001A;
+      border-radius: 10px;
+    }
+
+    .btn-card:hover {
+      @apply bg-[white] rounded-lg text-black border-2 border-black;
+    }
+
+    .card-icon {
+
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+
+    .wallet-card {
+      width: 100%;
+      height: 240px;
+      padding: 20px;
+      position: relative;
+      background: radial-gradient(51.95% 100% at 100% 100%, #A3B2FF 0%, #E2FC89 100%), linear-gradient(113.16deg, rgba(244, 255, 176, 0.8) 2.41%, rgba(182, 255, 108, 0.8) 76.58%);
+      box-shadow: 0px 4.87874698638916px 9.75749397277832px 0px #0000001F;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      margin-top: -20px;
+      transform: rotate(-4deg);
+    }
+
+    .wallet-card-icon {
+      position: absolute;
+      bottom: 30px;
+      right: 30px
+    }
+
+    .wallet-card-content {
+      width: 100%;
+    }
+
+    .wallet-card-status {
+      font-size: 12px;
+      font-weight: bold;
+      background: white;
+      border-radius: 12px;
+      padding: 0 10px;
+      display: inline-block;
+    }
+
+    .wallet-card-text {
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .tip-title {
+      font-weight: bold;
+    }
+
+    .tip-preview {
+      max-width: 550px;
+    }
+
+    .tip-container {
+      max-width: 550px;
+    }
+
+    .btn-more {
+      color: #EC588D;
+      cursor: pointer;
+    }
+
     .input {
         @apply rounded-full bg-black bg-opacity-5 border-transparent;
 
@@ -291,7 +445,7 @@ body {
     }
 
     .guardian-inputer {
-        @apply h-[88px] flex flex-row items-center;
+        @apply flex flex-row items-center;
     }
 }
 
@@ -315,7 +469,7 @@ body {
 
 .progress-window-shadow {
     background                        : rgba(255, 255, 255, 0.02);
-    box-shadow                        : 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3);
+    /* box-shadow                        : 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3); */
     /* backdrop-filter                : blur(20px); */
     /* comment this otherwise position: fixed will not working */
 }
@@ -356,4 +510,16 @@ body {
 
 .gas-tooltip::before {
     max-width: 240px;
+}
+
+.logo {
+  height: 100px;
+}
+
+.logo-icon {
+  height: 100%;
+}
+
+.logo-text {
+  height: 30px;
 }

@@ -32,11 +32,11 @@ export default function Button({
         }
     };
 
-    const moreProps: any = {};
+  const moreProps: any = {};
 
-    if (!disabled) {
-        moreProps.href = href;
-    }
+  if (!disabled) {
+    moreProps.href = href;
+  }
 
     return (
         <CButton
