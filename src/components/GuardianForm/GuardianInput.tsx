@@ -7,7 +7,7 @@ import { useGuardianContext } from "@src/context/hooks/useGuardianContext";
 
 type IProps = GuardianItem;
 
-export default function GuardianInput({ id, name, address, errorMsg }: IProps) {
+export default function GuardianInput({ id, name, address, errorMsg, inputClassName }: IProps) {
   const { removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } = useGuardianContext((s) => s);
 
   const handleNameChange = (value: string) => {

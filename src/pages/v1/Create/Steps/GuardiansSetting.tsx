@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Button from "@src/components/Button";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import React, { useRef } from "react";
 import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
@@ -50,7 +49,7 @@ export default function GuardiansSetting() {
     handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault);
   };
 
-  const toggleTips = (event) => {
+  const toggleTips = (event: any) => {
     console.log('toggleTips', event)
     setShowTips(!showTips)
   }
