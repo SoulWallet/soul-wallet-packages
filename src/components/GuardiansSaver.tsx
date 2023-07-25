@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Button from "./Button";
+import { SButton } from "./Button";
 import InputWrapper from "./InputWrapper";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import useTools from "@src/hooks/useTools";
@@ -76,16 +76,16 @@ const GuardiansSaver = ({ onSave }: IProps) => {
           onChange={handleEmailChange}
           onClick={handleSendEmail}
         />
-        <Button type="default" onClick={handleDownload} className="w-full" loading={downloading}>
+        <SButton type="default" onClick={handleDownload} className="w-full" loading={downloading}>
           Download
-        </Button>
+        </SButton>
       </div>
       <div className="save-gardian-section">
         <div className="save-gardian-title">Save with Soul Wallet</div>
         <div className="save-gardian-text">Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.</div>
-        <Button type="default" onClick={handleDownload} className="w-full" loading={downloading}>
+        <SButton type="default" onClick={handleDownload} className="w-full" loading={downloading}>
           Store On-chain
-        </Button>
+        </SButton>
       </div>
     </div>
   );

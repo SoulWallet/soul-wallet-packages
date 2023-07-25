@@ -1,4 +1,4 @@
-import Button from "@src/components/Button";
+import { SButton } from "@src/components/Button";
 import browser from "webextension-polyfill";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCardIcon from "@src/components/Icons/WalletCard";
@@ -33,9 +33,9 @@ const DefaultSetting = () => {
         <div className="page-title text-center">Set as defaul wallet</div>
         <p className="tip-text mt-4 mb-8 text-center">Boost your Ethereum journey by setting Soul Wallet as your primary plugin wallet. You can always easily change this setting.</p>
 
-        <Button className="w-full" type="primary" onClick={() => handleNext(true)}>
+        <SButton className="w-full" type="primary" onClick={() => handleNext(true)}>
           Yes
-        </Button>
+        </SButton>
 
         <a className="skip-text mx-auto self-center my-5" onClick={() => handleNext(false)}>
           Skip

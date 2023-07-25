@@ -1,6 +1,6 @@
 import InputWrapper from "@src/components/InputWrapper";
 import React, { useEffect, useState } from "react";
-import Button from "./Button";
+import { SButton } from "./Button";
 import { StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCardIcon from "@src/components/Icons/WalletCard";
 import PasswordStrengthBar from "./PasswordStrengthBar";
@@ -80,9 +80,9 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         onChange={(val) => setConfirmPwd(val)}
       />
 
-      <Button className="mb-6 mt-6 rounded-2xl" type={"primary"} disabled={!nextable} onClick={handleNext}>
+      <SButton className="mb-6 mt-6 rounded-2xl" type={"primary"} disabled={!nextable} onClick={handleNext}>
         Continue
-      </Button>
+      </SButton>
     </div>
   );
 };
