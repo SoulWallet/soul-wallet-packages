@@ -13,6 +13,7 @@ export default function AddressInput({ label, address, onChange, disabled }: any
                     spellCheck={false}
                     onChange={onChange}
                     variant={"unstyled"}
+                    _disabled={{ opacity: "1", cursor: "not-allowed" }}
                     fontWeight={"800"}
                     color="#1e1e1e"
                     disabled={disabled}

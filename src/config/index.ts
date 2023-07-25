@@ -1,66 +1,11 @@
-// import Icon1inch from "@src/assets/dapps/1inch.svg";
-import IconAave from "@src/assets/dapps/aave.svg";
-// import IconCurve from "@src/assets/dapps/curve.png";
-import IconUniswap from "@src/assets/dapps/uniswap.svg";
-import IconSushiswap from "@src/assets/dapps/sushiswap.svg";
-import IconGmx from "@src/assets/dapps/gmx.svg";
-// import IconYearn from "@src/assets/dapps/yearn.svg";
-// import envConf from './arb-goerli'
-
-export const dappsList = [
-    {
-        icon: IconUniswap,
-        title: "Uniswap",
-        category: "DeFi",
-        link: "https://app.uniswap.org/#/swap",
-    },
-    {
-        icon: IconAave,
-        title: "Aave",
-        category: "DeFi",
-        link: "https://app.aave.com/",
-    },
-    {
-        icon: IconSushiswap,
-        title: "SushiSwap",
-        category: "DeFi",
-        link: "https://www.sushi.com/swap",
-    },
-    {
-        icon: IconGmx,
-        title: "GMX",
-        category: "DeFi",
-        link: "https://app.gmx.io/",
-    },
-
-    // {
-    //     icon: Icon1inch,
-    //     title: "1inch",
-    //     category: "DeFi",
-    //     link: "https://app.1inch.io",
-    // },
-    // {
-    //     icon: IconCurve,
-    //     title: "Curve",
-    //     category: "DeFi",
-    //     link: "https://curve.fi",
-    // },
-    // {
-    //     icon: IconYearn,
-    //     title: "Yearn",
-    //     category: "DeFi",
-    //     link: "https://yearn.finance/",
-    // },
-];
-
 export default {
     walletName: "Soul Wallet",
+    faviconUrl: "https://www.google.com/s2/favicons?domain=",
     socials: {
         website: "https://www.soulwallet.io",
         telegram: "https://t.me/+XFUHusXFdTYyODQ9",
     },
-    magicValue: '0x1626ba7e',
-    dappsList,
+    magicValue: "0x1626ba7e",
     zeroAddress: "0x0000000000000000000000000000000000000000",
     ...require(`./${process.env.CHAIN}`).default,
 };

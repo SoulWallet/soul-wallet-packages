@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import config from "@src/config";
-import { Flex, Box, Text, MenuButton, Menu, MenuList, MenuItem, Image } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
@@ -14,9 +14,7 @@ import { TokenSelect } from "../TokenSelect";
 import { toast } from "material-react-toastify";
 import AmountInput from "./comp/AmountInput";
 import AddressInput from "./comp/AddressInput";
-import TokenLine from "./comp/TokenLine";
-import IconChevronRightRed from "@src/assets/icons/chevron-right-red.svg";
-import IconChevronRight from "@src/assets/icons/chevron-right.svg";
+import GasSelect from "./comp/GasSelect";
 
 interface ErrorProps {
     receiverAddress: string;
@@ -33,9 +31,9 @@ interface ISendAssets {
 }
 
 export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
-    const { navigate } = useBrowser();
-    const { account } = useWalletContext();
+    const { walletAddress } = useWalletContext();
     const [sending, setSending] = useState<boolean>(false);
+    const { navigate } = useBrowser();
     const [amount, setAmount] = useState<string>("");
     const { balance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
@@ -49,6 +47,14 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             toast.error("Address not valid");
             return;
         }
+        // go sign page
+
+        // actionType: param.get("action"),
+        // tabId: param.get("tabId"),
+        // origin: param.get("origin"),
+        // txns: param.get("txns"),
+        // data: param.get("data"),
+        navigate("sign?action=transfer");
     };
 
     const doSend = async () => {
@@ -77,42 +83,28 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
 
     return (
         <Box>
-            <Text fontSize="20px" fontWeight="800" color="#1e1e1e" mb="6">
+            <Text fontSize="20px" fontWeight="800" mb="6">
                 Send
             </Text>
             <Flex flexDir={"column"} gap="5">
                 <AmountInput sendToken={sendToken} amount={amount} onChange={setAmount} onTokenChange={setSendToken} />
-                <AddressInput label="From" address={account} disabled />
+                <AddressInput label="From" address={walletAddress} disabled />
                 <AddressInput
                     label="To"
                     address={receiverAddress}
                     onChange={(e: any) => setReceiverAddress(e.target.value)}
                 />
                 <Flex fontSize="12px" fontWeight={"500"} fontFamily={"Martian"} flexDir={"column"}>
-                    <Flex align="center" justify={"space-between"}>
+                    <Flex align="center" justify={"space-between"} px="4">
                         <Text>Gas fee ($2.22)</Text>
                         <Flex gap="2">
                             <Text>2.22</Text>
-                            <Menu>
-                                <MenuButton>
-                                    <Flex align="center">
-                                        <Text color="brand.red">USDC</Text>
-                                        <Image src={IconChevronRightRed} />
-                                    </Flex>
-                                </MenuButton>
-                                <MenuList>
-                                    {config.assetsList.map((item: any) => (
-                                        <MenuItem key={item.address}>
-                                            <TokenLine icon={item.icon} symbol={item.symbol} memo="123" />
-                                        </MenuItem>
-                                    ))}
-                                </MenuList>
-                            </Menu>
+                            <GasSelect />
                         </Flex>
                     </Flex>
                 </Flex>
             </Flex>
-            <Button onClick={confirmAddress} w="100%" fontSize={"20px"} py="5" fontWeight={"800"} mt="6">
+            <Button onClick={confirmAddress} w="100%" fontSize={"20px"} py="4" fontWeight={"800"} mt="6">
                 Review
             </Button>
         </Box>

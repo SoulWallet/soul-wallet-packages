@@ -44,7 +44,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
             // IMPORTANT TODO, also need to check lock state
-            if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
+            if (false && accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
                 browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",

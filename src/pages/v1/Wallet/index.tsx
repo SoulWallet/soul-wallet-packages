@@ -3,27 +3,21 @@ import { Navbar } from "@src/components/Navbar";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import AccountCard from "@src/components/AccountCard";
 import { Box } from "@chakra-ui/react";
-// import * as abi from "@soulwallet/abi";
-import useBrowser from "@src/hooks/useBrowser";
 import Operations from "./comp/Operations";
+import ActivateHint from "./comp/ActivateHint";
 import Footer from "@src/components/Footer";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    const { walletAddress } = useWalletContext();
-    const { navigate } = useBrowser();
-
-    useEffect(() => {
-        navigate("send");
-        console.log('navigated')
-    }, []);
+    const { walletAddress, walletType } = useWalletContext();
 
     return (
         <>
             <Box p="5">
                 <Navbar />
                 <AccountCard account={walletAddress} action="activate" />
-                <Actions />
+                {walletType === "contract" && <Actions />}
+                {walletType === "eoa" && <ActivateHint />}
                 <Operations />
             </Box>
             <Footer />

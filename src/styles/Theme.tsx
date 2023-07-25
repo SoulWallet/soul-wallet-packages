@@ -19,6 +19,7 @@ const theme = extendTheme({
     },
     colors: {
         appBg: "#F7F7F7",
+        danger: "#E83D26",
         brand: {
             red: "#EC588D",
         },
