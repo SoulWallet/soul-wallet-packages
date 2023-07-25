@@ -1,4 +1,4 @@
-import Button from "@src/components/Button";
+import { SButton } from "@src/components/Button";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
 import GuardiansSaver from "@src/components/GuardiansSaver";
@@ -32,9 +32,9 @@ const GuardiansSaving = () => {
             <div className="skip-warning-title">Can I set guardians in the future?</div>
             <div className="skip-warning-text">Yes. You can setup or change your guardians anytime on your home page.</div>
           </div>
-          <Button className="w-full" type="primary" onClick={() => handleNext()}>
+          <SButton className="w-full" type="primary" onClick={() => handleNext()}>
             Set guardians now
-          </Button>
+          </SButton>
           <a className="skip-text mx-auto self-center my-5" onClick={() => handleNext()}>
             I understand the risks, skip for now
           </a>
@@ -56,9 +56,9 @@ const GuardiansSaving = () => {
 
       <GuardiansSaver onSave={handleSaved} />
 
-      <Button className="w-base mt-14 mx-auto" type="primary" disabled={!hasSaved} onClick={handleNext}>
+      <SButton className="w-base mt-14 mx-auto" type="primary" disabled={!hasSaved} onClick={handleNext}>
         Continue
-      </Button>
+      </SButton>
     </div>
   );
 };
