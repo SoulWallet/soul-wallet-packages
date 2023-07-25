@@ -5,6 +5,7 @@ import { GuardianContext, useGuardianContext } from "@src/context/hooks/useGuard
 import { GuardianItem } from "@src/lib/type";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
 import Icon from "../Icon";
+import InputWrapper from "../InputWrapper";
 import PlusIcon from "@src/assets/icons/plus.svg";
 
 export interface IGuardianFormHandler {
@@ -46,26 +47,43 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
     });
 
     return (
-        <div>
-            <div className="w-full grid grid-cols-2 gap-5 min-h-fit max-h-64 overflow-y-auto min-w-[980px]">
-                {guardians.map((item) => (
-                    <GuardianInput key={item.id} {...item} />
-                ))}
+      <div className="flex flex-col justify-center items-center">
+        <div className="flex justify-center items-center w-full grid grid-cols-1 gap-2 min-h-fit">
+          {guardians.map((item) => (
+            <GuardianInput key={item.id} {...item} />
+          ))}
 
-                <div
-                    onClick={handleAddGuardian}
-                    className="guardian-inputer mr-8 cursor-pointer justify-center bg-[#F3F3F3] rounded-2xl border border-dashed border-[#BFBFBF]"
-                >
-                    <Icon src={PlusIcon} />
-                    <span className="ml-2 font-bold text-green">Add Guardian</span>
-                </div>
-            </div>
-
-            <p className="mt-7 text-sm text-black">
-                Any Wallet recovery requires the signature of: <span className="text-purple font-medium">{Math.ceil(guardians.length / 2)}</span> out of{" "}
-                {guardians.length} guardians
-            </p>
+          <div
+            onClick={handleAddGuardian}
+            className="guardian-inputer cursor-pointer justify-center rounded-2xl"
+          >
+            {/* <Icon src={PlusIcon} /> */}
+            <span className="font-bold text-[#EC588D]">Add More Guardian</span>
+          </div>
         </div>
+
+        <p className="mt-4 text-sm text-black text-center">
+          Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least X for safety.
+        </p>
+        <div className="gardians-amount-container flex flex-row justify-center items-center bg-white mt-4 rounded-2xl px-2">
+          <div>
+            <InputWrapper
+              placeholder="Enter amount"
+              value={""}
+              size="s"
+              className="amount-input-wrapper"
+              inputClassName="amount-input"
+              onChange={() => {}}
+              label=""
+            />
+          </div>
+          <div className="text-base font-bold p-1">/3</div>
+        </div>
+        {/* <p className="mt-7 text-sm text-black">
+            Any Wallet recovery requires the signature of: <span className="text-purple font-medium">{Math.ceil(guardians.length / 2)}</span> out of{" "}
+            {guardians.length} guardians
+            </p> */}
+      </div>
     );
 });
 GuardianFormInner.displayName = "GuardianFormInner";

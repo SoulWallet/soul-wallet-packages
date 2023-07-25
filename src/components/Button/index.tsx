@@ -41,7 +41,7 @@ export default function Button({ className, onClick, children, loading, disabled
       {...moreProps}
       onClick={doClick}
       className={cn(
-        "btn font-bold text-xl py-1 leading-none",
+        "btn font-bold text-xl py-1 leading-none rounded-2xl",
         className,
         loading && "opacity-70 bg-black cursor-not-allowed",
         type && `btn-black btn-black-${type}`,

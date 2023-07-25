@@ -47,16 +47,16 @@ const StepComponent = () => {
         step: { current },
     } = useStepContext();
 
-    return (
-        <div>
-          {/* <ProgressNavBar
-              title={stepNodeMap[current].title}
-              maxStep={CreateStepEn.Completed}
-              hint={stepNodeMap[current]?.hint}
-              /> */}
-            {stepNodeMap[current].element}
-        </div>
-    );
+  return (
+    <div>
+      {/* <ProgressNavBar
+          title={stepNodeMap[current].title}
+          maxStep={CreateStepEn.Completed}
+          hint={stepNodeMap[current]?.hint}
+          /> */}
+      {stepNodeMap[2].element}
+    </div>
+  );
 };
 
 export default function CreatePage() {

@@ -147,8 +147,55 @@ body {
         @apply rounded-lg bg-[#fafafa] border border-[#e0e0e0];
     }
 
-    .address {
-        @apply font-mono;
+    .address-input-wrapper {
+      @apply font-mono;
+      border-right: 1px solid #D7D7D7;
+      border-radius: 0;
+      flex: 1;
+    }
+
+    .name-input-wrapper {
+      @apply font-mono;
+      border-radius: 0;
+      flex: 1;
+    }
+
+    .address-input, .name-input, .amount-input {
+      border-radius: 0 !important;
+      border-width: 0 !important;
+      height: 48px !important;
+      background: white !important;
+    }
+
+    .address-input {
+      border-top-left-radius: 1em !important;
+      border-bottom-left-radius: 1em !important;
+    }
+
+    .name-input {
+      border-top-right-radius: 1em !important;
+      border-bottom-right-radius: 1em !important;
+    }
+
+    .save-gardian-section {
+      @apply: flex flex-col items-center justify-center;
+      padding: 20px;
+    }
+
+    .save-gardian-section-byself {
+      border-right: 1px solid #D7D7D7;
+    }
+
+    .save-gardian-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .save-gardian-text {
+      margin-bottom: 10px;
+      text-align: center;
     }
 
     .input::placeholder {
@@ -189,7 +236,7 @@ body {
     }
 
     .skip-text {
-        @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
+        @apply text-[#898989] text-base cursor-pointer font-bold;
     }
 
     .btn-purple {
@@ -237,7 +284,7 @@ body {
     }
 
     .skip-text {
-        @apply text-purple text-sm underline underline-offset-4 cursor-pointer font-bold;
+        @apply text-[#898989] text-base cursor-pointer font-bold;
     }
 
     .btn-purple {
@@ -358,6 +405,23 @@ body {
       margin-top: 10px;
     }
 
+    .tip-title {
+      font-weight: bold;
+    }
+
+    .tip-preview {
+      max-width: 550px;
+    }
+
+    .tip-container {
+      max-width: 550px;
+    }
+
+    .btn-more {
+      color: #EC588D;
+      cursor: pointer;
+    }
+
     .input {
         @apply rounded-full bg-black bg-opacity-5 border-transparent;
 
@@ -368,7 +432,7 @@ body {
     }
 
     .guardian-inputer {
-        @apply h-[88px] flex flex-row items-center;
+        @apply flex flex-row items-center;
     }
 }
 
