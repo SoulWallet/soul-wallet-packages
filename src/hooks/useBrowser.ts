@@ -11,6 +11,7 @@ export default function useBrowser() {
      */
     const navigate = async (route: string) => {
         // check version
+        console.log('go route', `/v1/${route}`)
         nav(`/v1/${route}`);
     }
 

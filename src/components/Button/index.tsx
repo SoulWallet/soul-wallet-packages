@@ -43,6 +43,7 @@ export default function Button({
       {...moreProps}
       color="#fff"
       bg={"brand.red"}
+      h="unset"
       _hover={{bg: "brand.red"}}
       onClick={doClick}
       rounded={"20px"}

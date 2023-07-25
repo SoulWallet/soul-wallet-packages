@@ -23,7 +23,7 @@ const ActionItem = ({ icon, title, onClick }: any) => {
 export default function Actions() {
     const { navigate } = useBrowser();
     return (
-        <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="16px" mb="24px">
+        <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="4" mb="6">
             <ActionItem title="Add funds" icon={IconAddFunds} />
             <ActionItem title="Send" icon={IconSend} onClick={() => navigate(`send/${config.zeroAddress}`)} />
             <ActionItem title="Guardians" icon={IconGuardians} />
