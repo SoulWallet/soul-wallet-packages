@@ -9,8 +9,10 @@ import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
 import Button from "../Button";
-import PageTitle from "../PageTitle";
+import AddressInput from "../SendAssets/comp/AddressInput";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { TokenSelect } from "../TokenSelect";
+import GasSelect from "../SendAssets/comp/GasSelect";
 
 enum SignTypeEn {
     Transaction,
@@ -140,98 +142,124 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     }, [payToken, activeOperation]);
 
     return (
-        <div
-            ref={ref}
-            className={cn(
-                "flex flex-col justify-between pb-6 text-base h-full z-20 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-hidden",
-                !visible && "hidden",
-            )}
-        >
-            <div>
-                <div className="px-6">
-                    {signType === SignTypeEn.Account && <PageTitle title={`Get Account`} />}
-                    {signType === SignTypeEn.Transaction && <PageTitle title={`Signature Request`} />}
-                    {signType === SignTypeEn.Message && <PageTitle title={`Sign Message`} />}
-                </div>
-                <div className="info-box">
-                    <div className="mb-2 text-gray60">Account</div>
-                    <div className="flex gap-2 items-center">
-                        <AddressIcon width={32} address={walletAddress} />
-                        <div className="font-bold text-lg font-sans">
-                            {walletAddress.slice(0, 6)}...
-                            {walletAddress.slice(-6)}
-                        </div>
-                    </div>
-                </div>
-                <div className="px-6 py-4">
-                    <div className="mb-2 text-gray60">Origin</div>
-                    <div className="font-bold text-lg">{origin}</div>
-                </div>
-                <div className="info-box">
-                    <div className="mb-2 text-gray60">
-                        {signType === SignTypeEn.Account && "Account"}
-                        {signType === SignTypeEn.Transaction && "Transaction"}
-                        {signType === SignTypeEn.Message && "Message"}
-                    </div>
-                    <div className="max-h-44 overflow-y-auto">
-                        {signType === SignTypeEn.Account && "Get Accounts"}
-                        {signType === SignTypeEn.Transaction && (
-                            <div>
-                                {decodedData && decodedData.length > 0
-                                    ? decodedData.map((item: any, index: number) => (
-                                          <span className="mr-1 capitalize" key={index}>
-                                              {index + 1}.{item.functionName}
-                                          </span>
-                                      ))
-                                    : "Contract interaction"}
-                            </div>
-                        )}
-                        {signType === SignTypeEn.Message && messageToSign}
-                    </div>
-                </div>
-                {signType === SignTypeEn.Transaction && (
-                    <>
-                        <div className="px-6 py-4">
-                            <TokenSelect label="Gas" selectedAddress={payToken} onChange={setPayToken} />
-                            <div className="h-2" />
-                            <CostItem label="Total cost" loading={loadingFee} memo={`Max: ${feeCost}`} />
-                        </div>
-                    </>
-                )}
-            </div>
+        <div ref={ref}>
+            {visible && (
+                <>
+                    <Box
+                        h="full"
+                        zIndex={"20"}
+                        position={"absolute"}
+                        top="0"
+                        bottom={"0"}
+                        left={"0"}
+                        right={"0"}
+                        overflow={"hidden"}
+                        p="5"
+                    >
+                        <Text fontSize="20px" fontWeight="800" color="#1e1e1e">
+                            {signType === SignTypeEn.Account && `Get Account`}
+                            {signType === SignTypeEn.Transaction && `Signature Request`}
+                            {signType === SignTypeEn.Message && `Sign Message`}
+                        </Text>
 
-            <div className="flex gap-2 px-6">
-                <Button type="reject" className="!w-1/2" onClick={onReject}>
-                    Reject
-                </Button>
-                {signType === SignTypeEn.Account && (
-                    <Button
-                        type="primary"
-                        className="!w-1/2"
-                        onClick={onConfirm}
-                        loading={signing}
-                        disabled={loadingFee}
-                    >
-                        Confirm
-                    </Button>
-                )}
-                {signType === SignTypeEn.Transaction && (
-                    <Button
-                        type="primary"
-                        className="!w-1/2"
-                        onClick={onConfirm}
-                        loading={signing}
-                        disabled={loadingFee}
-                    >
-                        Sign
-                    </Button>
-                )}
-                {signType === SignTypeEn.Message && (
-                    <Button type="primary" className="!w-1/2" onClick={onSign}>
-                        Sign
-                    </Button>
-                )}
-            </div>
+                        {origin && (
+                            <Text fontWeight={"600"} mt="1">
+                                {origin}
+                            </Text>
+                        )}
+
+                        <Flex flexDir={"column"} gap="5" mt="6">
+                            <Box bg="#fff" py="3" px="4" rounded="20px" fontWeight={"800"}>
+                                {signType === SignTypeEn.Account && "Get Accounts"}
+                                {signType === SignTypeEn.Transaction && (
+                                    <div>
+                                        {decodedData && decodedData.length > 0
+                                            ? decodedData.map((item: any, index: number) => (
+                                                  <span className="mr-1 capitalize" key={index}>
+                                                      {index + 1}.{item.functionName}
+                                                  </span>
+                                              ))
+                                            : "Contract interaction"}
+                                    </div>
+                                )}
+                                {signType === SignTypeEn.Message && messageToSign}
+                            </Box>
+                            <AddressInput label="From" address={walletAddress} disabled />
+                            <AddressInput label="To" address={"0x1111"} disabled={true} />
+                            {signType === SignTypeEn.Transaction && (
+                                <>
+                                    <Flex
+                                        fontSize="12px"
+                                        fontWeight={"500"}
+                                        px="4"
+                                        gap="6"
+                                        fontFamily={"Martian"}
+                                        flexDir={"column"}
+                                    >
+                                        <Flex align="center" justify={"space-between"}>
+                                            <Text>Gas fee ($2.22)</Text>
+                                            <Flex gap="2">
+                                                <Text>{feeCost.split(" ")[0]}</Text>
+                                                <GasSelect gasToken={payToken} onChange={setPayToken} />
+                                            </Flex>
+                                        </Flex>
+                                        <Flex align="center" justify={"space-between"}>
+                                            <Text>Total</Text>
+                                            <Text>$1736.78</Text>
+                                        </Flex>
+                                    </Flex>
+                                </>
+                            )}
+                        </Flex>
+
+                        {signType === SignTypeEn.Account && (
+                            <Button
+                                w="100%"
+                                fontSize={"20px"}
+                                py="4"
+                                fontWeight={"800"}
+                                mt="6"
+                                onClick={onConfirm}
+                                loading={signing}
+                                disabled={loadingFee}
+                            >
+                                Confirm
+                            </Button>
+                        )}
+                        {signType === SignTypeEn.Transaction && (
+                            <Button
+                                w="100%"
+                                fontSize={"20px"}
+                                py="4"
+                                fontWeight={"800"}
+                                mt="6"
+                                onClick={onConfirm}
+                                loading={signing}
+                                disabled={loadingFee}
+                            >
+                                Sign
+                            </Button>
+                        )}
+                        {signType === SignTypeEn.Message && (
+                            <Button w="100%" fontSize={"20px"} py="4" fontWeight={"800"} mt="6" onClick={onSign}>
+                                Sign
+                            </Button>
+                        )}
+                        <Text
+                            color="danger"
+                            fontSize="20px"
+                            fontWeight={"800"}
+                            textAlign={"center"}
+                            cursor={"pointer"}
+                            onClick={onReject}
+                            mt="5"
+                            lineHeight={"1"}
+                        >
+                            Cancel
+                        </Text>
+                    </Box>
+                </>
+            )}
         </div>
     );
 };

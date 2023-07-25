@@ -12,7 +12,8 @@ function injectScript(file, node) {
 injectScript(browser.runtime.getURL("js/inpage.js"), "html");
 
 function sendMessage(data) {
-    data.url = `chrome-extension://${browser.runtime.id}/popup.html#/sign?action=${data.action}`;
+    // todo, make version variable
+    data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.action}`;
     data.pos = {
         width: 360,
         height: 600 + 28, // 28 is title bar

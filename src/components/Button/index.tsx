@@ -45,6 +45,8 @@ export default function Button({
             bg={"brand.red"}
             _hover={{bg: "brand.red"}}
             onClick={doClick}
+            h="unset"
+            lineHeight={"1"}
             rounded={"20px"}
             {...restProps}
             // className={cn(
