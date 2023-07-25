@@ -5,7 +5,7 @@ import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
 // TODO, change!
-let password = null;
+let password = '111111111';
 
 setInterval(() => {
     console.log("bg pass", password);

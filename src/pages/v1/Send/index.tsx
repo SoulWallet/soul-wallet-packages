@@ -11,7 +11,7 @@ export default function Send() {
     return (
         <Box p="5">
             <Navbar backUrl="wallet" />
-            {tokenAddress && <SendAssets tokenAddress={tokenAddress} />}
+            <SendAssets tokenAddress={tokenAddress} />
         </Box>
     );
 }

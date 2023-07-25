@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, forwardRef } from "react";
 import Logo from "@src/assets/logo.svg";
-import LogoText from "@src/assets/logo-text.svg";
+import { Image, Flex } from "@chakra-ui/react";
 import { Input } from "@src/components/Input";
 import cn from "classnames";
 import KeyStore from "@src/lib/keystore";
@@ -32,7 +32,7 @@ export default forwardRef<any>((props, ref) => {
             setUnlocking(true);
             await keyStore.unlock(password);
             setVisible(false);
-            setPassword('');
+            setPassword("");
         } catch (err) {
             setPasswordError("Wrong password. Try again.");
         } finally {
@@ -44,14 +44,10 @@ export default forwardRef<any>((props, ref) => {
         <div
             ref={ref}
             className={cn(
-                "h-full pt-11 pb-8 text-center flex flex-col justify-between  z-30 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-auto",
+                "h-full text-center flex flex-col justify-between z-30 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-auto",
                 !visible && "hidden",
             )}
         >
-            <div className="flex flex-col items-center mb-4">
-                <img src={Logo} className="w-40 h-40 mb-2" />
-                <img src={LogoText} />
-            </div>
             <div className="px-6">
                 <>
                     <Input
@@ -73,15 +69,6 @@ export default forwardRef<any>((props, ref) => {
                 <a onClick={() => goWebsite("/recover")} className="text-blueDeep text-sm cursor-pointer">
                     Recover Wallet
                 </a>
-
-                {/* <div
-                    className="mt-8 text-slate-500 text-sm cursor-pointer"
-                    onClick={() => {
-                        goWebsite("/launch");
-                    }}
-                >
-                    Go to Start Page {"(for test use)"}
-                </div> */}
             </div>
         </div>
     );
