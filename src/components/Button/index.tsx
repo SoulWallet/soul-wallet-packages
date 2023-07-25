@@ -79,6 +79,7 @@ export function SButton({
     <button
       {...moreProps}
       {...restProps}
+      onClick={onClick}
       className={cn(
         "btn font-bold text-xl py-1 leading-none",
         className,

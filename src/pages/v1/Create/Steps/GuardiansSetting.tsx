@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import Button from "@src/components/Button";
+import { SButton } from "@src/components/Button";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
@@ -95,9 +95,9 @@ export default function GuardiansSetting() {
       <GuardianForm ref={formRef} />
 
       <div className="flex flex-col items-center gap-4">
-        <Button className="mt-6 w-base" type={"primary"} disabled={false} onClick={handleNext}>
+        <SButton className="mt-6 w-base" type={"primary"} disabled={false} onClick={handleNext}>
           Continue
-        </Button>
+        </SButton>
 
         <a className="skip-text mb-8" onClick={handleSkip}>
           Skip for now
