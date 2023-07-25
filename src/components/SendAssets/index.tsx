@@ -83,7 +83,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
 
     return (
         <Box>
-            <Text fontSize="20px" fontWeight="800" color="#1e1e1e" mb="6">
+            <Text fontSize="20px" fontWeight="800" mb="6">
                 Send
             </Text>
             <Flex flexDir={"column"} gap="5">
