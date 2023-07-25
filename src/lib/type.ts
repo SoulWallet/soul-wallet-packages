@@ -3,6 +3,7 @@ export type GuardianItem = {
     name: string;
     address: string;
     errorMsg?: string;
+    inputClassName?: string;
 };
 
 export enum EnHandleMode {

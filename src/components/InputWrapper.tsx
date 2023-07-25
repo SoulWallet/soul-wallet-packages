@@ -13,6 +13,7 @@ interface IProps {
   errorMsg?: string;
   visible?: boolean;
   className?: string;
+  inputClassName?: string;
   toggleVisibility?: () => void;
   onChange: (value: string) => void;
   buttonText?: string;

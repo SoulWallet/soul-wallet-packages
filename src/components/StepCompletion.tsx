@@ -33,7 +33,7 @@ const StepCompletion = ({ mode }: IStepCompletion) => {
 
       <p className="text-warnRed mt-16">Warning: This is an alpha version. DO NOT put too much money in.</p>
 
-      {mode === EnHandleMode.Create && (
+      {(mode as EnHandleMode) === EnHandleMode.Create && (
         <>
           <Button type="primary" onClick={() => goPlugin("/activate-wallet")} className="mt-2 w-full">
             Activate Wallet

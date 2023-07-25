@@ -30,7 +30,7 @@ const StepComponent = () => {
       },
       [CreateStepEn.SaveGuardianList]: {
         title: "Save Guardian List",
-        element: <GuardiansSaving skipped={true} />,
+        element: <GuardiansSaving />,
       },
       [CreateStepEn.SetSoulWalletAsDefault]: {
         title: "Set as default plugin wallet",
