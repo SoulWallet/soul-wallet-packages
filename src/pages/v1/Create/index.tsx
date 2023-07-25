@@ -54,7 +54,7 @@ const StepComponent = () => {
           maxStep={CreateStepEn.Completed}
           hint={stepNodeMap[current]?.hint}
           /> */}
-      {stepNodeMap[3].element}
+      {stepNodeMap[4].element}
     </div>
   );
 };
