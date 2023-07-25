@@ -21,8 +21,9 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
     const [passwordMessage, setPasswordMessage] = useState<string>();
     const [nextable, setNextable] = useState(false);
 
-    const handleNext = () => {
-        if ((password?.length ?? 0) < 9) {
+  const handleNext = () => {
+    console.log('handleNext', password)
+    if ((password?.length ?? 0) < 9) {
             setPasswordMessage("Password must be at least 9 characters long");
             return;
         }
@@ -80,7 +81,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         onChange={(val) => setConfirmPwd(val)}
       />
 
-      <SButton className="mb-6 mt-6 rounded-2xl" type={"primary"} disabled={!nextable} onClick={handleNext}>
+      <SButton className="mb-6 mt-6 rounded-2xl" type={"primary"} onClick={handleNext}>
         Continue
       </SButton>
     </div>
