@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Flex, Text, Image, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import IconCheveronDown from "@src/assets/icons/chevron-down.svg";
+import { useLocation } from "react-router-dom";
+import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
 import useBrowser from "@src/hooks/useBrowser";
 
 export default function AccountSelect() {
     const { navigate } = useBrowser();
-    return (
-        <Flex align="center" gap="1" cursor={"pointer"} onClick={() => navigate("send")}>
-            <Text color="brand.red" fontWeight={"800"}>
-                Account 1
-            </Text>
-            <Image src={IconCheveronDown} w="20px" h="20px" />
+    const [hovered, setHovered] = useState(false);
+    const location = useLocation();
+
+    const isAccountsPage = location.pathname.includes("/accounts");
+
+    return isAccountsPage ? (
+        <Flex align="center" gap="1" fontWeight={"800"} cursor={"pointer"}>
+            <Text>All accounts</Text>
+        </Flex>
+    ) : (
+        <Flex
+            align="center"
+            gap="1"
+            fontWeight={"800"}
+            cursor={"pointer"}
+            _hover={{ color: "brand.red" }}
+            onClick={() => navigate("accounts")}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
+            <Text>Account 1</Text>
+            <Image src={hovered ? IconCheveronDown : IconCheveronDownBlack} w="20px" h="20px" />
         </Flex>
     );
 }

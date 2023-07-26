@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
-import useWalletContext from "@src/context/hooks/useWalletContext";
-import AccountSettingModal from "../AccountSettingModal";
-import { toast } from "material-react-toastify";
-import config from "@src/config";
-import AddressIcon from "../AddressIcon";
-import cn from "classnames";
+import { Box, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { copyText } from "@src/lib/tools";
-import Button from "@src/components/Button";
 import IconCopy from "@src/assets/copy.svg";
 import IconScan from "@src/assets/icons/scan.svg";
 import IconTrendUp from "@src/assets/icons/trend-up.svg";
 import ImgEthFaded from "@src/assets/chains/eth-faded.svg";
 import useBrowser from "@src/hooks/useBrowser";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 
 interface IProps {
     account: string;
@@ -20,13 +14,15 @@ interface IProps {
 }
 
 export default function AccountCard({ account, action }: IProps) {
-    const [accountSettingModalVisible, setAccountSettingModalVisible] = useState<boolean>(false);
-    const { walletType } = useWalletContext();
-    const { navigate } = useBrowser();
+    const { walletAddress } = useWalletContext();
+    const toast = useToast();
 
     const doCopy = () => {
-        copyText(`${config.addressPrefix}${account}`);
-        toast.success("Copied");
+        copyText(walletAddress);
+        toast({
+            title: "Copied",
+            status: "success",
+        });
     };
 
     return (
@@ -40,11 +36,11 @@ export default function AccountCard({ account, action }: IProps) {
             boxShadow={"0px 4px 8px 0px rgba(0, 0, 0, 0.12)"}
         >
             <Flex align={"center"} justify={"space-between"}>
-                <Flex>
+                <Flex gap="1">
                     <Text fontSize={"12px"} fontFamily={"Martian"} fontWeight={"600"} color="#29510A">
                         {account.slice(0, 5)}...{account.slice(-4)}
                     </Text>
-                    <Image src={IconCopy} w="20px" />
+                    <Image src={IconCopy} w="20px" cursor={"pointer"} onClick={() => doCopy()} />
                 </Flex>
                 <Image src={IconScan} w="28px" h="28px" />
             </Flex>

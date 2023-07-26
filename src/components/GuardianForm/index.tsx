@@ -6,7 +6,7 @@ import { GuardianItem } from "@src/lib/type";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
 import Icon from "../Icon";
 import InputWrapper from "../InputWrapper";
-import PlusIcon from "@src/assets/icons/plus.svg";
+
 
 export interface IGuardianFormHandler {
     submit: () => Promise<GuardianItem[]>;
