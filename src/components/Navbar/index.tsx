@@ -1,38 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Image, Flex, Text } from "@chakra-ui/react";
-import Logo from "@src/assets/logo.svg";
-import WalletSettingModal from "../WalletSettingModal";
 import ChainSelect from "../ChainSelect";
-import IconArrowBack from "@src/assets/arrow-left.svg";
-import IconMenu from "@src/assets/menu.svg";
 import useBrowser from "@src/hooks/useBrowser";
 import IconChevronLeft from "@src/assets/icons/chevron-left.svg";
 import IconGear from "@src/assets/icons/gear.svg";
 import AccountSelect from "../AccountSelect";
 
 interface INavbar {
+    title?: string;
     backUrl?: string;
     onBack?: () => void;
 }
 
-export function Navbar({ backUrl, onBack }: INavbar) {
+export function Navbar({ backUrl, title, onBack }: INavbar) {
     const { navigate } = useBrowser();
-    console.log('on back is', onBack)
     if (backUrl || onBack) {
         return (
-            <Flex
-                display={"inline-flex"}
-                align="center"
-                onClick={() => (onBack ? onBack() : navigate(backUrl || 'wallet'))}
-                mb="6"
-                cursor={"pointer"}
-            >
-                <Image src={IconChevronLeft} w="20px" h="20px" />
-                <Text fontWeight="800" color="#1C1C1E">
-                    Back
-                </Text>
-            </Flex>
+            <>
+                <Flex
+                    display={"inline-flex"}
+                    align="center"
+                    position="relative"
+                    zIndex={10}
+                    onClick={() => (onBack ? onBack() : navigate(backUrl || "wallet"))}
+                    mb="6"
+                    cursor={"pointer"}
+                >
+                    <Image src={IconChevronLeft} w="20px" h="20px" />
+                    <Text fontWeight="800" color="#1C1C1E">
+                        Back
+                    </Text>
+                </Flex>
+                {title && (
+                    <Text fontWeight="800" position="absolute" left="0" right="0" top="6" m="auto" textAlign={"center"}>
+                        {title}
+                    </Text>
+                )}
+            </>
         );
     } else {
         return (

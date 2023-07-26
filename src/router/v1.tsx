@@ -6,6 +6,7 @@ import SignPage from "@src/pages/v1/SignPage";
 import ActivateWallet from "@src/pages/v1/ActivateWallet";
 import CreatePage from "@src/pages/v1/Create";
 import Setting from "@src/pages/v1/Setting";
+import AddFund from "@src/pages/v1/AddFund";
 import RecoverPage from "@src/pages/v1/Recover";
 import EditGuardians from "@src/pages/v1/EditGuardians";
 import ResaveGuardians from "@src/pages/v1/ResaveGuardians";
@@ -16,6 +17,7 @@ export default (
         <Route path="wallet" element={<Wallet />} />
         <Route path="send/:tokenAddress" element={<Send />} />
         <Route path="setting" element={<Setting />} />
+        <Route path="add-fund" element={<AddFund />} />
         <Route path="sign" element={<SignPage />} />
         <Route path="activate-wallet" element={<ActivateWallet />} />
         <Route path="launch" element={<Launch />} />

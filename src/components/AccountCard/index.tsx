@@ -26,7 +26,6 @@ export default function AccountCard({ account, action }: IProps) {
 
     const doCopy = () => {
         copyText(`${config.addressPrefix}${account}`);
-        // setCopied(true);
         toast.success("Copied");
     };
 

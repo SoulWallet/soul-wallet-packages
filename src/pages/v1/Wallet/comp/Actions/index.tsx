@@ -24,7 +24,7 @@ export default function Actions() {
     const { navigate } = useBrowser();
     return (
         <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="4" mb="6">
-            <ActionItem title="Add funds" icon={IconAddFunds} />
+            <ActionItem title="Add funds" icon={IconAddFunds} onClick={() => navigate(`add-fund`)} />
             <ActionItem title="Send" icon={IconSend} onClick={() => navigate(`send/${config.zeroAddress}`)} />
             <ActionItem title="Guardians" icon={IconGuardians} />
             <ActionItem title="Gas tokens" icon={IconGasTokens} />
