@@ -32,7 +32,7 @@ const Dropdown = ({ placeholder, label, options, disabled, value, onChange }: IP
         }
         const filtered = options.filter((item) => item.value === value)[0];
         setSelectedItem(filtered);
-        onChange(filtered.value);
+        // onChange(filtered.value);
     }, [value]);
 
     return (
