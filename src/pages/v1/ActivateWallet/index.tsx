@@ -32,12 +32,11 @@ export default function ActivateWallet() {
     const { navigate } = useBrowser();
     const { balance } = useBalanceStore();
 
-    // IMPORTANT TODO, take back
-    // useEffect(() => {
-    //     if (walletType === "contract") {
-    //         navigate("wallet");
-    //     }
-    // }, [walletType]);
+    useEffect(() => {
+        if (walletType === "contract") {
+            navigate("wallet");
+        }
+    }, [walletType]);
 
     const doActivate = async () => {
         setLoading(true);

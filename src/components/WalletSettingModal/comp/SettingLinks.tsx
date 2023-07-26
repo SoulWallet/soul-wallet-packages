@@ -15,12 +15,6 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
             <a className={linksStyle} onClick={() => onChange(2)}>
                 Bundler URL
             </a>
-            <a target="_blank" href={config.socials.telegram} className={linksStyle}>
-                Support
-            </a>
-            <a target="_blank" href={config.socials.website} className={linksStyle}>
-                About
-            </a>
         </div>
     );
 }

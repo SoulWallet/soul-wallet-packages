@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input, Button } from "@chakra-ui/react";
+import { Box, Text, Input } from "@chakra-ui/react";
 
 export default function AddressInput({ label, address, onChange, disabled }: any) {
     return (

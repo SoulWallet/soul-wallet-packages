@@ -26,6 +26,26 @@ const theme = extendTheme({
     },
     components: {
         Tooltip: tooltipTheme,
+        Switch: {
+            baseStyle: {
+                thumb:{
+                    boxShadow: "0px 2.612903118133545px 0.8709677457809448px 0px rgba(0, 0, 0, 0.06), 0px 2.612903118133545px 6.967741966247559px 0px rgba(0, 0, 0, 0.15), 0px 0px 0px 0.8709677457809448px rgba(0, 0, 0, 0.04)",
+                }
+            },
+            sizes: {
+                lg: {
+                    track: {
+                        w: "44px",
+                        h: "28px",
+                    },
+                    thumb: {
+                        w: "24px",
+                        h: "24px",
+                        transform: "translateY(2px) translateX(2px)",
+                    },
+                },
+            },
+        },
     },
 });
 

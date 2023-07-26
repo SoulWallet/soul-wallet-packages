@@ -13,13 +13,21 @@ import AccountSelect from "../AccountSelect";
 
 interface INavbar {
     backUrl?: string;
+    onBack?: () => void;
 }
 
-export function Navbar({ backUrl }: INavbar) {
+export function Navbar({ backUrl, onBack }: INavbar) {
     const { navigate } = useBrowser();
-    if (backUrl) {
+    console.log('on back is', onBack)
+    if (backUrl || onBack) {
         return (
-            <Flex display={"inline-flex"} align="center" onClick={() => navigate(backUrl)} mb="6" cursor={"pointer"}>
+            <Flex
+                display={"inline-flex"}
+                align="center"
+                onClick={() => (onBack ? onBack() : navigate(backUrl || 'wallet'))}
+                mb="6"
+                cursor={"pointer"}
+            >
                 <Image src={IconChevronLeft} w="20px" h="20px" />
                 <Text fontWeight="800" color="#1C1C1E">
                     Back
@@ -28,10 +36,10 @@ export function Navbar({ backUrl }: INavbar) {
         );
     } else {
         return (
-            <Flex align="center" justify={"space-between"} mb="16px">
+            <Flex align="center" justify={"space-between"} mb="4">
                 <ChainSelect />
                 <AccountSelect />
-                <Image src={IconGear} w="32px" h="32px" cursor={"pointer"} />
+                <Image src={IconGear} w="32px" h="32px" cursor={"pointer"} onClick={() => navigate("setting")} />
             </Flex>
             // <div className="navbar flex items-center justify-between navbar-shadow">
             //     {/* {settingVisible && <WalletSettingModal onCancel={() => setSettingVisible(false)} />} */}
