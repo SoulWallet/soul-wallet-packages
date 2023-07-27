@@ -31,7 +31,7 @@ export default function RoundButton({
 }: IProps) {
   const doClick = () => {
     if (!loading && !disabled) {
-      onClick();
+      if (onClick) onClick();
     }
   };
 

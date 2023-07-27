@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { Box, Text, Image, Input } from "@chakra-ui/react"
 
 interface IProps {
-  label: string;
+  label?: string;
   value?: string;
   placeholder?: string;
   errorMsg?: string;

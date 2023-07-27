@@ -14,7 +14,7 @@ interface IProps extends Omit<ButtonProps, 'type'> {
   loading?: boolean;
   disabled?: boolean;
   href?: string;
-  _styles: any;
+  _styles?: any;
 }
 
 export default function TextButton({

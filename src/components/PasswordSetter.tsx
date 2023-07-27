@@ -56,7 +56,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         value={password}
         errorMsg={passwordMessage}
         onChange={(val) => setPassword(val)}
-        isPassword="true"
+        isPassword={true}
       />
       <PasswordStrengthBar password={password} />
       <FormInput
@@ -66,7 +66,7 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
         errorMsg={(password?.length ?? 0) < 9 || isPwdSame ? undefined : "Please enter the same password"}
         onChange={(val) => setConfirmPwd(val)}
         _styles={{ marginTop: '0.75em' }}
-        isPassword="true"
+        isPassword={true}
       />
       <Button onClick={handleNext} _styles={{ marginTop: '0.75em' }}>Continue</Button>
     </Box>

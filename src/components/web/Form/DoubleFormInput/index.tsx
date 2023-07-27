@@ -40,7 +40,7 @@ export default function DoubleFormInput({
   return (
     <Box display="flex" flexDirection="row" {..._styles}>
       <Box display="flex" flexDirection="column" width="50%">
-        {leftLabel && (<Box as="label" htmlFor={leftLabel}>{leftLabel}</Box>)}
+        {leftLabel && (<Box as="label" htmlFor="leftLabel">{leftLabel}</Box>)}
         <Box position="relative">
           <Box>
             <Input
@@ -62,7 +62,7 @@ export default function DoubleFormInput({
         <Text color="#FF4343" padding="0 10px" fontSize="14px">{leftErrorMsg}</Text>
       </Box>
       <Box display="flex" flexDirection="column" width="50%">
-        {rightLabel && (<Box as="label" htmlFor={rightLabel}>{rightLabel}</Box>)}
+        {rightLabel && (<Box as="label" htmlFor="rightLabel">{rightLabel}</Box>)}
         <Box position="relative">
           <Box>
             <Input

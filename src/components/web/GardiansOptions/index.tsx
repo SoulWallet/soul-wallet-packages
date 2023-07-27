@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { SButton } from "./Button";
-import InputWrapper from "./InputWrapper";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import useTools from "@src/hooks/useTools";
 import { useGlobalStore } from "@src/store/global";

@@ -38,7 +38,7 @@ const StepComponent = () => {
       },
       [CreateStepEn.Completed]: {
         title: "Congratulation, your Soul Wallet is created!",
-        element: <StepCompletion mode={EnHandleMode.Create} />,
+        element: (<StepCompletion mode={EnHandleMode.Create} />) as any,
       },
     };
   }, []);

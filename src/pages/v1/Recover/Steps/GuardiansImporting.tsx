@@ -68,19 +68,19 @@ const GuardiansImporting = () => {
     </Box>
   )
 
-  return (
-    <div className="flex flex-col items-center pt-6">
-      <FileUploader onFileChange={handleFileParseResult} />
+  /* return (
+   *   <div className="flex flex-col items-center pt-6">
+   *     <FileUploader onFileChange={handleFileParseResult} />
 
-      <Button type="primary" className="w-base mx-auto mt-6" disabled={!fileValid} onClick={handleNext}>
-        Check Guardians
-      </Button>
+   *     <Button type="primary" className="w-base mx-auto mt-6" disabled={!fileValid} onClick={handleNext}>
+   *       Check Guardians
+   *     </Button>
 
-      <a className="skip-text mx-auto self-center mt-4 mb-6" onClick={handleNext}>
-        Input guardians manually
-      </a>
-    </div>
-  );
+   *     <a className="skip-text mx-auto self-center mt-4 mb-6" onClick={handleNext}>
+   *       Input guardians manually
+   *     </a>
+   *   </div>
+   * ); */
 };
 
 export default GuardiansImporting;
