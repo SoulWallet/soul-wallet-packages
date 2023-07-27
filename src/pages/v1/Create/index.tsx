@@ -49,7 +49,7 @@ const StepComponent = () => {
 
   return (
     <div>
-      {stepNodeMap[1].element}
+      {stepNodeMap[current].element}
     </div>
   );
 };

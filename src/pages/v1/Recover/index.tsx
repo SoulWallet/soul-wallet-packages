@@ -85,7 +85,7 @@ const StepComponent = () => {
     }, []);
 
     return (
-        <div>{stepNodeMap[4].element}</div>
+        <div>{stepNodeMap[current].element}</div>
     );
 };
 
