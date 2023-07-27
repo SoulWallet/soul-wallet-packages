@@ -49,12 +49,7 @@ const StepComponent = () => {
 
   return (
     <div>
-      {/* <ProgressNavBar
-          title={stepNodeMap[current].title}
-          maxStep={CreateStepEn.Completed}
-          hint={stepNodeMap[current]?.hint}
-          /> */}
-      {stepNodeMap[current].element}
+      {stepNodeMap[1].element}
     </div>
   );
 };

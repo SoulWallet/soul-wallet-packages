@@ -20,7 +20,6 @@ const ResaveGuardians = () => {
     //         replaceCurrentTab("/launch");
     //     }, 2000);
     // };
-
     return (
         <FullscreenContainer>
             <div className="flex flex-col pb-14">

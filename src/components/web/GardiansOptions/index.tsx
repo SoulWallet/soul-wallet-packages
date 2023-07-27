@@ -8,6 +8,7 @@ import { Box, Text, Image } from "@chakra-ui/react"
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import FormInput from "@src/components/web/Form/FormInput";
+import GuardianForm from "@src/components/GuardianForm";
 
 interface IProps {
   onSave: () => void;
@@ -70,37 +71,24 @@ const GuardiansSaver = ({ onSave }: IProps) => {
     <Box display="flex">
       <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
         <Text fontSize="1.25em" fontWeight="bold">
-          Set Guardians
+          Option 1
         </Text>
         <Box marginBottom="0.75em">
           <Text fontSize="0.875em" textAlign="center">
-            If you choose to store your own guardian list, make you save the file and remember it's location as it will be needed for future wallet recovery.
+            Due to your choice of private on-chain guardians, information must be manually entered to continue recovery.
           </Text>
         </Box>
-        <FormInput
-          label=""
-          placeholder="Send to Email"
-          value={email}
-          errorMsg={email && !isEmailValid ? "Please enter a valid email address." : undefined}
-          onChange={handleEmailChange}
-          _styles={{ width: '100%', marginTop: '0.75em' }}
-        // onClick={handleSendEmail}
-        />
         <Button onClick={handleDownload} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
-          Download
+          Upload file
         </Button>
       </Box>
       <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-        <Text fontSize="1.25em" fontWeight="bold">
-          Save with Soul Wallet
+        <Text fontSize="1.25em" fontWeight="bold" marginBottom="0.75em">
+          Option 2
         </Text>
-        <Box marginBottom="0.75em">
-          <Text fontSize="0.875em" textAlign="center">
-            Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.
-          </Text>
-        </Box>
-        <Button loading={downloading} _styles={{ width: '100%' }}>
-          Store On-chain
+        <GuardianForm />
+        <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
+          Next
         </Button>
       </Box>
     </Box>

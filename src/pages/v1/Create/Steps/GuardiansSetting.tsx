@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { SButton } from "@src/components/Button";
+import Button from "@src/components/web/Button";
+import TextButton from "@src/components/web/TextButton";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
+import { Box, Text, Image } from "@chakra-ui/react"
 
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
@@ -55,54 +57,59 @@ export default function GuardiansSetting() {
   }
 
   return (
-    <div className="max-w-lg">
-      <div className="page-title text-center">
+    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Text fontSize="1.25em" fontWeight="bold">
         Set Guardians
-      </div>
-      <div className="tip-preview">
-        <p className="tip-text mt-6 mb-6 whitespace-pre-wrap text-center">
-          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <a onClick={toggleTips} className="btn-more">Show more</a>
-        </p>
-      </div>
+      </Text>
+      <Box marginBottom="0.75em">
+        <Text fontSize="0.875em" textAlign="center">
+          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
+        </Text>
+      </Box>
       {showTips && (
-        <div className="tip-container">
-          <div>
-            <div className="tip-title mt-6 mb-4 whitespace-pre-wrap">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em">
+          <Box>
+            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
               What is a guardian?
-            </div>
-            <p className="tip-text mt-4 mb-4 whitespace-pre-wrap">
+            </Text>
+            <Text>
               Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
-            </p>
-            <div className="tip-title mt-4 mb-4 whitespace-pre-wrap">
+            </Text>
+            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
               What wallet can be set as guardian?
-            </div>
-            <p className="tip-text mt-4 mb-4 whitespace-pre-wrap">
+            </Text>
+            <Text>
               You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
-            </p>
-            <div className="tip-title mt-4 mb-4 whitespace-pre-wrap">
+            </Text>
+            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
               What is wallet recovery?
-            </div>
-            <p className="tip-text mt-4 mb-4 whitespace-pre-wrap">
+            </Text>
+            <Text>
               If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
-            </p>
-            <p className="tip-text mt-4 mb-6 whitespace-pre-wrap">
+            </Text>
+            <Text>
               After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
-            </p>
-          </div>
-        </div>
+            </Text>
+          </Box>
+        </Box>
       )}
-
       <GuardianForm ref={formRef} />
-
-      <div className="flex flex-col items-center gap-4">
-        <SButton className="mt-6 w-base" type={"primary"} disabled={false} onClick={handleNext}>
+      <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+        <Button
+          disabled={false}
+          onClick={handleNext}
+          _styles={{ width: '455px' }}
+        >
           Continue
-        </SButton>
-
-        <a className="skip-text mb-8" onClick={handleSkip}>
+        </Button>
+        <TextButton
+          color="rgb(137, 137, 137)"
+          onClick={handleSkip}
+          _styles={{ width: '455px' }}
+        >
           Skip for now
-        </a>
-      </div>
-    </div>
+        </TextButton>
+      </Box>
+    </Box>
   );
 }

@@ -2,6 +2,8 @@ import { SButton } from "@src/components/Button";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
 import GuardiansSaver from "@src/components/GuardiansSaver";
+import Button from "@src/components/web/Button";
+import { Box, Text, Image } from "@chakra-ui/react"
 
 const GuardiansSaving = () => {
   const [hasSaved, setHasSaved] = useState(false);
@@ -44,23 +46,22 @@ const GuardiansSaving = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div className="page-title text-center">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+
+      <Text fontSize="1.25em" fontWeight="bold">
         Backup Guardians
-      </div>
-      <div className="tip-preview">
-        <p className="tip-text mt-6 mb-6 whitespace-pre-wrap text-center">
+      </Text>
+      <Box marginBottom="0.75em">
+        <Text fontSize="0.875em" textAlign="center" maxWidth="500px">
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.
-        </p>
-      </div>
-
+        </Text>
+      </Box>
       <GuardiansSaver onSave={handleSaved} />
-
-      <SButton className="w-base mt-14 mx-auto" type="primary" disabled={!hasSaved} onClick={handleNext}>
+      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
         Continue
-      </SButton>
-    </div>
-  );
+      </Button>
+    </Box>
+  )
 };
 
 export default GuardiansSaving;

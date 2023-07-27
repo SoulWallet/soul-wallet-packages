@@ -4,6 +4,8 @@ import MinusIcon from "@src/assets/icons/minus.svg";
 import Icon from "../Icon";
 import { GuardianItem } from "@src/lib/type";
 import { useGuardianContext } from "@src/context/hooks/useGuardianContext";
+import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
+import { Box } from "@chakra-ui/react"
 
 type IProps = GuardianItem;
 
@@ -22,32 +24,33 @@ export default function GuardianInput({ id, name, address, errorMsg, inputClassN
     removeGuardian(id);
   };
 
-  // TODO: address input width better larger than 468
   return (
-    <div className="guardian-inputer">
-      <div className="bg-[#F3F3F3] rounded-2xl text-sm flex flex-row w-full">
-        <InputWrapper
-          placeholder="Enter guardian address"
-          value={address}
-          size="s"
-          className="address-input-wrapper"
-          inputClassName="address-input"
-          label=""
-          onChange={handleAddressChange}
-          errorMsg={errorMsg}
-        />
-        <InputWrapper
-          placeholder="Assign nickname"
-          value={name}
-          size="s"
-          className="name-input-wrapper"
-          inputClassName="name-input"
-          label=""
-          onChange={handleNameChange}
-        />
-      </div>
-
-      {/* <Icon src={MinusIcon} className="cursor-pointer" onClick={handleDelete} /> */}
-    </div>
+    <Box position="relative">
+      <DoubleFormInput
+        leftPlaceholder="Enter guardian address"
+        leftValue={address}
+        leftOnChange={handleAddressChange}
+        leftErrorMsg={errorMsg}
+        rightPlaceholder="Assign nickname"
+        rightValue={name}
+        rightOnChange={handleNameChange}
+        rightErrorMsg={''}
+        _styles={{ width: '100%' }}
+      />
+      <Box
+        onClick={handleDelete}
+        position="absolute"
+        width="40px"
+        right="-40px"
+        top="0"
+        height="100%"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        cursor="pointer"
+      >
+        <Icon src={MinusIcon} />
+      </Box>
+    </Box>
   );
 }

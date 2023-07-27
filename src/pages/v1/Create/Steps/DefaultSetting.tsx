@@ -3,6 +3,10 @@ import browser from "webextension-polyfill";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCardIcon from "@src/components/Icons/WalletCard";
 import React from "react";
+import WalletCard from "@src/components/web/WalletCard";
+import Button from "@src/components/web/Button";
+import TextButton from "@src/components/web/TextButton";
+import { Box, Text, Image } from "@chakra-ui/react"
 
 const DefaultSetting = () => {
   const dispatch = useStepDispatchContext();
@@ -17,31 +21,23 @@ const DefaultSetting = () => {
   };
 
   return (
-    <div className="max-w-lg">
-      <div className="flex flex-col items-center justify-center">
-        <div className="wallet-card">
-          <div className="wallet-card-icon">
-            <WalletCardIcon />
-          </div>
-          <div className="wallet-card-content">
-            <div className="wallet-card-text">
-              <div className="wallet-card-status">SET AS DEFAULT</div>
-            </div>
-            <div className="wallet-card-text">NEW SOUL WALLET...</div>
-          </div>
-        </div>
-        <div className="page-title text-center">Set as defaul wallet</div>
-        <p className="tip-text mt-4 mb-8 text-center">Boost your Ethereum journey by setting Soul Wallet as your primary plugin wallet. You can always easily change this setting.</p>
-
-        <SButton className="w-full" type="primary" onClick={() => handleNext(true)}>
-          Yes
-        </SButton>
-
-        <a className="skip-text mx-auto self-center my-5" onClick={() => handleNext(false)}>
-          Skip
-        </a>
-      </div>
-    </div>
+    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <WalletCard statusText="SET AS DEFAULT" />
+      <Text fontSize="1.25em" fontWeight="bold">
+        Set as defaul wallet
+      </Text>
+      <Box marginBottom="0.75em">
+        <Text fontSize="0.875em" textAlign="center" maxWidth="500px">
+          Boost your Ethereum journey by setting Soul Wallet as your primary plugin wallet. You can always easily change this setting.
+        </Text>
+      </Box>
+      <Button onClick={() => handleNext(true)} _styles={{ width: '100%', marginTop: '0.75em' }}>
+        Yes
+      </Button>
+      <TextButton onClick={() => handleNext(false)} color="black" _styles={{ width: '100%' }}>
+        Skip
+      </TextButton>
+    </Box>
   );
 };
 

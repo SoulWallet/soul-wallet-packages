@@ -21,12 +21,13 @@ const theme = extendTheme({
         appBg: "#F7F7F7",
         danger: "#E83D26",
         brand: {
-            red: "#EC588D",
+          red: "#EC588D",
+          black: "#1E1E1E"
         },
     },
-    components: {
-        Tooltip: tooltipTheme,
-        Switch: {
+  components: {
+    Tooltip: tooltipTheme,
+    Switch: {
             baseStyle: {
                 thumb:{
                     boxShadow: "0px 2.612903118133545px 0.8709677457809448px 0px rgba(0, 0, 0, 0.06), 0px 2.612903118133545px 6.967741966247559px 0px rgba(0, 0, 0, 0.15), 0px 0px 0px 0.8709677457809448px rgba(0, 0, 0, 0.04)",
