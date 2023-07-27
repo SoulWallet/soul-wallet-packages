@@ -6,6 +6,7 @@ import {
     Text,
     Flex,
     Divider,
+    Tooltip,
     useToast,
     Image,
     Grid,
@@ -14,12 +15,18 @@ import {
     MenuList,
     MenuItem,
     MenuButton,
+    MenuDivider,
 } from "@chakra-ui/react";
 import IconAccountMore from "@src/assets/icons/account-more.svg";
 import IconAccountMoreGreen from "@src/assets/icons/account-more-green.svg";
 import ImgNotActived from "@src/assets/not-activated.svg";
 import { copyText } from "@src/lib/tools";
-import IconPlus from '@src/assets/icons/plus.svg'
+import useBrowser from "@src/hooks/useBrowser";
+import IconChevronLeft from "@src/assets/icons/chevron-left.svg";
+
+import IconPlus from "@src/assets/icons/plus.svg";
+import IconEdit from "@src/assets/icons/edit.svg";
+import IconCopy from "@src/assets/icons/copy.svg";
 
 const mockAccounts = [
     {
@@ -58,6 +65,20 @@ const AccountItem = ({ item, selected }: any) => {
             status: "success",
         });
     };
+
+    const accountMenus = [
+        {
+            title: "Edit account name",
+            icon: <Image src={IconEdit} />,
+            onClick: () => {},
+        },
+        {
+            title: "Copy address",
+            icon: <Image src={IconCopy} />,
+            onClick: doCopy,
+        },
+    ];
+
     return (
         <GridItem
             color={item.activated ? "#29510a" : "#1e1e1e"}
@@ -97,8 +118,20 @@ const AccountItem = ({ item, selected }: any) => {
                         <Image src={item.activated ? IconAccountMoreGreen : IconAccountMore} />
                     </MenuButton>
                     <MenuList>
-                        <MenuItem>Edit account name</MenuItem>
-                        <MenuItem>Copy address</MenuItem>
+                        {accountMenus.map((item, idx) => (
+                            <>
+                                {idx > 0 && <MenuDivider />}
+                                <MenuItem
+                                    fontWeight={"700"}
+                                    color="#1e1e1e"
+                                    iconSpacing={"5px"}
+                                    icon={item.icon}
+                                    onClick={item.onClick}
+                                >
+                                    {item.title}
+                                </MenuItem>
+                            </>
+                        ))}
                     </MenuList>
                 </Menu>
             </Flex>
@@ -116,13 +149,33 @@ const AccountItem = ({ item, selected }: any) => {
     );
 };
 
+const AccountsNavbar = () => {
+    const { navigate } = useBrowser();
+
+    return (
+        <Flex align="center" justify={"space-between"} mb="6">
+            <Flex align="center" position="relative" zIndex={10} onClick={() => navigate("wallet")} cursor={"pointer"}>
+                <Image src={IconChevronLeft} w="20px" h="20px" />
+                <Text fontWeight="800" color="#1C1C1E">
+                    Back
+                </Text>
+            </Flex>
+            <Tooltip label="Add account">
+                <Box _hover={{ bg: "#d9d9d9" }} cursor={"pointer"} rounded={"full"}>
+                    <Image src={IconPlus} />
+                </Box>
+            </Tooltip>
+        </Flex>
+    );
+};
+
 export default function Accounts() {
     const { walletAddress } = useWalletContext();
 
     return (
         <Box p="5">
             <Navbar />
-            <Navbar backUrl="wallet" />
+            <AccountsNavbar />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
                 {mockAccounts.map((item, index) => {
                     return <AccountItem item={item} key={index} selected={item.address === walletAddress} />;

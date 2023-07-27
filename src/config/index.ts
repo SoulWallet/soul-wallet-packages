@@ -1,6 +1,27 @@
 import IconTwitter from "@src/assets/socials/twitter.svg";
 import IconTelegram from "@src/assets/socials/telegram.svg";
 import IconGithub from "@src/assets/socials/github.svg";
+import IconEth from "@src/assets/chains/eth.svg";
+import IconOp from "@src/assets/chains/op.svg";
+import IconArb from "@src/assets/chains/arb.svg";
+
+export const supportedChains = [
+    {
+        icon: IconEth,
+        name: "Ethereum",
+        chainId: 1,
+    },
+    {
+        icon: IconOp,
+        name: "Optimism",
+        chainId: 10,
+    },
+    {
+        icon: IconArb,
+        name: "Arbitrum",
+        chainId: 42161,
+    },
+];
 
 export default {
     walletName: "Soul Wallet",

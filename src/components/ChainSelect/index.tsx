@@ -1,7 +1,9 @@
 import React from "react";
-import { Flex, Image, Menu, MenuButton, MenuItem, Button, MenuList } from "@chakra-ui/react";
+import { Flex, Image, Menu, MenuButton, MenuItem, Text, Button, MenuList, MenuDivider } from "@chakra-ui/react";
 import IconEth from "@src/assets/chains/eth.svg";
+import { supportedChains } from "@src/config";
 import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
+import IconChecked from "@src/assets/icons/checked.svg";
 
 export default function ChainSelect() {
     return (
@@ -14,9 +16,22 @@ export default function ChainSelect() {
             </MenuButton>
 
             <MenuList>
-                <MenuItem>Ethereum</MenuItem>
-                <MenuItem>Arbitrum</MenuItem>
-                <MenuItem>Optimism</MenuItem>
+                {supportedChains.map((item: any, idx: number) => {
+                    return (
+                        <>
+                            {idx  ? <MenuDivider /> : ''}
+                            <MenuItem key={item.chainId}>
+                                <Flex w="100%" align={"center"} justify={"space-between"}>
+                                    <Flex align={"center"} gap="2">
+                                        <Image src={item.icon} w="5" h="5" />
+                                        <Text fontWeight={"700"}>{item.name}</Text>
+                                    </Flex>
+                                    {idx === 1 && <Image src={IconChecked} w="5" h="5" />}
+                                </Flex>
+                            </MenuItem>
+                        </>
+                    );
+                })}
             </MenuList>
         </Menu>
     );
