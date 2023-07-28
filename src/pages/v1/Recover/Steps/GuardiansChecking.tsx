@@ -9,6 +9,10 @@ import { GuardianItem } from "@src/lib/type";
 import { notify } from "@src/lib/tools";
 import { Box, Text, Image } from "@chakra-ui/react"
 import Button from "@src/components/web/Button";
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 interface IGuardianChecking {
   walletAddress: string;
@@ -56,13 +60,11 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
 
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
-        Guardian signature request
-      </Text>
+      <Heading1>Guardian signature request</Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center">
+        <TextBody textAlign="center">
           Share this link with your guardians to sign.
-        </Text>
+        </TextBody>
       </Box>
       <Box
         marginBottom="0.75em"
@@ -79,9 +81,9 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         <Box width="150px" height="150px" background="grey" />
       </Box>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center" fontWeight="bold">
+        <TextBody textAlign="center">
           Waiting for signatures (2 of 3 complete)
-        </Text>
+        </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">

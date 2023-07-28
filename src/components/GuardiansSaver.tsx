@@ -8,6 +8,9 @@ import { Box, Text, Image } from "@chakra-ui/react"
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import FormInput from "@src/components/web/Form/FormInput";
+import Heading1 from "@src/components/web/Heading1";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 interface IProps {
   onSave: () => void;
@@ -69,13 +72,11 @@ const GuardiansSaver = ({ onSave }: IProps) => {
   return (
     <Box display="flex">
       <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-        <Text fontSize="1.25em" fontWeight="bold">
-          Set Guardians
-        </Text>
+        <Heading3>Set Guardians</Heading3>
         <Box marginBottom="0.75em">
-          <Text fontSize="0.875em" textAlign="center">
+          <TextBody textAlign="center">
             If you choose to store your own guardian list, make you save the file and remember it's location as it will be needed for future wallet recovery.
-          </Text>
+          </TextBody>
         </Box>
         <FormInput
           label=""
@@ -91,13 +92,11 @@ const GuardiansSaver = ({ onSave }: IProps) => {
         </Button>
       </Box>
       <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-        <Text fontSize="1.25em" fontWeight="bold">
-          Save with Soul Wallet
-        </Text>
+        <Heading3>Save with Soul Wallet</Heading3>
         <Box marginBottom="0.75em">
-          <Text fontSize="0.875em" textAlign="center">
+          <TextBody textAlign="center">
             Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.
-          </Text>
+          </TextBody>
         </Box>
         <Button loading={downloading} _styles={{ width: '100%' }}>
           Store On-chain

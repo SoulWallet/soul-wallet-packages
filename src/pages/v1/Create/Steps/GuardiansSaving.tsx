@@ -2,8 +2,13 @@ import { SButton } from "@src/components/Button";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useState } from "react";
 import GuardiansSaver from "@src/components/GuardiansSaver";
-import Button from "@src/components/web/Button";
 import { Box, Text, Image } from "@chakra-ui/react"
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
+import Button from "@src/components/web/Button";
+import TextButton from "@src/components/web/TextButton";
 
 const GuardiansSaving = () => {
   const [hasSaved, setHasSaved] = useState(false);
@@ -22,39 +27,29 @@ const GuardiansSaving = () => {
     });
   };
 
-  if (skipped) {
+  if (true) {
     return (
-      <div className="max-w-lg">
-        <div className="flex flex-col items-center justify-center bg-[white] px-10 py-4 rounded-xl">
-          <div className="skip-warning-section">
-            <div className="skip-warning-title">What if I don’t set up guardian now?</div>
-            <div className="skip-warning-text">Guardians are required to recover your wallet in the case of loss or theft. You can learn more here</div>
-          </div>
-          <div className="skip-warning-section">
-            <div className="skip-warning-title">Can I set guardians in the future?</div>
-            <div className="skip-warning-text">Yes. You can setup or change your guardians anytime on your home page.</div>
-          </div>
-          <SButton className="w-full" type="primary" onClick={() => handleNext()}>
-            Set guardians now
-          </SButton>
-          <a className="skip-text mx-auto self-center my-5" onClick={() => handleNext()}>
-            I understand the risks, skip for now
-          </a>
-        </div>
-      </div>
+      <Box maxWidth="400px">
+        <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="20px" paddingBottom="0" borderRadius="16px">
+          <Heading3 width="100%">What if I don’t set up guardian now?</Heading3>
+          <TextBody width="100%" marginBottom="1em">Guardians are required to recover your wallet in the case of loss or theft. You can learn more here</TextBody>
+          <Heading3 width="100%">Can I set guardians in the future?</Heading3>
+          <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
+          <Button width="100%">Set guardians now</Button>
+          <TextButton width="100%">I understand the risks, skip for now</TextButton>
+        </Box>
+      </Box>
     )
   }
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
 
-      <Text fontSize="1.25em" fontWeight="bold">
-        Backup Guardians
-      </Text>
+      <Heading1>Backup Guardians</Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center" maxWidth="500px">
+        <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.
-        </Text>
+        </TextBody>
       </Box>
       <GuardiansSaver onSave={handleSaved} />
       <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>

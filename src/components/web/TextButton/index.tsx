@@ -10,7 +10,7 @@ interface IProps extends Omit<ButtonProps, 'type'> {
   children: React.ReactNode;
   type?: ButtonType;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
   loading?: boolean;
   disabled?: boolean;
   href?: string;
@@ -31,7 +31,7 @@ export default function TextButton({
 }: IProps) {
   const doClick = () => {
     if (!loading && !disabled) {
-      onClick();
+      if (onClick) onClick();
     }
   };
 
@@ -54,7 +54,7 @@ export default function TextButton({
       _disabled={{ opacity: '0.7', cursor: 'not-allowed' }}
       isDisabled={disabled}
       bg="transparent"
-      color={color}
+      color={color || '#898989'}
       {..._styles}
     >
       {loading ? <Image src={IconLoading} /> : children}

@@ -14,6 +14,10 @@ import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/co
 import ErrorBlock from "@src/components/ErrorBlock";
 import { Box, Text, Image } from "@chakra-ui/react"
 import Button from "@src/components/web/Button";
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 enum SignatureStatusEn {
   Signed = 1,
@@ -172,13 +176,11 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
-        Pay recovery fee
-      </Text>
+      <Heading1>Pay recovery fee</Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center" fontWeight="bold">
+        <TextBody textAlign="center">
           Anyone can pay the recovery fee, but it must be paid in ETH.
-        </Text>
+        </TextBody>
       </Box>
       <Box
         marginBottom="1.5em"
@@ -218,9 +220,9 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
         Share with others
       </Button>
       <Box marginTop="0.75em">
-        <Text fontSize="0.875em" textAlign="center">
+        <TextBody textAlign="center">
           Your Ethereum wallet is set for immediate recovery. All Layer2 wallets are estimated to be recovered in 12:56:73.
-        </Text>
+        </TextBody>
       </Box>
     </Box>
   )

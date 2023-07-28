@@ -10,6 +10,7 @@ import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { Box, Text } from "@chakra-ui/react"
+import TextBody from "@src/components/web/TextBody";
 
 export interface IGuardianFormHandler {
   submit: () => Promise<GuardianItem[]>;
@@ -59,13 +60,13 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
           Add More Guardian
         </TextButton>
       </Box>
-      <Text fontSize="0.875em" lineHeight="1.25em" textAlign="center" marginTop="0.75em">
+      <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
         Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least X for safety.
-      </Text>
+      </TextBody>
       <SmallFormInput
         placeholder="Enter amount"
         onChange={() => {}}
-        RightComponent={<Text fontWeight="bold">/3</Text>}
+        RightComponent={<Text fontWeight="bold">/ 3</Text>}
         _styles={{ width: '180px', marginTop: '0.75em' }}
       />
     </Box>

@@ -11,8 +11,8 @@ export default function Logo() {
       h="100px"
       alignItems="center"
     >
-      <Image src={LogoIcon as any} alt="Logo" />
-      <Image src={LogoText as any} alt="Logo Text" marginLeft="10px" marginRight="10px" h="30px" />
+      <Image width="70px" src={LogoIcon as any} alt="Logo" />
+      <Image height="22px" src={LogoText as any} alt="Logo Text" marginLeft="10px" marginRight="10px" />
     </Box>
   )
 }

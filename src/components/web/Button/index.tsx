@@ -14,7 +14,7 @@ interface IProps extends Omit<ButtonProps, 'type'> {
   loading?: boolean;
   disabled?: boolean;
   href?: string;
-  _styles: any;
+  _styles?: any;
 }
 
 
@@ -52,7 +52,7 @@ export default function RoundButton({
       _hover={{ bg: 'brand.black' }}
       _disabled={{ opacity: '0.7', cursor: 'not-allowed' }}
       isDisabled={disabled}
-      bg="rgb(61, 68, 81)"
+      bg="#1E1E1E"
       color="white"
       {..._styles}
     >
