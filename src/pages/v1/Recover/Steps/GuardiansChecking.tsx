@@ -13,6 +13,9 @@ import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import CopyIcon from "@src/components/Icons/Copy";
+import CheckedIcon from "@src/components/Icons/Checked";
+import ErrorIcon from "@src/components/Icons/Error";
 
 interface IGuardianChecking {
   walletAddress: string;
@@ -77,7 +80,9 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         justifyContent="center"
         flexDirection="column"
       >
-        <Text fontSize="0.875em" fontWeight="bold" marginBottom="0.75em" cursor="pointer">Copy to Clickboard</Text>
+        <Text fontSize="0.875em" fontWeight="bold" marginBottom="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center">Copy to Clickboard
+          <Text marginLeft="4px"><CopyIcon /></Text>
+        </Text>
         <Box width="150px" height="150px" background="grey" />
       </Box>
       <Box marginBottom="0.75em">
@@ -87,24 +92,33 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F">Signed</Box>
+          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
+            Signed
+            <Text marginLeft="4px"><CheckedIcon /></Text>
+          </Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="0.875em" fontWeight="bold" color="#848488">Waiting</Box>
+          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="0.875em" fontWeight="bold" color="#E83D26">Error</Box>
+          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
+            Error
+            <Text marginLeft="4px"><ErrorIcon /></Text>
+          </Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F">Signed</Box>
+          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
+            Signed
+            <Text marginLeft="4px"><CheckedIcon /></Text>
+          </Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="0.875em" fontWeight="bold" color="#848488">Waiting</Box>
+          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
         </Box>
       </Box>
       <Button

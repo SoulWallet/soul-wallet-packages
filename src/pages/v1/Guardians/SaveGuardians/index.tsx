@@ -62,7 +62,7 @@ const GuardiansSaving = () => {
         </TextBody>
       </Box>
       <GuardiansSaver onSave={handleSaved} />
-      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }} loading={true}>
         Continue
       </Button>
     </Box>

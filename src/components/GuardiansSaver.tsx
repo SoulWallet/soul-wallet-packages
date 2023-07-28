@@ -11,6 +11,8 @@ import FormInput from "@src/components/web/Form/FormInput";
 import Heading1 from "@src/components/web/Heading1";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import DownloadIcon from '@src/components/Icons/Download'
+import SendIcon from '@src/components/Icons/Send'
 
 interface IProps {
   onSave: () => void;
@@ -85,9 +87,10 @@ const GuardiansSaver = ({ onSave }: IProps) => {
           errorMsg={email && !isEmailValid ? "Please enter a valid email address." : undefined}
           onChange={handleEmailChange}
           _styles={{ width: '100%', marginTop: '0.75em' }}
+          RightIcon={<SendIcon />}
         // onClick={handleSendEmail}
         />
-        <Button onClick={handleDownload} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
+        <Button onClick={handleDownload} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} LeftIcon={<DownloadIcon />}>
           Download
         </Button>
       </Box>

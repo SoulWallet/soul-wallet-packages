@@ -9,6 +9,7 @@ import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
+import WarningIcon from "@src/components/Icons/Warning";
 
 const GuardiansSaving = () => {
   const [hasSaved, setHasSaved] = useState(false);
@@ -31,6 +32,7 @@ const GuardiansSaving = () => {
     return (
       <Box maxWidth="400px">
         <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="20px" paddingBottom="0" borderRadius="16px">
+          <Box marginBottom="1em"><WarningIcon /></Box>
           <Heading3 width="100%">What if I don’t set up guardian now?</Heading3>
           <TextBody width="100%" marginBottom="1em">Guardians are required to recover your wallet in the case of loss or theft. You can learn more here</TextBody>
           <Heading3 width="100%">Can I set guardians in the future?</Heading3>

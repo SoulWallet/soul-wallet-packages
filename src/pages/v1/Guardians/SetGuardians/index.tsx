@@ -11,6 +11,8 @@ import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import CopyIcon from "@src/components/Icons/Copy";
+import ArrowRightIcon from "@src/components/Icons/ArrowRight";
 
 interface IProps {
   onSave?: () => void;
@@ -97,7 +99,7 @@ const GuardiansSaver = ({ onSave }: IProps) => {
             flexDirection="column"
           >
             <Box width="150px" height="150px" background="grey" />
-            <Text fontSize="0.875em" fontWeight="bold" marginTop="0.75em" cursor="pointer">Truncated Url</Text>
+            <Text fontSize="0.875em" fontWeight="bold" marginTop="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center">Truncated Url<Text marginLeft="4px"><CopyIcon /></Text></Text>
           </Box>
         </Box>
         <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
@@ -111,8 +113,12 @@ const GuardiansSaver = ({ onSave }: IProps) => {
           </Box>
           <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
             <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-              <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F"></Box>
+              <Box fontSize="0.875em" fontWeight="bold" display="flex" alignItems="center" justifyContent="center">
+                <Text></Text>
+                <Text fontSize="16px" color="black">account 1</Text>
+                <Text fontSize="12px" color="#848488" marginLeft="10px">0x1234...5678</Text>
+              </Box>
+              <Box><ArrowRightIcon /></Box>
             </Box>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%" marginTop="0.75em">

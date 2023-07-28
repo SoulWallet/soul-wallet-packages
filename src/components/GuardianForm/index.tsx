@@ -14,9 +14,10 @@ import TextBody from "@src/components/web/TextBody";
 
 export interface IGuardianFormHandler {
   submit: () => Promise<GuardianItem[]>;
+  noNameInput?: boolean;
 }
 
-const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) => {
+const GuardianFormInner = forwardRef(({ noNameInput }: { noNameInput?: boolean }, ref: React.Ref<IGuardianFormHandler>) => {
   const guardians = useGuardianContext((s) => s.guardians);
   const updateErrorMsgById = useGuardianContext((s) => s.updateErrorMsgById);
   const addGuardian = useGuardianContext((s) => s.addGuardian);
@@ -50,11 +51,12 @@ const GuardianFormInner = forwardRef((_, ref: React.Ref<IGuardianFormHandler>) =
     };
   });
 
+  console.log('noNameInput 1111', noNameInput)
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
         {guardians.map((item) => (
-          <GuardianInput key={item.id} {...item} />
+          <GuardianInput key={item.id} noNameInput={noNameInput} {...item} />
         ))}
         <TextButton onClick={handleAddGuardian} color="#EC588D">
           Add More Guardian
@@ -76,9 +78,10 @@ GuardianFormInner.displayName = "GuardianFormInner";
 
 interface IGuardianFormProps {
   guardians?: GuardianItem[];
+  noNameInput?: boolean;
 }
 
-const GuardianForm = ({ guardians }: IGuardianFormProps, ref: React.Ref<IGuardianFormHandler>) => {
+const GuardianForm = ({ guardians, noNameInput }: IGuardianFormProps, ref: React.Ref<IGuardianFormHandler>) => {
   const innerRef = useRef<IGuardianFormHandler>(null);
   const storeRef = useRef<GuardianState>();
 
@@ -93,10 +96,10 @@ const GuardianForm = ({ guardians }: IGuardianFormProps, ref: React.Ref<IGuardia
       },
     };
   });
-
+  console.log('noNameInput 0000', noNameInput)
   return (
     <GuardianContext.Provider value={storeRef.current}>
-      <GuardianFormInner ref={innerRef} />
+      <GuardianFormInner ref={innerRef} noNameInput={noNameInput} />
     </GuardianContext.Provider>
   );
 };

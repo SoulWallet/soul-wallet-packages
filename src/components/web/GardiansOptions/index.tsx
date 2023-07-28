@@ -85,7 +85,12 @@ const GuardiansSaver = ({ onSave }: IProps) => {
         <Heading2 marginBottom="0.75em">
           Option 2
         </Heading2>
-        <GuardianForm />
+        <Box marginBottom="0.75em">
+          <TextBody fontSize="0.875em" textAlign="center">
+            Enter the Ethereum wallets addresses you sat up as  guardians.
+          </TextBody>
+        </Box>
+        <GuardianForm noNameInput={true} />
         <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
           Next
         </Button>
