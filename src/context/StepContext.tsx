@@ -17,55 +17,61 @@ export enum RecoverStepEn {
     Completed,
 }
 
-type StepEn = CreateStepEn | RecoverStepEn;
+export enum GuardiansStepEn {
+  Edit,
+  Set,
+  Save,
+}
+
+type StepEn = CreateStepEn | RecoverStepEn | GuardiansStepEn;
 
 export enum StepActionTypeEn {
-    JumpToTargetStep = "JumpToTargetStep",
+  JumpToTargetStep = "JumpToTargetStep",
 }
 
 interface IStepAction {
-    type: StepActionTypeEn;
-    payload: StepEn;
+  type: StepActionTypeEn;
+  payload: StepEn;
 }
 
 type StepState = {
-    current: CreateStepEn | RecoverStepEn;
-    previous?: StepEn;
+  current: CreateStepEn | RecoverStepEn | GuardiansStepEn;
+  previous?: StepEn;
 };
 
 interface IStepContext {
-    step: StepState;
+  step: StepState;
 }
 
 const StepContext = createContext<IStepContext>({
-    step: { current: CreateStepEn.CreatePWD },
+  step: { current: CreateStepEn.CreatePWD },
 });
 
 const StepDispatchContext = createContext<Dispatch<IStepAction>>((value: IStepAction) => void 0);
 
 const stepReducer: (prevStepState: StepState, action: IStepAction) => StepState = (
-    prevStepState: StepState,
-    action: IStepAction,
+  prevStepState: StepState,
+  action: IStepAction,
 ) => {
-    const { type, payload } = action;
+  const { type, payload } = action;
 
-    switch (type) {
-        case StepActionTypeEn.JumpToTargetStep: {
-            return {
-                previous: prevStepState.current,
-                current: payload,
-            };
-        }
-        default: {
-            throw Error("StepReducer: Unknown action - " + action.type);
-        }
+  switch (type) {
+    case StepActionTypeEn.JumpToTargetStep: {
+      return {
+        previous: prevStepState.current,
+        current: payload,
+      };
     }
+    default: {
+      throw Error("StepReducer: Unknown action - " + action.type);
+    }
+  }
 };
 
 export const StepContextProvider = ({ children }: { children: ReactNode }) => {
-    const [step, dispatch] = useReducer(stepReducer, {
-        current: 0, // both 0 to start
-    });
+  const [step, dispatch] = useReducer(stepReducer, {
+    current: 0, // both 0 to start
+  });
 
   return (
     <StepContext.Provider value={{ step }}>

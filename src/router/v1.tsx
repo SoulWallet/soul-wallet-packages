@@ -9,7 +9,7 @@ import Setting from "@src/pages/v1/Setting";
 import Accounts from "@src/pages/v1/Accounts";
 import AddFund from "@src/pages/v1/AddFund";
 import RecoverPage from "@src/pages/v1/Recover";
-import EditGuardians from "@src/pages/v1/EditGuardians";
+import EditGuardians from "@src/pages/v1/Guardians";
 import ResaveGuardians from "@src/pages/v1/ResaveGuardians";
 import Launch from "@src/pages/v1/Launch";
 
