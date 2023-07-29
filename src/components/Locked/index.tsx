@@ -1,8 +1,9 @@
 import React, { useState, useImperativeHandle, forwardRef } from "react";
-import Logo from "@src/assets/logo.svg";
-import { Image, Flex } from "@chakra-ui/react";
-import { Input } from "@src/components/Input";
-import cn from "classnames";
+import { Image, Flex, Box, Text } from "@chakra-ui/react";
+import LockBg from "@src/assets/lock-bg.png";
+import FormInput from "../FormInput";
+import IconLogo from "@src/assets/logo-v3.svg";
+import IconLogoText from "@src/assets/logo-text.svg";
 import KeyStore from "@src/lib/keystore";
 import Button from "@src/components/Button";
 import useBrowser from "@src/hooks/useBrowser";
@@ -41,35 +42,66 @@ export default forwardRef<any>((props, ref) => {
     };
 
     return (
-        <div
+        <Box
+            bgImage={`url(${LockBg})`}
+            bgSize={"100% 100%"}
+            flexDir={"column"}
+            display={visible ? "flex" : "none"}
+            position={"absolute"}
+            alignItems={"center"}
+            h="100%"
+            bottom={"0"}
+            left="0"
+            top="0"
+            right={"0"}
+            overflowY={"hidden"}
+            zIndex={100}
+            px="6"
+            pt="90px"
             ref={ref}
-            className={cn(
-                "h-full text-center flex flex-col justify-between z-30 absolute top-0 bottom-0 left-0 right-0 bg-white overflow-auto",
-                !visible && "hidden",
-            )}
+            {...props}
         >
-            <div className="px-6">
-                <>
-                    <Input
-                        value={password}
-                        placeholder="Password"
-                        type="password"
-                        onEnter={doUnlock}
-                        onChange={(val) => {
-                            setPassword(val);
-                            setPasswordError("");
-                        }}
-                        error={passwordError}
-                    />
-                    <Button onClick={doUnlock} loading={unlocking} type="primary" className="my-4 w-full">
-                        Unlock
-                    </Button>
-                </>
+            <Flex flexDir={"column"} align={"center"} gap="3" mb="10">
+                <Image src={IconLogo} w="160px" />
+                <Image src={IconLogoText} w="198px" />
+            </Flex>
 
-                <a onClick={() => goWebsite("/recover")} className="text-blueDeep text-sm cursor-pointer">
-                    Recover Wallet
-                </a>
-            </div>
-        </div>
+            <FormInput
+                isPassword={true}
+                value={password}
+                mb="3"
+                placeholder="Password"
+                type="password"
+                onEnter={doUnlock}
+                w="100%"
+                onChange={(val: any) => {
+                    setPassword(val);
+                    setPasswordError("");
+                }}
+                error={passwordError}
+            />
+            <Button
+                onClick={doUnlock}
+                loading={unlocking}
+                fontSize="20px"
+                fontWeight={"800"}
+                bg="#1e1e1e"
+                py="4"
+                w="100%"
+            >
+                Continue
+            </Button>
+
+            <Text
+                onClick={() => goWebsite("/recover")}
+                position={"absolute"}
+                bottom="0"
+                fontSize={"16px"}
+                fontWeight={"800"}
+                cursor={"pointer"}
+            >
+                Forgot password?
+            </Text>
+        </Box>
     );
 });

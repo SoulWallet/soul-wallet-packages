@@ -85,23 +85,23 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="0.875em" fontWeight="bold" fontFamily={"Martian"}>0xFDF7...7890</Box>
           <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F">Signed</Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="0.875em" fontWeight="bold" fontFamily={"Martian"}>0xFDF7...7890</Box>
           <Box fontSize="0.875em" fontWeight="bold" color="#848488">Waiting</Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="0.875em" fontWeight="bold" fontFamily={"Martian"}>0xFDF7...7890</Box>
           <Box fontSize="0.875em" fontWeight="bold" color="#E83D26">Error</Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="0.875em" fontWeight="bold" fontFamily={"Martian"}>0xFDF7...7890</Box>
           <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F">Signed</Box>
         </Box>
         <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
+          <Box fontSize="0.875em" fontWeight="bold" fontFamily={"Martian"}>0xFDF7...7890</Box>
           <Box fontSize="0.875em" fontWeight="bold" color="#848488">Waiting</Box>
         </Box>
       </Box>

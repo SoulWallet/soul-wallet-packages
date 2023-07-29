@@ -36,7 +36,7 @@ const StepComponent = () => {
 
   return (
     <div>
-      {stepNodeMap[2].element}
+      {stepNodeMap[current].element}
     </div>
   );
 };

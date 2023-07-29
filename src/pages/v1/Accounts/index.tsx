@@ -154,7 +154,7 @@ const AccountsNavbar = () => {
 
     return (
         <Flex align="center" justify={"space-between"} mb="6">
-            <Flex align="center" position="relative" zIndex={10} onClick={() => navigate("wallet")} cursor={"pointer"}>
+            <Flex align="center" onClick={() => navigate("wallet")} cursor={"pointer"}>
                 <Image src={IconChevronLeft} w="20px" h="20px" />
                 <Text fontWeight="800" color="#1C1C1E">
                     Back

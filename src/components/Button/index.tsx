@@ -40,7 +40,6 @@ export default function Button({
 
   return (
     <CButton
-      {...moreProps}
       color="#fff"
       bg={"brand.red"}
       h="unset"
@@ -48,7 +47,9 @@ export default function Button({
       _disabled={{opacity: '0.5', cursor: 'not-allowed'}}
       onClick={doClick}
       rounded={"20px"}
+      lineHeight={"1"}
       isDisabled={disabled}
+      {...moreProps}
       {...restProps}
     >
       {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}

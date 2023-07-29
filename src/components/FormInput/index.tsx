@@ -3,11 +3,11 @@ import { Box, Text, Input, InputRightElement, Image, InputGroup } from "@chakra-
 import IconEyeOpen from "@src/assets/icons/eye-open.svg";
 import IconEyeClose from "@src/assets/icons/eye-close.svg";
 
-export default function FormInput({ label, value, isPassword, onChange, placeholder, disabled }: any) {
+export default function FormInput({ label, value, isPassword, onChange, placeholder, disabled, ...restProps }: any) {
     const [showPassword, setShowPassword] = useState(true);
 
     return (
-        <Box>
+        <Box {...restProps}>
             <Text fontFamily={"Martian"} fontSize="12px" fontWeight={"500"} mb="1" px="4">
                 {label}
             </Text>
