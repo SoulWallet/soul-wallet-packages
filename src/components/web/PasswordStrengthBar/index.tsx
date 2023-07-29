@@ -6,9 +6,10 @@ import classNames from "classnames";
 interface IPasswordStrengthBarProps {
   password: string;
   className?: string;
+  _styles?: any;
 }
 
-const PasswordStrengthBar = ({ password, className }: IPasswordStrengthBarProps) => {
+const PasswordStrengthBar = ({ password, className, _styles }: IPasswordStrengthBarProps) => {
   const passwordStrength = usePasswordStrength(password);
 
   if (!(password.length && passwordStrength >= 0)) {
@@ -16,7 +17,7 @@ const PasswordStrengthBar = ({ password, className }: IPasswordStrengthBarProps)
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" marginTop="1em">
+    <Box display="flex" justifyContent="center" alignItems="center" marginTop="1em" {..._styles}>
       <Box display="flex" flexDirection="row" width="calc(100% - 80px)" height="0.25rem" justifyContent="space-evenly" paddingLeft="1em" columnGap="0.25em">
         <Text
           flex="1"

@@ -1,4 +1,3 @@
-import InputWrapper from "@src/components/InputWrapper";
 import React, { useEffect, useState } from "react";
 import Button from "@src/components/web/Button";
 import { StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
@@ -8,7 +7,7 @@ import PasswordStrengthBar from "@src/components/web/PasswordStrengthBar";
 import FormInput from "@src/components/web/Form/FormInput";
 
 interface IProps {
-  nextStep?: number;
+  nextStep?: any;
   onSubmit: (password: string) => void;
 }
 
@@ -24,14 +23,15 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
   const [nextable, setNextable] = useState(false);
 
   const handleNext = () => {
-    console.log('handleNext', password)
-    if ((password?.length ?? 0) < 9) {
-      setPasswordMessage("Password must be at least 9 characters long");
-      return;
-    }
-    password && onSubmit(password);
+    /* console.log('handleNext', password)
+     * if ((password?.length ?? 0) < 9) {
+     *   setPasswordMessage("Password must be at least 9 characters long");
+     *   return;
+     * }
+     * password && onSubmit(password);
 
-    nextStep &&
+     * nextStep && */
+    console.log('handleNext', nextStep)
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: nextStep,

@@ -97,6 +97,13 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
     }
   };
 
+  const handleNext = async () => {
+    dispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: RecoverStepEn.RecoverInProgress,
+    })
+  }
+
   const getList = async (opHash: string) => {
     setShareUrl(`${config.recoverUrl}/${opHash}`);
     const res: any = await api.recovery.get(opHash);
@@ -207,7 +214,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
       </Box>
       <Button
         disabled={false}
-        onClick={() => {}}
+        onClick={handleNext}
         _styles={{ width: '100%' }}
       >
         Connect wallet and pay
@@ -215,6 +222,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
       <Button
         disabled={false}
         onClick={() => {}}
+        _hover={{ color: '#1E1E1E', background: 'white' }}
         _styles={{ width: '100%', marginTop: '0.75em', color: '#1E1E1E', background: 'white' }}
       >
         Share with others

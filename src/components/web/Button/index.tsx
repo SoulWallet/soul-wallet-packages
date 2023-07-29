@@ -30,6 +30,7 @@ export default function RoundButton({
   href,
   _styles,
   LeftIcon,
+  _hover,
   ...restProps
 }: IProps) {
   const doClick = () => {
@@ -54,7 +55,7 @@ export default function RoundButton({
       borderRadius="1em"
       height="3rem"
       fontWeight="bold"
-      _hover={{ bg: 'brand.black' }}
+      _hover={_hover || { background: 'brand.black' }}
       _disabled={{ opacity: '0.7', cursor: 'not-allowed' }}
       isDisabled={disabled}
       bg="#1E1E1E"

@@ -28,7 +28,7 @@ const GuardiansSaving = () => {
     });
   };
 
-  if (true) {
+  if (skipped) {
     return (
       <Box maxWidth="400px">
         <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="20px" paddingBottom="0" borderRadius="16px">
@@ -54,7 +54,7 @@ const GuardiansSaving = () => {
         </TextBody>
       </Box>
       <GuardiansSaver onSave={handleSaved} />
-      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+      <Button disabled={false} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
         Continue
       </Button>
     </Box>

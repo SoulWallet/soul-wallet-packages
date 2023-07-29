@@ -3,7 +3,7 @@ import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
-import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
+import { CreateStepEn, GuardiansStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
@@ -21,7 +21,7 @@ export default function GuardiansSetting() {
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showTips, setShowTips] = useState(false)
 
-  const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
+  const handleJumpToTargetStep = (targetStep: GuardiansStepEn) => {
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: targetStep,
@@ -29,30 +29,31 @@ export default function GuardiansSetting() {
   };
 
   const handleNext = async () => {
-    try {
-      const guardianList = (await formRef.current?.submit()) as GuardianItem[];
-      if (guardianList?.length === 0) {
-        return;
-      }
-      updateFinalGuardians(guardianList);
+    handleJumpToTargetStep(GuardiansStepEn.Set);
+    /* try {
+     *   const guardianList = (await formRef.current?.submit()) as GuardianItem[];
+     *   if (guardianList?.length === 0) {
+     *     return;
+     *   }
+     *   updateFinalGuardians(guardianList);
 
-      const eoaAddress = await keystore.getAddress();
+     *   const eoaAddress = await keystore.getAddress();
 
-      const guardianAddress = guardianList.map((item) => item.address);
+     *   const guardianAddress = guardianList.map((item) => item.address);
 
-      generateWalletAddress(eoaAddress, guardianAddress, true);
+     *   generateWalletAddress(eoaAddress, guardianAddress, true);
 
-      handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    } catch (err) {
-      console.error(err);
-    }
+     *   handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
+     * } catch (err) {
+     *   console.error(err);
+     * } */
   };
 
   const handleSkip = async () => {
-    updateFinalGuardians([]);
-    const eoaAddress = await keystore.getAddress();
-    generateWalletAddress(eoaAddress, [], true);
-    handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault);
+    /* updateFinalGuardians([]);
+     * const eoaAddress = await keystore.getAddress();
+     * generateWalletAddress(eoaAddress, [], true);
+     * handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault); */
   };
 
   const toggleTips = (event: any) => {
@@ -142,7 +143,7 @@ export default function GuardiansSetting() {
         </Button>
         <TextButton
           color="rgb(137, 137, 137)"
-          onClick={handleSkip}
+          onClick={() => {}}
           _styles={{ width: '455px' }}
         >
           Backup current guardians

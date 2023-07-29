@@ -29,18 +29,18 @@ export default function GuardiansSetting() {
 
   const handleNext = async () => {
     try {
-      const guardianList = (await formRef.current?.submit()) as GuardianItem[];
-      if (guardianList?.length === 0) {
-        return;
-      }
-      updateFinalGuardians(guardianList);
+      /* const guardianList = (await formRef.current?.submit()) as GuardianItem[];
+       * if (guardianList?.length === 0) {
+       *   return;
+       * }
+       * updateFinalGuardians(guardianList);
 
-      const eoaAddress = await keystore.getAddress();
+       * const eoaAddress = await keystore.getAddress();
 
-      const guardianAddress = guardianList.map((item) => item.address);
+       * const guardianAddress = guardianList.map((item) => item.address);
 
-      generateWalletAddress(eoaAddress, guardianAddress, true);
-
+       * generateWalletAddress(eoaAddress, guardianAddress, true);
+       */
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     } catch (err) {
       console.error(err);

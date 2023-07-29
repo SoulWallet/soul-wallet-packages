@@ -65,7 +65,7 @@ const GuardiansImporting = () => {
       <Heading1 marginBottom="2em">
         Enter guardians’ addresses
       </Heading1>
-      <GardiansOptions onSave={() => {}} />
+      <GardiansOptions onSave={() => {}} handleNext={handleNext} />
     </Box>
   )
 

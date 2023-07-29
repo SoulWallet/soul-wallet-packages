@@ -13,9 +13,10 @@ import TextBody from "@src/components/web/TextBody";
 
 interface IProps {
   onSave: () => void;
+  handleNext?: () => void;
 }
 
-const GuardiansSaver = ({ onSave }: IProps) => {
+const GuardiansSaver = ({ onSave, handleNext }: IProps) => {
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
   const { guardians } = useGlobalStore();
   const [email, setEmail] = useState<string>();
@@ -91,7 +92,7 @@ const GuardiansSaver = ({ onSave }: IProps) => {
           </TextBody>
         </Box>
         <GuardianForm noNameInput={true} />
-        <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
+        <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
           Next
         </Button>
       </Box>

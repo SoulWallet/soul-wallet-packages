@@ -3,6 +3,7 @@ import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import useTools from "@src/hooks/useTools";
 import { useGlobalStore } from "@src/store/global";
 import { Box, Text, Image } from "@chakra-ui/react"
+import { CreateStepEn, GuardiansStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import FormInput from "@src/components/web/Form/FormInput";
@@ -19,6 +20,7 @@ interface IProps {
 }
 
 const GuardiansSaver = ({ onSave }: IProps) => {
+  const dispatch = useStepDispatchContext();
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
   const { guardians } = useGlobalStore();
   const [email, setEmail] = useState<string>();
@@ -70,6 +72,13 @@ const GuardiansSaver = ({ onSave }: IProps) => {
       setSending(false);
     }
   };
+
+  const handleNext = () => {
+    dispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: GuardiansStepEn.Save,
+    });
+  }
 
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
@@ -131,7 +140,7 @@ const GuardiansSaver = ({ onSave }: IProps) => {
               <Box>2.22 ETH</Box>
             </Box>
           </Box>
-          <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
+          <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
             Set up
           </Button>
           <TextButton

@@ -9,12 +9,13 @@ export enum CreateStepEn {
 }
 
 export enum RecoverStepEn {
-    Start,
-    ResetPassword,
-    GuardiansImporting,
-    GuardiansChecking,
-    SignaturePending,
-    Completed,
+  Start,
+  ResetPassword,
+  GuardiansImporting,
+  GuardiansChecking,
+  SignaturePending,
+  RecoverInProgress,
+  Completed,
 }
 
 export enum GuardiansStepEn {

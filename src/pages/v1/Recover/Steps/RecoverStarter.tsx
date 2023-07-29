@@ -58,10 +58,10 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
   };
 
   const handleNext = () => {
-    if (!address || !payToken) {
-      return;
-    }
-    onSubmit(address, payToken);
+    /* if (!address || !payToken) {
+     *   return;
+     * }
+     * onSubmit(address, payToken); */
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: RecoverStepEn.ResetPassword,
@@ -80,7 +80,7 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
   }, []);
 
   return (
-    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
       <Heading1>
         Wallet recovery
       </Heading1>
@@ -97,7 +97,7 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
         onChange={() => {}}
         _styles={{ marginTop: '0.75em', width: '100%' }}
       />
-      <Button onClick={() => {}} _styles={{ width: '100%', marginTop: '0.75em' }}>
+      <Button onClick={handleNext} _styles={{ width: '100%', marginTop: '0.75em' }}>
         Next
       </Button>
     </Box>
