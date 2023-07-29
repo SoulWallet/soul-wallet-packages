@@ -12,6 +12,7 @@ interface IProps {
   onChange: (value: string) => void;
   _styles?: any;
   isPassword?: boolean;
+  RightIcon?: any;
 }
 
 export default function FormInput({
@@ -21,7 +22,8 @@ export default function FormInput({
   errorMsg,
   onChange,
   _styles,
-  isPassword
+  isPassword,
+  RightIcon
 }: IProps) {
   const [visible, setVisible] = useState(false);
 
@@ -50,6 +52,11 @@ export default function FormInput({
                 src={visible ? EyeOpen : EyeClose}
                 onClick={() => setVisible((prev: boolean) => !prev)}
               />
+            </Box>
+          )}
+          {RightIcon && (
+            <Box position="absolute" top="0" right="4px" height="100%" width="40px" display="flex" alignItems="center" justifyContent="center" cursor="pointer" zIndex="1">
+              {RightIcon}
             </Box>
           )}
         </Box>

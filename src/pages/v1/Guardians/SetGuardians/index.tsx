@@ -7,6 +7,12 @@ import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import FormInput from "@src/components/web/Form/FormInput";
 import GuardianForm from "@src/components/GuardianForm";
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
+import CopyIcon from "@src/components/Icons/Copy";
+import ArrowRightIcon from "@src/components/Icons/ArrowRight";
 
 interface IProps {
   onSave?: () => void;
@@ -67,23 +73,19 @@ const GuardiansSaver = ({ onSave }: IProps) => {
 
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
-        Set Guardians
-      </Text>
+      <Heading1>Set Guardians</Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center">
+        <TextBody textAlign="center">
           In order to finalize the setting of your guardians, a gas fee must be paid on Ethereum. Choose one method below to continue.
-        </Text>
+        </TextBody>
       </Box>
       <Box display="flex">
         <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-          <Text fontSize="1.25em" fontWeight="bold">
-            Option 1
-          </Text>
+          <Heading2>Option 1</Heading2>
           <Box marginBottom="0.75em">
-            <Text fontSize="0.875em" textAlign="center">
+            <TextBody textAlign="center">
               Connect and pay with any Ethereum wallet using the link below.
-            </Text>
+            </TextBody>
           </Box>
           <Box
             marginBottom="0.75em"
@@ -97,22 +99,26 @@ const GuardiansSaver = ({ onSave }: IProps) => {
             flexDirection="column"
           >
             <Box width="150px" height="150px" background="grey" />
-            <Text fontSize="0.875em" fontWeight="bold" marginTop="0.75em" cursor="pointer">Truncated Url</Text>
+            <Text fontSize="0.875em" fontWeight="bold" marginTop="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center">Truncated Url<Text marginLeft="4px"><CopyIcon /></Text></Text>
           </Box>
         </Box>
         <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-          <Text fontSize="1.25em" fontWeight="bold" marginBottom="0.75em">
+          <Heading2 marginBottom="0.75em">
             Option 2
-          </Text>
+          </Heading2>
           <Box marginBottom="0.75em">
-            <Text fontSize="0.875em" textAlign="center">
+            <TextBody textAlign="center">
               Pay with your activated Soul Wallet on Ethereum
-            </Text>
+            </TextBody>
           </Box>
           <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
             <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="0.875em" fontWeight="bold">0xFDF7...7890</Box>
-              <Box fontSize="0.875em" fontWeight="bold" color="#1CD20F"></Box>
+              <Box fontSize="0.875em" fontWeight="bold" display="flex" alignItems="center" justifyContent="center">
+                <Text></Text>
+                <Text fontSize="16px" color="black">account 1</Text>
+                <Text fontSize="12px" color="#848488" marginLeft="10px">0x1234...5678</Text>
+              </Box>
+              <Box><ArrowRightIcon /></Box>
             </Box>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%" marginTop="0.75em">

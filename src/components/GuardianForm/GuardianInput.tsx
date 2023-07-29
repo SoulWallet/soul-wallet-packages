@@ -5,11 +5,12 @@ import Icon from "../Icon";
 import { GuardianItem } from "@src/lib/type";
 import { useGuardianContext } from "@src/context/hooks/useGuardianContext";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
+import FormInput from "@src/components/web/Form/FormInput";
 import { Box } from "@chakra-ui/react"
 
 type IProps = GuardianItem;
 
-export default function GuardianInput({ id, name, address, errorMsg, inputClassName }: IProps) {
+export default function GuardianInput({ id, name, address, errorMsg, inputClassName, noNameInput }: IProps) {
   const { removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } = useGuardianContext((s) => s);
 
   const handleNameChange = (value: string) => {
@@ -24,19 +25,31 @@ export default function GuardianInput({ id, name, address, errorMsg, inputClassN
     removeGuardian(id);
   };
 
+  console.log('noNameInput', noNameInput)
+
   return (
-    <Box position="relative">
-      <DoubleFormInput
-        leftPlaceholder="Enter guardian address"
-        leftValue={address}
-        leftOnChange={handleAddressChange}
-        leftErrorMsg={errorMsg}
-        rightPlaceholder="Assign nickname"
-        rightValue={name}
-        rightOnChange={handleNameChange}
-        rightErrorMsg={''}
-        _styles={{ width: '100%' }}
-      />
+    <Box position="relative" width="100%">
+      {noNameInput ? (
+        <FormInput
+          placeholder="Enter guardian address"
+          value={address}
+          onChange={handleAddressChange}
+          errorMsg={errorMsg}
+          _styles={{ width: '100%' }}
+        />
+      ) : (
+        <DoubleFormInput
+          leftPlaceholder="Enter guardian address"
+          leftValue={address}
+          leftOnChange={handleAddressChange}
+          leftErrorMsg={errorMsg}
+          rightPlaceholder="Assign nickname"
+          rightValue={name}
+          rightOnChange={handleNameChange}
+          rightErrorMsg={''}
+          _styles={{ width: '100%' }}
+        />
+      )}
       <Box
         onClick={handleDelete}
         position="absolute"

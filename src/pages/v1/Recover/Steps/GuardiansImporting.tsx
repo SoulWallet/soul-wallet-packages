@@ -8,6 +8,7 @@ import { toast } from "material-react-toastify";
 import Button from "@src/components/web/Button";
 import { Box, Text, Image } from "@chakra-ui/react"
 import GardiansOptions from "@src/components/web/GardiansOptions";
+import Heading1 from "@src/components/web/Heading1";
 
 const GuardiansImporting = () => {
   const [fileValid, setFileValid] = useState(false);
@@ -61,9 +62,9 @@ const GuardiansImporting = () => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
 
-      <Text fontSize="1.25em" fontWeight="bold" marginBottom="0.75em">
+      <Heading1 marginBottom="2em">
         Enter guardians’ addresses
-      </Text>
+      </Heading1>
       <GardiansOptions onSave={() => {}} />
     </Box>
   )

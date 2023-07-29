@@ -8,6 +8,10 @@ import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import { Box, Text, Image } from "@chakra-ui/react"
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
@@ -56,78 +60,74 @@ export default function GuardiansSetting() {
     setShowTips(!showTips)
   }
 
-  return (
-    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
-        Discard change
-      </Text>
-      <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center">
-          New guardians updating in 12:56:73.<Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
-        </Text>
-      </Box>
-      {showTips && (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em">
-          <Box>
-            <Text fontSize="0.875em">
-              You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.
-            </Text>
-          </Box>
-        </Box>
-      )}
-      <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
-        <Button
-          disabled={false}
-          onClick={handleNext}
-          _styles={{ width: '455px' }}
-        >
-          Discard Change
-        </Button>
-        <TextButton
-          color="rgb(137, 137, 137)"
-          onClick={handleSkip}
-          _styles={{ width: '455px' }}
-        >
-          Backup current guardians
-        </TextButton>
-      </Box>
-    </Box>
-  )
+  /* return (
+   *   <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+   *     <Heading1>
+   *       Discard change
+   *     </Heading1>
+   *     <Box marginBottom="0.75em">
+   *       <TextBody textAlign="center">
+   *         New guardians updating in 12:56:73.<Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
+   *       </TextBody>
+   *     </Box>
+   *     {showTips && (
+   *       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em">
+   *         <Box>
+   *           <TextBody>
+   *             You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.
+   *           </TextBody>
+   *         </Box>
+   *       </Box>
+   *     )}
+   *     <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+   *       <Button
+   *         disabled={false}
+   *         onClick={handleNext}
+   *         _styles={{ width: '455px' }}
+   *       >
+   *         Discard Change
+   *       </Button>
+   *       <TextButton
+   *         color="rgb(137, 137, 137)"
+   *         onClick={handleSkip}
+   *         _styles={{ width: '455px' }}
+   *       >
+   *         Backup current guardians
+   *       </TextButton>
+   *     </Box>
+   *   </Box>
+   * ) */
 
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
+      <Heading1>
         Edit Guardians
-      </Text>
+      </Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center">
+        <TextBody textAlign="center">
           Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
-        </Text>
+        </TextBody>
       </Box>
       {showTips && (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
           <Box>
-            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
-              What is a guardian?
-            </Text>
-            <Text>
+            <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
+            <TextBody marginBottom="1em">
               Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
-            </Text>
-            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
-              What wallet can be set as guardian?
-            </Text>
-            <Text>
+            </TextBody>
+
+            <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
+            <TextBody marginBottom="1em">
               You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
-            </Text>
-            <Text fontSize="1em" lineHeight="1.25em" fontWeight="bold" marginBottom="0.75em">
-              What is wallet recovery?
-            </Text>
-            <Text>
+            </TextBody>
+
+            <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
+            <TextBody marginBottom="1em">
               If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
-            </Text>
-            <Text>
+            </TextBody>
+            <TextBody marginBottom="1em">
               After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
-            </Text>
+            </TextBody>
           </Box>
         </Box>
       )}

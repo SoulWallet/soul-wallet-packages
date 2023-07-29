@@ -9,6 +9,10 @@ import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { Box, Text, Image } from "@chakra-ui/react"
 import FormInput from "@src/components/web/Form/FormInput";
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 // TODO: here
 const NetworkOptions: OptionItem[] = [
@@ -77,13 +81,13 @@ const RecoverStarter = ({ onSubmit }: IRecoverStarter) => {
 
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-      <Text fontSize="1.25em" fontWeight="bold">
+      <Heading1>
         Wallet recovery
-      </Text>
+      </Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center" maxWidth="500px" fontWeight="bold">
+        <TextBody textAlign="center" maxWidth="500px">
           Enter the address of the Soul Wallet you want to recover.
-        </Text>
+        </TextBody>
       </Box>
       <FormInput
         label=""

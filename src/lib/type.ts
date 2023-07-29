@@ -4,6 +4,8 @@ export type GuardianItem = {
     address: string;
     errorMsg?: string;
     inputClassName?: string;
+    GuardianItem?: boolean;
+    noNameInput?: boolean;
 };
 
 export enum EnHandleMode {

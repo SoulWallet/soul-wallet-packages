@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import GuardiansSaver from "@src/components/GuardiansSaver";
 import Button from "@src/components/web/Button";
 import { Box, Text, Image } from "@chakra-ui/react"
+import Heading1 from "@src/components/web/Heading1";
+import Heading2 from "@src/components/web/Heading2";
+import Heading3 from "@src/components/web/Heading3";
+import TextBody from "@src/components/web/TextBody";
 
 const GuardiansSaving = () => {
   const [hasSaved, setHasSaved] = useState(false);
@@ -48,19 +52,17 @@ const GuardiansSaving = () => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
 
-      <Text fontSize="1.25em" fontWeight="bold">
-        Guardians saved!
-      </Text>
+      <Heading1>Guardians saved!</Heading1>
       <Box marginBottom="0.75em">
-        <Text fontSize="0.875em" textAlign="center" maxWidth="500px">
+        <TextBody textAlign="center" maxWidth="500px">
           Your guardian list change request has been received and will be pending for 24 hours before being activated. You may cancel this change within the next 24 hours
-        </Text>
-        <Text fontSize="0.875em" textAlign="center" maxWidth="500px">
+        </TextBody>
+        <TextBody textAlign="center" maxWidth="500px">
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.
-        </Text>
+        </TextBody>
       </Box>
       <GuardiansSaver onSave={handleSaved} />
-      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+      <Button disabled={!hasSaved} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }} loading={true}>
         Continue
       </Button>
     </Box>
