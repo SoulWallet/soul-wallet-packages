@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import { Image, Flex, Box, Text } from "@chakra-ui/react";
 import LockBg from "@src/assets/lock-bg.png";
 import FormInput from "../FormInput";
@@ -16,6 +16,9 @@ export default forwardRef<any>((props, ref) => {
     const [visible, setVisible] = useState(false);
     const [passwordError, setPasswordError] = useState<string>("");
     const [unlocking, setUnlocking] = useState<boolean>(false);
+
+    const inputRef: any = useRef(null);
+
     useImperativeHandle(ref, () => ({
         async show() {
             return new Promise((resolve, reject) => {
@@ -24,6 +27,10 @@ export default forwardRef<any>((props, ref) => {
                     reject,
                 });
                 setVisible(true);
+                // TODO, check how to make it work
+                // setTimeout(()=>{
+                //     inputRef.current.focus();
+                // }, 2000);
             });
         },
     }));
@@ -54,7 +61,7 @@ export default forwardRef<any>((props, ref) => {
             left="0"
             top="0"
             right={"0"}
-            overflowY={"hidden"}
+            overflow={"hidden"}
             zIndex={100}
             px="6"
             pt="90px"
@@ -67,11 +74,13 @@ export default forwardRef<any>((props, ref) => {
             </Flex>
 
             <FormInput
+                ref={inputRef}
                 isPassword={true}
                 value={password}
                 mb="3"
                 placeholder="Password"
                 type="password"
+                autoFocus={true}
                 onEnter={doUnlock}
                 w="100%"
                 onChange={(val: any) => {
@@ -95,7 +104,7 @@ export default forwardRef<any>((props, ref) => {
             <Text
                 onClick={() => goWebsite("/recover")}
                 position={"absolute"}
-                bottom="0"
+                bottom="8"
                 fontSize={"16px"}
                 fontWeight={"800"}
                 cursor={"pointer"}

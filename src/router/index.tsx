@@ -44,7 +44,14 @@ export default function PluginRouter() {
     // TODO, judge website as well
 
     return (
-        <Box bg="appBg" fontSize={"16px"} w={mode === "web" ? "" : "360px"} minH="600px">
+        <Box
+            bg="appBg"
+            fontSize={"16px"}
+            w={mode === "web" ? "" : "360px"}
+            h="600px"
+            overflow={"auto"}
+            className="hide-scrollbar"
+        >
             <Routes>{RouterV1}</Routes>
         </Box>
     );

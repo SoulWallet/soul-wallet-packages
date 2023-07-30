@@ -3,7 +3,17 @@ import { Box, Text, Input, InputRightElement, Image, InputGroup } from "@chakra-
 import IconEyeOpen from "@src/assets/icons/eye-open.svg";
 import IconEyeClose from "@src/assets/icons/eye-close.svg";
 
-export default function FormInput({ label, value, isPassword, onChange, placeholder, disabled, ...restProps }: any) {
+export default function FormInput({
+    label,
+    value,
+    isPassword,
+    onChange,
+    placeholder,
+    disabled,
+    autoFocus,
+    ref,
+    ...restProps
+}: any) {
     const [showPassword, setShowPassword] = useState(true);
 
     return (
@@ -13,13 +23,15 @@ export default function FormInput({ label, value, isPassword, onChange, placehol
             </Text>
             <InputGroup rounded="20px" bg="#fff" py="3" px="4">
                 <Input
+                    ref={ref}
                     value={value}
                     placeholder={placeholder}
                     spellCheck={false}
-                    onChange={e => onChange(e.target.value)}
+                    onChange={(e) => onChange(e.target.value)}
                     variant={"unstyled"}
                     _disabled={{ opacity: "1", cursor: "not-allowed" }}
                     fontWeight={"800"}
+                    autoFocus={autoFocus}
                     color="#1e1e1e"
                     disabled={disabled}
                     _placeholder={{ color: "#898989", fontWeight: "600" }}

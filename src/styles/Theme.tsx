@@ -50,7 +50,7 @@ const theme = extendTheme({
                     thumb: {
                         w: "24px",
                         h: "24px",
-                        transform: "translateY(2px) translateX(2px)",
+                        // transform: "translateY(2px) translateX(2px)",
                     },
                 },
             },
