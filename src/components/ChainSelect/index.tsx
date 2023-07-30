@@ -18,8 +18,8 @@ export default function ChainSelect() {
             <MenuList>
                 {supportedChains.map((item: any, idx: number) => {
                     return (
-                        <>
-                            {idx  ? <MenuDivider /> : ''}
+                        <React.Fragment key={idx}>
+                            {idx ? <MenuDivider /> : ""}
                             <MenuItem key={item.chainId}>
                                 <Flex w="100%" align={"center"} justify={"space-between"}>
                                     <Flex align={"center"} gap="2">
@@ -29,7 +29,7 @@ export default function ChainSelect() {
                                     {idx === 1 && <Image src={IconChecked} w="5" h="5" />}
                                 </Flex>
                             </MenuItem>
-                        </>
+                        </React.Fragment>
                     );
                 })}
             </MenuList>

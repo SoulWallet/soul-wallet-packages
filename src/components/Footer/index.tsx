@@ -43,7 +43,9 @@ export default function Footer() {
                 </Text>
             </Flex>
             <Tooltip label="Set Soul Wallet as default wallet for this dapp.">
-                <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
+                <Box>
+                    <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
+                </Box>
             </Tooltip>
         </Flex>
     );

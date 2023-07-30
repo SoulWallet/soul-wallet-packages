@@ -21,16 +21,14 @@ export default forwardRef<any>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         async show() {
+            inputRef.current.focus();
+
             return new Promise((resolve, reject) => {
                 setPromiseInfo({
                     resolve,
                     reject,
                 });
                 setVisible(true);
-                // TODO, check how to make it work
-                // setTimeout(()=>{
-                //     inputRef.current.focus();
-                // }, 2000);
             });
         },
     }));

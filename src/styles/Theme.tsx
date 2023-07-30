@@ -10,13 +10,13 @@ const menuTheme = defineStyleConfig({
         list: {
             borderRadius: "20px",
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-            overflow: 'hidden'
+            overflow: "hidden",
         },
         divider: {
             my: 1,
-            borderColor:"#E6E6E6",
+            borderColor: "#E6E6E6",
             mx: 3,
-        }
+        },
     },
 });
 const theme = extendTheme({
@@ -44,13 +44,7 @@ const theme = extendTheme({
             sizes: {
                 lg: {
                     track: {
-                        w: "44px",
-                        h: "28px",
-                    },
-                    thumb: {
-                        w: "24px",
-                        h: "24px",
-                        // transform: "translateY(2px) translateX(2px)",
+                        p: "3px",
                     },
                 },
             },

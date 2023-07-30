@@ -1,6 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import { Button as CButton, ButtonProps } from "@chakra-ui/react";
+import { Button as CButton, ButtonProps, Image, } from "@chakra-ui/react";
 import IconLoading from "@src/assets/loading.gif";
 
 // TODO: error & retry
@@ -52,7 +52,7 @@ export default function Button({
       {...moreProps}
       {...restProps}
     >
-      {loading ? <img src={IconLoading} className="w-6 h-6 " /> : children}
+      {loading ? <Image src={IconLoading} w="20px" h="20px" /> : children}
     </CButton>
   );
 }
