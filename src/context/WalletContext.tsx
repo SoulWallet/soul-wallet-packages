@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, createRef, useCallback, useMemo } from "react";
 import Web3 from "web3";
-import { Multicall, ContractCallResults, ContractCallContext } from "ethereum-multicall";
 import Runtime from "@src/lib/Runtime";
 import { getLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
@@ -8,17 +7,16 @@ import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
 import Locked from "@src/components/Locked";
 import config from "@src/config";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import { notify } from "@src/lib/tools";
 import useQuery from "@src/hooks/useQuery";
 const web3 = new Web3(config.provider);
 
-const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
+const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 interface IWalletContext {
     web3: Web3;
-    ethersProvider: ethers.providers.JsonRpcProvider;
-    multicall: any;
+    ethersProvider: ethers.JsonRpcProvider;
     account: string;
     // eoa, contract
     walletType: string;
@@ -33,7 +31,6 @@ interface IWalletContext {
 export const WalletContext = createContext<IWalletContext>({
     web3,
     ethersProvider,
-    multicall: {},
     account: "",
     walletType: "",
     walletAddress: "",
@@ -56,7 +53,7 @@ export const WalletContextProvider = ({ children }: any) => {
     const [walletType, setWalletType] = useState("");
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
-    const keystore = useKeystore();
+    const keystore = useKeyring();
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
@@ -121,14 +118,6 @@ export const WalletContextProvider = ({ children }: any) => {
         await getAccount();
     };
 
-    const multicall = useMemo(() => {
-        if (!ethersProvider) {
-            return;
-        }
-
-        return new Multicall({ ethersProvider, tryAggregate: true });
-    }, [ethersProvider]);
-
     useEffect(() => {
         if (!walletAddress) {
             return;
@@ -175,7 +164,6 @@ export const WalletContextProvider = ({ children }: any) => {
             value={{
                 web3,
                 ethersProvider,
-                multicall,
                 account,
                 walletType,
                 walletAddress,

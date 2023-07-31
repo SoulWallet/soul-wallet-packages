@@ -31,7 +31,7 @@ const GuardianFormInner = forwardRef(({ noNameInput }: { noNameInput?: boolean }
           updateErrorMsgById(guardians[i].id, "Duplicate address");
           return reject("Duplicate address");
         }
-        if (!ethers.utils.isAddress(guardians[i].address)) {
+        if (!ethers.isAddress(guardians[i].address)) {
           updateErrorMsgById(guardians[i].id, "Invalid address");
           return reject("Invalid address");
         }

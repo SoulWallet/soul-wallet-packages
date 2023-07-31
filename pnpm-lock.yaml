@@ -46,9 +46,8 @@ specifiers:
   eth-block-tracker: ^4.4.2
   eth-json-rpc-filters: ^5.0.0
   eth-json-rpc-infura: ^5.1.0
-  ethereum-multicall: ^2.16.1
   ethereumjs-util: ^7.1.5
-  ethers: ^5.7.1
+  ethers: ^6.6.4
   framer-motion: ^10.12.18
   immer: ^9.0.19
   jest: ^26.5.3
@@ -104,9 +103,8 @@ dependencies:
   eth-block-tracker: 4.4.3_@babel+core@7.22.9
   eth-json-rpc-filters: 5.1.0
   eth-json-rpc-infura: 5.1.0
-  ethereum-multicall: 2.19.0
   ethereumjs-util: 7.1.5
-  ethers: 5.7.2
+  ethers: 6.6.7
   framer-motion: 10.15.0_biqbaboplfbrettd7655fr4n2y
   immer: 9.0.21
   json-rpc-engine: 6.1.0
@@ -3087,7 +3085,7 @@ packages:
       '@jest/test-result': 26.6.2
       '@jest/transform': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 14.18.54
+      '@types/node': 18.15.13
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -3248,7 +3246,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 14.18.54
+      '@types/node': 18.15.13
       '@types/yargs': 15.0.15
       chalk: 4.1.2
     dev: true
@@ -6176,16 +6174,6 @@ packages:
       setimmediate: 1.0.5
     dev: false
 
-  /ethereum-multicall/2.19.0:
-    resolution: {integrity: sha512-ECMxdf1ffxBWTCLeAzEGGWUYNdlNq4zXPj/ZPXdaixbx/qZ/gw4ongwpuR5UGy6D5epWDftvFvIAEzmkwGZ1lQ==}
-    dependencies:
-      '@ethersproject/providers': 5.7.2
-      ethers: 5.7.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /ethereumjs-abi/0.6.8:
     resolution: {integrity: sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA==}
     dependencies:
@@ -8012,7 +8000,7 @@ packages:
     engines: {node: '>= 10.14.2'}
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 14.18.54
+      '@types/node': 18.15.13
       chalk: 4.1.2
       graceful-fs: 4.2.11
       is-ci: 2.0.0
@@ -8057,7 +8045,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 14.18.54
+      '@types/node': 18.15.13
       merge-stream: 2.0.0
       supports-color: 8.1.1
 

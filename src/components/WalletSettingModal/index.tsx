@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import IconClose from "@src/assets/icons/close.svg";
 import { IWalletSettingModal } from "@src/types/IModal";
 import Modal from "../Modal";
@@ -9,7 +9,7 @@ import useWalletContext from "@src/context/hooks/useWalletContext";
 import BundlerUrl from "./comp/BundlerUrl";
 
 export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
-    const keyStore = useKeystore();
+    const keyStore = useKeyring();
     const { showLocked } = useWalletContext();
     const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
 

@@ -4,7 +4,7 @@ import TextButton from "@src/components/web/TextButton";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
 import { CreateStepEn, GuardiansStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import { Box, Text, Image } from "@chakra-ui/react"
@@ -15,7 +15,7 @@ import TextBody from "@src/components/web/TextBody";
 
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
-  const keystore = useKeystore();
+  const keystore = useKeyring();
   const { generateWalletAddress } = useWallet();
   const { updateFinalGuardians } = useGlobalStore();
   const formRef = useRef<IGuardianFormHandler>(null);

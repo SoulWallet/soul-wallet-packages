@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "@src/components/Input";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import Button from "@src/components/Button";
 import PageTitle from "@src/components/PageTitle";
 import { toast } from "material-react-toastify";
@@ -14,7 +14,7 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
     const [originalPassword, setOriginalPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const keystore = useKeystore();
+    const keystore = useKeyring();
 
     const doConfirm = async () => {
         if (newPassword !== confirmPassword) {

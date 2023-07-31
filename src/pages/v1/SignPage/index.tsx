@@ -6,8 +6,9 @@ import { getLocalStorage, setLocalStorage, getMessageType } from "@src/lib/tools
 import useLib from "@src/hooks/useLib";
 import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import { useSearchParams } from "react-router-dom";
+import useSoulWallet from "@src/hooks/useSoulWallet";
 import SignTransaction from "@src/components/SignTransaction";
 import { useSettingStore } from "@src/store/settingStore";
 
@@ -19,7 +20,7 @@ export default function SignPage() {
     const { getGasPrice, estimateUserOperationGas } = useQuery();
     const { soulWalletLib } = useLib();
     const signModal = createRef<any>();
-    const keystore = useKeystore();
+    const keystore = useKeyring();
 
     const formatOperation: any = async () => {
         const { txns } = searchParams;
@@ -27,22 +28,22 @@ export default function SignPage() {
         try {
             const rawTxs = JSON.parse(txns);
 
-            const nonce = await soulWalletLib.Utils.getNonce(rawTxs[0].from, ethersProvider);
+            // const nonce = await soulWalletLib.Utils.getNonce(rawTxs[0].from, ethersProvider);
 
-            const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+            // const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-            const operation: any = soulWalletLib.Utils.fromTransaction(
-                rawTxs,
-                nonce,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            );
+            // const operation: any = soulWalletLib.Utils.fromTransaction(
+            //     rawTxs,
+            //     nonce,
+            //     maxFeePerGas,
+            //     maxPriorityFeePerGas,
+            // );
 
-            if (!operation) {
-                throw new Error("Failed to format tx");
-            }
+            // if (!operation) {
+            //     throw new Error("Failed to format tx");
+            // }
 
-            return operation;
+            // return operation;
         } catch (err) {
             console.log(err);
         }
@@ -136,7 +137,7 @@ export default function SignPage() {
                 });
             } else if (actionType === "signMessage") {
 
-                const msgToSign = getMessageType(data) === "hash" ? data : ethers.utils.toUtf8String(data);
+                const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
                 await currentSignModal.show("", actionType, origin, true, msgToSign);
 
