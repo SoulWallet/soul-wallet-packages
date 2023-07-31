@@ -48,7 +48,7 @@ export default function PluginRouter() {
             bg="appBg"
             fontSize={"16px"}
             w={mode === "web" ? "" : "360px"}
-            h="600px"
+            h={mode === "web" ? "" : "600px"}
             overflow={"auto"}
             className="hide-scrollbar"
         >

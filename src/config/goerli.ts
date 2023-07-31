@@ -52,10 +52,16 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        walletLogic: "0x7b133bC3bFA502E7510B21B798796641fD76e9fb",
-        guardianLogic: "0x0C549EDdf533F3f63e1E5C2Ae2fbEa805F432078",
-        entryPoint: "0x0576a174D229E3cFA37253523E645A78A0C91B57",
-        paymaster: "0xec6ef1336500Dc91660C367A2F86A7414b9d472c",
-        create2Factory: "0xce0042B868300000d44A59004Da54A005ffdcf9f",
+        l1Keystore: "",
+        soulWalletFactory: "",
+        defaultCallbackHandler:"",
+        keyStoreModule:"",
+        securityControlModule: "",
+
+        walletLogic: "0x",
+        guardianLogic: "0x",
+        entryPoint: "0x",
+        paymaster: "0x",
+        create2Factory: "0x",
     },
 };
