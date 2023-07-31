@@ -54,8 +54,22 @@
 body {
     font-family: 'Nunito';
     color: "#1e1e1e";
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar{
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar{
+    display: none;
+}
 
 @layer components {
 
