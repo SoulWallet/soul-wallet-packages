@@ -23,14 +23,14 @@ export const PasswordSetter = ({ nextStep, onSubmit }: IProps) => {
   const [nextable, setNextable] = useState(false);
 
   const handleNext = () => {
-    /* console.log('handleNext', password)
-     * if ((password?.length ?? 0) < 9) {
-     *   setPasswordMessage("Password must be at least 9 characters long");
-     *   return;
-     * }
-     * password && onSubmit(password);
+    console.log('handleNext', password)
+    if ((password?.length ?? 0) < 9) {
+      setPasswordMessage("Password must be at least 9 characters long");
+      return;
+    }
+    password && onSubmit(password);
 
-     * nextStep && */
+    nextStep &&
     console.log('handleNext', nextStep)
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,

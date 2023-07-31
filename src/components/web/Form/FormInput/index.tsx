@@ -10,6 +10,7 @@ interface IProps {
   placeholder?: string;
   errorMsg?: string;
   onChange: (value: string) => void;
+  onBlur?: any;
   _styles?: any;
   isPassword?: boolean;
   RightIcon?: any;
@@ -21,6 +22,7 @@ export default function FormInput({
   placeholder,
   errorMsg,
   onChange,
+  onBlur,
   _styles,
   isPassword,
   RightIcon
@@ -41,6 +43,7 @@ export default function FormInput({
             placeholder={placeholder}
             value={value ?? ""}
             onChange={handleChange}
+            onBlur={onBlur}
             borderRadius="1em"
             paddingLeft="1.5rem"
             paddingRight="1.5rem"
