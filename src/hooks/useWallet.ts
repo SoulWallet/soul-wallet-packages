@@ -1,5 +1,5 @@
 import useWalletContext from "../context/hooks/useWalletContext";
-import useKeystore from "./useKeystore";
+import useKeyring from "./useKeyring";
 import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import useLib from "./useLib";
@@ -19,7 +19,7 @@ export default function useWallet() {
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
     const { getGuardianInitCode } = useTools();
     const { guardians } = useGlobalStore();
-    const keystore = useKeystore();
+    const keystore = useKeyring();
 
     const { soulWalletLib } = useLib();
 
@@ -93,7 +93,7 @@ export default function useWallet() {
         if (payToken !== config.zeroAddress) {
             const maxUSD = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
-            const maxUSDFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
+            const maxUSDFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
 
             const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSD);
 
@@ -108,118 +108,118 @@ export default function useWallet() {
     };
 
     const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
-        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-        // const currentFee = await getGasPrice();
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+        // // const currentFee = await getGasPrice();
+        // const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-        const newOwner = await getLocalStorage("stagingAccount");
+        // const newOwner = await getLocalStorage("stagingAccount");
 
-        const usePaymaster = payToken !== config.zeroAddress;
+        // const usePaymaster = payToken !== config.zeroAddress;
 
-        const op = soulWalletLib.Guardian.transferOwner(
-            walletAddress,
-            nonce,
-            usePaymaster ? config.contracts.paymaster : config.zeroAddress,
-            new BN(maxFeePerGas).times(1.2).toFixed(0),
-            new BN(maxPriorityFeePerGas).times(1.2).toFixed(0),
-            newOwner,
-        );
+        // const op = soulWalletLib.Guardian.transferOwner(
+        //     walletAddress,
+        //     nonce,
+        //     usePaymaster ? config.contracts.paymaster : config.zeroAddress,
+        //     new BN(maxFeePerGas).times(1.2).toFixed(0),
+        //     new BN(maxPriorityFeePerGas).times(1.2).toFixed(0),
+        //     newOwner,
+        // );
 
-        if (!op) {
-            throw new Error("recoveryOp is null");
-        }
+        // if (!op) {
+        //     throw new Error("recoveryOp is null");
+        // }
 
-        const { paymasterAndData, requireAmountInWei } = await addPaymasterData(op, payToken);
+        // const { paymasterAndData, requireAmountInWei } = await addPaymasterData(op, payToken);
 
-        op.paymasterAndData = paymasterAndData;
+        // op.paymasterAndData = paymasterAndData;
 
-        await estimateUserOperationGas(op);
+        // await estimateUserOperationGas(op);
 
-        const guardiansList = guardians.map((item) => item.address);
+        // const guardiansList = guardians.map((item) => item.address);
 
-        const guardianInitCode = getGuardianInitCode(guardiansList);
+        // const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        const opHash = op.getUserOpHashWithTimeRange(
-            config.contracts.entryPoint,
-            config.chainId,
-            guardianInitCode.address,
-            SignatureMode.guardian,
-        );
+        // const opHash = op.getUserOpHashWithTimeRange(
+        //     config.contracts.entryPoint,
+        //     config.chainId,
+        //     guardianInitCode.address,
+        //     SignatureMode.guardian,
+        // );
 
-        console.log("op hash", opHash);
-        const res: any = await api.recovery.create({
-            tokenAddress: payToken,
-            amountInWei: requireAmountInWei.toString(),
-            chainId: config.chainId,
-            entrypointAddress: config.contracts.entryPoint,
-            guardianAddress: guardianInitCode.address,
-            newOwner,
-            guardians: guardiansList,
-            userOp: JSON.parse(op.toJSON()),
-            opHash,
-        });
+        // console.log("op hash", opHash);
+        // const res: any = await api.recovery.create({
+        //     tokenAddress: payToken,
+        //     amountInWei: requireAmountInWei.toString(),
+        //     chainId: config.chainId,
+        //     entrypointAddress: config.contracts.entryPoint,
+        //     guardianAddress: guardianInitCode.address,
+        //     newOwner,
+        //     guardians: guardiansList,
+        //     userOp: JSON.parse(op.toJSON()),
+        //     opHash,
+        // });
 
-        if (res.code === 200) {
-            await setLocalStorage("recoverOpHash", opHash);
-        } else {
-            throw new Error(res.msg);
-        }
+        // if (res.code === 200) {
+        //     await setLocalStorage("recoverOpHash", opHash);
+        // } else {
+        //     throw new Error(res.msg);
+        // }
     };
 
     const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
-        const op = UserOperation.fromJSON(JSON.stringify(transferOp));
+        // const op = UserOperation.fromJSON(JSON.stringify(transferOp));
 
-        for (let i = 0; i < signatureList.length; i++) {
-            signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
-        }
+        // for (let i = 0; i < signatureList.length; i++) {
+        //     signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
+        // }
 
-        const guardianInitCode = getGuardianInitCode(guardiansList);
+        // const guardianInitCode = getGuardianInitCode(guardiansList);
 
-        const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
+        // const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
 
-        const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
+        // const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
 
-        if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
-            throw new Error("Guardian address not match");
-        }
+        // if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
+        //     throw new Error("Guardian address not match");
+        // }
 
-        const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
-            guardianInitCode.address,
-            signatureList,
-            isGuardianDeployed ? "0x" : guardianInitCode.initCode,
-        );
+        // const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
+        //     guardianInitCode.address,
+        //     signatureList,
+        //     isGuardianDeployed ? "0x" : guardianInitCode.initCode,
+        // );
 
-        op.signature = signature;
+        // op.signature = signature;
 
-        await Runtime.send("execute", {
-            operation: op.toJSON(),
-            opHash,
-            bundlerUrl,
-        });
+        // await Runtime.send("execute", {
+        //     operation: op.toJSON(),
+        //     opHash,
+        //     bundlerUrl,
+        // });
 
-        console.log("before replace");
-        await keystore.replaceAddress();
-        console.log("after replace");
+        // console.log("before replace");
+        // await keystore.replaceAddress();
+        // console.log("after replace");
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
-        const guardianInitCode = getGuardianInitCode(guardiansList);
-        const setGuardianOp = soulWalletLib.Guardian.setGuardian(
-            walletAddress,
-            guardianInitCode.address,
-            nonce,
-            "0x",
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        );
+        // const guardianInitCode = getGuardianInitCode(guardiansList);
+        // const setGuardianOp = soulWalletLib.Guardian.setGuardian(
+        //     walletAddress,
+        //     guardianInitCode.address,
+        //     nonce,
+        //     "0x",
+        //     maxFeePerGas,
+        //     maxPriorityFeePerGas,
+        // );
 
-        await directSignAndSend(setGuardianOp, payToken);
+        // await directSignAndSend(setGuardianOp, payToken);
 
-        await removeLocalStorage("recoverOpHash");
+        // await removeLocalStorage("recoverOpHash");
     };
 
     const directSignAndSend = async (op: any, payToken: string) => {

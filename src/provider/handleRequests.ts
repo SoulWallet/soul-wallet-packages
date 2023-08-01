@@ -4,7 +4,7 @@ import { getMessageType } from "./tools";
 import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 
-const ethersProvider = new ethers.providers.JsonRpcProvider(config.provider);
+const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 const getAccounts = async () => {
     console.log("get account 2");
@@ -28,11 +28,12 @@ const sendTransaction = async (params: any) => {
 };
 
 const estimateGas = async (params: any) => {
-    return (await ethersProvider.estimateGas(params[0]))._hex;
+    return await ethersProvider.estimateGas(params[0]);
 };
 
 const gasPrice = async () => {
-    return (await ethersProvider.getGasPrice())._hex;
+    const feeData = await ethersProvider.getFeeData();
+    return feeData.gasPrice?.toString();
 };
 
 const getCode = async (params: any) => {
@@ -40,7 +41,7 @@ const getCode = async (params: any) => {
 };
 
 const getBalance = async (params: any) => {
-    return (await ethersProvider.getBalance(params[0], params[1]))._hex;
+    return await ethersProvider.getBalance(params[0], params[1]);
 };
 
 const getTransactionReceipt = async (params: any) => {
@@ -77,8 +78,8 @@ const personalRecover = async (params: string[]) => {
     let msgHash = "";
 
     if (msgType === "text") {
-        const text = ethers.utils.toUtf8String(params[0]);
-        msgHash = ethers.utils.hashMessage(text);
+        const text = ethers.toUtf8String(params[0]);
+        msgHash = ethers.hashMessage(text);
     } else if (msgType === "hash") {
         msgHash = params[0];
     }
@@ -101,7 +102,9 @@ const blockNumber = async () => {
 };
 
 const ethCall = async (params: any) => {
-    return await ethersProvider.call(params[0], params[1]);
+    console.log("params", params);
+    // return await ethersProvider.call(params[0], params[1]);
+    return await ethersProvider.call({});
 };
 
 export default async function handleRequests(call: any) {

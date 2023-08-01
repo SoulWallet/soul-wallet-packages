@@ -4,7 +4,7 @@
 
 import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import useTools from "./useTools";
 import useLib from "./useLib";
 import useErc20Contract from "@src/contract/useErc20Contract";
@@ -33,7 +33,6 @@ export default function useQuery() {
     };
 
     const getBalances = async () => {
-        // TODO, change to multicall
         if (!walletAddress) {
             return;
         }
@@ -41,29 +40,29 @@ export default function useQuery() {
         const ethBalance = await getEthBalance();
         setBalance(config.zeroAddress, ethBalance);
 
-        const erc20Balance = await erc20Contract.batchBalanceOf(
-            config.assetsList.filter((item: any) => item.symbol !== config.chainToken).map((item: any) => item.address),
-        );
+        // const erc20Balance = await erc20Contract.batchBalanceOf(
+        //     config.assetsList.filter((item: any) => item.symbol !== config.chainToken).map((item: any) => item.address),
+        // );
 
-        Object.keys(erc20Balance).forEach((key: string) => {
-            const balanceRaw = erc20Balance[key].callsReturnContext[0].returnValues[0].hex;
+        // Object.keys(erc20Balance).forEach((key: string) => {
+        //     const balanceRaw = erc20Balance[key].callsReturnContext[0].returnValues[0].hex;
 
-            const balanceDecimal = erc20Balance[key].callsReturnContext[1].returnValues[0];
+        //     const balanceDecimal = erc20Balance[key].callsReturnContext[1].returnValues[0];
 
-            setBalance(key, new BN(balanceRaw).shiftedBy(-balanceDecimal).toString());
-        });
+        //     setBalance(key, new BN(balanceRaw).shiftedBy(-balanceDecimal).toString());
+        // });
     };
 
     const estimateUserOperationGas = async (userOp: any) => {
         // TODO, remove await bundler
-        const b = await bundler;
-        const estimateData: any = await b.eth_estimateUserOperationGas(userOp);
-        console.log("call gas limit", userOp.callGasLimit);
-        if (new BN(userOp.callGasLimit).isEqualTo(0)) {
-            userOp.callGasLimit = estimateData.callGasLimit;
-        }
-        userOp.preVerificationGas = estimateData.preVerificationGas;
-        userOp.verificationGasLimit = estimateData.verificationGas;
+        // const b = await bundler;
+        // const estimateData: any = await b.eth_estimateUserOperationGas(userOp);
+        // console.log("call gas limit", userOp.callGasLimit);
+        // if (new BN(userOp.callGasLimit).isEqualTo(0)) {
+        //     userOp.callGasLimit = estimateData.callGasLimit;
+        // }
+        // userOp.preVerificationGas = estimateData.preVerificationGas;
+        // userOp.verificationGasLimit = estimateData.verificationGas;
     };
 
     const getGasPrice = async () => {
@@ -90,12 +89,14 @@ export default function useQuery() {
             const maxPriorityFeePerGas = new BN(res.medium.suggestedMaxPriorityFeePerGas).toFixed(3);
 
             return {
-                baseFeePerGas: ethers.utils.parseUnits(baseFee, 9).toString(),
-                maxFeePerGas: ethers.utils.parseUnits(maxFeePerGas, 9).toString(),
-                maxPriorityFeePerGas: ethers.utils.parseUnits(maxPriorityFeePerGas, 9).toString(),
+                baseFeePerGas: ethers.parseUnits(baseFee, 9).toString(),
+                maxFeePerGas: ethers.parseUnits(maxFeePerGas, 9).toString(),
+                maxPriorityFeePerGas: ethers.parseUnits(maxPriorityFeePerGas, 9).toString(),
             };
         } else {
-            const feeRaw = await ethersProvider.getGasPrice();
+            const feeData = await ethersProvider.getFeeData();
+
+            const feeRaw = feeData.gasPrice;
 
             return {
                 baseFeePerGas: undefined,
@@ -119,41 +120,46 @@ export default function useQuery() {
             requiredPrefund = _requiredPrefund.requiredPrefund;
         }
 
-        const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : BigNumber.from(0);
+        const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : 0n;
 
-        console.log("requiredPrefund: ", ethers.utils.formatEther(requiredFinalPrefund), config.chainToken);
+        console.log("requiredPrefund: ", ethers.formatEther(requiredFinalPrefund), config.chainToken);
         if (!tokenAddress) {
             return {
                 requireAmountInWei: requiredFinalPrefund,
-                requireAmount: ethers.utils.formatEther(requiredFinalPrefund),
+                requireAmount: ethers.formatEther(requiredFinalPrefund),
             };
         }
 
         // get USDC exchangeRate
-        const exchangePrice = await soulWalletLib.getPaymasterExchangePrice(
-            ethersProvider,
-            config.contracts.paymaster,
-            tokenAddress,
-            true,
-        );
-        const tokenDecimals = exchangePrice.tokenDecimals || 6;
-        // print price now
-        console.log(
-            "exchangePrice: " + ethers.utils.formatUnits(exchangePrice.price, exchangePrice.decimals),
-            `USDC/${config.chainToken}`,
-        );
+        // const exchangePrice = await soulWalletLib.getPaymasterExchangePrice(
+        //     ethersProvider,
+        //     config.contracts.paymaster,
+        //     tokenAddress,
+        //     true,
+        // );
+        // const tokenDecimals = exchangePrice.tokenDecimals || 6;
+        // // print price now
+        // console.log(
+        //     "exchangePrice: " + ethers.formatUnits(exchangePrice.price, exchangePrice.decimals),
+        //     `USDC/${config.chainToken}`,
+        // );
 
-        // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
-        const requiredUSDC = requiredFinalPrefund
-            .mul(exchangePrice.price)
-            .mul(BigNumber.from(10).pow(tokenDecimals))
-            .div(BigNumber.from(10).pow(exchangePrice.decimals))
-            .div(BigNumber.from(10).pow(18));
-        console.log("requiredUSDC: " + ethers.utils.formatUnits(requiredUSDC, tokenDecimals), "USDC");
+        // // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
+        // const requiredUSDC = requiredFinalPrefund
+        //     .mul(exchangePrice.price)
+        //     .mul(BigNumber.from(10).pow(tokenDecimals))
+        //     .div(BigNumber.from(10).pow(exchangePrice.decimals))
+        //     .div(BigNumber.from(10).pow(18));
+        // console.log("requiredUSDC: " + ethers.formatUnits(requiredUSDC, tokenDecimals), "USDC");
+
+        // return {
+        //     requireAmountInWei: requiredUSDC,
+        //     requireAmount: ethers.formatUnits(requiredUSDC, tokenDecimals),
+        // };
 
         return {
-            requireAmountInWei: requiredUSDC,
-            requireAmount: ethers.utils.formatUnits(requiredUSDC, tokenDecimals),
+            requireAmountInWei: 0n,
+            requireAmount: 0n,
         };
     };
 

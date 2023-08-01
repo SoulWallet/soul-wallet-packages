@@ -4,14 +4,14 @@ import { Routes, useLocation } from "react-router-dom";
 import useBrowser from "../hooks/useBrowser";
 import { Box } from "@chakra-ui/react";
 import { getLocalStorage } from "@src/lib/tools";
-import useKeystore from "../hooks/useKeystore";
+import useKeyring from "../hooks/useKeyring";
 import RouterV1 from "./v1";
 
 export default function PluginRouter() {
     const location = useLocation();
     const { goWebsite, navigate } = useBrowser();
     const mode = new URLSearchParams(location.search).get("mode");
-    const keystore = useKeystore();
+    const keystore = useKeyring();
 
     const findRoute = async () => {
         const sessionPw = await keystore.getPassword();

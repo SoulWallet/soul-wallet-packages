@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCard from "@src/components/web/WalletCard";
 import { Box } from "@chakra-ui/react"
@@ -28,7 +28,7 @@ const validate = (values: PasswordFormField) => {
 
 export default function SetPassword() {
   const dispatch = useStepDispatchContext();
-  const keystore = useKeystore();
+  const keystore = useKeyring();
 
   const {
     values,

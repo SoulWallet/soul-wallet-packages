@@ -161,7 +161,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         } else {
             const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
 
-            const maxUSDCFormatted = BN(requireAmount).times(config.maxCostMultiplier).div(100).toFixed(4);
+            const maxUSDCFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
 
             const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
 

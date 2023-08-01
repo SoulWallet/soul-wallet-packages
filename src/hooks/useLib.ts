@@ -15,12 +15,10 @@ export default function useLib() {
     const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
 
     const bundler = useMemo(async () => {
-        // if (!ethersProvider || !bundlerUrl) {
-        //     return;
-        // }
-        const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
-        await bundler.init();
-        return bundler;
+    
+        // const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
+        // await bundler.init();
+        // return bundler;
     }, [bundlerUrl, ethersProvider]);
 
     return { bundler, soulWalletLib };

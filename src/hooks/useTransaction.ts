@@ -7,13 +7,13 @@ import useLib from "./useLib";
 import useQuery from "./useQuery";
 import BN from "bignumber.js";
 import { ITokenItem } from "@src/lib/type";
-import useKeystore from "./useKeystore";
+import useKeyring from "./useKeyring";
 import config from "@src/config";
 
 export default function useTransaction() {
     const { executeOperation, walletAddress, ethersProvider } = useWalletContext();
     const { getGasPrice } = useQuery();
-    const keyStore = useKeystore();
+    const keyStore = useKeyring();
     const { soulWalletLib } = useLib();
 
     const signTransaction = async (txData: any) => {
@@ -25,23 +25,23 @@ export default function useTransaction() {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
         const amountInWei = new BN(amount).shiftedBy(18).toString();
-        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
 
-        const op = soulWalletLib.Tokens.ETH.transfer(
-            walletAddress,
-            nonce,
-            "0x",
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            to,
-            amountInWei,
-        );
+        // const op = soulWalletLib.Tokens.ETH.transfer(
+        //     walletAddress,
+        //     nonce,
+        //     "0x",
+        //     maxFeePerGas,
+        //     maxPriorityFeePerGas,
+        //     to,
+        //     amountInWei,
+        // );
 
-        try {
-            await executeOperation(op, actionName);
-        } catch (err) {
-            console.warn(err);
-        }
+        // try {
+        //     await executeOperation(op, actionName);
+        // } catch (err) {
+        //     console.warn(err);
+        // }
     };
 
     const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
@@ -51,27 +51,27 @@ export default function useTransaction() {
         // get decimals `locally`
         const decimals = config.assetsList.filter((item: ITokenItem) => item.address === tokenAddress)[0].decimals;
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
-        const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-        const op = soulWalletLib.Tokens.ERC20.transfer(
-            walletAddress,
-            nonce,
-            "0x",
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            tokenAddress,
-            to,
-            amountInWei,
-        );
+        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
+        // const op = soulWalletLib.Tokens.ERC20.transfer(
+        //     walletAddress,
+        //     nonce,
+        //     "0x",
+        //     maxFeePerGas,
+        //     maxPriorityFeePerGas,
+        //     tokenAddress,
+        //     to,
+        //     amountInWei,
+        // );
 
-        if (!op) {
-            return;
-        }
+        // if (!op) {
+        //     return;
+        // }
 
-        try {
-            await executeOperation(op, actionName);
-        } catch (err) {
-            console.warn(err);
-        }
+        // try {
+        //     await executeOperation(op, actionName);
+        // } catch (err) {
+        //     console.warn(err);
+        // }
     };
 
     return {

@@ -86,7 +86,6 @@
         "eth-block-tracker": "^4.4.2",
         "eth-json-rpc-filters": "^5.0.0",
         "eth-json-rpc-infura": "^5.1.0",
-        "ethereum-multicall": "^2.16.1",
         "ethereumjs-util": "^7.1.5",
         "ethers": "^6.6.4",
         "framer-motion": "^10.12.18",

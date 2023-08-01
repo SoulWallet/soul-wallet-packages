@@ -129,7 +129,7 @@ export default function useTools() {
     };
 
     const safeParseUnits = (val: string, digit: number) => {
-        return ethers.utils.parseUnits(val, digit);
+        return ethers.parseUnits(val, digit);
     };
 
     const generateQrCode = async (text: string) => {

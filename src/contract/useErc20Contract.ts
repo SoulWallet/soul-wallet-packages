@@ -3,7 +3,7 @@ import Erc20Abi from "./abi/ERC20.json";
 import BN from "bignumber.js";
 
 export default function useErc20Contract() {
-    const { web3, walletAddress, multicall } = useWalletContext();
+    const { web3, walletAddress } = useWalletContext();
 
     return {
         async getAllowance(tokenAddress: string, spenderAddress: string) {
@@ -16,20 +16,6 @@ export default function useErc20Contract() {
             const res = await tokenContract.methods.balanceOf(walletAddress).call();
             const decimals = await tokenContract.methods.decimals().call();
             return new BN(res).shiftedBy(-decimals).toString();
-        },
-
-        async batchBalanceOf(tokenAddress: string[]) {
-            const rawQuery = tokenAddress.map((address: string) => ({
-                reference: address,
-                contractAddress: address,
-                abi: Erc20Abi,
-                calls: [
-                    { reference: "balanceOf", methodName: "balanceOf", methodParameters: [walletAddress] },
-                    { reference: "decimals", methodName: "decimals" },
-                ],
-            }));
-
-            return (await multicall.call(rawQuery)).results;
         },
     };
 }

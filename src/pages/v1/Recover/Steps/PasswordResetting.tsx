@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import { RecoverStepEn } from "@src/context/StepContext";
 import Button from "@src/components/web/Button";
 import { StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
@@ -14,7 +14,7 @@ import TextBody from "@src/components/web/TextBody";
 
 export default function PasswordResetting() {
   const dispatch = useStepDispatchContext();
-  const keystore = useKeystore();
+  const keystore = useKeyring();
 
   const handleSubmitPassword = async (pwd: string) => {
     await keystore.createNewAddress(pwd, false);

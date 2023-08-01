@@ -42,7 +42,7 @@ export default class KeyStore {
     public async getAddress(): Promise<string> {
         const val = await getLocalStorage(this.keyStoreKey);
         if (val && val.address) {
-            return ethers.utils.getAddress(val.address);
+            return ethers.getAddress(val.address);
         }
         return "";
     }
@@ -182,7 +182,7 @@ export default class KeyStore {
         // const sigHex = ethUtil.toRpcSig(signature1.v, signature1.r, signature1.s);
         const signer = new ethers.Wallet(this._privateKey);
 
-        return await signer.signMessage(ethers.utils.arrayify(hash));
+        return await signer.signMessage(ethers.getBytes(hash));
     }
 
     /**
@@ -200,14 +200,12 @@ export default class KeyStore {
         if (getMessageType(message) === "hash") {
             signHash = message;
         } else {
-            signHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(message));
+            signHash = ethers.keccak256(ethers.toUtf8Bytes(message));
 
             const buf: any = Buffer.from(message, "utf-8");
-            const signHash2 = web3.utils.keccak256(buf);
+            // const signHash2 = web3.keccak256(buf);
 
-            const signHash3 = web3.utils.sha3(message);
-
-            const signHash4 = ethers.utils.hashMessage(message);
+            const signHash4 = ethers.hashMessage(message);
 
             console.log('msg', message)
             console.log('hash is', signHash4)
@@ -218,7 +216,7 @@ export default class KeyStore {
 
             const signHash6 = web3.eth.accounts.hashMessage(message)
 
-            console.log("111111111", signHash, signHash2, signHash3, signHash4, signHash5, signHash6);
+            console.log("111111111", signHash, signHash4, signHash5, signHash6);
 
             const packedSignature = await this.getPackedSignature(signHash4);
 
