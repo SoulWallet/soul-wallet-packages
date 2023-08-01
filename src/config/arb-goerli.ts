@@ -53,13 +53,13 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://arb-mainnet-public.unifra.io`,
+    provider: `https://goerli-rollup.arbitrum.io/rpc`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
-    scanUrl: "https://arbiscan.io/",
+    scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?
-    defaultBundlerUrl: "https://bundler-arb-main.soulwallets.me/rpc",
+    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
     maxCostMultiplier: 120,
     upgradeDelay: 10,
     guardianDelay: 10,
@@ -68,7 +68,7 @@ export default {
     defaultBaseFee: "100000000",
     defaultMaxFee: "135000000",
     defaultMaxPriorityFee: "0",
-    chainIdHex: `0x${(42161).toString(16)}`,
+    chainIdHex: `0x${(421613).toString(16)}`,
     chainName: "Arbitrum",
     chainToken: "ETH",
     addressPrefix: "arb:",
@@ -93,3 +93,5 @@ export default {
         create2Factory: "0x",
     },
 };
+
+

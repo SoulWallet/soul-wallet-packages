@@ -44,3 +44,7 @@ export default {
     zeroAddress: "0x0000000000000000000000000000000000000000",
     ...require(`./${process.env.CHAIN}`).default,
 };
+
+// Arbitrum: https://bundler-arb-main.soulwallets.me/rpc
+// Goerli: https://bundler-eth-goerli.soulwallets.me/rpc
+// Polygon: https://bundler-polygon-main.soulwallets.me/rpc

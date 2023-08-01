@@ -26,8 +26,6 @@ export default function useWallet() {
 
     const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
 
-        console.log('??????????', account, ethers.ZeroHash)
-
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);
 
         console.log('ACTIVE user op', userOpRet)
