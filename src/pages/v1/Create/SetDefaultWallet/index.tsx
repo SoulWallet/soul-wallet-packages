@@ -13,7 +13,7 @@ import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 
 
-const DefaultSetting = () => {
+const SetDefaultWallet = () => {
   const dispatch = useStepDispatchContext();
 
   const handleNext = async (setDefault = true) => {
@@ -44,4 +44,4 @@ const DefaultSetting = () => {
   );
 };
 
-export default DefaultSetting;
+export default SetDefaultWallet;

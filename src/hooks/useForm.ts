@@ -31,7 +31,7 @@ export default function useForm({ fields, validate }: any) {
     }, [values])
 
     useEffect(() => {
-        console.log('fields', getInitialValues(fields, values))
+        // console.log('fields', getInitialValues(fields, values))
     }, [fields])
 
     const onChange = (fieldName: string) => (value: any) => {
