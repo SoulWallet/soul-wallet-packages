@@ -2,15 +2,14 @@ import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/
 import React, { ReactNode, useMemo } from "react";
 import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
-import GuardiansSetting from "./Steps/GuardiansSetting";
-import GuardiansSaving from "./Steps/GuardiansSaving";
-import DefaultSetting from "./Steps/DefaultSetting";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import StepCompletion from "@src/components/StepCompletion";
 import GuardianHint from "@src/components/GuardianHint";
 import SetPassword from "@src/pages/v1/Create/SetPassword";
 import SetGuardians from "@src/pages/v1/Create/SetGuardians";
 import SaveGuardians from "@src/pages/v1/Create/SaveGuardians";
+import SetDefaultWallet from "@src/pages/v1/Create/SetDefaultWallet";
+import SetWalletSuccess from "@src/pages/v1/Create/SetWalletSuccess";
 
 type StepNodeInfo = {
   title: string;
@@ -35,11 +34,11 @@ const StepComponent = () => {
       },
       [CreateStepEn.SetSoulWalletAsDefault]: {
         title: "Set as default plugin wallet",
-        element: <DefaultSetting />,
+        element: <SetDefaultWallet />,
       },
       [CreateStepEn.Completed]: {
         title: "Congratulation, your Soul Wallet is created!",
-        element: (<StepCompletion mode={EnHandleMode.Create} />) as any,
+        element: (<SetWalletSuccess mode={EnHandleMode.Create} />) as any,
       },
     };
   }, []);

@@ -9,7 +9,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import RecoverStarter from "./Steps/RecoverStarter";
-import PasswordResetting from "./Steps/PasswordResetting";
 import SignaturePending from "./Steps/SignaturePending";
 import GuardiansChecking from "./Steps/GuardiansChecking";
 import GuardiansImporting from "./Steps/GuardiansImporting";
@@ -18,7 +17,9 @@ import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 import StepCompletion from "@src/components/StepCompletion";
 import {EnHandleMode} from '@src/lib/type'
-
+import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
+import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";
+import EnterGuardiansAddress from "@src/pages/v1/Recover/EnterGuardiansAddress";
 
 type StepNodeInfo = {
   title: string;
@@ -42,15 +43,15 @@ const StepComponent = () => {
     return {
       [RecoverStepEn.Start]: {
         title: "Recover your wallet",
-        element: <RecoverStarter onSubmit={onRecoverSubmit} />,
+        element: <EnterWalletAddress onSubmit={onRecoverSubmit} />,
       },
       [RecoverStepEn.ResetPassword]: {
         title: "Set New Password",
-        element: <PasswordResetting />,
+        element: <SetWalletPassword />,
       },
       [RecoverStepEn.GuardiansImporting]: {
         title: "Import Guardian Address File",
-        element: <GuardiansImporting />,
+        element: <EnterGuardiansAddress />,
       },
       [RecoverStepEn.GuardiansChecking]: {
         title: "Enter Guardian Address",
