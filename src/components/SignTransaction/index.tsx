@@ -159,13 +159,13 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             setActivePaymasterData("");
             setFeeCost(`${requireAmount} ${config.chainToken}`);
         } else {
-            const maxUSDC = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
+            const maxUSDC = BN(requireAmountInWei.toString()).times(config.maxCostMultiplier).div(100);
 
             const maxUSDCFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
 
-            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
+            // const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
 
-            setActivePaymasterData(paymasterAndData);
+            // setActivePaymasterData(paymasterAndData);
 
             setFeeCost(`${maxUSDCFormatted} USDC`);
         }

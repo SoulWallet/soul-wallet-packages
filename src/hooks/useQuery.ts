@@ -9,11 +9,13 @@ import useTools from "./useTools";
 import useLib from "./useLib";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import { useBalanceStore } from "@src/store/balanceStore";
+import useSoulWallet from "./useSoulWallet";
 import config from "@src/config";
 
 export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
     const { setBalance } = useBalanceStore();
+    const { soulWallet } = useSoulWallet();
     const erc20Contract = useErc20Contract();
     const { soulWalletLib, bundler } = useLib();
 
@@ -85,8 +87,8 @@ export default function useQuery() {
             // const res: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
 
             // const baseFee = new BN(res.estimatedBaseFee).toFixed(3);
-            const maxFeePerGas = new BN(feeData.maxFeePerGas?.toString() || '0').toFixed(3);
-            const maxPriorityFeePerGas = new BN(feeData.maxPriorityFeePerGas?.toString() || '0').toFixed(3);
+            const maxFeePerGas = new BN(feeData.maxFeePerGas?.toString() || "0").toFixed(3);
+            const maxPriorityFeePerGas = new BN(feeData.maxPriorityFeePerGas?.toString() || "0").toFixed(3);
 
             return {
                 maxFeePerGas: ethers.parseUnits(maxFeePerGas, 9).toString(),
@@ -104,29 +106,55 @@ export default function useQuery() {
         }
     };
 
-    const getFeeCost = async (op: any, tokenAddress?: string) => {
-        op.paymasterAndData = tokenAddress || "0x";
+    const getFeeCost = async (userOp: any, tokenAddress?: string) => {
+        // set 1559 fee
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+        userOp.maxFeePerGas = ethers.parseUnits(maxFeePerGas, "gwei");
+        userOp.maxPriorityFeePerGas = ethers.parseUnits(maxPriorityFeePerGas, "gwei");
 
-        await estimateUserOperationGas(op);
+        // get gas limit
+        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
-        let _requiredPrefund = await op.requiredPrefund(ethersProvider, config.contracts.entryPoint);
-
-        let requiredPrefund;
-        if (op.paymasterAndData === "0x") {
-            requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
-        } else {
-            requiredPrefund = _requiredPrefund.requiredPrefund;
+        if (gasLimit.isErr()) {
+            throw new Error(gasLimit.ERR.message);
         }
 
-        const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : 0n;
+        // get preFund
+        const preFund = await soulWallet.preFund(userOp);
 
-        console.log("requiredPrefund: ", ethers.formatEther(requiredFinalPrefund), config.chainToken);
-        if (!tokenAddress) {
-            return {
-                requireAmountInWei: requiredFinalPrefund,
-                requireAmount: ethers.formatEther(requiredFinalPrefund),
-            };
+        console.log('prefund is', preFund)
+
+        if (preFund.isErr()) {
+            throw new Error(preFund.ERR.message);
         }
+
+        return {
+            requireAmountInWei: 0n,
+            requireAmount: 0n,
+        };
+
+        // userOp.paymasterAndData = tokenAddress || "0x";
+
+        // await estimateUserOperationGas(userOp);
+
+        // let _requiredPrefund = await userOp.requiredPrefund(ethersProvider, config.contracts.entryPoint);
+
+        // let requiredPrefund;
+        // if (userOp.paymasterAndData === "0x") {
+        //     requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
+        // } else {
+        //     requiredPrefund = _requiredPrefund.requiredPrefund;
+        // }
+
+        // const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : 0n;
+
+        // console.log("requiredPrefund: ", ethers.formatEther(requiredFinalPrefund), config.chainToken);
+        // if (!tokenAddress) {
+        //     return {
+        //         requireAmountInWei: requiredFinalPrefund,
+        //         requireAmount: ethers.formatEther(requiredFinalPrefund),
+        //     };
+        // }
 
         // get USDC exchangeRate
         // const exchangePrice = await soulWalletLib.getPaymasterExchangePrice(
@@ -154,11 +182,6 @@ export default function useQuery() {
         //     requireAmountInWei: requiredUSDC,
         //     requireAmount: ethers.formatUnits(requiredUSDC, tokenDecimals),
         // };
-
-        return {
-            requireAmountInWei: 0n,
-            requireAmount: 0n,
-        };
     };
 
     const getWalletType = async (address: string) => {

@@ -24,8 +24,13 @@ export default function useWallet() {
 
     const { soulWalletLib } = useLib();
 
-    const activateWallet = async (payToken: string, paymasterApproved: boolean, costOnly: boolean = false) => {
+    const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
+
+        console.log('??????????', account, ethers.ZeroHash)
+
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);
+
+        console.log('ACTIVE user op', userOpRet)
 
         if (userOpRet.isErr()) {
             throw new Error(userOpRet.ERR.message);
@@ -33,7 +38,11 @@ export default function useWallet() {
 
         const userOp = userOpRet.OK;
 
-        directSignAndSend(userOp);
+        if (estimateCost) {
+            return await getFeeCost(userOp, payToken === config.zeroAddress ? "" : payToken);
+        } else {
+            await directSignAndSend(userOp, payToken);
+        }
 
         // const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
 
@@ -65,12 +74,6 @@ export default function useWallet() {
         //     op.callData = approveCallData.callData;
         // }
 
-        // only get the cost
-        // if (costOnly) {
-        //     return await getFeeCost(op, payToken === config.zeroAddress ? "" : payToken);
-        // } else {
-        //     await directSignAndSend(op, payToken);
-        // }
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
@@ -93,28 +96,28 @@ export default function useWallet() {
         return wAddress;
     };
 
-    const addPaymasterData: any = async (op: any, payToken: string) => {
-        const { requireAmountInWei, requireAmount } = await getFeeCost(
-            op,
-            payToken === config.zeroAddress ? "" : payToken,
-        );
+    // const addPaymasterData: any = async (op: any, payToken: string) => {
+    //     const { requireAmountInWei, requireAmount } = await getFeeCost(
+    //         op,
+    //         payToken === config.zeroAddress ? "" : payToken,
+    //     );
 
-        if (payToken !== config.zeroAddress) {
-            const maxUSD = requireAmountInWei.mul(config.maxCostMultiplier).div(100);
+    //     if (payToken !== config.zeroAddress) {
+    //         const maxUSD = BN(requireAmountInWei.toString()).times(config.maxCostMultiplier).div(100);
 
-            const maxUSDFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
+    //         const maxUSDFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
 
-            const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSD);
+    //         const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSD);
 
-            console.log(`need ${maxUSDFormatted} USD`);
+    //         console.log(`need ${maxUSDFormatted} USD`);
 
-            return { paymasterAndData, requireAmountInWei: maxUSD, requireAmount: maxUSDFormatted };
-        } else {
-            // op.paymasterAndData = "0x";
-            console.log(`need ${requireAmount} ${config.chainToken}`);
-            return { paymasterAndData: "0x", requireAmountInWei, requireAmount };
-        }
-    };
+    //         return { paymasterAndData, requireAmountInWei: maxUSD, requireAmount: maxUSDFormatted };
+    //     } else {
+    //         // op.paymasterAndData = "0x";
+    //         console.log(`need ${requireAmount} ${config.chainToken}`);
+    //         return { paymasterAndData: "0x", requireAmountInWei, requireAmount };
+    //     }
+    // };
 
     const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
         // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);

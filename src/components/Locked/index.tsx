@@ -1,6 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import { Image, Flex, Box, Text } from "@chakra-ui/react";
-import LockBg from "@src/assets/lock-bg.png";
 import FormInput from "../FormInput";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLogoText from "@src/assets/logo-text.svg";
@@ -48,7 +47,7 @@ export default forwardRef<any>((props, ref) => {
 
     return (
         <Box
-            bgImage={`url(${LockBg})`}
+            bg="appBg"
             bgSize={"100% 100%"}
             flexDir={"column"}
             display={visible ? "flex" : "none"}

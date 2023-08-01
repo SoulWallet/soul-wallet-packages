@@ -24,7 +24,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             }
             break;
         case "get/password":
-            console.log("ready return password", password);
             // TODO, remove timeout logic
             setTimeout(() => {
                 browser.runtime.sendMessage({

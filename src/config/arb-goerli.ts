@@ -54,6 +54,7 @@ export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
     provider: `https://arb-mainnet-public.unifra.io`,
+    l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     backendURL: "https://dev.internalversion.api.soulwallets.me",
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://arbiscan.io/",
@@ -81,9 +82,9 @@ export default {
         l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3",
         
         keyStoreModule: "0xfeaab278ed3093f208627b9361dcd15a2a655eca",
-        soulWalletFactory: "",
-        defaultCallbackHandler: "",
-        securityControlModule: "",
+        soulWalletFactory: "0x13138762dbc79b8fc9c925f4b3afb3d6598c3a7b",
+        defaultCallbackHandler: "0xa35ce0dde330f3e6eccc56cf6a3f336eecb339bb",
+        securityControlModule: "0xe064b1a36c9dfa21cfbe7819661933a954122d95",
 
         walletLogic: "0x",
         guardianLogic: "0x",

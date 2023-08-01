@@ -52,7 +52,7 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3  ",
+        l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3",
 
         keyStoreModule: "0xfeaab278ed3093f208627b9361dcd15a2a655eca",
         soulWalletFactory: "",
