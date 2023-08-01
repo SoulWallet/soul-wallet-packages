@@ -3,7 +3,7 @@ import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeystore from "./useKeystore";
 
-export default function useKeyring() {
+export default function useSoulWallet() {
     const { calcGuardianHash } = useKeystore();
 
     const soulWallet = new SoulWallet(
