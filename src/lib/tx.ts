@@ -1,19 +1,63 @@
 import { SoulWalletLib, IUserOpReceipt, IFailedOp, IValidationResult } from "soul-wallet-lib";
 import { ethers } from "ethers";
+import { SoulWallet, Bundler } from "@soulwallet/sdk";
 import browser from "webextension-polyfill";
 import config from "@src/config";
+
+// TODO, move to store
+const soulWallet = new SoulWallet(
+    config.provider,
+    config.defaultBundlerUrl,
+    config.contracts.soulWalletFactory,
+    config.contracts.defaultCallbackHandler,
+    config.contracts.keyStoreModule,
+    config.contracts.securityControlModule,
+);
+
 import { notify } from "@src/lib/tools";
 
 const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 const soulWalletLib = new SoulWalletLib();
 
-export const executeTransaction = async (operation: any, tabId: any, bundlerUrl: any) => {
-    console.log("User OP: ", operation);
+export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: any) => {
+    console.log("User OP: ", userOp);
 
-    // const bundler = new soulWalletLib.Bundler(config.contracts.entryPoint, ethersProvider, bundlerUrl);
+    const ret = await soulWallet.sendUserOperation(userOp);
 
-    // await bundler.init();
+    if (ret.isErr()) {
+        throw new Error(ret.ERR.message);
+    }
+
+    const bundler = new Bundler(bundlerUrl);
+
+    const userOpHashRet = await soulWallet.userOpHash(userOp);
+
+    if (userOpHashRet.isErr()) {
+        throw new Error(userOpHashRet.ERR.message);
+    }
+
+    const userOpHash = userOpHashRet.OK;
+
+    return new Promise(async (resolve, reject) => {
+        while (true) {
+            const receipt = await bundler.eth_getUserOperationReceipt(userOpHash);
+            if (receipt.isErr()) {
+                throw new Error(receipt.ERR.message);
+            }
+            if (receipt.OK === null) {
+                console.log("still waiting");
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            } else {
+                if (receipt.OK.success) {
+                    resolve(receipt.OK);
+                } else {
+                    throw new Error("tx failed");
+                }
+                break;
+            }
+        }
+    });
 
     // return new Promise(async (resolve, reject) => {
     //     try {

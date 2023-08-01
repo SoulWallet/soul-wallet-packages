@@ -87,15 +87,15 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "execute":
-            const { operation, userOpHash, tabId, bundlerUrl } = msg.data;
+            const { userOp, tabId, bundlerUrl } = msg.data;
 
-            const parsedOperation = UserOperation.fromJSON(operation);
+            const parsedUserOp = UserOperation.fromJSON(userOp);
 
-            await executeTransaction(parsedOperation, tabId, bundlerUrl);
+            await executeTransaction(parsedUserOp, tabId, bundlerUrl);
 
             await browser.runtime.sendMessage({
                 target: "soul",
-                data: userOpHash,
+                data: userOp.hash,
             });
             break;
     }

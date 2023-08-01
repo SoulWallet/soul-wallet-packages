@@ -70,26 +70,25 @@ export default function useQuery() {
             // if it's arb goerli, set fixed
             if (config.chainId === 421613) {
                 return {
-                    baseFeePerGas: config.defaultBaseFee,
                     maxFeePerGas: config.defaultMaxFee,
                     maxPriorityFeePerGas: config.defaultMaxPriorityFee,
                 };
             } else if (config.chainId === 42161) {
                 return {
-                    baseFeePerGas: config.defaultBaseFee,
                     maxFeePerGas: config.defaultMaxFee,
                     maxPriorityFeePerGas: config.defaultMaxPriorityFee,
                 };
             }
 
-            const res: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+            const feeData = await ethersProvider.getFeeData();
 
-            const baseFee = new BN(res.estimatedBaseFee).toFixed(3);
-            const maxFeePerGas = new BN(res.medium.suggestedMaxFeePerGas).toFixed(3);
-            const maxPriorityFeePerGas = new BN(res.medium.suggestedMaxPriorityFeePerGas).toFixed(3);
+            // const res: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
+
+            // const baseFee = new BN(res.estimatedBaseFee).toFixed(3);
+            const maxFeePerGas = new BN(feeData.maxFeePerGas?.toString() || '0').toFixed(3);
+            const maxPriorityFeePerGas = new BN(feeData.maxPriorityFeePerGas?.toString() || '0').toFixed(3);
 
             return {
-                baseFeePerGas: ethers.parseUnits(baseFee, 9).toString(),
                 maxFeePerGas: ethers.parseUnits(maxFeePerGas, 9).toString(),
                 maxPriorityFeePerGas: ethers.parseUnits(maxPriorityFeePerGas, 9).toString(),
             };
@@ -99,7 +98,6 @@ export default function useQuery() {
             const feeRaw = feeData.gasPrice;
 
             return {
-                baseFeePerGas: undefined,
                 maxFeePerGas: feeRaw?.toString() || "",
                 maxPriorityFeePerGas: feeRaw?.toString() || "",
             };
