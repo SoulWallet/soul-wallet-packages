@@ -46,7 +46,7 @@ const amountValidate = () => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
-  const { generateWalletAddress } = useWallet();
+  // const { generateWalletAddress } = useWallet();
   const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
   const [skipping, setSkipping] = useState(false)

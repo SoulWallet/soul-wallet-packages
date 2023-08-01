@@ -16,7 +16,7 @@ import TextBody from "@src/components/web/TextBody";
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
-  const { generateWalletAddress } = useWallet();
+  // const { generateWalletAddress } = useWallet();
   const { updateFinalGuardians } = useGlobalStore();
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showTips, setShowTips] = useState(false)

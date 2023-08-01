@@ -58,7 +58,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
   const dispatch = useStepDispatchContext();
   const [loadingList, setLoadingList] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
-  const { recoverWallet } = useWallet();
+  // const { recoverWallet } = useWallet();
   const [signatureList, setSignatureList] = useState<any>([]);
   const [progress, setProgress] = useState(0);
   const [shareUrl, setShareUrl] = useState("");
@@ -85,7 +85,7 @@ const SignaturePending = ({ onChange }: ISignaturePending) => {
 
     try {
       setRecoveringWallet(true);
-      await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
+      // await recoverWallet(opDetail, finalSignatureList, finalGuardianList, opHash);
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.Completed,

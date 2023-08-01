@@ -24,7 +24,7 @@ interface IGuardianChecking {
 
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const [loading, setLoading] = useState(false);
-  const { initRecoverWallet } = useWallet();
+  // const { initRecoverWallet } = useWallet();
 
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
@@ -48,7 +48,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     try {
       setLoading(true)
       const guardians = (await formRef.current?.submit()) as GuardianItem[];
-      await initRecoverWallet(walletAddress, guardians, payToken);
+      // await initRecoverWallet(walletAddress, guardians, payToken);
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.SignaturePending,
