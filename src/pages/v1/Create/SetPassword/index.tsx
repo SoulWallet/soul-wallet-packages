@@ -6,6 +6,7 @@ import { Box } from "@chakra-ui/react"
 import PasswordStrengthBar from "@src/components/web/PasswordStrengthBar";
 import Button from "@src/components/web/Button";
 import FormInput from "@src/components/web/Form/FormInput";
+import useForm from "@src/hooks/useForm";
 
 interface PasswordFormField {
   password?: string;
@@ -29,38 +30,41 @@ export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
 
-  const [formValues, setFormValues] = useState<PasswordFormField>({ password: '', confirmPassword: '' })
-  const [errors, setErrors] = useState<PasswordFormField>({ password: '', confirmPassword: '' })
-  const [invalid, setInvalid] = useState(false)
-  const [shouldDisplayError, setShouldDisplayError] = useState<PasswordFormField>({})
-  const disabled = invalid
+  const {
+    values,
+    errors,
+    invalid,
+    onChange,
+    onBlur,
+    showErrors
+  } = useForm({
+    fields: ['password', 'confirmPassword'],
+    validate
+  })
 
-  const change = (fieldName: string) => (value: any) => {
-    setFormValues({ ...formValues, [fieldName]: value })
-  }
-
-  const blur = (fieldName: string) => (value: any) => {
-    setShouldDisplayError({ ...shouldDisplayError , [fieldName]: true })
-  }
+  const [loading, setLoaing] = useState(false)
+  const disabled = invalid || loading
 
   const handleNext = async () => {
-    const { password } = formValues
+    const { password } = values
 
-    if (password) {
-      await keystore.createNewAddress(password, true);
+    try {
+      if (password) {
+        setLoaing(true)
+        console.log('loading s', password)
+        // await keystore.createNewAddress(password, true);
+        console.log('loading e', password)
+        setLoaing(false)
 
-      dispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: CreateStepEn.SetupGuardians,
-      });
+        dispatch({
+          type: StepActionTypeEn.JumpToTargetStep,
+          payload: CreateStepEn.SetupGuardians,
+        });
+      }
+    } catch (e) {
+      // console.log('error', error.message)
     }
   };
-
-  useEffect(() => {
-    const errors = validate(formValues)
-    setErrors(errors)
-    setInvalid(!!(errors.password || errors.confirmPassword))
-  }, [formValues]);
 
   return (
     <Box width="428px" marginTop="1em" display="flex" flexDirection="column">
@@ -68,24 +72,30 @@ export default function SetPassword() {
       <FormInput
         label=""
         placeholder="Set Password"
-        value={formValues.password}
-        onChange={change('password')}
-        onBlur={blur('password')}
-        errorMsg={shouldDisplayError.password ? errors.password : ''}
+        value={values.password}
+        onChange={onChange('password')}
+        onBlur={onBlur('password')}
+        errorMsg={showErrors.password && errors.password}
         isPassword={true}
       />
-      <PasswordStrengthBar password={formValues.password || ''} />
+      <PasswordStrengthBar password={values.password || ''} />
       <FormInput
         label=""
         placeholder="Confirm password"
-        value={formValues.confirmPassword}
-        onChange={change('confirmPassword')}
-        onBlur={blur('confirmPassword')}
-        errorMsg={shouldDisplayError.confirmPassword ? errors.confirmPassword : ''}
+        value={values.confirmPassword}
+        onChange={onChange('confirmPassword')}
+        onBlur={onBlur('confirmPassword')}
+        errorMsg={showErrors.confirmPassword && errors.confirmPassword}
         _styles={{ marginTop: '0.75em' }}
         isPassword={true}
       />
-      <Button disabled={disabled} onClick={handleNext} _styles={{ marginTop: '0.75em' }}>Continue</Button>
+      <Button
+        disabled={disabled}
+        onClick={handleNext}
+        _styles={{ marginTop: '0.75em' }}
+      >
+        Continue
+      </Button>
     </Box>
   );
 }

@@ -15,8 +15,20 @@ import TextButton from "@src/components/web/TextButton";
 import WarningIcon from "@src/components/Icons/Warning";
 import DownloadIcon from '@src/components/Icons/Download'
 import SendIcon from '@src/components/Icons/Send'
+import useForm from "@src/hooks/useForm";
 
-const GuardiansSaving = () => {
+const validate = (values: any) => {
+  const errors: any = {}
+  const { email } = values
+
+  if (!validateEmail(email)) {
+    errors.email = 'Please enter a valid email address.'
+  }
+
+  return errors
+}
+
+const SaveGuardians = () => {
   const [hasSaved, setHasSaved] = useState(false);
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
   const { guardians } = useGlobalStore();
@@ -24,6 +36,11 @@ const GuardiansSaving = () => {
   const [downloading, setDownloading] = useState(false);
   const [sending, setSending] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
+
+  const emailForm = useForm({
+    fields: ['email'],
+    validate
+  })
 
   useEffect(() => {
     setIsEmailValid(validateEmail(email));
@@ -103,9 +120,10 @@ const GuardiansSaving = () => {
           <FormInput
             label=""
             placeholder="Send to Email"
-            value={email}
-            errorMsg={email && !isEmailValid ? "Please enter a valid email address." : undefined}
-            onChange={handleEmailChange}
+            value={emailForm.values.email}
+            errorMsg={emailForm.showErrors.email && emailForm.errors.email}
+            onChange={emailForm.onChange('email')}
+            onBlur={emailForm.onBlur('email')}
             _styles={{ width: '100%', marginTop: '0.75em' }}
             RightIcon={<SendIcon />}
           // onClick={handleSendEmail}
@@ -133,4 +151,4 @@ const GuardiansSaving = () => {
   )
 };
 
-export default GuardiansSaving;
+export default SaveGuardians;

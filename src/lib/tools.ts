@@ -1,4 +1,5 @@
 import browser from "webextension-polyfill";
+import { v4 as uuidv4 } from 'uuid'
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -97,3 +98,13 @@ export const getMessageType = (msg: string) => {
         return "text";
     }
 };
+
+export function* uuidGenerator() {
+  while (true) {
+    yield uuidv4()
+  }
+}
+
+export const nextRandomId = () => {
+  return uuidGenerator().next().value
+}

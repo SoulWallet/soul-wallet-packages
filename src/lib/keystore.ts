@@ -57,7 +57,6 @@ export default class KeyStore {
             // TODO, ethers is much slower
             // const account = ethers.Wallet.createRandom();
             const account = web3.eth.accounts.create();
-
             const KeystoreV3 = account.encrypt(password);
 
             if (saveKey) {
@@ -74,6 +73,7 @@ export default class KeyStore {
             }
             return account.address;
         } catch (error) {
+            console.log('error', error)
             return "";
         }
     }

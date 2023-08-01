@@ -9,6 +9,8 @@ import ProgressNavBar from "@src/components/ProgressNavBar";
 import StepCompletion from "@src/components/StepCompletion";
 import GuardianHint from "@src/components/GuardianHint";
 import SetPassword from "@src/pages/v1/Create/SetPassword";
+import SetGuardians from "@src/pages/v1/Create/SetGuardians";
+import SaveGuardians from "@src/pages/v1/Create/SaveGuardians";
 
 type StepNodeInfo = {
   title: string;
@@ -25,12 +27,11 @@ const StepComponent = () => {
       },
       [CreateStepEn.SetupGuardians]: {
         title: "Set up Guardians",
-        element: <GuardiansSetting />,
-        hint: <GuardianHint />,
+        element: <SetGuardians />
       },
       [CreateStepEn.SaveGuardianList]: {
         title: "Save Guardian List",
-        element: <GuardiansSaving />,
+        element: <SaveGuardians />,
       },
       [CreateStepEn.SetSoulWalletAsDefault]: {
         title: "Set as default plugin wallet",
