@@ -79,12 +79,12 @@ export default {
         usdt: paymasterToken_USDT,
     },
     contracts: {
-        l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3",
+        l1Keystore: "0xa0126a11877f3edb06cf6afac809f92d324007dc",
         
-        keyStoreModule: "0xfeaab278ed3093f208627b9361dcd15a2a655eca",
-        soulWalletFactory: "0x13138762dbc79b8fc9c925f4b3afb3d6598c3a7b",
-        defaultCallbackHandler: "0xa35ce0dde330f3e6eccc56cf6a3f336eecb339bb",
-        securityControlModule: "0xe064b1a36c9dfa21cfbe7819661933a954122d95",
+        keyStoreModule: "0x39e5aefbcd9949d1f1d0657d380ead45c0a2367d",
+        soulWalletFactory: "0xa460c9695552d09ff6d9c93b2ea87fc606dc9900",
+        defaultCallbackHandler: "0x2de0f1b7d3fbe2a86b88446acdbc294c91aa8f97",
+        securityControlModule: "0xe9793d7792d3d736ecde0cc89050232704ad323e",
 
         walletLogic: "0x",
         guardianLogic: "0x",

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import Address from "@src/components/Address";
 import { TokenSelect } from "@src/components/TokenSelect";
 import CostItem from "@src/components/CostItem";
 import { toast } from "material-react-toastify";

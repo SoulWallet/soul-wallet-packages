@@ -1,7 +1,14 @@
 import React from "react";
 import { Box, Text, Input } from "@chakra-ui/react";
 
-export default function AddressInput({ label, address, onChange, disabled }: any) {
+export default function AddressInput({ label, address, onChange, disabled, onEnter }: any) {
+    const onKeyDown = (e: any) => {
+        const { keyCode } = e;
+        if (keyCode === 13 && onEnter) {
+            onEnter();
+        }
+    };
+
     return (
         <Box>
             <Text fontFamily={"Martian"} fontSize="12px" fontWeight={"500"} mb="1" px="4">
@@ -17,6 +24,7 @@ export default function AddressInput({ label, address, onChange, disabled }: any
                     fontWeight={"800"}
                     color="#1e1e1e"
                     disabled={disabled}
+                    onKeyDown={onKeyDown}
                 />
             </Box>
         </Box>

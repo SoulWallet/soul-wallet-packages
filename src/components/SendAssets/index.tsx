@@ -5,13 +5,8 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
-import Address from "../Address";
-import {ethers} from 'ethers'
+import { ethers } from "ethers";
 import { useBalanceStore } from "@src/store/balanceStore";
-import cn from "classnames";
-import useBrowser from "@src/hooks/useBrowser";
-import { Input } from "../Input";
-import { TokenSelect } from "../TokenSelect";
 import { InfoWrap, InfoItem } from "../SignTransaction";
 import { toast } from "material-react-toastify";
 import AmountInput from "./comp/AmountInput";
@@ -34,13 +29,10 @@ interface ISendAssets {
 
 export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const { walletAddress } = useWalletContext();
-    const [sending, setSending] = useState<boolean>(false);
-    const { navigate } = useBrowser();
     const [amount, setAmount] = useState<string>("");
     const { balance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
-    const { web3 } = useWalletContext();
 
     const { sendErc20, sendEth } = useTransaction();
 
@@ -57,7 +49,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
 
         if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
             toast.error("Balance not enough");
-            return;
+            // return;
         }
 
         if (sendToken === config.zeroAddress) {
@@ -74,7 +66,6 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         // data: param.get("data"),
     };
 
-
     return (
         <Box>
             <Text fontSize="20px" fontWeight="800" mb="6">
@@ -87,6 +78,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                     label="To"
                     address={receiverAddress}
                     onChange={(e: any) => setReceiverAddress(e.target.value)}
+                    onEnter={confirmAddress}
                 />
                 <InfoWrap>
                     <InfoItem>
