@@ -5,7 +5,6 @@ import {
     Box,
     Text,
     Flex,
-    Divider,
     Tooltip,
     useToast,
     Image,
@@ -23,7 +22,7 @@ import ImgNotActived from "@src/assets/not-activated.svg";
 import { copyText } from "@src/lib/tools";
 import useBrowser from "@src/hooks/useBrowser";
 import IconChevronLeft from "@src/assets/icons/chevron-left.svg";
-
+import { useAddressStore } from "@src/store/address";
 import IconPlus from "@src/assets/icons/plus.svg";
 import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
@@ -170,15 +169,15 @@ const AccountsNavbar = () => {
 };
 
 export default function Accounts() {
-    const { walletAddress } = useWalletContext();
+    const { addressList, selectedAddress } = useAddressStore();
 
     return (
         <Box p="5">
             <Navbar />
             <AccountsNavbar />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
-                {mockAccounts.map((item, index) => {
-                    return <AccountItem item={item} key={index} selected={item.address === walletAddress} />;
+                {addressList.map((item: any, index: number) => {
+                    return <AccountItem item={item} key={index} selected={item.address === selectedAddress} />;
                 })}
             </Grid>
         </Box>
