@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { persist } from "zustand/middleware";
 
 interface IAddressItem {
     title: string;
@@ -43,4 +44,8 @@ const createAddressSlice = immer<IAddressStore>((set) => ({
     },
 }));
 
-export const useAddressStore = create<IAddressStore>()((...set) => ({ ...createAddressSlice(...set) }));
+export const useAddressStore = create<IAddressStore>()(
+    persist((...set) => ({ ...createAddressSlice(...set) }), {
+        name: "address-storage",
+    }),
+);
