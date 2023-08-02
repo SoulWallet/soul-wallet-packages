@@ -51,9 +51,6 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	eslint-utils	](	https://github.com/mysticatea/eslint-utils	) | 	MIT	 | 	2.1.0	 |
 | [	eslint-visitor-keys	](	https://github.com/eslint/eslint-visitor-keys	) | 	Apache-2.0	 | 	2.1.0	 |
 | [	eslint	](	https://github.com/eslint/eslint	) | 	MIT	 | 	7.32.0	 |
-| [	eth-block-tracker	](	https://github.com/kumavis/eth-block-tracker	) | 	MIT	 | 	4.4.3	 |
-| [	eth-json-rpc-filters	](	https://github.com/MetaMask/eth-json-rpc-filters	) | 	ISC	 | 	5.1.0	 |
-| [	eth-json-rpc-infura	](	https://github.com/MetaMask/eth-json-rpc-infura	) | 	ISC	 | 	5.1.0	 |
 | [	eth-json-rpc-middleware	](	https://github.com/MetaMask/eth-json-rpc-middleware	) | 	ISC	 | 	9.0.1	 |
 | [	ethereumjs-util	](	https://github.com/ethereumjs/ethereumjs-monorepo	) | 	MPL-2.0	 | 	7.1.5	 |
 | [	ethers	](	https://github.com/ethers-io/ethers.js	) | 	MIT	 | 	5.7.2	 |

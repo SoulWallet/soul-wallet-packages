@@ -1,5 +1,3 @@
-import config from "@src/config";
-import useLib from "./useLib";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import QRCode from "qrcode";
@@ -9,23 +7,6 @@ import IconContract from "@src/assets/activities/contract.svg";
 import { toast } from "material-react-toastify";
 
 export default function useTools() {
-    const { soulWalletLib } = useLib();
-
-    const getGuardianInitCode = (guardiansList: string[]) => {
-        if (guardiansList.length === 0) {
-            return {
-                address: config.zeroAddress,
-                initCode: "0x",
-            };
-        } else {
-            return soulWalletLib.Guardian.calculateGuardianAndInitCode(
-                config.contracts.guardianLogic,
-                guardiansList,
-                Math.ceil(guardiansList.length / 2),
-                config.guardianSalt,
-            );
-        }
-    };
 
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
         // remove id
@@ -101,21 +82,21 @@ export default function useTools() {
     const decodeCalldata = async (callData: string) => {
         // TODO, add cache locally
         const tmpMap = new Map<string, string>();
-        soulWalletLib.Utils.DecodeCallData.new().setStorage(
-            (key, value) => {
-                tmpMap.set(key, value);
-            },
-            (key) => {
-                const v = tmpMap.get(key);
-                if (typeof v === "string") {
-                    return v;
-                }
-                return null;
-            },
-        );
+        // soulWalletLib.Utils.DecodeCallData.new().setStorage(
+        //     (key, value) => {
+        //         tmpMap.set(key, value);
+        //     },
+        //     (key) => {
+        //         const v = tmpMap.get(key);
+        //         if (typeof v === "string") {
+        //             return v;
+        //         }
+        //         return null;
+        //     },
+        // );
 
-        const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(callData);
-
+        // const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(callData);
+        const callDataDecode:any = {}
         return callDataDecode;
     };
 
@@ -138,7 +119,6 @@ export default function useTools() {
 
     return {
         safeParseUnits,
-        getGuardianInitCode,
         verifyAddressFormat,
         decodeCalldata,
         downloadJsonFile,

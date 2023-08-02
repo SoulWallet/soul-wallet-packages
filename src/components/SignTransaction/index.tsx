@@ -1,6 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
 import BN from "bignumber.js";
-import useLib from "@src/hooks/useLib";
 import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
@@ -73,7 +72,6 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
     const [activePaymasterData, setActivePaymasterData] = useState({});
-    const { soulWalletLib } = useLib();
     const { decodeCalldata } = useTools();
     const { getFeeCost } = useQuery();
 
