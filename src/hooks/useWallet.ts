@@ -18,6 +18,7 @@ export default function useWallet() {
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
     const { getGuardianInitCode } = useTools();
+    const { calcWalletAddress } = useSoulWallet();
     const { guardians } = useGlobalStore();
     const keystore = useKeyring();
     const { soulWallet } = useSoulWallet();
@@ -25,10 +26,7 @@ export default function useWallet() {
     const { soulWalletLib } = useLib();
 
     const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
-
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);
-
-        console.log('ACTIVE user op', userOpRet)
 
         if (userOpRet.isErr()) {
             throw new Error(userOpRet.ERR.message);
@@ -71,20 +69,10 @@ export default function useWallet() {
         //     op.callGasLimit = approveCallData.callGasLimit;
         //     op.callData = approveCallData.callData;
         // }
-
     };
 
     const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
-        const guardianInitCode = getGuardianInitCode(guardiansList);
-
-        const wAddress = soulWalletLib.calculateWalletAddress(
-            config.contracts.walletLogic,
-            config.contracts.entryPoint,
-            address,
-            config.upgradeDelay,
-            config.guardianDelay,
-            guardianInitCode.address,
-        );
+        const wAddress = calcWalletAddress(0, address, guardiansList, 2);
 
         if (saveKey) {
             await setLocalStorage("walletAddress", wAddress);
@@ -214,8 +202,8 @@ export default function useWallet() {
     const directSignAndSend = async (userOp: any, payToken?: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = ethers.parseUnits(maxFeePerGas, "gwei");
-        userOp.maxPriorityFeePerGas = ethers.parseUnits(maxPriorityFeePerGas, "gwei");
+        userOp.maxFeePerGas = `0x${ethers.parseUnits(maxFeePerGas, "gwei").toString(16)}`;
+        userOp.maxPriorityFeePerGas = `0x${ethers.parseUnits(maxPriorityFeePerGas, "gwei").toString(16)}`;
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
@@ -256,7 +244,7 @@ export default function useWallet() {
         userOp.signature = packedSignatureRet.OK;
 
         await Runtime.send("execute", {
-            userOp: userOp.toJSON(),
+            userOp: JSON.stringify(userOp),
             bundlerUrl,
         });
 

@@ -122,15 +122,13 @@ export default function useQuery() {
         // get preFund
         const preFund = await soulWallet.preFund(userOp);
 
-        console.log('prefund is', preFund)
-
         if (preFund.isErr()) {
             throw new Error(preFund.ERR.message);
         }
 
         return {
-            requireAmountInWei: 0n,
-            requireAmount: 0n,
+            requireAmountInWei: BN(preFund.OK.missfund).toFixed(),
+            requireAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
         };
 
         // userOp.paymasterAndData = tokenAddress || "0x";

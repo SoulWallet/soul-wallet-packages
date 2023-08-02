@@ -44,7 +44,6 @@ export default {
     chainName: "Goerli",
     chainToken: "ETH",
     addressPrefix: "gor:",
-    defaultBaseFee: "100000000",
     defaultMaxFee: "1700000000",
     defaultMaxPriorityFee: "1500000000",
     support1559: true,

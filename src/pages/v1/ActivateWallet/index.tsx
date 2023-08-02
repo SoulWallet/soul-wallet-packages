@@ -101,7 +101,7 @@ export default function ActivateWallet() {
         }
     }, [paymasterApproved]);
 
-    const balanceEnough = false;
+    const balanceEnough = true;
 
     return (
         <Box px="5" pt="6">

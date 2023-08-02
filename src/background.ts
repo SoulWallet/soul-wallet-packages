@@ -7,10 +7,6 @@ import { executeTransaction } from "@src/lib/tx";
 // TODO, change!
 let password = null;
 
-setInterval(() => {
-    console.log("bg pass", password);
-}, 2000);
-
 browser.runtime.onMessage.addListener(async (msg, sender) => {
     console.log("got msg", msg);
     const senderTabId = sender.tab?.id;
@@ -18,8 +14,8 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
     switch (msg.type) {
         case "set/password":
-            console.log('READY TO SET', msg.data);
-            if(msg.data){
+            console.log("READY TO SET", msg.data);
+            if (msg.data) {
                 password = msg.data;
             }
             break;
@@ -43,7 +39,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
             // IMPORTANT TODO, also need to check lock state
-            if (false && accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
+            if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
                 browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",
@@ -88,9 +84,9 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
 
-            const parsedUserOp = UserOperation.fromJSON(userOp);
+            console.log('bbbz', JSON.parse(userOp))
 
-            await executeTransaction(parsedUserOp, tabId, bundlerUrl);
+            await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
 
             await browser.runtime.sendMessage({
                 target: "soul",

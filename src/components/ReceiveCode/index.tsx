@@ -18,7 +18,7 @@ export default function ReceiveCode({ walletAddress, showFullAddress, imgWidth =
     const { generateQrCode } = useTools();
 
     const doCopy = () => {
-        copyText(`${config.addressPrefix}${walletAddress}`);
+        copyText(`${walletAddress}`);
         toast.success("Copied");
     };
 
