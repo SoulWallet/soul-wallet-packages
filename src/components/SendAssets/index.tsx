@@ -6,6 +6,7 @@ import BN from "bignumber.js";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
 import Address from "../Address";
+import {ethers} from 'ethers'
 import { useBalanceStore } from "@src/store/balanceStore";
 import cn from "classnames";
 import useBrowser from "@src/hooks/useBrowser";
@@ -44,9 +45,25 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const { sendErc20, sendEth } = useTransaction();
 
     const confirmAddress = () => {
-        if (!receiverAddress || !web3.utils.isAddress(receiverAddress)) {
+        if (!receiverAddress || !ethers.isAddress(receiverAddress)) {
             toast.error("Address not valid");
             return;
+        }
+        if (!amount) {
+            toast.error("Amount not valid");
+            return;
+        }
+        const tokenBalance = balance.get(sendToken);
+
+        if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
+            toast.error("Balance not enough");
+            return;
+        }
+
+        if (sendToken === config.zeroAddress) {
+            sendEth(receiverAddress, amount);
+        } else {
+            sendErc20(sendToken, receiverAddress, amount);
         }
         // go sign page
 
@@ -55,32 +72,8 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         // origin: param.get("origin"),
         // txns: param.get("txns"),
         // data: param.get("data"),
-        navigate("sign?action=transfer");
     };
 
-    const doSend = async () => {
-        if (!amount) {
-            toast.error("Amount not valid");
-            return;
-        }
-
-        const tokenBalance = balance.get(sendToken);
-
-        if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
-            toast.error("Balance not enough");
-            return;
-        }
-        setSending(true);
-        try {
-            if (sendToken === config.zeroAddress) {
-                await sendEth(receiverAddress, amount);
-            } else {
-                await sendErc20(sendToken, receiverAddress, amount);
-            }
-        } finally {
-            setSending(false);
-        }
-    };
 
     return (
         <Box>

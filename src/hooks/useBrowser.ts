@@ -11,8 +11,13 @@ export default function useBrowser() {
      */
     const navigate = async (route: string) => {
         // check version
-        console.log('go route', `/v1/${route}`)
         nav(`/v1/${route}`);
+    }
+
+    const navigateToSign = async ({
+        txns,
+    }: any)=> {
+        navigate(`sign?action=approveTransaction&txns=${JSON.stringify(txns)}`)
     }
 
     const goWebsite = async (path = "/") => {
@@ -50,6 +55,7 @@ export default function useBrowser() {
 
     return {
         navigate,
+        navigateToSign,
         goPlugin,
         goWebsite,
         closeCurrentTab,
