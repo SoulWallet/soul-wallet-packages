@@ -22,6 +22,7 @@ import Icon from "@src/components/Icon";
 import { nextRandomId } from "@src/lib/tools";
 import WarningIcon from "@src/components/Icons/Warning";
 import useWalletContext from '@src/context/hooks/useWalletContext';
+import { useAddressStore } from "@src/store/address";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -59,8 +60,14 @@ const validate = (values: any) => {
   return errors
 }
 
-const amountValidate = () => {
-  return {}
+const amountValidate = (values: any, props: any) => {
+  const errors: any = {}
+
+  if (!values.amount || !Number.isInteger(Number(values.amount)) || Number(values.amount) < 1 || Number(values.amount) > Number(props.guardiansCount)) {
+    errors.amount = 'Invalid Amount'
+  }
+
+  return errors
 }
 
 export default function GuardiansSetting() {
@@ -72,55 +79,50 @@ export default function GuardiansSetting() {
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
+  const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSoulWallet();
+  const { selectedAddress, setSelectedAddress, updateAddressItem } = useAddressStore();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
     validate
   })
 
-  const disabled = invalid || !guardiansList.length
-
   const amountForm = useForm({
     fields: ['amount'],
-    validate: amountValidate
+    validate: amountValidate,
+    restProps: amountData
   })
+
+  const disabled = invalid || !guardiansList.length || amountForm.invalid
 
   useEffect(() => {
     setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
   }, [values])
-  console.log('values', values)
 
-  // const { guardians, updateErrorMsgById, addGuardian } = createGuardianStore({ guardians: [] })
+  useEffect(() => {
+    setAmountData({ guardiansCount: guardiansList.length })
+  }, [guardiansList])
+
 
   const handleSubmit = async () => {
-    const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
-    // const eoaAddress = keystore.keystore.L1KeyStoreContractAddress
-    const walletAddress = await calcWalletAddress(0, account, guardiansList, amountForm.values.amount);
-    console.log('handleSubmit', account, guardiansList, walletAddress)
+    try {
+      const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
+      const walletAddress = await calcWalletAddress(0, account, guardiansList, amountForm.values.amount || 0);
+      const walletName = `account1`
+      // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
+      const newAddress = (walletAddress as any)._value
+      updateAddressItem({ title: walletName, address: newAddress, activated: false })
+      setSelectedAddress(newAddress)
+      console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, amountForm.values.amount || 2)
+      handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
+    } catch (e) {
 
-    // useAddressStore
-
-    handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    /* return new Promise((resolve, reject) => {
-     *   const addressList: string[] = [];
-
-     *   for (let i = 0; i < guardians.length; i++) {
-     *     if (guardians[i].address.length && addressList.includes(guardians[i].address)) {
-     *       updateErrorMsgById(guardians[i].id, "Duplicate address");
-     *       return reject("Duplicate address");
-     *     }
-     *     if (!ethers.utils.isAddress(guardians[i].address)) {
-     *       updateErrorMsgById(guardians[i].id, "Invalid address");
-     *       return reject("Invalid address");
-     *     }
-     *     addressList.push(guardians[i].address);
-     *   }
-
-     *   return resolve(guardians);
-     * }); */
+    }
   }
+
+  console.log('selectedAddress', selectedAddress, amountForm)
 
   const addGuardian = () => {
     const id = nextRandomId()
@@ -137,8 +139,7 @@ export default function GuardiansSetting() {
       const newFields = getFieldsByGuardianIds(newGuardianIds)
       setGuardianIds(newGuardianIds)
       setFields(newFields)
-      const deleteFields = getFieldsByGuardianIds([deleteId])
-      removeFields(deleteFields)
+      removeFields(getFieldsByGuardianIds([deleteId]))
     }
   }
 
@@ -200,7 +201,7 @@ export default function GuardiansSetting() {
           <Heading3 width="100%">Can I set guardians in the future?</Heading3>
           <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
           <Button width="100%" onClick={() => setSkipping(false)}>Set guardians now</Button>
-          <TextButton width="100%" onClick={() => handleJumpToTargetStep(CreateStepEn.SaveGuardianList)}>I understand the risks, skip for now</TextButton>
+          <TextButton width="100%" onClick={handleSubmit}>I understand the risks, skip for now</TextButton>
         </Box>
       </Box>
     )
@@ -281,7 +282,9 @@ export default function GuardiansSetting() {
           placeholder="Enter amount"
           value={amountForm.values.amount}
           onChange={amountForm.onChange('amount')}
-          RightComponent={<Text fontWeight="bold">/ 3</Text>}
+          onBlur={amountForm.onBlur('amount')}
+          errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+          RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
           _styles={{ width: '180px', marginTop: '0.75em' }}
         />
       </Box>

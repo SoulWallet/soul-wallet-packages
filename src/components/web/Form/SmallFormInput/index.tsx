@@ -10,6 +10,7 @@ interface IProps {
   placeholder?: string;
   errorMsg?: string;
   onChange: (value: string) => void;
+  onBlur?: any;
   _styles?: any;
   RightComponent?: any;
 }
@@ -20,6 +21,7 @@ export default function FormInput({
   placeholder,
   errorMsg,
   onChange,
+  onBlur,
   _styles,
   RightComponent
 }: IProps) {
@@ -37,17 +39,18 @@ export default function FormInput({
             placeholder={placeholder}
             value={value ?? ""}
             onChange={handleChange}
+            onBlur={onBlur}
             borderRadius="1em"
             paddingLeft="1.5rem"
             paddingRight="1.5rem"
             height="3em"
           />
         </Box>
+        <Box position="absolute" top="0" right="10px" height="100%" display="flex" alignItems="center" justifyContent="center">
+          {RightComponent}
+        </Box>
       </Box>
       <Text color="#FF4343" padding="0 10px" fontSize="14px">{errorMsg}</Text>
-      <Box position="absolute" top="0" right="10px" height="100%" display="flex" alignItems="center" justifyContent="center">
-        {RightComponent}
-      </Box>
     </Box>
   );
 }
