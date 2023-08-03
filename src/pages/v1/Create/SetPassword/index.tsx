@@ -51,9 +51,7 @@ export default function SetPassword() {
     try {
       if (password) {
         setLoaing(true)
-        console.log('loading s', password)
-        // await keystore.createNewAddress(password, true);
-        console.log('loading e', password)
+        await keystore.createNewAddress(password, true);
         setLoaing(false)
 
         dispatch({
