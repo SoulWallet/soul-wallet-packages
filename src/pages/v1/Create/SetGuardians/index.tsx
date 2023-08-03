@@ -36,8 +36,8 @@ const getFieldsByGuardianIds = (ids: any) => {
   return fields
 }
 
-const validate = (values) => {
-  const errors = {}
+const validate = (values: any) => {
+  const errors: any = {}
   const addressKeys = Object.keys(values).filter(key => key.indexOf('address') === 0)
   const nameKeys = Object.keys(values).filter(key => key.indexOf('name') === 0)
   const existedAddress = []
@@ -86,7 +86,7 @@ export default function GuardiansSetting() {
   })
 
   useEffect(() => {
-    setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length))
+    setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
   }, [values])
   console.log('values', values)
 
