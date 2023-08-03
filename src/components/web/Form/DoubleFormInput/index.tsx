@@ -22,11 +22,13 @@ export default function DoubleFormInput({
   leftPlaceholder,
   leftErrorMsg,
   leftOnChange,
+  leftOnBlur
   rightLabel,
   rightValue,
   rightPlaceholder,
   rightErrorMsg,
   rightOnChange,
+  rightOnBlur,
   _styles
 }: IProps) {
   const handleLeftChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +50,7 @@ export default function DoubleFormInput({
               placeholder={leftPlaceholder}
               value={leftValue ?? ""}
               onChange={handleLeftChange}
+              onBlur={leftOnBlur}
               borderRadius="1em"
               paddingLeft="1.5rem"
               paddingRight="1.5rem"
@@ -70,6 +73,7 @@ export default function DoubleFormInput({
               placeholder={rightPlaceholder}
               value={rightValue ?? ""}
               onChange={handleRightChange}
+              onBlur={rightOnBlur}
               borderRadius="1em"
               paddingLeft="1.5rem"
               paddingRight="1.5rem"
