@@ -72,11 +72,10 @@ export default function GuardiansSetting() {
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
 
-  const { values, errors, invalid, onChange, onBlur, showErrors, addField, removeField } = useForm({
+  const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
     validate
   })
-
 
   const disabled = invalid || !guardiansList.length
 
@@ -124,10 +123,7 @@ export default function GuardiansSetting() {
     const newFields = getFieldsByGuardianIds(newGuardianIds)
     setGuardianIds(newGuardianIds)
     setFields(newFields)
-
-    for (const newField of newFields) {
-      addField(newField)
-    }
+    addFields(getFieldsByGuardianIds([id]))
   };
 
   const removeGuardian = (deleteId: string) => {
@@ -136,12 +132,8 @@ export default function GuardiansSetting() {
       const newFields = getFieldsByGuardianIds(newGuardianIds)
       setGuardianIds(newGuardianIds)
       setFields(newFields)
-
-      const deleteFields = getFieldsByGuardianIds(deleteId)
-
-      for (const newField of deleteFields) {
-        removeField(newField)
-      }
+      const deleteFields = getFieldsByGuardianIds([deleteId])
+      removeFields(deleteFields)
     }
   }
 
