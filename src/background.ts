@@ -1,7 +1,6 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
 import { getLocalStorage, openWindow } from "@src/lib/tools";
-import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
 // TODO, change!

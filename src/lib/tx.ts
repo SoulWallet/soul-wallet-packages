@@ -1,4 +1,3 @@
-import { SoulWalletLib, IUserOpReceipt, IFailedOp, IValidationResult } from "soul-wallet-lib";
 import { ethers } from "ethers";
 import { SoulWallet, Bundler } from "@soulwallet/sdk";
 import browser from "webextension-polyfill";
@@ -17,8 +16,6 @@ const soulWallet = new SoulWallet(
 import { notify } from "@src/lib/tools";
 
 const ethersProvider = new ethers.JsonRpcProvider(config.provider);
-
-const soulWalletLib = new SoulWalletLib();
 
 export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: any) => {
     console.log("User OP: ", userOp);

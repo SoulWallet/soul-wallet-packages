@@ -2,12 +2,9 @@ import { ethers } from "ethers";
 import Web3 from "web3";
 import config from "@src/config";
 import { getMessageType } from "@src/lib/tools";
-import { SoulWalletLib } from "soul-wallet-lib";
 import browser from 'webextension-polyfill'
 import bgBus from "./bgBus";
 import { TypedDataUtils } from "@metamask/eth-sig-util";
-
-const soulWalletLib = new SoulWalletLib(config.contracts.create2Factory);
 
 const web3 = new Web3();
 
@@ -246,10 +243,11 @@ export default class KeyStore {
 
     public async getPackedSignature(hashMsg: any) {
         const ownerAddress = await this.getAddress();
-        const packedHash = soulWalletLib.EIP1271.packHashMessageWithTimeRange(hashMsg, ownerAddress);
-        const signature = await this.sign(packedHash);
-        if (signature) {
-            return soulWalletLib.EIP1271.encodeSignature(ownerAddress, signature);
-        }
+        return 'xxx'
+        // const packedHash = soulWalletLib.EIP1271.packHashMessageWithTimeRange(hashMsg, ownerAddress);
+        // const signature = await this.sign(packedHash);
+        // if (signature) {
+        //     return soulWalletLib.EIP1271.encodeSignature(ownerAddress, signature);
+        // }
     }
 }

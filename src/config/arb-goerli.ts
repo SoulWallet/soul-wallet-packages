@@ -59,8 +59,8 @@ export default {
     soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?
-    // defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
-    defaultBundlerUrl: "https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH",
+    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
+    // defaultBundlerUrl: "https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH",
     maxCostMultiplier: 120,
     upgradeDelay: 10,
     guardianDelay: 10,

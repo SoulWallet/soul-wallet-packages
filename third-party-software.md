@@ -76,7 +76,6 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	react-test-renderer	](	https://github.com/facebook/react	) | 	MIT	 | 	17.0.2	 |
 | [	react	](	https://github.com/facebook/react	) | 	MIT	 | 	17.0.2	 |
 | [	shortid	](	https://github.com/dylang/shortid	) | 	MIT	 | 	2.2.16	 |
-| [	soul-wallet-lib	](	https://github.com/proofofsoulprotocol/soulwalletlib	) | 	MPL-2.0	 | 	0.1.0-alpha.27	 |
 | [	soul-wallet-plugin	](		) | 	MIT	 | 	0.0.1	 |
 | [	style-loader	](	https://github.com/webpack-contrib/style-loader	) | 	MIT	 | 	3.3.2	 |
 | [	svg-inline-loader	](	https://github.com/sairion/svg-inline-loader	) | 	MIT	 | 	0.8.2	 |
