@@ -32,7 +32,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
         case "getAccounts":
-            // if already allowed getting accounts, don't show popup
+            // if already allowed getting accounts, don't show popup, TODO, get from zustand
             const walletAddress = await getLocalStorage("walletAddress");
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 

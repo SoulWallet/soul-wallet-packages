@@ -7,6 +7,7 @@ import Operations from "./comp/Operations";
 import ActivateHint from "./comp/ActivateHint";
 import Footer from "@src/components/Footer";
 import Actions from "./comp/Actions";
+import { useAddressStore } from "@src/store/address";
 
 export function Wallet() {
     const { walletAddress, walletType } = useWalletContext();
@@ -15,7 +16,7 @@ export function Wallet() {
         <>
             <Box p="5">
                 <Navbar />
-                <AccountCard account={walletAddress} action="activate" />
+                <AccountCard />
                 {walletType === "eoa" ? <ActivateHint /> : <Actions />}
                 <Operations />
             </Box>

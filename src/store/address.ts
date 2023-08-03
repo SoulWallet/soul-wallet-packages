@@ -13,7 +13,7 @@ interface IAddressStore {
     addressList: IAddressItem[];
     setSelectedAddress: (address: string) => void;
     addAddressItem: (addressItem: IAddressItem) => void;
-    updateAddressItem: (addressItem: IAddressItem) => void;
+    updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => void;
     deleteAddress: (address: string) => void;
 }
 
@@ -30,10 +30,14 @@ const createAddressSlice = immer<IAddressStore>((set) => ({
             state.addressList.push(addressItem);
         });
     },
-    updateAddressItem: (addressItem: IAddressItem) => {
+    updateAddressItem: (address: string, addressItem:Partial<IAddressItem>) => {
         set((state) => {
-            const index = getIndexByAddress(state.addressList, addressItem.address);
-            state.addressList[index] = addressItem;
+            const index = getIndexByAddress(state.addressList, address);
+            const item = state.addressList.filter((item:IAddressItem) => item.address === address)[0]
+            state.addressList[index] = {
+                ...item,
+                ...addressItem,
+            };
         });
     },
     deleteAddress: (address: string) => {

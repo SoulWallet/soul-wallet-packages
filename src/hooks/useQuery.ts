@@ -110,6 +110,8 @@ export default function useQuery() {
         userOp.maxFeePerGas = ethers.parseUnits(maxFeePerGas, "gwei");
         userOp.maxPriorityFeePerGas = ethers.parseUnits(maxPriorityFeePerGas, "gwei");
 
+        console.log('FEE Cost UserOP', userOp)
+
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
