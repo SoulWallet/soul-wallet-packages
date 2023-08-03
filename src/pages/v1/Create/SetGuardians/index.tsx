@@ -113,7 +113,7 @@ export default function GuardiansSetting() {
       const walletName = `account1`
       // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
       const newAddress = (walletAddress as any)._value
-      updateAddressItem({ title: walletName, address: newAddress, activated: false })
+      updateAddressItem(newAddress, { title: walletName, address: newAddress, activated: true })
       setSelectedAddress(newAddress)
       console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, amountForm.values.amount || 2)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
