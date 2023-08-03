@@ -16,11 +16,12 @@ import PageTitle from "@src/components/PageTitle";
 import BN from "bignumber.js";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
+import { useAddressStore } from "@src/store/address";
 import ApprovePaymaster from "@src/components/ApprovePaymaster";
-import { EnAlign } from "@src/types/IAssets";
 
 export default function ActivateWallet() {
-    const { walletAddress, getWalletType, account, walletType } = useWalletContext();
+    const { getWalletType, account, walletType } = useWalletContext();
+    const { selectedAddress } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
@@ -74,11 +75,11 @@ export default function ActivateWallet() {
     };
 
     useEffect(() => {
-        if (!account || !payToken || !walletAddress) {
+        if (!account || !payToken || !selectedAddress) {
             return;
         }
         onPayTokenChange();
-    }, [payToken, account, walletAddress]);
+    }, [payToken, account, selectedAddress]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -89,11 +90,11 @@ export default function ActivateWallet() {
     }, []);
 
     useEffect(() => {
-        if (!walletAddress) {
+        if (!selectedAddress) {
             return;
         }
         getWalletType();
-    }, [walletAddress]);
+    }, [selectedAddress]);
 
     useEffect(() => {
         if (!paymasterApproved) {
@@ -116,7 +117,7 @@ export default function ActivateWallet() {
                 USDC, DAI, USDT.
             </Text>
             <Box bg="#fff" rounded="20px" p="3">
-                <ReceiveCode walletAddress={walletAddress} />
+                <ReceiveCode walletAddress={selectedAddress} />
                 <Divider h="1px" bg="#d7d7d7" my="2" />
                 <InfoWrap gap="3">
                     <InfoItem>
@@ -140,6 +141,7 @@ export default function ActivateWallet() {
             <Button
                 disabled={!maxCost || !balanceEnough}
                 w="full"
+                loading={loading}
                 onClick={doActivate}
                 fontSize="20px"
                 py="4"

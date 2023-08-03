@@ -1,7 +1,6 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
 import { getLocalStorage, openWindow } from "@src/lib/tools";
-import { UserOperation } from "soul-wallet-lib";
 import { executeTransaction } from "@src/lib/tx";
 
 // TODO, change!
@@ -33,7 +32,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
         case "getAccounts":
-            // if already allowed getting accounts, don't show popup
+            // if already allowed getting accounts, don't show popup, TODO, get from zustand
             const walletAddress = await getLocalStorage("walletAddress");
             const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
 
@@ -82,6 +81,8 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
+
+            console.log('bunss', bundlerUrl, JSON.parse(userOp))
 
             await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
 

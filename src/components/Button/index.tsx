@@ -52,7 +52,8 @@ export default function Button({
       {...moreProps}
       {...restProps}
     >
-      {loading ? <Image src={IconLoading} w="20px" h="20px" /> : children}
+      {children}
+      {loading && <Image src={IconLoading} w="20px" h="20px" /> }
     </CButton>
   );
 }

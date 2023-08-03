@@ -23,8 +23,6 @@ interface IStepCompletion {
 }
 
 const SetWalletSuccess = ({ mode }: IStepCompletion) => {
-  const { goPlugin } = useBrowser();
-
   useEffect(() => {
 
   }, [])

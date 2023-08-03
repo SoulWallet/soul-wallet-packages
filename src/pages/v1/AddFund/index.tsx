@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import { Box, Text, Flex, Divider, useToast, Image } from "@chakra-ui/react";
+import { Box, Text, Flex, useToast, Image } from "@chakra-ui/react";
 import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
 import IconEth from "@src/assets/chains/eth.svg";
 import { copyText } from "@src/lib/tools";
@@ -10,7 +10,7 @@ import Button from "@src/components/Button";
 
 export default function AddFund() {
     const toast = useToast();
-    const { walletAddress, getWalletType, account, walletType } = useWalletContext();
+    const { walletAddress, account, walletType } = useWalletContext();
 
     const doCopy = () => {
         copyText(walletAddress);

@@ -5,20 +5,15 @@ import IconCopy from "@src/assets/copy.svg";
 import IconScan from "@src/assets/icons/scan.svg";
 import IconTrendUp from "@src/assets/icons/trend-up.svg";
 import ImgEthFaded from "@src/assets/chains/eth-faded.svg";
-import useBrowser from "@src/hooks/useBrowser";
-import useWalletContext from "@src/context/hooks/useWalletContext";
+import { useAddressStore } from "@src/store/address";
 
-interface IProps {
-    account: string;
-    action: string;
-}
+export default function AccountCard() {
+    const { selectedAddress } = useAddressStore();
 
-export default function AccountCard({ account, action }: IProps) {
-    const { walletAddress } = useWalletContext();
     const toast = useToast();
 
     const doCopy = () => {
-        copyText(walletAddress);
+        copyText(selectedAddress);
         toast({
             title: "Copied",
             status: "success",
@@ -38,7 +33,7 @@ export default function AccountCard({ account, action }: IProps) {
             <Flex align={"center"} justify={"space-between"}>
                 <Flex gap="1">
                     <Text fontSize={"12px"} fontFamily={"Martian"} fontWeight={"600"} color="#29510A">
-                        {account.slice(0, 5)}...{account.slice(-4)}
+                        {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
                     </Text>
                     <Image src={IconCopy} w="20px" cursor={"pointer"} onClick={() => doCopy()} />
                 </Flex>
@@ -59,46 +54,5 @@ export default function AccountCard({ account, action }: IProps) {
                 <Image src={ImgEthFaded} />
             </Flex>
         </Flex>
-
-        // <div className="flex flex-col items-center justify-between">
-        //     <div className="flex items-center justify-between pt-[18px] pb-4 px-6 w-full">
-        //         <div>
-        //             <div className="text-black font-bold text-lg mb-2 text-left">Account 1</div>
-        //             <div
-        //                 className="gap-1 flex items-center cursor-pointer tooltip address"
-        //                 data-tip="Copy address"
-        //                 onClick={doCopy}
-        //             >
-        //                 <img src={IconCopy} className="w-4" />
-        //                 <span className="opacity-50 text-base text-black">
-        //                     {config.addressPrefix}
-        //                     {account.slice(0, 5)}...{account.slice(-4)}
-        //                 </span>
-        //             </div>
-        //         </div>
-
-        //         <a
-        //             className={cn(
-        //                 "cursor-pointer border-4 flex",
-        //                 accountSettingModalVisible ? "z-[100] rounded-full relative border-blue" : "border-transparent",
-        //             )}
-        //             onClick={() => setAccountSettingModalVisible((prev) => !prev)}
-        //         >
-        //             <AddressIcon width={48} address={account} />
-        //         </a>
-        //     </div>
-
-        // {/* {action === "activate" && walletType === "eoa" && (
-        //     <div className="px-6 pb-3 w-full">
-        //         <Button type={"primary"} onClick={() => navigate("activate-wallet")} className="w-full">
-        //             Activate wallet
-        //         </Button>
-        //     </div>
-        // )}
-
-        // {accountSettingModalVisible && (
-        //     <AccountSettingModal onCancel={() => setAccountSettingModalVisible(false)} />
-        // )} */}
-        // </div>
     );
 }
