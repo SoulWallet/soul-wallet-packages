@@ -12,7 +12,8 @@ const getInitialValues = (fields: any, values: any = {}) => {
 }
 
 
-export default function useForm({ fields, validate }: any) {
+export default function useForm(props: any) {
+    const { fields, validate, restProps } = props
     const [values, setValues] = useState<any>(getInitialValues(fields))
     const [errors, setErrors] = useState<any>({})
     const [showErrors, setShowErrors] = useState<any>({})
@@ -20,7 +21,8 @@ export default function useForm({ fields, validate }: any) {
     const [pristine, setPristine] = useState<boolean>(true)
 
     useEffect(() => {
-        const errors = validate(values)
+        const errors = validate(values, restProps)
+        console.log('validate', values, restProps)
         setErrors(errors)
 
         if (Object.keys(errors).length) {
@@ -28,7 +30,7 @@ export default function useForm({ fields, validate }: any) {
         } else {
             setInvalid(false)
         }
-    }, [values])
+    }, [values, restProps])
 
     useEffect(() => {
         // console.log('fields', getInitialValues(fields, values))
