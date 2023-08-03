@@ -66,40 +66,24 @@ export default function useQuery() {
     };
 
     const getGasPrice = async () => {
-        if (config.support1559) {
-            // if it's arb goerli, set fixed
-            if (config.chainId === 421613) {
-                return {
-                    maxFeePerGas: config.defaultMaxFee,
-                    maxPriorityFeePerGas: config.defaultMaxPriorityFee,
-                };
-            } else if (config.chainId === 42161) {
-                return {
-                    maxFeePerGas: config.defaultMaxFee,
-                    maxPriorityFeePerGas: config.defaultMaxPriorityFee,
-                };
-            }
-
-            const feeData = await ethersProvider.getFeeData();
-
-            // const res: any = await soulWalletLib.Utils.suggestedGasFee.getEIP1559GasFees(config.chainId);
-
-            // const baseFee = new BN(res.estimatedBaseFee).toFixed(3);
-            const maxFeePerGas = new BN(feeData.maxFeePerGas?.toString() || "0").toFixed(3);
-            const maxPriorityFeePerGas = new BN(feeData.maxPriorityFeePerGas?.toString() || "0").toFixed(3);
-
+        // if it's in the fixed price list, set fixed
+        if (config.chainId === 421613 || config.chainId === 42161) {
             return {
-                maxFeePerGas: ethers.parseUnits(maxFeePerGas, 9).toString(),
-                maxPriorityFeePerGas: ethers.parseUnits(maxPriorityFeePerGas, 9).toString(),
+                maxFeePerGas: `0x${ethers.parseUnits(config.defaultMaxFee, "gwei").toString(16)}`,
+                maxPriorityFeePerGas: `0x${ethers.parseUnits(config.defaultMaxPriorityFee, "gwei").toString(16)}`,
+            };
+        }
+
+        const feeData = await ethersProvider.getFeeData();
+        if (config.support1559) {
+            return {
+                maxFeePerGas: `0x${feeData.maxFeePerGas?.toString(16)}`,
+                maxPriorityFeePerGas: `0x${feeData.maxPriorityFeePerGas?.toString(16)}`,
             };
         } else {
-            const feeData = await ethersProvider.getFeeData();
-
-            const feeRaw = feeData.gasPrice;
-
             return {
-                maxFeePerGas: feeRaw?.toString() || "",
-                maxPriorityFeePerGas: feeRaw?.toString() || "",
+                maxFeePerGas: `0x${feeData.gasPrice?.toString(16)}`,
+                maxPriorityFeePerGas: `0x${feeData.gasPrice?.toString(16)}`,
             };
         }
     };
@@ -107,10 +91,10 @@ export default function useQuery() {
     const getFeeCost = async (userOp: any, tokenAddress?: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = ethers.parseUnits(maxFeePerGas, "gwei");
-        userOp.maxPriorityFeePerGas = ethers.parseUnits(maxPriorityFeePerGas, "gwei");
+        userOp.maxFeePerGas = maxFeePerGas;
+        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
-        console.log('FEE Cost UserOP', userOp)
+        console.log("FEE Cost UserOP", userOp);
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);

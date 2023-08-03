@@ -186,8 +186,8 @@ export default function useWallet() {
     const directSignAndSend = async (userOp: any, payToken?: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = `0x${ethers.parseUnits(maxFeePerGas, "gwei").toString(16)}`;
-        userOp.maxPriorityFeePerGas = `0x${ethers.parseUnits(maxPriorityFeePerGas, "gwei").toString(16)}`;
+        userOp.maxFeePerGas = maxFeePerGas;
+        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);

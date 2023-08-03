@@ -33,6 +33,8 @@ const estimateGas = async (params: any) => {
 
 const gasPrice = async () => {
     const feeData = await ethersProvider.getFeeData();
+
+    // TODO, changed
     return feeData.gasPrice?.toString();
 };
 
