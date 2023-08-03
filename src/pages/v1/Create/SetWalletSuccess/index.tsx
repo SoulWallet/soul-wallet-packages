@@ -15,10 +15,7 @@ import TextBody from "@src/components/web/TextBody";
 const defaultOptions = {
   loop: true,
   autoplay: true,
-  animationData: animationData,
-  rendererSettings: {
-    preserveAspectRatio: "xMidYMid slice"
-  }
+  animationData: animationData
 }
 
 interface IStepCompletion {
@@ -39,7 +36,7 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
           <Lottie
             options={defaultOptions}
             height="100%"
-            width="400"
+            width="100%"
           />, (document.getElementById('animation-portal')) as any
         )}
         <Heading1>Congratulation!</Heading1>
