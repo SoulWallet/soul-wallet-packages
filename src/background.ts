@@ -82,6 +82,8 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
 
+            console.log('bunss', bundlerUrl, JSON.parse(userOp))
+
             await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
 
             await browser.runtime.sendMessage({

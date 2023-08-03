@@ -140,6 +140,7 @@ export default function ActivateWallet() {
             <Button
                 disabled={!maxCost || !balanceEnough}
                 w="full"
+                loading={loading}
                 onClick={doActivate}
                 fontSize="20px"
                 py="4"
