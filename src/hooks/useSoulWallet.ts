@@ -25,10 +25,7 @@ export default function useSoulWallet() {
      */
     const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
-
-        const walletAddress = await soulWallet.calcWalletAddress(index, initialKey, guardianHash);
-
-        return walletAddress;
+        return await soulWallet.calcWalletAddress(index, initialKey, guardianHash);
     };
 
     return { soulWallet, calcWalletAddress };

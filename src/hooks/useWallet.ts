@@ -66,18 +66,6 @@ export default function useWallet() {
         //     op.callData = approveCallData.callData;
         // }
     };
-
-    const generateWalletAddress = async (address: string, guardiansList: string[], saveKey?: boolean) => {
-        const wAddress = calcWalletAddress(0, address, guardiansList, 2);
-
-        if (saveKey) {
-            await setLocalStorage("walletAddress", wAddress);
-            getAccount();
-        }
-
-        return wAddress;
-    };
-
     // const addPaymasterData: any = async (op: any, payToken: string) => {
     //     const { requireAmountInWei, requireAmount } = await getFeeCost(
     //         op,
@@ -257,7 +245,6 @@ export default function useWallet() {
         activateWallet,
         initRecoverWallet,
         recoverWallet,
-        generateWalletAddress,
         updateGuardian,
         directSignAndSend,
     };

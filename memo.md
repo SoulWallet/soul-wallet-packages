@@ -1,4 +1,4 @@
-
+[Contract address](https://soulwallet.larksuite.com/docx/N3Efdx2OIoFV6AxFxlCuIFbnsLe)
 
 [Release](https://soulwallet.larksuite.com/wiki/wikusNDwfD7WuEpUg0n2HEJltJb)
 

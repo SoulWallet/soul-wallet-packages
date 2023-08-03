@@ -12,6 +12,7 @@ import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
 import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
+import useSoulWallet from '@src/hooks/useSoulWallet';
 import { Box, Text, Image } from "@chakra-ui/react"
 import Heading1 from "@src/components/web/Heading1";
 import Heading3 from "@src/components/web/Heading3";
@@ -20,6 +21,7 @@ import useForm from "@src/hooks/useForm";
 import Icon from "@src/components/Icon";
 import { nextRandomId } from "@src/lib/tools";
 import WarningIcon from "@src/components/Icons/Warning";
+import useWalletContext from '@src/context/hooks/useWalletContext';
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -64,13 +66,14 @@ const amountValidate = () => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
-  const { generateWalletAddress } = useWallet();
   const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
   const [skipping, setSkipping] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
+  const {account} = useWalletContext();
+  const {calcWalletAddress} = useSoulWallet();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -93,9 +96,11 @@ export default function GuardiansSetting() {
 
   const handleSubmit = async () => {
     const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
-    const eoaAddress = keystore.keystore.L1KeyStoreContractAddress
-    const walletAddress = await generateWalletAddress(eoaAddress, guardiansList, true);
-    console.log('handleSubmit', eoaAddress, guardiansList, walletAddress)
+    // const eoaAddress = keystore.keystore.L1KeyStoreContractAddress
+    const walletAddress = await calcWalletAddress(0, account, guardiansList, amountForm.values.amount);
+    console.log('handleSubmit', account, guardiansList, walletAddress)
+
+    // useAddressStore
 
     handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     /* return new Promise((resolve, reject) => {
