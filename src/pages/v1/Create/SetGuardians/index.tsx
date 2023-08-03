@@ -283,7 +283,7 @@ export default function GuardiansSetting() {
           value={amountForm.values.amount}
           onChange={amountForm.onChange('amount')}
           onBlur={amountForm.onBlur('amount')}
-          errorMsg={amountForm.showErrors.amount && amountForm.errors.amount}
+          errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
           RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
           _styles={{ width: '180px', marginTop: '0.75em' }}
         />
