@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from "nanoid";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -99,14 +99,8 @@ export const getMessageType = (msg: string) => {
     }
 };
 
-export function* uuidGenerator() {
-  while (true) {
-    yield uuidv4()
-  }
-}
-
 export const nextRandomId = () => {
-  return uuidGenerator().next().value
+    return nanoid()
 }
 
 
@@ -132,7 +126,7 @@ export const nextRandomId = () => {
 //         [key]: deepHexlify(obj[key])
 //       }), {})
 //   }
-  
+
 //   // resolve all property and hexlify.
 //   // (UserOpMethodHandler receives data from the network, so we need to pack our generated values)
 //   export async function resolveHexlify (a: any): Promise<any> {

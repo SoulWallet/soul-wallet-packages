@@ -1,4 +1,5 @@
-import React, { useState, useRef, useImperativeHandle, useCallback } from 'react';
+import React, { useState, useRef, useImperativeHandle, useCallback, useEffect } from 'react';
+import { ethers } from "ethers";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import MinusIcon from "@src/assets/icons/minus.svg";
@@ -35,8 +36,25 @@ const getFieldsByGuardianIds = (ids: any) => {
   return fields
 }
 
-const validate = () => {
-  return {}
+const validate = (values: any) => {
+  const errors: any = {}
+  const addressKeys = Object.keys(values).filter(key => key.indexOf('address') === 0)
+  const nameKeys = Object.keys(values).filter(key => key.indexOf('name') === 0)
+  const existedAddress = []
+
+  for (const addressKey of addressKeys) {
+    const address = values[addressKey]
+
+    if (address && address.length && !ethers.isAddress(address)) {
+      errors[addressKey] = 'Invalid Address'
+    } else if (existedAddress.indexOf(address) !== -1) {
+      errors[addressKey] = 'Duplicated Address'
+    } else if (address && address.length) {
+      existedAddress.push(address)
+    }
+  }
+
+  return errors
 }
 
 const amountValidate = () => {
@@ -46,26 +64,40 @@ const amountValidate = () => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
-  // const { generateWalletAddress } = useWallet();
+  const { generateWalletAddress } = useWallet();
   const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
   const [skipping, setSkipping] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
-  const [fields, setFields] = useState(defaultGuardianIds)
+  const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
+  const [guardiansList, setGuardiansList] = useState([])
 
-  const { values, errors, invalid, onChange, onBlur, showErrors } = useForm({
+  const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
     validate
   })
+
+  const disabled = invalid || !guardiansList.length
 
   const amountForm = useForm({
     fields: ['amount'],
     validate: amountValidate
   })
 
+  useEffect(() => {
+    setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
+  }, [values])
+  console.log('values', values)
+
   // const { guardians, updateErrorMsgById, addGuardian } = createGuardianStore({ guardians: [] })
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
+    const eoaAddress = keystore.keystore.L1KeyStoreContractAddress
+    const walletAddress = await generateWalletAddress(eoaAddress, guardiansList, true);
+    console.log('handleSubmit', eoaAddress, guardiansList, walletAddress)
+
+    handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     /* return new Promise((resolve, reject) => {
      *   const addressList: string[] = [];
 
@@ -91,6 +123,7 @@ export default function GuardiansSetting() {
     const newFields = getFieldsByGuardianIds(newGuardianIds)
     setGuardianIds(newGuardianIds)
     setFields(newFields)
+    addFields(getFieldsByGuardianIds([id]))
   };
 
   const removeGuardian = (deleteId: string) => {
@@ -99,6 +132,8 @@ export default function GuardiansSetting() {
       const newFields = getFieldsByGuardianIds(newGuardianIds)
       setGuardianIds(newGuardianIds)
       setFields(newFields)
+      const deleteFields = getFieldsByGuardianIds([deleteId])
+      removeFields(deleteFields)
     }
   }
 
@@ -205,10 +240,12 @@ export default function GuardiansSetting() {
                 leftPlaceholder="Enter guardian address"
                 leftValue={values[`address_${id}`]}
                 leftOnChange={onChange(`address_${id}`)}
+                leftOnBlur={onBlur(`address_${id}`)}
                 leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
                 rightPlaceholder="Assign nickname"
                 rightValue={values[`name_${id}`]}
                 rightOnChange={onChange(`name_${id}`)}
+                rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
               />
@@ -245,8 +282,8 @@ export default function GuardiansSetting() {
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
         <Button
-          disabled={false}
-          onClick={handleNext}
+          disabled={disabled}
+          onClick={handleSubmit}
           _styles={{ width: '455px' }}
         >
           Continue

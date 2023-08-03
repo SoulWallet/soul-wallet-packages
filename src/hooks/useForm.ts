@@ -44,13 +44,23 @@ export default function useForm({ fields, validate }: any) {
         }
     }
 
-    const addField = (fieldName: string) => {
-        setValues({ ...values, [fieldName]: '' })
+    const addFields = (fieldNames: string[]) => {
+        const newValues = { ...values }
+
+        for (const fieldName of fieldNames) {
+          newValues[fieldName] = newValues[fieldName] || ''
+        }
+
+        setValues(newValues)
     }
 
-    const removeField = (fieldName: string) => {
+    const removeFields = (fieldNames: string[]) => {
         const newValues = { ...values }
-        delete newValues[fieldName]
+
+        for (const fieldName of fieldNames) {
+          delete newValues[fieldName]
+        }
+
         setValues(newValues)
     }
 
@@ -62,7 +72,7 @@ export default function useForm({ fields, validate }: any) {
         onChange,
         onBlur,
         showErrors,
-        addField,
-        removeField
+        addFields,
+        removeFields
     }
 }

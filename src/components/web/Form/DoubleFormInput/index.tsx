@@ -7,10 +7,12 @@ interface IProps {
   leftPlaceholder?: string;
   leftErrorMsg?: string;
   leftOnChange: (value: string) => void;
+  leftOnBlur?: (value: string) => void;
   rightValue?: string;
   rightPlaceholder?: string;
   rightErrorMsg?: string;
   rightOnChange: (value: string) => void;
+  rightOnBlur?: (value: string) => void;
   _styles?: any;
   leftLabel?: String;
   rightLabel?: String;
@@ -22,11 +24,13 @@ export default function DoubleFormInput({
   leftPlaceholder,
   leftErrorMsg,
   leftOnChange,
+  leftOnBlur,
   rightLabel,
   rightValue,
   rightPlaceholder,
   rightErrorMsg,
   rightOnChange,
+  rightOnBlur,
   _styles
 }: IProps) {
   const handleLeftChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +39,14 @@ export default function DoubleFormInput({
 
   const handleRightChange = (e: ChangeEvent<HTMLInputElement>) => {
     rightOnChange(e.target.value);
+  };
+
+  const handleLeftBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    if (leftOnBlur) leftOnBlur(e.target.value);
+  };
+
+  const handleRightBlur = (e: ChangeEvent<HTMLInputElement>) => {
+    if (rightOnBlur) rightOnBlur(e.target.value);
   };
 
   return (
@@ -48,6 +60,7 @@ export default function DoubleFormInput({
               placeholder={leftPlaceholder}
               value={leftValue ?? ""}
               onChange={handleLeftChange}
+              onBlur={handleLeftBlur}
               borderRadius="1em"
               paddingLeft="1.5rem"
               paddingRight="1.5rem"
@@ -70,6 +83,7 @@ export default function DoubleFormInput({
               placeholder={rightPlaceholder}
               value={rightValue ?? ""}
               onChange={handleRightChange}
+              onBlur={handleRightBlur}
               borderRadius="1em"
               paddingLeft="1.5rem"
               paddingRight="1.5rem"
