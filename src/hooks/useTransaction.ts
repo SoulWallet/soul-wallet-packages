@@ -3,8 +3,6 @@
  */
 
 import useWalletContext from "../context/hooks/useWalletContext";
-import useLib from "./useLib";
-import useQuery from "./useQuery";
 import { ethers } from "ethers";
 import BN from "bignumber.js";
 import { ITokenItem } from "@src/lib/type";
@@ -16,12 +14,10 @@ import { Transaction } from "@soulwallet/sdk";
 import useBrowser from "./useBrowser";
 
 export default function useTransaction() {
-    const { executeOperation, walletAddress, ethersProvider } = useWalletContext();
+    const { executeOperation } = useWalletContext();
     const { selectedAddress } = useAddressStore();
-    const { getGasPrice } = useQuery();
     const keyStore = useKeyring();
     const { navigateToSign } = useBrowser();
-    const { soulWalletLib } = useLib();
 
     const signTransaction = async (txData: any) => {
         return await keyStore.sign(txData);

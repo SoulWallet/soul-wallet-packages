@@ -3,7 +3,6 @@ import useKeyring from "./useKeyring";
 import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import { ethers } from "ethers";
-import useLib from "./useLib";
 import BN from "bignumber.js";
 import useSoulWallet from "./useSoulWallet";
 import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@src/lib/tools";
@@ -17,13 +16,10 @@ export default function useWallet() {
     const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
-    const { getGuardianInitCode } = useTools();
     const { calcWalletAddress } = useSoulWallet();
     const { guardians } = useGlobalStore();
     const keystore = useKeyring();
     const { soulWallet } = useSoulWallet();
-
-    const { soulWalletLib } = useLib();
 
     const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);

@@ -6,7 +6,6 @@ import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
 import { ethers } from "ethers";
 import useTools from "./useTools";
-import useLib from "./useLib";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import { useBalanceStore } from "@src/store/balanceStore";
 import useSoulWallet from "./useSoulWallet";
@@ -17,7 +16,6 @@ export default function useQuery() {
     const { setBalance } = useBalanceStore();
     const { soulWallet } = useSoulWallet();
     const erc20Contract = useErc20Contract();
-    const { soulWalletLib, bundler } = useLib();
 
     const { verifyAddressFormat, safeParseUnits } = useTools();
 

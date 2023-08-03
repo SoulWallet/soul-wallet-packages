@@ -14,7 +14,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
     switch (msg.type) {
         case "set/password":
-            console.log("READY TO SET", msg.data);
             if (msg.data) {
                 password = msg.data;
             }
@@ -83,8 +82,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
-
-            console.log('bbbz', JSON.parse(userOp))
 
             await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
 

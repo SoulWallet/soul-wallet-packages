@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
 import { getLocalStorage, setLocalStorage, getMessageType } from "@src/lib/tools";
-import useLib from "@src/hooks/useLib";
 import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeyring from "@src/hooks/useKeyring";
@@ -15,10 +14,9 @@ import { useSettingStore } from "@src/store/settingStore";
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { walletAddress, ethersProvider, account } = useWalletContext();
+    const { walletAddress, account } = useWalletContext();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, estimateUserOperationGas } = useQuery();
-    const { soulWalletLib } = useLib();
+    const { estimateUserOperationGas } = useQuery();
     const signModal = createRef<any>();
     const keystore = useKeyring();
 
