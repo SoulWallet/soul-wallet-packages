@@ -1,6 +1,7 @@
 import { SoulWallet } from "@soulwallet/sdk";
 import config from "@src/config";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
 
 export default function useSoulWallet() {
@@ -24,8 +25,8 @@ export default function useSoulWallet() {
      * @returns
      */
     const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number) => {
-        const guardianHash = calcGuardianHash(guardians, threshold);
-        return await soulWallet.calcWalletAddress(index, initialKey, guardianHash);
+        const guardianHash = guardians.length > 0 ? calcGuardianHash(guardians, threshold) : ethers.ZeroHash;
+        return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash);
     };
 
     return { soulWallet, calcWalletAddress };

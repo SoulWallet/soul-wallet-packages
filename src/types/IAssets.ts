@@ -4,5 +4,4 @@ export interface ICostItem {
     value?: string;
     loading?: boolean;
     memo?: string;
-    align?: EnAlign;
 }

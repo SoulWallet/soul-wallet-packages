@@ -7,6 +7,7 @@ import PasswordStrengthBar from "@src/components/web/PasswordStrengthBar";
 import Button from "@src/components/web/Button";
 import FormInput from "@src/components/web/Form/FormInput";
 import useForm from "@src/hooks/useForm";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 
 interface PasswordFormField {
   password?: string;
@@ -29,6 +30,7 @@ const validate = (values: PasswordFormField) => {
 export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
+  const {getAccount} = useWalletContext()
 
   const {
     values,
@@ -52,15 +54,15 @@ export default function SetPassword() {
       if (password) {
         setLoaing(true)
         await keystore.createNewAddress(password, true);
+        getAccount();
         setLoaing(false)
-
         dispatch({
           type: StepActionTypeEn.JumpToTargetStep,
           payload: CreateStepEn.SetupGuardians,
         });
       }
     } catch (e) {
-      // console.log('error', error.message)
+      console.log('error', e)
     }
   };
 

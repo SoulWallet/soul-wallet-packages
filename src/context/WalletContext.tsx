@@ -57,9 +57,9 @@ export const WalletContextProvider = ({ children }: any) => {
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
-        const wAddress = await getLocalStorage("walletAddress");
+        // const wAddress = await getLocalStorage("walletAddress");
         setAccount(res);
-        setWalletAddress(wAddress);
+        // setWalletAddress(wAddress);
     };
 
     const getWalletType = async () => {
