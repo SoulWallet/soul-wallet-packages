@@ -82,7 +82,7 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSoulWallet();
-  const { selectedAddress, setSelectedAddress, updateAddressItem } = useAddressStore();
+  const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -110,10 +110,10 @@ export default function GuardiansSetting() {
     try {
       const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
       const walletAddress = await calcWalletAddress(0, account, guardiansList, amountForm.values.amount || 0);
-      const walletName = `account1`
+      const walletName = `Account 1`
       // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
       const newAddress = (walletAddress as any)._value
-      updateAddressItem(newAddress, { title: walletName, address: newAddress, activated: true })
+      addAddressItem({ title: walletName, address: newAddress, activated: false })
       setSelectedAddress(newAddress)
       console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, amountForm.values.amount || 2)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);

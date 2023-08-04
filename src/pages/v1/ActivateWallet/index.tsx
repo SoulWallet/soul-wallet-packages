@@ -17,7 +17,7 @@ import BN from "bignumber.js";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore } from "@src/store/address";
-import ApprovePaymaster from "@src/components/ApprovePaymaster";
+// import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
     const { getWalletType, account, walletType } = useWalletContext();

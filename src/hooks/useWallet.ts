@@ -3,8 +3,8 @@ import useKeyring from "./useKeyring";
 import { useGlobalStore } from "@src/store/global";
 import useTools from "./useTools";
 import { ethers } from "ethers";
-import BN from "bignumber.js";
 import useSoulWallet from "./useSoulWallet";
+import { useAddressStore } from "@src/store/address";
 import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
@@ -14,10 +14,9 @@ import { GuardianItem } from "@src/lib/type";
 
 export default function useWallet() {
     const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
+    const {updateAddressItem} = useAddressStore();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
-    const { calcWalletAddress } = useSoulWallet();
-    const { guardians } = useGlobalStore();
     const keystore = useKeyring();
     const { soulWallet } = useSoulWallet();
 
@@ -34,6 +33,7 @@ export default function useWallet() {
             return await getFeeCost(userOp, payToken === config.zeroAddress ? "" : payToken);
         } else {
             await directSignAndSend(userOp, payToken);
+            updateAddressItem(userOp.sender, {activated: true})
         }
 
         // const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];

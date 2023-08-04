@@ -8,14 +8,17 @@ interface IListItem {
     titleDesc: string;
     amount: string;
     amountDesc: string;
+    onClick?: () => void;
 }
 
-export default function ListItem({ icon, title, titleDesc, amount, amountDesc, idx }: IListItem) {
+export default function ListItem({ icon, title, titleDesc, onClick, amount, amountDesc, idx }: IListItem) {
     return (
         <Flex
+            onClick={onClick}
             justify={"space-between"}
             align={"center"}
             py="3"
+            cursor={"pointer"}
             pt={idx === 0 ? "0px" : ""}
             transition={"all"}
             _hover={{ transform: "scale(0.99)" }}

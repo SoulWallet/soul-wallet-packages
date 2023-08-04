@@ -21,9 +21,6 @@ export default function ActivateHint() {
                 <Button fontSize="14px" fontWeight={"800"} py="2" onClick={() => navigate("activate-wallet")}>
                     Begin
                 </Button>
-                <Button fontSize="14px" fontWeight={"800"} py="2" onClick={async() => console.log('calc', await calcWalletAddress(0, account, [], 0))}>
-                    Calculate Addr
-                </Button>
             </Box>
         </Box>
     );

@@ -65,9 +65,9 @@ export default forwardRef<any>((props, ref) => {
             ref={ref}
             {...props}
         >
-            <Flex flexDir={"column"} align={"center"} gap="3" mb="10">
-                <Image src={IconLogo} w="160px" />
-                <Image src={IconLogoText} w="198px" />
+            <Flex flexDir={"column"} align={"center"} gap="3" mb="8">
+                <Image src={IconLogo} w="75px" />
+                <Image src={IconLogoText} w="90px" />
             </Flex>
 
             <FormInput

@@ -10,6 +10,7 @@ interface IAddressItem {
 
 interface IAddressStore {
     selectedAddress: string;
+    selectedAddressItem: IAddressItem;
     addressList: IAddressItem[];
     setSelectedAddress: (address: string) => void;
     addAddressItem: (addressItem: IAddressItem) => void;
@@ -21,19 +22,30 @@ const getIndexByAddress = (addressList: IAddressItem[], address: string) => {
     return addressList.findIndex((item: IAddressItem) => item.address === address);
 };
 
-const createAddressSlice = immer<IAddressStore>((set) => ({
+const createAddressSlice = immer<IAddressStore>((set, get) => ({
     selectedAddress: "",
+    selectedAddressItem: {
+        title: "",
+        address: "",
+        activated: false,
+    },
     addressList: [],
-    setSelectedAddress: (address: string) => set({ selectedAddress: address }),
+    setSelectedAddress: (address: string) =>
+        set({
+            selectedAddress: address,
+            selectedAddressItem: get().addressList.filter(
+                (item: IAddressItem) => item.address === get().selectedAddress,
+            )[0],
+        }),
     addAddressItem: (addressItem: IAddressItem) => {
         set((state) => {
             state.addressList.push(addressItem);
         });
     },
-    updateAddressItem: (address: string, addressItem:Partial<IAddressItem>) => {
+    updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => {
         set((state) => {
             const index = getIndexByAddress(state.addressList, address);
-            const item = state.addressList.filter((item:IAddressItem) => item.address === address)[0]
+            const item = state.addressList.filter((item: IAddressItem) => item.address === address)[0];
             state.addressList[index] = {
                 ...item,
                 ...addressItem,
