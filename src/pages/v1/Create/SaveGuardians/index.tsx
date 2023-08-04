@@ -16,6 +16,9 @@ import WarningIcon from "@src/components/Icons/Warning";
 import DownloadIcon from '@src/components/Icons/Download'
 import SendIcon from '@src/components/Icons/Send'
 import useForm from "@src/hooks/useForm";
+import useWalletContext from '@src/context/hooks/useWalletContext';
+import { useAddressStore } from "@src/store/address";
+import { useGuardianStore } from "@src/store/guardian";
 
 const validate = (values: any) => {
   const errors: any = {}
@@ -31,11 +34,14 @@ const validate = (values: any) => {
 const SaveGuardians = () => {
   const [hasSaved, setHasSaved] = useState(false);
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
-  const { guardians } = useGlobalStore();
+  // const { guardians } = useGlobalStore();
   const [email, setEmail] = useState<string>();
   const [downloading, setDownloading] = useState(false);
   const [sending, setSending] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const { account } = useWalletContext();
+  const { selectedAddressItem } = useAddressStore();
+  const { guardians, threshold } = useGuardianStore();
 
   const emailForm = useForm({
     fields: ['email'],
@@ -72,9 +78,7 @@ const SaveGuardians = () => {
 
     try {
       const walletAddress = await getLocalStorage("walletAddress");
-
       const jsonToSave = formatGuardianFile(walletAddress, guardians);
-
       const res: any = await emailJsonFile(jsonToSave, email);
 
       if (res.code === 200) {
@@ -100,9 +104,12 @@ const SaveGuardians = () => {
     });
   };
 
+  const handleBackupGuardians = () => {
+    console.log('handleBackupGuardians', account, guardians, threshold)
+  };
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-
       <Heading1>Backup Guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">
@@ -139,7 +146,7 @@ const SaveGuardians = () => {
               Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.
             </TextBody>
           </Box>
-          <Button loading={downloading} _styles={{ width: '100%' }}>
+          <Button loading={downloading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
             Store On-chain
           </Button>
         </Box>

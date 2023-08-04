@@ -241,11 +241,16 @@ export default function useWallet() {
         // const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
     };
 
+    const backupGuardians = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
+
+    };
+
     return {
         activateWallet,
         initRecoverWallet,
         recoverWallet,
         updateGuardian,
         directSignAndSend,
+        backupGuardians
     };
 }

@@ -34,9 +34,14 @@ const account = {
     finishRecoveryRecord: (params: any) => axio.post("/finish-recovery-record", params),
 };
 
+const guardian = {
+    backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params),
+};
+
 export default {
     recovery,
     // TODO, to be removed
     account,
     notification,
+    guardian
 };
