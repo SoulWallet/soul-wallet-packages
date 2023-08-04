@@ -35,9 +35,10 @@ const account = {
 };
 
 const guardian = {
-    backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params),
+    backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params)
+}
 
-    const balance = {
+const balance = {
     nft: (params: any) => axio.get("/nft/balance", { params }),
     token: (params: any) => axio.get("/token/balance", { params }),
 };

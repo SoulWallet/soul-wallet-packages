@@ -18,44 +18,27 @@ export interface IGuardianFormHandler {
 }
 
 const GuardianFormInner = forwardRef(({ noNameInput }: { noNameInput?: boolean }, ref: React.Ref<IGuardianFormHandler>) => {
-  const guardians = useGuardianContext((s) => s.guardians);
-  const updateErrorMsgById = useGuardianContext((s) => s.updateErrorMsgById);
-  const addGuardian = useGuardianContext((s) => s.addGuardian);
+  // const guardians = useGuardianContext((s) => s.guardians);
+  // const updateErrorMsgById = useGuardianContext((s) => s.updateErrorMsgById);
+  // const addGuardian = useGuardianContext((s) => s.addGuardian);
 
-  const handleSubmit: () => Promise<GuardianItem[]> = () =>
-    new Promise((resolve, reject) => {
-      const addressList: string[] = [];
-
-      for (let i = 0; i < guardians.length; i++) {
-        if (guardians[i].address.length && addressList.includes(guardians[i].address)) {
-          updateErrorMsgById(guardians[i].id, "Duplicate address");
-          return reject("Duplicate address");
-        }
-        if (!ethers.isAddress(guardians[i].address)) {
-          updateErrorMsgById(guardians[i].id, "Invalid address");
-          return reject("Invalid address");
-        }
-        addressList.push(guardians[i].address);
-      }
-
-      return resolve(guardians);
-    });
+  const handleSubmit = () => {}
 
   const handleAddGuardian = () => {
-    addGuardian();
+    // addGuardian();
   };
 
-  useImperativeHandle(ref, () => {
-    return {
-      submit: handleSubmit,
-    };
-  });
+  /* useImperativeHandle(ref, () => {
+   *   return {
+   *     submit: handleSubmit,
+   *   };
+   * }); */
 
   console.log('noNameInput 1111', noNameInput)
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
-        {guardians.map((item) => (
+        {[].map((item: any) => (
           <GuardianInput key={item.id} noNameInput={noNameInput} {...item} />
         ))}
         <TextButton onClick={handleAddGuardian} color="#EC588D">

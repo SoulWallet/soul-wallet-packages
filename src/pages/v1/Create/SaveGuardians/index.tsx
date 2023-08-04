@@ -57,7 +57,7 @@ const SaveGuardians = () => {
 
     const walletAddress = await getLocalStorage("walletAddress");
 
-    const jsonToSave = formatGuardianFile(walletAddress, guardians);
+    const jsonToSave = formatGuardianFile(walletAddress, guardians as any);
 
     downloadJsonFile(jsonToSave);
 
@@ -78,7 +78,7 @@ const SaveGuardians = () => {
 
     try {
       const walletAddress = await getLocalStorage("walletAddress");
-      const jsonToSave = formatGuardianFile(walletAddress, guardians);
+      const jsonToSave = formatGuardianFile(walletAddress, guardians as any);
       const res: any = await emailJsonFile(jsonToSave, email);
 
       if (res.code === 200) {

@@ -125,8 +125,8 @@ export default function GuardiansSetting() {
       console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, threshold)
       setLoading(false)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    } catch (e) {
-      console.log('e', e.message)
+    } catch (error: any) {
+      console.log('e', error.message)
       setLoading(false)
     }
   }

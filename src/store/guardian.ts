@@ -14,15 +14,17 @@ export const MAX_GUARDIAN_NUMBER = 15; // 最大guardian数
 export const MIN_GUARDIAN_NUMBER = 1; // 最大guardian数
 
 export interface GuardianStore {
-    guardians: GuardianItem[];
-    setGuardian: (guardian?: GuardianItem) => void;
+    guardians: string[];
+    threshold: number;
+    setGuardians: (guardian: string[]) => void;
+    setThreshold: (threshold: number) => void;
 }
 
 const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: [],
     threshold: 0,
-    setGuardians: (guardians) => set({ guardians }),
-    setThreshold: (threshold) => set({ threshold }),
+    setGuardians: (guardians: string[]) => set({ guardians }),
+    setThreshold: (threshold: number) => set({ threshold }),
 }));
 
 export type GuardianState = ReturnType<typeof createGuardianStore>;
@@ -31,7 +33,7 @@ type GuardianStoreInitialProps = {
     guardians: GuardianItem[];
 };
 
-export const createGuardianStore = (initProps?: GuardianStoreInitialProps) =>
+export const createGuardianStore = (initProps?: any) =>
     create<GuardianStore>()((...a) => ({ ...createGuardianSlice(...a), ...initProps }));
 
 export const useGuardianStore = create<GuardianStore>()(
