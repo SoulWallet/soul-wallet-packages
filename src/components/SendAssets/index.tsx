@@ -9,6 +9,7 @@ import { ethers } from "ethers";
 import { useBalanceStore } from "@src/store/balanceStore";
 import { InfoWrap, InfoItem } from "../SignTransaction";
 import { toast } from "material-react-toastify";
+import { useAddressStore } from "@src/store/address";
 import AmountInput from "./comp/AmountInput";
 import AddressInput from "./comp/AddressInput";
 import GasSelect from "./comp/GasSelect";
@@ -28,11 +29,12 @@ interface ISendAssets {
 }
 
 export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
-    const { walletAddress } = useWalletContext();
+    const { selectedAddress } = useAddressStore();
     const [amount, setAmount] = useState<string>("");
-    const { balance } = useBalanceStore();
+    const { getTokenBalance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
+    const [payToken, setPayToken] = useState(config.zeroAddress);
 
     const { sendErc20, sendEth } = useTransaction();
 
@@ -45,9 +47,8 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             toast.error("Amount not valid");
             return;
         }
-        const tokenBalance = balance.get(sendToken);
 
-        if (!tokenBalance || new BN(amount).isGreaterThan(tokenBalance)) {
+        if (new BN(amount).isGreaterThan(getTokenBalance(sendToken))) {
             toast.error("Balance not enough");
             // return;
         }
@@ -73,7 +74,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             </Text>
             <Flex flexDir={"column"} gap="5">
                 <AmountInput sendToken={sendToken} amount={amount} onChange={setAmount} onTokenChange={setSendToken} />
-                <AddressInput label="From" address={walletAddress} disabled />
+                <AddressInput label="From" address={selectedAddress} disabled />
                 <AddressInput
                     label="To"
                     address={receiverAddress}
@@ -85,7 +86,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                         <Text>Gas fee ($2.22)</Text>
                         <Flex gap="2">
                             <Text>2.22</Text>
-                            <GasSelect />
+                            <GasSelect gasToken={payToken} onChange={setPayToken} />
                         </Flex>
                     </InfoItem>
                 </InfoWrap>

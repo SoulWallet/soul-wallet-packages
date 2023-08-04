@@ -1,11 +1,8 @@
 import useWalletContext from "../context/hooks/useWalletContext";
 import useKeyring from "./useKeyring";
-import { useGlobalStore } from "@src/store/global";
-import useTools from "./useTools";
 import { ethers } from "ethers";
 import useSoulWallet from "./useSoulWallet";
 import { useAddressStore } from "@src/store/address";
-import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";

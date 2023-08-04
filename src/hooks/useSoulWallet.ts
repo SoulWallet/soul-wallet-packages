@@ -1,6 +1,5 @@
 import { SoulWallet } from "@soulwallet/sdk";
 import config from "@src/config";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
 

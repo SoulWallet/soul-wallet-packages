@@ -41,6 +41,7 @@ export default {
         },
     ],
     magicValue: "0x1626ba7e",
+    backendURL: "https://api-dev.soulwallet.io/appapi",
     zeroAddress: "0x0000000000000000000000000000000000000000",
     ...require(`./${process.env.CHAIN}`).default,
 };

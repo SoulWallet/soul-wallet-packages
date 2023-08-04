@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import { TokenSelect } from "@src/components/TokenSelect";
 import CostItem from "@src/components/CostItem";
 import { toast } from "material-react-toastify";
 import config from "@src/config";
@@ -30,7 +29,7 @@ export default function ActivateWallet() {
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
     const { navigate } = useBrowser();
-    const { balance } = useBalanceStore();
+    const { tokenBalance, fetchTokenBalance } = useBalanceStore();
 
     useEffect(() => {
         if (walletType === "contract") {
@@ -39,6 +38,12 @@ export default function ActivateWallet() {
     }, [walletType]);
 
     const doActivate = async () => {
+        // if (new BN(userBalance).isLessThan(maxCost)) {
+        //     toast.error("Balance not enough");
+        //     return;
+        // }
+
+
         setLoading(true);
         try {
             await activateWallet(payToken, paymasterApproved, false);
@@ -50,14 +55,6 @@ export default function ActivateWallet() {
             console.log("activate error", err);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const goNext = () => {
-        const userBalance = balance.get(payToken) || 0;
-        if (new BN(userBalance).isLessThan(maxCost)) {
-            toast.error("Balance not enough");
-            return;
         }
     };
 

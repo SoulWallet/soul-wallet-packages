@@ -6,16 +6,12 @@ import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
 import { ethers } from "ethers";
 import useTools from "./useTools";
-import useErc20Contract from "@src/contract/useErc20Contract";
-import { useBalanceStore } from "@src/store/balanceStore";
 import useSoulWallet from "./useSoulWallet";
 import config from "@src/config";
 
 export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
-    const { setBalance } = useBalanceStore();
     const { soulWallet } = useSoulWallet();
-    const erc20Contract = useErc20Contract();
 
     const { verifyAddressFormat, safeParseUnits } = useTools();
 
@@ -37,20 +33,9 @@ export default function useQuery() {
             return;
         }
 
-        const ethBalance = await getEthBalance();
-        setBalance(config.zeroAddress, ethBalance);
+        // const ethBalance = await getEthBalance();
+        // setBalance(config.zeroAddress, ethBalance);
 
-        // const erc20Balance = await erc20Contract.batchBalanceOf(
-        //     config.assetsList.filter((item: any) => item.symbol !== config.chainToken).map((item: any) => item.address),
-        // );
-
-        // Object.keys(erc20Balance).forEach((key: string) => {
-        //     const balanceRaw = erc20Balance[key].callsReturnContext[0].returnValues[0].hex;
-
-        //     const balanceDecimal = erc20Balance[key].callsReturnContext[1].returnValues[0];
-
-        //     setBalance(key, new BN(balanceRaw).shiftedBy(-balanceDecimal).toString());
-        // });
     };
 
     const estimateUserOperationGas = async (userOp: any) => {
