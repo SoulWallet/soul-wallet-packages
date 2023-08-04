@@ -1,10 +1,9 @@
 import { SoulWallet } from "@soulwallet/sdk";
 import config from "@src/config";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
 
-export default function useSoulWallet() {
+export default function useSdk() {
     const { calcGuardianHash } = useKeystore();
 
     const soulWallet = new SoulWallet(

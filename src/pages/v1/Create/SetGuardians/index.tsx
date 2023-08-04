@@ -12,7 +12,7 @@ import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
 import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
-import useSoulWallet from '@src/hooks/useSoulWallet';
+import useSdk from '@src/hooks/useSdk';
 import { Box, Text, Image } from "@chakra-ui/react"
 import Heading1 from "@src/components/web/Heading1";
 import Heading3 from "@src/components/web/Heading3";
@@ -83,7 +83,7 @@ export default function GuardiansSetting() {
   const [guardiansList, setGuardiansList] = useState([])
   const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
-  const {calcWalletAddress} = useSoulWallet();
+  const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
   const { setGuardians, setThreshold } = useGuardianStore();
 

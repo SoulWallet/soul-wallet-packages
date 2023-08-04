@@ -36,11 +36,15 @@ const account = {
 
 const guardian = {
     backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params),
+
+    const balance = {
+    nft: (params: any) => axio.get("/nft/balance", { params }),
+    token: (params: any) => axio.get("/token/balance", { params }),
 };
 
 export default {
+    balance,
     recovery,
-    // TODO, to be removed
     account,
     notification,
     guardian

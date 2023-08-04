@@ -10,8 +10,7 @@ import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
 import Button from "../Button";
 import AddressInput from "../SendAssets/comp/AddressInput";
-import { Flex, Box, Text, Image, useColorModeValue } from "@chakra-ui/react";
-import { TokenSelect } from "../TokenSelect";
+import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
 
 enum SignTypeEn {

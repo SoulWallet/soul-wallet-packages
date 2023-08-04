@@ -1,11 +1,8 @@
 import useWalletContext from "../context/hooks/useWalletContext";
 import useKeyring from "./useKeyring";
-import { useGlobalStore } from "@src/store/global";
-import useTools from "./useTools";
 import { ethers } from "ethers";
-import useSoulWallet from "./useSoulWallet";
+import useSdk from "./useSdk";
 import { useAddressStore } from "@src/store/address";
-import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@src/lib/tools";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
@@ -18,7 +15,7 @@ export default function useWallet() {
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
     const keystore = useKeyring();
-    const { soulWallet } = useSoulWallet();
+    const { soulWallet } = useSdk();
 
     const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);

@@ -8,19 +8,19 @@ import { ITokenItem } from "@src/lib/type";
 import ListItem from "../ListItem";
 import config from "@src/config";
 import useBrowser from "@src/hooks/useBrowser";
+import { useAddressStore } from "@src/store/address";
 
 export default function Tokens() {
-    const { walletAddress } = useWalletContext();
-    const { balance } = useBalanceStore();
-    const { getBalances } = useQuery();
+    const { selectedAddress } = useAddressStore()
+    const { tokenBalance , fetchTokenBalance} = useBalanceStore();
     const { navigate } = useBrowser();
 
     useEffect(() => {
-        if (!walletAddress) {
+        if (!selectedAddress) {
             return;
         }
-        getBalances();
-    }, [walletAddress]);
+        fetchTokenBalance(selectedAddress)
+    }, [selectedAddress]);
 
     return (
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
@@ -31,7 +31,7 @@ export default function Tokens() {
                     icon={item.icon}
                     title={item.name}
                     titleDesc={"Token"}
-                    amount={`${BN(balance.get(item.address) || 0).toPrecision(4)} ${item.symbol}`}
+                    amount={`1 ${item.symbol}`}
                     amountDesc={`$1231.21`}
                     onClick={() => navigate(`send/${item.address}`)}
                 />

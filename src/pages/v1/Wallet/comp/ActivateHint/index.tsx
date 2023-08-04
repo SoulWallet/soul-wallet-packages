@@ -2,13 +2,13 @@ import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Button from "@src/components/Button";
 import useBrowser from "@src/hooks/useBrowser";
-import useSoulWallet from "@src/hooks/useSoulWallet";
+import useSdk from "@src/hooks/useSdk";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 
 export default function ActivateHint() {
     const { navigate } = useBrowser();
     const {account} = useWalletContext();
-    const {calcWalletAddress} = useSoulWallet();
+    const {calcWalletAddress} = useSdk();
     return (
         <Box bg="#fff" rounded="20px" p="4" pb="3" color="#000" mt="4" mb="6">
             <Text fontWeight={"800"} fontSize={"18px"} mb="1">
