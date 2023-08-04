@@ -6,12 +6,12 @@ import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
 import { ethers } from "ethers";
 import useTools from "./useTools";
-import useSoulWallet from "./useSoulWallet";
+import useSdk from "./useSdk";
 import config from "@src/config";
 
 export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
-    const { soulWallet } = useSoulWallet();
+    const { soulWallet } = useSdk();
 
     const { verifyAddressFormat, safeParseUnits } = useTools();
 

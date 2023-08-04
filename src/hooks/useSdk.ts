@@ -3,7 +3,7 @@ import config from "@src/config";
 import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
 
-export default function useSoulWallet() {
+export default function useSdk() {
     const { calcGuardianHash } = useKeystore();
 
     const soulWallet = new SoulWallet(

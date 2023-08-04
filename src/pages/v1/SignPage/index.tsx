@@ -7,7 +7,7 @@ import useQuery from "@src/hooks/useQuery";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeyring from "@src/hooks/useKeyring";
 import { useSearchParams } from "react-router-dom";
-import useSoulWallet from "@src/hooks/useSoulWallet";
+import useSdk from "@src/hooks/useSdk";
 import SignTransaction from "@src/components/SignTransaction";
 import { useSettingStore } from "@src/store/settingStore";
 
