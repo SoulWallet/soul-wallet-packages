@@ -23,6 +23,7 @@ import { nextRandomId } from "@src/lib/tools";
 import WarningIcon from "@src/components/Icons/Warning";
 import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
+import { useGuardianStore } from "@src/store/guardian";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -75,6 +76,7 @@ export default function GuardiansSetting() {
   const keystore = useKeystore();
   const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [skipping, setSkipping] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
@@ -83,6 +85,7 @@ export default function GuardiansSetting() {
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
+  const { setGuardians, setThreshold } = useGuardianStore();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -95,7 +98,7 @@ export default function GuardiansSetting() {
     restProps: amountData
   })
 
-  const disabled = invalid || !guardiansList.length || amountForm.invalid
+  const disabled = invalid || !guardiansList.length || amountForm.invalid || loading
 
   useEffect(() => {
     setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
@@ -108,17 +111,23 @@ export default function GuardiansSetting() {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
-      const walletAddress = await calcWalletAddress(0, account, guardiansList, amountForm.values.amount || 0);
+      const threshold = amountForm.values.amount || 0
+      const walletAddress = await calcWalletAddress(0, account, guardiansList, threshold);
       const walletName = `Account 1`
       // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
       const newAddress = (walletAddress as any)._value
       addAddressItem({ title: walletName, address: newAddress, activated: false })
       setSelectedAddress(newAddress)
-      console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, amountForm.values.amount || 2)
+      setGuardians(guardiansList)
+      setThreshold(threshold)
+      console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, threshold)
+      setLoading(false)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    } catch (e) {
-
+    } catch (error: any) {
+      console.log('e', error.message)
+      setLoading(false)
     }
   }
 
@@ -291,6 +300,7 @@ export default function GuardiansSetting() {
       <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
         <Button
           disabled={disabled}
+          loading={loading}
           onClick={handleSubmit}
           _styles={{ width: '455px' }}
         >

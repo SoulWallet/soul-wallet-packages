@@ -34,6 +34,10 @@ const account = {
     finishRecoveryRecord: (params: any) => axio.post("/finish-recovery-record", params),
 };
 
+const guardian = {
+    backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params)
+}
+
 const balance = {
     nft: (params: any) => axio.get("/nft/balance", { params }),
     token: (params: any) => axio.get("/token/balance", { params }),
@@ -44,4 +48,5 @@ export default {
     recovery,
     account,
     notification,
+    guardian
 };

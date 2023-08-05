@@ -11,18 +11,16 @@ import { Box } from "@chakra-ui/react"
 type IProps = GuardianItem;
 
 export default function GuardianInput({ id, name, address, errorMsg, inputClassName, noNameInput }: IProps) {
-  const { removeGuardian, updateAddressById, updateNameById, updateErrorMsgById } = useGuardianContext((s) => s);
-
   const handleNameChange = (value: string) => {
-    updateNameById(id, value);
+    // updateNameById(id, value);
   };
   const handleAddressChange = (value: string) => {
-    updateErrorMsgById(id);
-    updateAddressById(id, value);
+    // updateErrorMsgById(id);
+    // updateAddressById(id, value);
   };
 
   const handleDelete = () => {
-    removeGuardian(id);
+    // removeGuardian(id);
   };
 
   console.log('noNameInput', noNameInput)
