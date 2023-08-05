@@ -1,4 +1,4 @@
-import { SoulWallet } from "@soulwallet/sdk";
+import { L1KeyStore, SoulWallet } from "@soulwallet/sdk";
 import config from "@src/config";
 import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
@@ -23,12 +23,10 @@ export default function useSdk() {
      * @param threshold, guardian threshold
      * @returns
      */
-    const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number) => {
+    const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
         const guardianHash = guardians.length > 0 ? calcGuardianHash(guardians, threshold) : ethers.ZeroHash;
-        return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash);
+        return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash, initialGuardianSafePeriod);
     };
-
-
 
     return { soulWallet, calcWalletAddress };
 }
