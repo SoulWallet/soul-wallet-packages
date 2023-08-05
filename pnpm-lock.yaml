@@ -12,7 +12,7 @@ specifiers:
   '@emotion/styled': ^11.11.0
   '@metamask/eth-sig-util': ^4.0.1
   '@soulwallet/abi': ^0.0.1
-  '@soulwallet/decoder': ^0.0.1
+  '@soulwallet/decoder': ^0.0.11
   '@soulwallet/sdk': ^0.0.14
   '@types/chrome': ^0.0.124
   '@types/jest': ^26.0.14
@@ -88,7 +88,7 @@ dependencies:
   '@emotion/styled': 11.11.0_vllhnkhzkiawoi6sot3eqtu3ye
   '@metamask/eth-sig-util': 4.0.1
   '@soulwallet/abi': 0.0.1
-  '@soulwallet/decoder': 0.0.1
+  '@soulwallet/decoder': 0.0.11
   '@soulwallet/sdk': 0.0.14
   '@types/qrcode': 1.5.1
   '@types/react-router-dom': 5.3.3
@@ -3165,10 +3165,22 @@ packages:
     resolution: {integrity: sha512-RJwjkU36YyrsRSN+PFvkSpFouH1pp22RemhMHX1X/c2zcKlWbYr5ExmN6SrURot8m8HfX7DByCMmIaopEDrYAA==}
     dev: false
 
-  /@soulwallet/decoder/0.0.1:
-    resolution: {integrity: sha512-SNypYrKKMr8CtPDmu9iyaHqcYc/w+lBiDqeOxVi8AxZWqXbITKT3TRIeAXzbCC4PvLy3KFj79XgZc2QY2is/Rw==}
+  /@soulwallet/assets/0.0.10:
+    resolution: {integrity: sha512-HJeyHoPFqefV1q/ck9Gm9dvoLwzaXQfll+ZsmeaUTD7mFp3dmU2GsiOTmffmgp06/N8HfgxO9EFOPHFVSONAxQ==}
     dependencies:
-      '@soulwallet/abi': 0.0.1
+      '@soulwallet/result': 0.0.6
+    dev: false
+
+  /@soulwallet/decoder/0.0.11:
+    resolution: {integrity: sha512-AV0mC3AO/09IA9T236/N+VWSr0APW/+Oh0ANVYdGMiS8HiJsutHxYMZTZ/hJj314kPbOHS3pvqKekNwRlrxr2A==}
+    dependencies:
+      '@soulwallet/abi': 0.0.6
+      '@soulwallet/assets': 0.0.10
+      '@soulwallet/result': 0.0.6
+      ethers: 6.7.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /@soulwallet/result/0.0.6:

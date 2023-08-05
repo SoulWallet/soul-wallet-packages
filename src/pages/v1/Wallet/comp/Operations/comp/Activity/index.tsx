@@ -4,22 +4,19 @@ import { Box } from "@chakra-ui/react";
 import IconEmpty from "@src/assets/empty.svg";
 import IconLoading from "@src/assets/activity-loading.gif";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import soulScanApi from "@src/lib/soulScanApi";
 import config from "@src/config";
 import { Image } from "@chakra-ui/react";
+import scanApi from "@src/lib/scanApi";
+import { useAddressStore } from "@src/store/address";
 
 export default function Activities() {
-    const { walletAddress } = useWalletContext();
+    const {selectedAddress} = useAddressStore()
     const [loading, setLoading] = useState(false);
     const [historyList, setHistoryList] = useState<any>([]);
 
     const getHistory = async () => {
         setLoading(true);
-        const res = await soulScanApi.op.getAll({
-            chainId: config.chainId,
-            entrypointAddress: config.contracts.entryPoint,
-            walletAddress: walletAddress,
-        });
+        const res = await scanApi.op.list(selectedAddress, config.chainId);
         setLoading(false);
         setHistoryList(res.data.ops);
     };

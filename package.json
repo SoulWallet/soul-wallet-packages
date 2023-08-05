@@ -73,7 +73,7 @@
         "@emotion/styled": "^11.11.0",
         "@metamask/eth-sig-util": "^4.0.1",
         "@soulwallet/abi": "^0.0.1",
-        "@soulwallet/decoder": "^0.0.1",
+        "@soulwallet/decoder": "^0.0.11",
         "@soulwallet/sdk": "^0.0.14",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",

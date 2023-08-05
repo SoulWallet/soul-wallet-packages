@@ -55,7 +55,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
         <GridItem
             color={item.activated ? "#29510a" : "#1e1e1e"}
             p="10px"
-            cursor={item.activated ? "pointer" : ""}
+            cursor={"pointer"}
             rounded="20px"
             onClick={onClick}
             style={
@@ -84,7 +84,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
         >
             <Flex align="center" justify="space-between" mb="2px">
                 <Text fontWeight={"800"} fontSize={"14px"}>
-                    {item.name}
+                    {item.title}
                 </Text>
                 <Menu>
                     <MenuButton>

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "material-react-toastify";
-import { getLocalStorage } from "./tools";
 import config from "@src/config";
 
 const axio = axios.create({
@@ -15,8 +14,15 @@ axio.interceptors.response.use((res: any) => {
 });
 
 const op = {
-    get: (params: any) => axio.get(`/op/${params.opHash}`),
-    getAll: (params: any) => axio.post("/op/search", params),
+    list: (walletAddress: string, chainId: number) =>
+        axio.post("/op/search", {
+            walletAddress,
+            chainId,
+        }),
+    detail: (opHash: string) =>
+        axio.post("/op", {
+            opHash,
+        }),
 };
 
 export default {

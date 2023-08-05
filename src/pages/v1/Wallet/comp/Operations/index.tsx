@@ -4,13 +4,11 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 // import * as abi from "@soulwallet/abi";
 import Tokens from "./comp/Tokens";
 import Nfts from "./comp/Nfts";
-import useWalletContext from "@src/context/hooks/useWalletContext";
-import Activitys from "./comp/Activitys";
+import Activity from "./comp/Activity";
 
 const tabs = ["Tokens", "NFTs", "Transactions"];
 
 export default function Operations() {
-    const { walletType } = useWalletContext();
     const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
     return (
@@ -33,7 +31,7 @@ export default function Operations() {
             <Box>
                 {activeTabIndex === 0 && <Tokens />}
                 {activeTabIndex === 1 && <Nfts />}
-                {activeTabIndex === 2 && <Activitys />}
+                {activeTabIndex === 2 && <Activity />}
             </Box>
         </>
     );

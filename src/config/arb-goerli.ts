@@ -55,7 +55,6 @@ export default {
     recoverUrl: "http://soulwallets.me/recover",
     provider: `https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
-    soulScanURL: "https://api.4337scan.dev.soulwallets.me",
     scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?
     defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
@@ -64,7 +63,7 @@ export default {
     upgradeDelay: 10,
     guardianDelay: 10,
     guardianSalt: "",
-    chainId: 42161,
+    chainId: 421613,
     defaultMaxFee: "0.135",
     defaultMaxPriorityFee: "0",
     chainIdHex: `0x${(421613).toString(16)}`,

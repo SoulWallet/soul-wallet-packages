@@ -59,10 +59,4 @@ export default function ActivityItem({ item }: any) {
             />
         </a>
     );
-
-    //         <div className="text-sm">
-    //             {detail.status === 0 && "Success"}
-    //             {detail.status === 1 && "Error"}
-    //             {detail.status === 2 && "Pending"}
-    //         </div>
 }
