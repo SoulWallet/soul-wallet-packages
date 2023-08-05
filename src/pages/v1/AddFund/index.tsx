@@ -10,7 +10,7 @@ import Button from "@src/components/Button";
 
 export default function AddFund() {
     const toast = useToast();
-    const { walletAddress, account, walletType } = useWalletContext();
+    const { walletAddress } = useWalletContext();
 
     const doCopy = () => {
         copyText(walletAddress);

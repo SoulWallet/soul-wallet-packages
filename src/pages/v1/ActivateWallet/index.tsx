@@ -19,7 +19,7 @@ import { useAddressStore } from "@src/store/address";
 // import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
-    const { getWalletType, account, walletType } = useWalletContext();
+    const { getWalletType, account } = useWalletContext();
     const { selectedAddress } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
@@ -31,23 +31,14 @@ export default function ActivateWallet() {
     const { navigate } = useBrowser();
     const { tokenBalance, fetchTokenBalance } = useBalanceStore();
 
-    useEffect(() => {
-        if (walletType === "contract") {
-            navigate("wallet");
-        }
-    }, [walletType]);
-
     const doActivate = async () => {
         // if (new BN(userBalance).isLessThan(maxCost)) {
         //     toast.error("Balance not enough");
         //     return;
         // }
-
-
         setLoading(true);
         try {
             await activateWallet(payToken, paymasterApproved, false);
-            getWalletType();
             navigate("wallet");
             toast.success("Account activated");
         } catch (err) {

@@ -2,22 +2,26 @@ import React, { createRef, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
-import { getLocalStorage, setLocalStorage, getMessageType } from "@src/lib/tools";
+import { getMessageType } from "@src/lib/tools";
 import useQuery from "@src/hooks/useQuery";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeyring from "@src/hooks/useKeyring";
+import { useToast } from "@chakra-ui/react";
 import { useSearchParams } from "react-router-dom";
 import useSdk from "@src/hooks/useSdk";
 import SignTransaction from "@src/components/SignTransaction";
+import useWallet from "@src/hooks/useWallet";
+import useBrowser from "@src/hooks/useBrowser";
 import { useSettingStore } from "@src/store/settingStore";
 import { useAddressStore } from "@src/store/address";
 
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { account } = useWalletContext();
     const { selectedAddress } = useAddressStore();
-    const { estimateUserOperationGas, getGasPrice } = useQuery();
+    const toast = useToast();
+    const { getGasPrice } = useQuery();
+    const { directSignAndSend } = useWallet();
+    const { navigate } = useBrowser();
     const { soulWallet } = useSdk();
     const signModal = createRef<any>();
     const keyring = useKeyring();
@@ -104,42 +108,39 @@ export default function SignPage() {
                 });
             } else if (actionType === "approveTransaction") {
                 // IMPORTANT TODO, move to signModal
-                const operation = await formatOperation();
+                const userOp = await formatOperation();
 
-                const paymasterAndData = await currentSignModal.show(operation, actionType, origin, true);
+                const paymasterAndData = await currentSignModal.show(userOp, actionType, origin, true);
 
                 if (paymasterAndData) {
-                    operation.paymasterAndData = paymasterAndData;
+                    userOp.paymasterAndData = paymasterAndData;
                 }
 
-                await estimateUserOperationGas(operation);
+                await directSignAndSend(userOp);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(
-                    config.contracts.entryPoint,
-                    config.chainId,
-                    account,
-                );
+                // if from dapp, return trsanction result
+                if (tabId) {
+                    await browser.runtime.sendMessage({
+                        target: "soul",
+                        type: "response",
+                        action: "approveTransaction",
+                        tabId: searchParams.tabId,
+                        data: {
+                            operation: JSON.stringify(userOp),
+                            tabId,
+                            bundlerUrl: config.defaultBundlerUrl,
+                        },
+                    });
+                    window.close();
+                } else {
+                    // if internal tx, return to wallet page
+                    toast({
+                        title: "Transaction sent.",
+                        status: "success",
+                    });
 
-                const signature = await keyring.sign(userOpHash);
-
-                if (!signature) {
-                    throw new Error("Failed to sign");
+                    navigate("wallet");
                 }
-
-                operation.signWithSignature(account, signature || "");
-
-                await browser.runtime.sendMessage({
-                    target: "soul",
-                    type: "response",
-                    action: "approveTransaction",
-                    tabId: searchParams.tabId,
-                    data: {
-                        operation: operation.toJSON(),
-                        userOpHash,
-                        tabId,
-                        bundlerUrl: config.defaultBundlerUrl,
-                    },
-                });
             } else if (actionType === "signMessage") {
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
@@ -154,6 +155,8 @@ export default function SignPage() {
                     data: signature,
                     tabId: searchParams.tabId,
                 });
+
+                window.close();
             } else if (actionType === "signMessageV4") {
                 const parsedData = JSON.parse(data);
 
@@ -170,11 +173,12 @@ export default function SignPage() {
                     data: signature,
                     tabId: searchParams.tabId,
                 });
+
+                window.close();
             }
         } catch (err) {
             console.log(err);
         } finally {
-            window.close();
         }
     };
 

@@ -81,7 +81,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                     onChange={(e: any) => setReceiverAddress(e.target.value)}
                     onEnter={confirmAddress}
                 />
-                <InfoWrap>
+                {/* <InfoWrap>
                     <InfoItem>
                         <Text>Gas fee ($2.22)</Text>
                         <Flex gap="2">
@@ -89,7 +89,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                             <GasSelect gasToken={payToken} onChange={setPayToken} />
                         </Flex>
                     </InfoItem>
-                </InfoWrap>
+                </InfoWrap> */}
             </Flex>
             <Button onClick={confirmAddress} w="100%" fontSize={"20px"} py="4" fontWeight={"800"} mt="6">
                 Review

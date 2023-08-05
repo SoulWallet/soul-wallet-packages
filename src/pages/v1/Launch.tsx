@@ -74,7 +74,7 @@ export default function Launch() {
           <Statement />
           {!authorized ? (
             <>
-              <Button onClick={handleAuthorize} type="primary" className="w-base">
+              <Button onClick={handleAuthorize} type="primary" className="w-base" py="3" px="4">
                 I Understand
               </Button>
               <a className="skip-text mb-2" onClick={handleCloseModal}>

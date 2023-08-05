@@ -24,7 +24,7 @@ export default function useSdk() {
      * @returns
      */
     const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
-        const guardianHash = guardians.length > 0 ? calcGuardianHash(guardians, threshold) : ethers.ZeroHash;
+        const guardianHash = calcGuardianHash(guardians, threshold);
         return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash, initialGuardianSafePeriod);
     };
 
