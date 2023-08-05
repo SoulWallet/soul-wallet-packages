@@ -20,6 +20,7 @@ export interface GuardianStore {
     setThreshold: (threshold: number) => void;
 }
 
+// IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
 const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: [],
     threshold: 0,

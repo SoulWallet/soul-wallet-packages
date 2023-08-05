@@ -27,34 +27,7 @@ import IconPlus from "@src/assets/icons/plus.svg";
 import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
 
-const mockAccounts = [
-    {
-        name: "Account 1",
-        address: "0xa9E8a3Cc094141A135A193f0a0d786441fa64E9c",
-        balance: "$1234.56",
-        activated: true,
-    },
-    {
-        name: "Account 2",
-        address: "0x80eDfd33BdD76573bDEF5Cdb37e579657476aab6",
-        balance: "$1234.56",
-        activated: true,
-    },
-    {
-        name: "Account 3",
-        address: "0x80eDfd33BdD76573bDEF5Cdb37e579657476aab6",
-        balance: "$1234.56",
-        activated: true,
-    },
-    {
-        name: "Account 4",
-        address: "0x80eDfd33BdD76573bDEF5Cdb37e579657476aab6",
-        balance: "0",
-        activated: false,
-    },
-];
-
-const AccountItem = ({ item, selected }: any) => {
+const AccountItem = ({ item, selected, onClick }: any) => {
     const toast = useToast();
 
     const doCopy = () => {
@@ -84,6 +57,7 @@ const AccountItem = ({ item, selected }: any) => {
             p="10px"
             cursor={item.activated ? "pointer" : ""}
             rounded="20px"
+            onClick={onClick}
             style={
                 selected
                     ? { border: "2px solid #000000CC" }
@@ -169,7 +143,7 @@ const AccountsNavbar = () => {
 };
 
 export default function Accounts() {
-    const { addressList, selectedAddress } = useAddressStore();
+    const { addressList, selectedAddress, setSelectedAddress } = useAddressStore();
 
     return (
         <Box p="5">
@@ -177,7 +151,16 @@ export default function Accounts() {
             <AccountsNavbar />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
                 {addressList.map((item: any, index: number) => {
-                    return <AccountItem item={item} key={index} selected={item.address === selectedAddress} />;
+                    return (
+                        <AccountItem
+                            item={item}
+                            key={index}
+                            selected={item.address === selectedAddress}
+                            onClick={() => {
+                                setSelectedAddress(item.address);
+                            }}
+                        />
+                    );
                 })}
             </Grid>
         </Box>

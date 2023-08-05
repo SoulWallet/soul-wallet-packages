@@ -40,8 +40,8 @@ const guardian = {
 }
 
 const balance = {
-    nft: (params: any) => axio.get("/nft/balance", { params }),
-    token: (params: any) => axio.get("/token/balance", { params }),
+    nft: (params: any) => axio.get("/nft-balance", { params }),
+    token: (params: any) => axio.get("/token-balance", { params }),
 };
 
 export default {

@@ -53,7 +53,7 @@ export default function Button({
       {...restProps}
     >
       {children}
-      {loading && <Image src={IconLoading} w="20px" h="20px" /> }
+      {loading && <Image src={IconLoading} w="20px" h="20px" ml="1" /> }
     </CButton>
   );
 }

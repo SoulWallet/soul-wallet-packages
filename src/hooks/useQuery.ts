@@ -91,6 +91,8 @@ export default function useQuery() {
         // get preFund
         const preFund = await soulWallet.preFund(userOp);
 
+        console.log('prefund', preFund)
+
         if (preFund.isErr()) {
             throw new Error(preFund.ERR.message);
         }

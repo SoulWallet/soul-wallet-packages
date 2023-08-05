@@ -6,19 +6,26 @@ import { useAddressStore } from "@src/store/address";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
+import { useGuardianStore } from "@src/store/guardian";
 import config from "@src/config";
 import { GuardianItem } from "@src/lib/type";
+import useKeystore from "./useKeystore";
 
 export default function useWallet() {
     const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
     const {updateAddressItem} = useAddressStore();
+    const {calcGuardianHash} = useKeystore();
     const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
+    const {guardians, threshold} = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
     const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
-        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, ethers.ZeroHash);
+
+        const guardianHash = calcGuardianHash(guardians, threshold);
+
+        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, guardianHash);
 
         if (userOpRet.isErr()) {
             throw new Error(userOpRet.ERR.message);

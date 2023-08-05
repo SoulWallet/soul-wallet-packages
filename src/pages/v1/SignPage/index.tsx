@@ -2,23 +2,29 @@ import React, { createRef, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import browser from "webextension-polyfill";
 import config from "@src/config";
-import { getLocalStorage, setLocalStorage, getMessageType } from "@src/lib/tools";
+import { getMessageType } from "@src/lib/tools";
 import useQuery from "@src/hooks/useQuery";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import useKeyring from "@src/hooks/useKeyring";
+import { useToast } from "@chakra-ui/react";
 import { useSearchParams } from "react-router-dom";
 import useSdk from "@src/hooks/useSdk";
 import SignTransaction from "@src/components/SignTransaction";
+import useWallet from "@src/hooks/useWallet";
+import useBrowser from "@src/hooks/useBrowser";
 import { useSettingStore } from "@src/store/settingStore";
+import { useAddressStore } from "@src/store/address";
 
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { walletAddress, account } = useWalletContext();
-    const { bundlerUrl } = useSettingStore();
-    const { estimateUserOperationGas } = useQuery();
+    const { selectedAddress } = useAddressStore();
+    const toast = useToast();
+    const { getGasPrice } = useQuery();
+    const { directSignAndSend } = useWallet();
+    const { navigate } = useBrowser();
+    const { soulWallet } = useSdk();
     const signModal = createRef<any>();
-    const keystore = useKeyring();
+    const keyring = useKeyring();
 
     const formatOperation: any = async () => {
         const { txns } = searchParams;
@@ -26,22 +32,28 @@ export default function SignPage() {
         try {
             const rawTxs = JSON.parse(txns);
 
-            // const nonce = await soulWalletLib.Utils.getNonce(rawTxs[0].from, ethersProvider);
+            const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
-            // const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+            const userOpRet = await soulWallet.fromTransaction(
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                selectedAddress,
+                rawTxs,
+            );
 
-            // const operation: any = soulWalletLib.Utils.fromTransaction(
-            //     rawTxs,
-            //     nonce,
-            //     maxFeePerGas,
-            //     maxPriorityFeePerGas,
-            // );
+            if (userOpRet.isErr()) {
+                throw new Error(userOpRet.ERR.message);
+            }
 
-            // if (!operation) {
-            //     throw new Error("Failed to format tx");
-            // }
+            const userOp = userOpRet.OK;
+            userOp.maxFeePerGas = maxFeePerGas;
+            userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
-            // return operation;
+            if (!userOp) {
+                throw new Error("Failed to format tx");
+            }
+
+            return userOp;
         } catch (err) {
             console.log(err);
         }
@@ -59,15 +71,14 @@ export default function SignPage() {
     }, [params[0]]);
 
     const saveAccountsAllowed = async (origin: string) => {
-        let prev = (await getLocalStorage("accountsAllowed")) || {};
-
-        if (prev[walletAddress] && prev[walletAddress].length > 0) {
-            prev[walletAddress] = [...prev[walletAddress], origin];
-        } else {
-            prev[walletAddress] = [origin];
-        }
-
-        await setLocalStorage("accountsAllowed", prev);
+        // IMPORTANT TODO, move to store to manage
+        // let prev = (await getLocalStorage("accountsAllowed")) || {};
+        // if (prev[walletAddress] && prev[walletAddress].length > 0) {
+        //     prev[walletAddress] = [...prev[walletAddress], origin];
+        // } else {
+        //     prev[walletAddress] = [origin];
+        // }
+        // await setLocalStorage("accountsAllowed", prev);
     };
 
     /**
@@ -92,54 +103,50 @@ export default function SignPage() {
                     target: "soul",
                     type: "response",
                     action: "getAccounts",
-                    data: walletAddress,
+                    data: selectedAddress,
                     tabId: searchParams.tabId,
                 });
             } else if (actionType === "approveTransaction") {
                 // IMPORTANT TODO, move to signModal
-                const operation = await formatOperation();
+                const userOp = await formatOperation();
 
-                const paymasterAndData = await currentSignModal.show(operation, actionType, origin, true);
+                const paymasterAndData = await currentSignModal.show(userOp, actionType, origin, true);
 
                 if (paymasterAndData) {
-                    operation.paymasterAndData = paymasterAndData;
+                    userOp.paymasterAndData = paymasterAndData;
                 }
 
-                await estimateUserOperationGas(operation);
+                await directSignAndSend(userOp);
 
-                const userOpHash = operation.getUserOpHashWithTimeRange(
-                    config.contracts.entryPoint,
-                    config.chainId,
-                    account,
-                );
+                // if from dapp, return trsanction result
+                if (tabId) {
+                    await browser.runtime.sendMessage({
+                        target: "soul",
+                        type: "response",
+                        action: "approveTransaction",
+                        tabId: searchParams.tabId,
+                        data: {
+                            operation: JSON.stringify(userOp),
+                            tabId,
+                            bundlerUrl: config.defaultBundlerUrl,
+                        },
+                    });
+                    window.close();
+                } else {
+                    // if internal tx, return to wallet page
+                    toast({
+                        title: "Transaction sent.",
+                        status: "success",
+                    });
 
-                const signature = await keystore.sign(userOpHash);
-
-                if (!signature) {
-                    throw new Error("Failed to sign");
+                    navigate("wallet");
                 }
-
-                operation.signWithSignature(account, signature || "");
-
-                await browser.runtime.sendMessage({
-                    target: "soul",
-                    type: "response",
-                    action: "approveTransaction",
-                    tabId: searchParams.tabId,
-                    data: {
-                        operation: operation.toJSON(),
-                        userOpHash,
-                        tabId,
-                        bundlerUrl,
-                    },
-                });
             } else if (actionType === "signMessage") {
-
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
                 await currentSignModal.show("", actionType, origin, true, msgToSign);
 
-                const signature = await keystore.signMessage(msgToSign);
+                const signature = await keyring.signMessage(msgToSign);
 
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -148,12 +155,14 @@ export default function SignPage() {
                     data: signature,
                     tabId: searchParams.tabId,
                 });
+
+                window.close();
             } else if (actionType === "signMessageV4") {
                 const parsedData = JSON.parse(data);
 
                 await currentSignModal.show("", actionType, origin, true, data);
 
-                const signature = await keystore.signMessageV4(parsedData);
+                const signature = await keyring.signMessageV4(parsedData);
 
                 console.log("v4 signature", signature);
 
@@ -164,22 +173,23 @@ export default function SignPage() {
                     data: signature,
                     tabId: searchParams.tabId,
                 });
+
+                window.close();
             }
         } catch (err) {
             console.log(err);
         } finally {
-            window.close();
         }
     };
 
     useEffect(() => {
         const current = signModal.current;
-        if (!searchParams.actionType || !current || !walletAddress) {
+        if (!searchParams.actionType || !current || !selectedAddress) {
             return;
         }
         console.log("changed", searchParams.actionType, current);
         determineAction();
-    }, [searchParams.actionType, signModal.current, walletAddress]);
+    }, [searchParams.actionType, signModal.current, selectedAddress]);
 
     return (
         <div>
