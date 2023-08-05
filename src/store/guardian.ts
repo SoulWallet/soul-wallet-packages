@@ -25,7 +25,7 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: [],
     threshold: 0,
     setGuardians: (guardians: string[]) => set({ guardians }),
-    setThreshold: (threshold: number) => set({ threshold }),
+    setThreshold: (threshold: number) => set({ threshold: Number(threshold) }),
 }));
 
 export type GuardianState = ReturnType<typeof createGuardianStore>;
