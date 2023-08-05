@@ -6,6 +6,7 @@ import config from "@src/config";
 import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
+import { useAddressStore } from "@src/store/address";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
 import Button from "../Button";
@@ -57,7 +58,7 @@ const DappAvatar = ({ avatar }: any) => (
 );
 
 const SignTransaction = (_: unknown, ref: Ref<any>) => {
-    const { walletAddress = "" } = useWalletContext(); // ! check this
+    const {selectedAddress} = useAddressStore();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
@@ -243,7 +244,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                     <InfoItem>
                                         <Text>Account 1:</Text>
                                         <Text>
-                                            {walletAddress.slice(0, 5)}...{walletAddress.slice(-4)}
+                                            {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
                                         </Text>
                                     </InfoItem>
                                 </InfoWrap>
@@ -290,7 +291,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                         )}
                                         {signType === SignTypeEn.Message && messageToSign}
                                     </Box>
-                                    <AddressInput label="From" address={walletAddress} disabled />
+                                    <AddressInput label="From" address={selectedAddress} disabled />
                                     <AddressInput label="To" address={"0x1111"} disabled={true} />
                                     {signType === SignTypeEn.Transaction && (
                                         <>
