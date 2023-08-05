@@ -11,9 +11,17 @@ export default function useKeystore() {
      * @returns
      */
     const calcGuardianHash = (guardians: string[], threshold: number, salt?: string) => {
-        const guardianHash = L1KeyStore.calcGuardianHash(guardians, threshold, salt);
-        return guardianHash;
+        return L1KeyStore.calcGuardianHash(guardians, threshold, salt);
     };
 
-    return { keystore, calcGuardianHash };
+
+    /**
+     * Get slot info
+     * 
+     */
+    const getSlot = async (initialKey: string, initialGuardianHash: string, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
+        return L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+    }
+
+    return { keystore, calcGuardianHash, getSlot };
 }

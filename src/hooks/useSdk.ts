@@ -28,5 +28,7 @@ export default function useSdk() {
         return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash);
     };
 
+
+
     return { soulWallet, calcWalletAddress };
 }
