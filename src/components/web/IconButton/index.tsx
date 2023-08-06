@@ -46,6 +46,7 @@ export default function TextButton({
       {...moreProps}
       {...restProps}
       onClick={onClick}
+      padding="0"
       borderRadius="1em"
       height="3rem"
       fontWeight="bold"
