@@ -12,7 +12,6 @@ import useQuery from "@src/hooks/useQuery";
 import GasSelect from "@src/components/SendAssets/comp/GasSelect";
 import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
-import BN from "bignumber.js";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore } from "@src/store/address";

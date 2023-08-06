@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import config from "@src/config";
 import ListItem from "../../ListItem";
 import useTools from "@src/hooks/useTools";
+import { useChainStore } from "@src/store/chain";
 
 enum ActivityStatusEn {
     Success,
@@ -19,11 +20,12 @@ interface IActivityItem {
 export default function ActivityItem({ item }: any) {
     const { decodeCalldata, getIconMapping } = useTools();
     const [detail, setDetail] = useState<IActivityItem>();
+    const { selectedChainId } = useChainStore();
 
     const formatItem = async () => {
         const callData = item.userOp.callData;
 
-        const callDataDecodes = await decodeCalldata(callData);
+        const callDataDecodes = await decodeCalldata(item.chainId, item.entrypointAddress, item.userOp);
 
         const functionNames = callDataDecodes.map((item: any) => item.functionName).join(", ");
 

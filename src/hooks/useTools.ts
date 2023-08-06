@@ -5,9 +5,10 @@ import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
 import { toast } from "material-react-toastify";
+import { Decoder } from "@soulwallet/decoder";
+import { UserOperation } from "@soulwallet/sdk";
 
 export default function useTools() {
-
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
         // remove id
         const guardians = guardiansList.map((item) => {
@@ -79,9 +80,10 @@ export default function useTools() {
         return /^0x[0-9a-fA-F]{40}$/.test(address);
     };
 
-    const decodeCalldata = async (callData: string) => {
+    const decodeCalldata = async (chainId: number, entrypoint: string, userOp: UserOperation) => {
+        // const decoded = await Decoder.decode(chainId, entrypoint, userOp);
+        // console.log('Decoded is', decoded)
         // TODO, add cache locally
-        const tmpMap = new Map<string, string>();
         // soulWalletLib.Utils.DecodeCallData.new().setStorage(
         //     (key, value) => {
         //         tmpMap.set(key, value);
@@ -96,7 +98,7 @@ export default function useTools() {
         // );
 
         // const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(callData);
-        const callDataDecode:any = {}
+        const callDataDecode: any = {};
         return callDataDecode;
     };
 

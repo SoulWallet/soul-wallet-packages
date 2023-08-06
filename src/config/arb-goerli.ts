@@ -84,9 +84,10 @@ export default {
         defaultCallbackHandler: "0x2de0f1b7d3fbe2a86b88446acdbc294c91aa8f97",
         securityControlModule: "0xe9793d7792d3d736ecde0cc89050232704ad323e",
 
+        entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+
         walletLogic: "0x",
         guardianLogic: "0x",
-        entryPoint: "0x",
         paymaster: "0x",
         create2Factory: "0x",
     },

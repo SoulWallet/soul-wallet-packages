@@ -6,6 +6,7 @@ import config from "@src/config";
 import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
+import { useChainStore } from "@src/store/chain";
 import { useAddressStore } from "@src/store/address";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
@@ -58,7 +59,7 @@ const DappAvatar = ({ avatar }: any) => (
 );
 
 const SignTransaction = (_: unknown, ref: Ref<any>) => {
-    const {selectedAddress} = useAddressStore();
+    const { selectedAddress } = useAddressStore();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [loadingFee, setLoadingFee] = useState(false);
@@ -72,6 +73,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
     const [activePaymasterData, setActivePaymasterData] = useState({});
+    const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost } = useQuery();
 
@@ -98,7 +100,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (operation) {
                 setActiveOperation(operation);
-                const callDataDecode = await decodeCalldata(operation.callData);
+                const callDataDecode = await decodeCalldata(selectedChainId, config.contracts.entrypoint,  operation.callData);
                 setDecodedData(callDataDecode);
             }
 

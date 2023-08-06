@@ -9,17 +9,20 @@ import ListItem from "../ListItem";
 import config from "@src/config";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
+import { useChainStore } from "@src/store/chain";
 
 export default function Tokens() {
-    const { selectedAddress } = useAddressStore()
-    const { tokenBalance , fetchTokenBalance} = useBalanceStore();
+    const { selectedAddress } = useAddressStore();
+    const { tokenBalance, fetchTokenBalance } = useBalanceStore();
+    const { selectedChainId } = useChainStore();
     const { navigate } = useBrowser();
 
     useEffect(() => {
         if (!selectedAddress) {
             return;
         }
-        fetchTokenBalance(selectedAddress)
+        // TODO, change chain id to config
+        fetchTokenBalance(selectedAddress, selectedChainId);
     }, [selectedAddress]);
 
     return (
