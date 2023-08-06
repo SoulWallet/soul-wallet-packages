@@ -9,7 +9,7 @@ const soulWallet = new SoulWallet(
     config.defaultBundlerUrl,
     config.contracts.soulWalletFactory,
     config.contracts.defaultCallbackHandler,
-    config.contracts.keyStoreModule,
+    config.contracts.keyStoreModuleProxy,
     config.contracts.securityControlModule,
 );
 

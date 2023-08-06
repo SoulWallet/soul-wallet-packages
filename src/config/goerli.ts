@@ -52,6 +52,8 @@ export default {
         l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3",
 
         keyStoreModule: "0xfeaab278ed3093f208627b9361dcd15a2a655eca",
+        keyStoreModuleProxy: "0xd94849d394f4b3ed342a9e01de3157128c344fd0",
+
         soulWalletFactory: "",
         defaultCallbackHandler: "",
         securityControlModule: "",

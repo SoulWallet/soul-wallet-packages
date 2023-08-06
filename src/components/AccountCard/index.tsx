@@ -42,7 +42,7 @@ export default function AccountCard() {
             <Flex justify={"space-between"} align="center">
                 <Box>
                     <Text color="#29510A" fontSize={"26px"} fontWeight={"800"} mb="6px" lineHeight={"1"}>
-                        $1234.56
+                        $0
                     </Text>
                     <Flex gap="1" align="center">
                         <Image src={IconTrendUp} w="12px" h={"12px"} />
