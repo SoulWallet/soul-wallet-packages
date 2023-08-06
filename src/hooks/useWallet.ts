@@ -245,8 +245,21 @@ export default function useWallet() {
         // const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
     };
 
-    const backupGuardians = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
+    const backupGuardiansOnChain = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
 
+    };
+
+    const backupGuardiansByEmail = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
+
+    };
+
+    const backupGuardiansByDownload = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
+        // const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(jsonToSave))}`;
+        // const link = document.createElement("a");
+        // link.setAttribute("href", dataStr);
+        // link.setAttribute("target", "_blank");
+        // link.setAttribute("download", generateJsonName("guardian"));
+        // link.click();
     };
 
     return {
@@ -255,6 +268,8 @@ export default function useWallet() {
         recoverWallet,
         updateGuardian,
         directSignAndSend,
-        backupGuardians
+        backupGuardiansOnChain,
+        backupGuardiansByEmail,
+        backupGuardiansByDownload
     };
 }

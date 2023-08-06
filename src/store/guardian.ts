@@ -15,16 +15,20 @@ export const MIN_GUARDIAN_NUMBER = 1; // 最大guardian数
 
 export interface GuardianStore {
     guardians: string[];
+    guardianNames: string[];
     threshold: number;
     setGuardians: (guardian: string[]) => void;
+    setGuardianNames: (guardianNames: string[]) => void;
     setThreshold: (threshold: number) => void;
 }
 
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
 const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: [],
+    guardianNames: [],
     threshold: 0,
     setGuardians: (guardians: string[]) => set({ guardians }),
+    setGuardianNames: (guardianNames: string[]) => set({ guardianNames }),
     setThreshold: (threshold: number) => set({ threshold: Number(threshold) }),
 }));
 

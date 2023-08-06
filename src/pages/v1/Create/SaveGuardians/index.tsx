@@ -12,6 +12,7 @@ import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
+import IconButton from "@src/components/web/IconButton";
 import WarningIcon from "@src/components/Icons/Warning";
 import DownloadIcon from '@src/components/Icons/Download'
 import SendIcon from '@src/components/Icons/Send'
@@ -54,21 +55,20 @@ const SaveGuardians = () => {
   // const { guardians } = useGlobalStore();
   const [email, setEmail] = useState<string>();
   const [downloading, setDownloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const [sended, setSended] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const { account } = useWalletContext();
   const { selectedAddressItem } = useAddressStore();
-  const { guardians, threshold } = useGuardianStore();
+  const { guardians, guardianNames, threshold } = useGuardianStore();
   const { calcGuardianHash, getSlot } = useKeystore()
 
   const emailForm = useForm({
     fields: ['email'],
     validate
   })
-
-  useEffect(() => {
-    setIsEmailValid(validateEmail(email));
-  }, [email]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -123,6 +123,7 @@ const SaveGuardians = () => {
   };
 
   const handleBackupGuardians = async () => {
+    setLoading(true)
     const keystore = config.contracts.l1Keystore
     const initialKey = ethers.zeroPadValue(account, 32)
     const guardianHash = calcGuardianHash(guardians, threshold)
@@ -150,11 +151,19 @@ const SaveGuardians = () => {
     }
 
     const result = await api.guardian.backup(params)
+    setLoading(false)
+    setLoaded(true)
     console.log('handleBackupGuardians', result)
   };
 
   const handleEmailBackupGuardians = async () => {
+    setSending(true)
     const email = emailForm.values.email
+
+    if (!email) {
+
+    }
+
     const date = new Date()
     const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
     const keystore = config.contracts.l1Keystore
@@ -165,13 +174,14 @@ const SaveGuardians = () => {
     let initialGuardianSafePeriod = L1KeyStore.days * 2
     initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
     const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-
+    // guardianNames
 
     const params = {
       email,
       filename,
       keystore,
       guardianHash,
+      guardianNames,
       guardianDetails: {
         guardians,
         threshold,
@@ -186,7 +196,52 @@ const SaveGuardians = () => {
     }
 
     const result = await api.guardian.emailBackup(params)
+    setSending(false)
+    setSended(true)
     console.log('handleEmailBackupGuardians', params, result)
+  };
+
+  const handleDownloadGuardians = async () => {
+    setDownloading(true)
+    const date = new Date()
+    const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
+    const keystore = config.contracts.l1Keystore
+    const initialKey = ethers.zeroPadValue(account, 32)
+    const guardianHash = calcGuardianHash(guardians, threshold)
+    const initialGuardianHash = guardianHash
+    const salt = ethers.ZeroHash
+    let initialGuardianSafePeriod = L1KeyStore.days * 2
+    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+    // guardianNames
+
+    const params = {
+      filename,
+      keystore,
+      guardianHash,
+      guardianNames,
+      guardianDetails: {
+        guardians,
+        threshold,
+        salt
+      },
+      slot,
+      slotInitInfo: {
+        initialKey,
+        initialGuardianHash,
+        initialGuardianSafePeriod
+      }
+    }
+
+    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(params))}`
+    const link = document.createElement("a")
+    link.setAttribute("href", dataStr)
+    link.setAttribute("target", "_blank")
+    link.setAttribute("download", filename)
+    link.click()
+
+    setDownloading(false)
+    setDownloaded(true)
   };
 
   return (
@@ -213,28 +268,36 @@ const SaveGuardians = () => {
             onChange={emailForm.onChange('email')}
             onBlur={emailForm.onBlur('email')}
             _styles={{ width: '100%', marginTop: '0.75em' }}
-            RightIcon={<div onClick={handleEmailBackupGuardians}><SendIcon /></div>}
-          // onClick={handleSendEmail}
+            RightIcon={(
+              <IconButton
+                onClick={handleEmailBackupGuardians}
+                disabled={sending || !(emailForm.values.email)}
+                loading={sending}
+              >
+                {!(emailForm.values.email) && <SendIcon opacity="0.4" />}
+                {!!(emailForm.values.email) && <SendIcon color={'#EE3F99'} />}
+              </IconButton>
+            )}
           />
-          <Button onClick={handleDownload} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} LeftIcon={<DownloadIcon />}>
+          <Button onClick={handleDownloadGuardians} disabled={downloading} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} LeftIcon={<DownloadIcon />}>
             Download
           </Button>
-      </Box>
-      <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
-        <Heading3>Save with Soul Wallet</Heading3>
-        <Box marginBottom="0.75em">
-          <TextBody textAlign="center">
-            Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.
-          </TextBody>
         </Box>
-        <Button loading={downloading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
-          Store On-chain
-        </Button>
+        <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
+          <Heading3>Save with Soul Wallet</Heading3>
+          <Box marginBottom="0.75em">
+            <TextBody textAlign="center">
+              Soul Wallet can store your list encrypted on-chain, but you still need to remember your wallet address for recovery.
+            </TextBody>
+          </Box>
+          <Button disabled={loading} loading={loading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
+            Store On-chain
+          </Button>
+        </Box>
       </Box>
-    </Box>
-    <Button disabled={false} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
-      Continue
-    </Button>
+      <Button disabled={!(loaded && downloaded && sended)} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+        Continue
+      </Button>
     </Box>
   )
 };

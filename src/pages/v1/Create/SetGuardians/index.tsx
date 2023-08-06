@@ -85,7 +85,7 @@ export default function GuardiansSetting() {
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
-  const { setGuardians, setThreshold } = useGuardianStore();
+  const { setGuardians, setGuardianNames, setThreshold } = useGuardianStore();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -108,19 +108,34 @@ export default function GuardiansSetting() {
     setAmountData({ guardiansCount: guardiansList.length })
   }, [guardiansList])
 
-
   const handleSubmit = async () => {
     try {
       setLoading(true)
-      const guardiansList = Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length)
+
+      const guardiansList = guardianIds.map(id => {
+        const addressKey = `address_${id}`
+        const nameKey = `name_${id}`
+        let address = values[addressKey]
+
+        if (address && address.length) {
+          return { address, name: values[nameKey] }
+        }
+
+        return null
+      }).filter(i => !!i)
+      console.log('guardiansList', guardiansList)
+
+      const guardianAddresses = guardiansList.map((item: any) => item.address)
+      const guardianNames = guardiansList.map((item: any) => item.name)
       const threshold = amountForm.values.amount || 0
-      const walletAddress = await calcWalletAddress(0, account, guardiansList, threshold);
+      const walletAddress = await calcWalletAddress(0, account, guardianAddresses, threshold);
       const walletName = `Account 1`
       // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
       const newAddress = (walletAddress as any)._value
       addAddressItem({ title: walletName, address: newAddress, activated: false })
       setSelectedAddress(newAddress)
-      setGuardians(guardiansList)
+      setGuardians(guardianAddresses)
+      setGuardianNames(guardianNames)
       setThreshold(threshold)
       console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, threshold)
       setLoading(false)

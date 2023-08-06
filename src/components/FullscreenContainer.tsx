@@ -26,6 +26,7 @@ export default function FullscreenContainer({ children }: { children: ReactNode 
         alignItems="center"
         justifyContent="center"
         background="transparent"
+        zIndex="2"
         pointerEvents="none"
       />
       <Logo />
