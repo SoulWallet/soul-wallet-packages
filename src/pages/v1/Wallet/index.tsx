@@ -12,6 +12,8 @@ import Actions from "./comp/Actions";
 export function Wallet() {
     const { selectedAddressItem } = useAddressStore();
 
+    console.log('selected', selectedAddressItem)
+
     return (
         <>
             <Box p="5">

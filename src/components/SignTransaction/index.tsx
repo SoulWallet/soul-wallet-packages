@@ -100,9 +100,10 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (operation) {
                 setActiveOperation(operation);
-                const callDataDecode = await decodeCalldata(selectedChainId, config.contracts.entrypoint,  operation.callData);
-                console.log('sign decoded', callDataDecode)
-                setDecodedData(callDataDecode);
+                console.log("bbbbb", selectedChainId, config.contracts.entrypoint, operation);
+                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entrypoint, operation);
+                console.log("sign decoded", callDataDecodes);
+                setDecodedData(callDataDecodes);
             }
 
             if (_messageToSign) {
@@ -286,7 +287,8 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                                 {decodedData && decodedData.length > 0
                                                     ? decodedData.map((item: any, index: number) => (
                                                           <span className="mr-1 capitalize" key={index}>
-                                                              {index + 1}.{item.functionName}
+                                                              {decodedData.length > 1 && `${index + 1}.`}
+                                                              {item.functionName || 'Contract interaction'}
                                                           </span>
                                                       ))
                                                     : "Contract interaction"}

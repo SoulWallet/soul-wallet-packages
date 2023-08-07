@@ -20,11 +20,8 @@ interface IActivityItem {
 export default function ActivityItem({ item }: any) {
     const { decodeCalldata, getIconMapping } = useTools();
     const [detail, setDetail] = useState<IActivityItem>();
-    const { selectedChainId } = useChainStore();
 
     const formatItem = async () => {
-        const callData = item.userOp.callData;
-
         const callDataDecodes = await decodeCalldata(item.chainId, item.entrypointAddress, item.userOp);
 
         console.log('activity decoded', callDataDecodes)

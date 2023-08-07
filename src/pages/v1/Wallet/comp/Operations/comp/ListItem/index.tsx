@@ -26,7 +26,7 @@ export default function ListItem({ icon, title, titleDesc, onClick, amount, amou
             <Flex gap="3" align={"center"}>
                 <Image src={icon} w="38px" h="38px" />
                 <Flex flexDir={"column"} gap="1">
-                    <Text fontWeight={"800"}>{title}</Text>
+                    <Text fontWeight={"800"} textTransform={"capitalize"}>{title}</Text>
                     <Text fontWeight={"600"}>{titleDesc}</Text>
                 </Flex>
             </Flex>

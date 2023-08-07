@@ -6,7 +6,6 @@ import Modal from "../Modal";
 import SettingLinks from "./comp/SettingLinks";
 import ResetPassword from "./comp/ResetPassword";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-import BundlerUrl from "./comp/BundlerUrl";
 
 export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
     const keyStore = useKeyring();

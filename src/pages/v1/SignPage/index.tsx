@@ -179,6 +179,11 @@ export default function SignPage() {
         } catch (err) {
             console.log(err);
         } finally {
+            if(tabId){
+                window.close();
+            }else{
+                navigate("wallet");
+            }
         }
     };
 

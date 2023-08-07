@@ -44,10 +44,15 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
         set((state) => {
             const index = getIndexByAddress(state.addressList, address);
             const item = state.addressList.filter((item: IAddressItem) => item.address === address)[0];
-            state.addressList[index] = {
+            const itemToSet = {
                 ...item,
                 ...addressItem,
             };
+            state.addressList[index] = itemToSet;
+            // if it's also selectedItem, update as well
+            if(state.selectedAddress === address) {
+                state.selectedAddressItem = itemToSet;
+            }
         });
     },
     deleteAddress: (address: string) => {
