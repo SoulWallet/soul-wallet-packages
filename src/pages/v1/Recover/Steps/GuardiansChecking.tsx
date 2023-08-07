@@ -26,11 +26,19 @@ interface IGuardianChecking {
   payToken: string;
 }
 
+const toShortAddress = (address: string) => {
+  if (address.length > 10) {
+    return `${address.slice(0, 5)}...${address.slice(-5)}`
+  }
+
+  return address
+}
+
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const [loading, setLoading] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>("");
   const { generateQrCode } = useTools();
-  const { guardians, threshold, slot, slotInitInfo, recoverRecordId } = useGuardianStore();
+  const { guardians, threshold, slot, slotInitInfo, recoverRecordId, guardianSignatures, setGuardianSignatures } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
 
   const formRef = useRef<IGuardianFormHandler>(null);
@@ -69,7 +77,10 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   useEffect(() => {
     setTimeout(async () => {
       const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
-      console.log('recoveryRecordID', result)
+      console.log('guardianSignatures', result)
+      const guardianSignatures = result.data.statusData['0'].guardianSignatures
+      setGuardianSignatures(guardianSignatures)
+      console.log('recoveryRecordID', result, guardianSignatures)
     }, 3000)
   }, []);
 
@@ -130,35 +141,46 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
-        <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
-            Signed
-            <Text marginLeft="4px"><CheckedIcon /></Text>
+        {(guardianSignatures || []).map((item: any) =>
+          <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+            <Box fontSize="14px" fontWeight="bold">{toShortAddress(item.guardian)}</Box>
+            {item.valid && (
+              <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
+                Signed
+                <Text marginLeft="4px"><CheckedIcon /></Text>
+              </Box>
+            )}
+            {!item.valid && (
+              <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
+                Error
+                <Text marginLeft="4px"><ErrorIcon /></Text>
+              </Box>
+            )}
           </Box>
-        </Box>
-        <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
-        </Box>
-        <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
+        )}
+
+        {/* <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+            <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
+            </Box>
+            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+            <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
             Error
             <Text marginLeft="4px"><ErrorIcon /></Text>
-          </Box>
-        </Box>
-        <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
+            </Box>
+            </Box>
+            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+            <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
             Signed
             <Text marginLeft="4px"><CheckedIcon /></Text>
-          </Box>
-        </Box>
-        <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-          <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-          <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
-        </Box>
+            </Box>
+            </Box>
+            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
+            <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
+            </Box> */}
       </Box>
       <Button
         disabled={false}
