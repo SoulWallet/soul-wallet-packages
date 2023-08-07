@@ -78,7 +78,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     setInterval(async () => {
       const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
       console.log('guardianSignatures', result)
-      const guardianSignatures = result.data.statusData['0'].guardianSignatures
+      const guardianSignatures = result.data.guardianSignatures
       setGuardianSignatures(guardianSignatures)
       console.log('recoveryRecordID', result, guardianSignatures)
     }, 5000)
