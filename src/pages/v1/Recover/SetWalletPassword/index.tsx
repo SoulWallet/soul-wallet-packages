@@ -11,6 +11,7 @@ import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 
 interface PasswordFormField {
   password?: string;
@@ -33,6 +34,7 @@ const validate = (values: PasswordFormField) => {
 export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
+  const { getAccount } = useWalletContext()
 
   const {
     values,
@@ -56,7 +58,8 @@ export default function SetPassword() {
       if (password) {
         setLoaing(true)
         console.log('loading s', password)
-        // await keystore.createNewAddress(password, true);
+        await keystore.createNewAddress(password, true);
+        getAccount();
         console.log('loading e', password)
         setLoaing(false)
 

@@ -1,10 +1,11 @@
+import React, { useEffect, useState } from "react";
 import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import config from "@src/config";
+import { ethers } from "ethers";
 import PayTokenSelect from "@src/components/PayTokenSelect";
 import { getLocalStorage } from "@src/lib/tools";
-import React, { useEffect, useState } from "react";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { Box, Text, Image } from "@chakra-ui/react"
@@ -14,18 +15,27 @@ import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import useForm from "@src/hooks/useForm";
+import api from "@src/lib/api";
+import { useGuardianStore } from "@src/store/guardian";
 
 interface IRecoverStarter {
   onSubmit: (wAddress: string, pToken: string) => void;
 }
 
 const validate = (values: any) => {
-  const errors = {}
+  const errors: any = {}
   const { address } = values
+
+  if (!ethers.isAddress(address)) {
+    errors.address = 'Invalid Address'
+  }
+
   return errors
 }
 
 const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
+  const [loading, setLoading] = useState(false)
+  const { setGuardians, setThreshold, setSlot, setSlotInitInfo } = useGuardianStore();
   const dispatch = useStepDispatchContext();
 
   const {
@@ -40,15 +50,34 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
     validate
   })
 
-  const handleNext = () => {
-    /* if (!address || !payToken) {
-     *   return;
-     * }
-     * onSubmit(address, payToken); */
-    dispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: RecoverStepEn.ResetPassword,
-    });
+  const disabled = loading || invalid
+
+  const handleNext = async () => {
+    try {
+      /* setLoading(true)
+       * const result = await api.guardian.getSlotInfo({ walletAddress: values.address })
+       * const data = result.data
+       * const guardianDetails = data.guardianDetails
+       * const guardians = guardianDetails.guardians
+       * const threshold = guardianDetails.threshold
+       * const slot = result.slot
+       * const slotInitInfo = result.slotInitInfo
+
+       * setGuardians(guardians)
+       * setThreshold(threshold)
+       * setSlot(slot)
+       * setSlotInitInfo(slotInitInfo)
+
+       * setLoading(false) */
+
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.ResetPassword,
+      });
+    } catch (e) {
+      console.log('e', e)
+      setLoading(false)
+    }
   };
 
   const getStoredWalletAddress = async () => {
@@ -81,7 +110,12 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         errorMsg={showErrors.address && errors.address}
         _styles={{ marginTop: '0.75em', width: '100%' }}
       />
-      <Button onClick={handleNext} _styles={{ width: '100%', marginTop: '0.75em' }}>
+      <Button
+        onClick={handleNext}
+        _styles={{ width: '100%', marginTop: '0.75em' }}
+        loading={loading}
+        disabled={disabled}
+      >
         Next
       </Button>
     </Box>

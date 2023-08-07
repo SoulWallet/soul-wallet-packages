@@ -8,7 +8,7 @@ import { nanoid } from "nanoid";
 import { toast } from "material-react-toastify";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Input, Text, Image } from "@chakra-ui/react"
 import FormInput from "@src/components/web/Form/FormInput";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
@@ -20,6 +20,13 @@ import Icon from "@src/components/Icon";
 import { nextRandomId, validateEmail } from "@src/lib/tools";
 import { getLocalStorage } from "@src/lib/tools";
 import MinusIcon from "@src/assets/icons/minus.svg";
+import useSdk from '@src/hooks/useSdk';
+import useKeystore from "@src/hooks/useKeystore";
+import useWalletContext from '@src/context/hooks/useWalletContext';
+import { useAddressStore } from "@src/store/address";
+import { useGuardianStore } from "@src/store/guardian";
+import api from "@src/lib/api";
+import { ethers } from "ethers";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -28,136 +35,145 @@ const getFieldsByGuardianIds = (ids: any) => {
 
   for (const id of ids) {
     const addressField = `address_${id}`
+    const nameField = `name_${id}`
     fields.push(addressField)
+    fields.push(nameField)
   }
 
   return fields
 }
 
-const validate = () => {
-  return {}
+const getInitialValues = (ids: string[], guardians: string[]) => {
+  const idCount = ids.length
+  const guardianCount = guardians.length
+  const count = idCount > guardianCount ? idCount : guardianCount
+  const values: any = {}
+
+  for (let i = 0; i < count; i++) {
+    values[`address_${ids[i]}`] = guardians[i]
+  }
+
+  return values
 }
 
-const amountValidate = () => {
-  return {}
+const validate = (values: any) => {
+  const errors: any = {}
+  const addressKeys = Object.keys(values).filter(key => key.indexOf('address') === 0)
+  const nameKeys = Object.keys(values).filter(key => key.indexOf('name') === 0)
+  const existedAddress = []
+
+  for (const addressKey of addressKeys) {
+    const address = values[addressKey]
+
+    if (address && address.length && !ethers.isAddress(address)) {
+      errors[addressKey] = 'Invalid Address'
+    } else if (existedAddress.indexOf(address) !== -1) {
+      errors[addressKey] = 'Duplicated Address'
+    } else if (address && address.length) {
+      existedAddress.push(address)
+    }
+  }
+
+  return errors
+}
+
+const amountValidate = (values: any, props: any) => {
+  const errors: any = {}
+
+  if (!values.amount || !Number.isInteger(Number(values.amount)) || Number(values.amount) < 1 || Number(values.amount) > Number(props.guardiansCount)) {
+    errors.amount = 'Invalid Amount'
+  }
+
+  return errors
 }
 
 const EnterGuardiansAddress = () => {
-  const [fileValid, setFileValid] = useState(false);
   const { getJsonFromFile } = useTools();
-
-  const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
-  const { guardians } = useGlobalStore();
-  const [email, setEmail] = useState<string>();
-  const [downloading, setDownloading] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
+  const keystore = useKeystore();
+  const [loading, setLoading] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
-  const [fields, setFields] = useState(defaultGuardianIds)
+  const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
+  const [guardiansList, setGuardiansList] = useState([])
+  const { account } = useWalletContext();
+  const { calcWalletAddress } = useSdk();
+  const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
+  const { guardians, threshold, slot, slotInitInfo } = useGuardianStore();
+  const [amountData, setAmountData] = useState<any>({})
 
   const stepDispatch = useStepDispatchContext();
   const recoveryDispatch = useRecoveryDispatchContext();
 
-  const { values, errors, invalid, onChange, onBlur, showErrors } = useForm({
+  const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
-    validate
+    validate,
+    initialValues: getInitialValues(defaultGuardianIds, ['0x8359236114AADaB0c01d6C3Aab6e97073411692D'])
   })
 
   const amountForm = useForm({
     fields: ['amount'],
-    validate: amountValidate
+    validate: amountValidate,
+    restProps: amountData,
+    initialValues: {
+      amount: 1
+    }
   })
 
+  const disabled = invalid || !guardiansList.length || amountForm.invalid || loading
+
   useEffect(() => {
-    setIsEmailValid(validateEmail(email));
-  }, [email]);
+    setAmountData({ guardiansCount: guardiansList.length })
+  }, [guardiansList])
 
-  const handleDownload = async () => {
-    setDownloading(true);
+  useEffect(() => {
+    console.log('info', { guardians, threshold, slot, slotInitInfo })
+  }, [])
 
-    const walletAddress = await getLocalStorage("walletAddress");
+  useEffect(() => {
+    setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
+  }, [values])
 
-    const jsonToSave = formatGuardianFile(walletAddress, guardians);
-
-    downloadJsonFile(jsonToSave);
-
-    setDownloading(false);
-
-    // onSave();
-  };
-
-  const handleEmailChange = (val: string) => {
-    setEmail(val);
-  };
-
-  const handleSendEmail = async () => {
-    if (!email) {
-      return;
-    }
-    setSending(true);
-
-    try {
-      const walletAddress = await getLocalStorage("walletAddress");
-
-      const jsonToSave = formatGuardianFile(walletAddress, guardians);
-
-      const res: any = await emailJsonFile(jsonToSave, email);
-
-      if (res.code === 200) {
-        // onSave();
-      }
-    } catch {
-      // maybe toast error message?
-    } finally {
-      setSending(false);
-    }
-  };
+  useEffect(() => {
+    setAmountData({ guardiansCount: guardiansList.length })
+  }, [guardiansList])
 
   const handleNext = () => {
+    console.log('hello')
     stepDispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: RecoverStepEn.GuardiansChecking,
     });
   };
 
-  const handleFileParseResult = async (file?: File) => {
+  const handleFileChange = async (event: any) => {
+    const file = event.target.files[0];
+
     if (!file) {
-      return;
+      return
     }
-    const fileJson: any = await getJsonFromFile(file);
 
-    const fileGuardians = fileJson.guardians;
-    // ! just simple validation for now. please DO check this
-    if (Array.isArray(fileGuardians)) {
-      const parsedGuardians = [];
+    const fileJson: any = await getJsonFromFile(file)
 
-      for (let i = 0; i < fileGuardians.length; i++) {
-        const { address, name } = fileGuardians[i];
+    const data = fileJson
+    const guardianDetails = data.guardianDetails
+    const keystore = data.keystore
+    const guardians = guardianDetails.guardians
+    const threshold = guardianDetails.threshold
+    const slot = data.slot
+    const slotInitInfo = data.slotInitInfo
+    const newKey = ethers.zeroPadValue(account, 32)
 
-        if (!address) {
-          // toast.error("Oops, something went wrong. Please check your file and try again.");
-          return;
-        }
-
-        parsedGuardians.push({
-          address,
-          name,
-          id: nanoid(),
-        });
-      }
-
-      recoveryDispatch({
-        type: RecoveryActionTypeEn.UpdateCachedGuardians,
-        payload: JSON.parse(JSON.stringify(parsedGuardians)),
-      });
-
-      setFileValid(true);
+    const params = {
+      guardianDetails,
+      slot,
+      slotInitInfo,
+      keystore,
+      newKey
     }
-  };
 
-  const handleDelete = () => {
-    // removeGuardian(id);
-  };
+    const result = await api.guardian.createRecoverRecord(params)
+
+    console.log('handleFileParseResult', fileJson, params, result)
+  }
 
   const addGuardian = () => {
     const id = nextRandomId()
@@ -165,6 +181,7 @@ const EnterGuardiansAddress = () => {
     const newFields = getFieldsByGuardianIds(newGuardianIds)
     setGuardianIds(newGuardianIds)
     setFields(newFields)
+    addFields(getFieldsByGuardianIds([id]))
   };
 
   const removeGuardian = (deleteId: string) => {
@@ -173,6 +190,7 @@ const EnterGuardiansAddress = () => {
       const newFields = getFieldsByGuardianIds(newGuardianIds)
       setGuardianIds(newGuardianIds)
       setFields(newFields)
+      removeFields(getFieldsByGuardianIds([deleteId]))
     }
   }
 
@@ -190,8 +208,20 @@ const EnterGuardiansAddress = () => {
               Due to your choice of private on-chain guardians, information must be manually entered to continue recovery.
             </TextBody>
           </Box>
-          <Button onClick={handleDownload} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }}>
+          <Button loading={false} _styles={{ width: '100%', marginTop: '0.75em', position: 'relative' }}>
             Upload file
+            <Input
+              type="file"
+              id="file"
+              position="absolute"
+              top="0"
+              left="0"
+              width="100%"
+              height="100%"
+              background="red"
+              opacity="0"
+              onChange={handleFileChange}
+            />
           </Button>
         </Box>
         <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
@@ -241,11 +271,11 @@ const EnterGuardiansAddress = () => {
               placeholder="Enter amount"
               value={amountForm.values.amount}
               onChange={amountForm.onChange('amount')}
-              RightComponent={<Text fontWeight="bold">/ 3</Text>}
+              RightComponent={<Text fontWeight="bold">/ {guardianIds.length}</Text>}
               _styles={{ width: '180px', marginTop: '0.75em' }}
             />
           </Box>
-          <Button loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
+          <Button loading={loading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
             Next
           </Button>
         </Box>

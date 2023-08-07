@@ -36,7 +36,9 @@ const account = {
 
 const guardian = {
     backup: (params: any) => axio.post("/social-recovery/public-backup-guardians", params),
-    emailBackup: (params: any) => axio.post("/social-recovery/email-backup-guardians", params)
+    emailBackup: (params: any) => axio.post("/social-recovery/email-backup-guardians", params),
+    getSlotInfo: (params: any) => axio.get("/social-recovery/slot-info", { params }),
+    createRecoverRecord: (params: any) => axio.post("/social-recovery/create-recovery-record", params),
 }
 
 const balance = {

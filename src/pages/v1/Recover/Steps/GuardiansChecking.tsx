@@ -1,6 +1,6 @@
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
 import ModalV2 from "@src/components/ModalV2";
 import useWallet from "@src/hooks/useWallet";
@@ -16,6 +16,9 @@ import TextBody from "@src/components/web/TextBody";
 import CopyIcon from "@src/components/Icons/Copy";
 import CheckedIcon from "@src/components/Icons/Checked";
 import ErrorIcon from "@src/components/Icons/Error";
+import useTools from "@src/hooks/useTools";
+import { useGuardianStore } from "@src/store/guardian";
+import { copyText } from "@src/lib/tools";
 
 interface IGuardianChecking {
   walletAddress: string;
@@ -24,6 +27,9 @@ interface IGuardianChecking {
 
 const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const [loading, setLoading] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>("");
+  const { generateQrCode } = useTools();
+  const { guardians, threshold, slot, slotInitInfo } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
 
   const formRef = useRef<IGuardianFormHandler>(null);
@@ -42,6 +48,22 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     // formRef.current?.submit();
     // TODO: once the guardians are submitted, clear the temporary guardians
   };
+
+  const doCopy = () => {
+    copyText('12345')
+  };
+
+  const generateQR = async (text: string) => {
+    try {
+      setImgSrc(await generateQrCode(text));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    generateQR('12345')
+  }, []);
 
   const handleAskSignature = async () => {
     handleCheckGuardianAddresses();
@@ -87,10 +109,12 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         justifyContent="center"
         flexDirection="column"
       >
-        <Text fontSize="0.875em" fontWeight="bold" marginBottom="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center">Copy to Clickboard
+        <Text fontSize="0.875em" fontWeight="bold" marginBottom="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center" onClick={doCopy}>Copy to Clickboard
           <Text marginLeft="4px"><CopyIcon /></Text>
         </Text>
-        <Box width="150px" height="150px" background="grey" />
+        <Box width="150px" height="150px">
+          <Image src={imgSrc} width="150px" height="150px" />
+        </Box>
       </Box>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">

@@ -13,8 +13,8 @@ const getInitialValues = (fields: any, values: any = {}) => {
 
 
 export default function useForm(props: any) {
-    const { fields, validate, restProps } = props
-    const [values, setValues] = useState<any>(getInitialValues(fields))
+    const { fields, validate, restProps, initialValues } = props
+    const [values, setValues] = useState<any>(getInitialValues(fields, initialValues))
     const [errors, setErrors] = useState<any>({})
     const [showErrors, setShowErrors] = useState<any>({})
     const [invalid, setInvalid] = useState<boolean>(true)
