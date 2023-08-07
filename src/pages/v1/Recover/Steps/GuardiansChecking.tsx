@@ -26,7 +26,7 @@ interface IGuardianChecking {
   payToken: string;
 }
 
-const toShortAddress = (address) => {
+const toShortAddress = (address: string) => {
   if (address.length > 10) {
     return `${address.slice(0, 5)}...${address.slice(-5)}`
   }
@@ -141,7 +141,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
-        {(guardianSignatures || []).map(item =>
+        {(guardianSignatures || []).map((item: any) =>
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
             <Box fontSize="14px" fontWeight="bold">{toShortAddress(item.guardian)}</Box>
             {item.valid && (
