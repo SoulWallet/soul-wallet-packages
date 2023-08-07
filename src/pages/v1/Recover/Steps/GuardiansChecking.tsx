@@ -75,13 +75,13 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   }, []);
 
   useEffect(() => {
-    setTimeout(async () => {
+    setInterval(async () => {
       const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
       console.log('guardianSignatures', result)
       const guardianSignatures = result.data.statusData['0'].guardianSignatures
       setGuardianSignatures(guardianSignatures)
       console.log('recoveryRecordID', result, guardianSignatures)
-    }, 3000)
+    }, 5000)
   }, []);
 
   const handleAskSignature = async () => {
