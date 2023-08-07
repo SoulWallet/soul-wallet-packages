@@ -33,7 +33,7 @@ export interface GuardianStore {
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
 const createGuardianSlice = immer<GuardianStore>((set) => ({
     guardians: [],
-    guardianDetails: null;
+    guardianDetails: null,
     guardianNames: [],
     threshold: 0,
     slot: null,

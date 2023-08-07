@@ -27,6 +27,8 @@ export default function ActivityItem({ item }: any) {
 
         const callDataDecodes = await decodeCalldata(item.chainId, item.entrypointAddress, item.userOp);
 
+        console.log('activity decoded', callDataDecodes)
+
         const functionNames = callDataDecodes.map((item: any) => item.functionName).join(", ");
 
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;

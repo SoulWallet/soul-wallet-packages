@@ -101,6 +101,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             if (operation) {
                 setActiveOperation(operation);
                 const callDataDecode = await decodeCalldata(selectedChainId, config.contracts.entrypoint,  operation.callData);
+                console.log('sign decoded', callDataDecode)
                 setDecodedData(callDataDecode);
             }
 

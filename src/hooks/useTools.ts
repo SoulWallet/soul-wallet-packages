@@ -5,7 +5,7 @@ import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
 import { toast } from "material-react-toastify";
-import { Decoder } from "@soulwallet/decoder";
+import { DecodeUserOp } from "@soulwallet/decoder";
 import { UserOperation } from "@soulwallet/sdk";
 
 export default function useTools() {
@@ -81,6 +81,12 @@ export default function useTools() {
     };
 
     const decodeCalldata = async (chainId: number, entrypoint: string, userOp: UserOperation) => {
+        const decodeRet = await DecodeUserOp(chainId, entrypoint, userOp);
+        if(decodeRet.isErr()){
+            console.error(decodeRet.ERR);
+            return [];
+        }
+        return decodeRet.OK;
         // const decoded = await Decoder.decode(chainId, entrypoint, userOp);
         // console.log('Decoded is', decoded)
         // TODO, add cache locally

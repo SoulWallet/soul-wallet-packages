@@ -57,7 +57,7 @@ export default {
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?
-    defaultBundlerUrl: "https://bundler-arb-goerli.soulwallets.me/rpc",
+    defaultBundlerUrl: "https://api-dev.soulwallet.io/bundler/arb-goerli/rpc",
     // defaultBundlerUrl: "https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH",
     maxCostMultiplier: 120,
     upgradeDelay: 10,
