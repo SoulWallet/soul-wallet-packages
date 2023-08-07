@@ -12,7 +12,7 @@ interface ISettingLinks {
 }
 
 export default function SettingLinks({ onChange }: ISettingLinks) {
-    const { walletAddress, walletType } = useWalletContext();
+    const { walletAddress } = useWalletContext();
     const { guardians } = useGlobalStore();
     const { formatGuardianFile, downloadJsonFile } = useTools();
     const { goWebsite } = useBrowser();
@@ -28,22 +28,20 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
             <a className={linksStyle} onClick={() => onChange(1)}>
                 Account details
             </a>
-            {walletType === "contract" && (
-                <>
-                    <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
-                        Edit guardian list
-                    </a>
-                    <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>
-                        Download guardian list
-                    </a>
-                    {/* <a className={cn(linksStyle, "flex justify-between items-center")}>
+            <>
+                <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
+                    Edit guardian list
+                </a>
+                <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>
+                    Download guardian list
+                </a>
+                {/* <a className={cn(linksStyle, "flex justify-between items-center")}>
                         <ApprovePaymaster />
                     </a> */}
-                    <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
-                        View on explorer
-                    </a>
-                </>
-            )}
+                <a target="_blank" className={linksStyle} href={`${config.scanUrl}/address/${walletAddress}`}>
+                    View on explorer
+                </a>
+            </>
         </div>
     );
 }

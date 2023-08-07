@@ -16,7 +16,7 @@ export default function useWallet() {
     const {updateAddressItem} = useAddressStore();
     const {calcGuardianHash} = useKeystore();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, getWalletType, getFeeCost, estimateUserOperationGas } = useQuery();
+    const { getGasPrice, getFeeCost} = useQuery();
     const {guardians, threshold} = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
@@ -140,33 +140,6 @@ export default function useWallet() {
         // }
     };
 
-    const recoverWallet = async (transferOp: any, signatureList: any, guardiansList: string[], opHash: string) => {
-        // const op = UserOperation.fromJSON(JSON.stringify(transferOp));
-        // for (let i = 0; i < signatureList.length; i++) {
-        //     signatureList[i].contract = (await getWalletType(signatureList[i].address)) === "contract";
-        // }
-        // const guardianInitCode = getGuardianInitCode(guardiansList);
-        // const isGuardianDeployed = (await getWalletType(guardianInitCode.address)) === "contract";
-        // const guardianInfo = await soulWalletLib.Guardian.getGuardian(ethersProvider, walletAddress);
-        // if (guardianInfo?.currentGuardian !== guardianInitCode.address) {
-        //     throw new Error("Guardian address not match");
-        // }
-        // const signature = soulWalletLib.Guardian.packGuardiansSignByInitCode(
-        //     guardianInitCode.address,
-        //     signatureList,
-        //     isGuardianDeployed ? "0x" : guardianInitCode.initCode,
-        // );
-        // op.signature = signature;
-        // await Runtime.send("execute", {
-        //     operation: op.toJSON(),
-        //     opHash,
-        //     bundlerUrl,
-        // });
-        // console.log("before replace");
-        // await keystore.replaceAddress();
-        // console.log("after replace");
-    };
-
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
 
@@ -265,7 +238,6 @@ export default function useWallet() {
     return {
         activateWallet,
         initRecoverWallet,
-        recoverWallet,
         updateGuardian,
         directSignAndSend,
         backupGuardiansOnChain,

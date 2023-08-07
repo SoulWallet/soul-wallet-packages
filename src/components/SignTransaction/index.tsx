@@ -1,12 +1,12 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
 import BN from "bignumber.js";
 import useQuery from "@src/hooks/useQuery";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
 import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
 import AddressIcon from "../AddressIcon";
 import { useChainStore } from "@src/store/chain";
+import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
@@ -14,6 +14,7 @@ import Button from "../Button";
 import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
+import { UserOperation } from "@soulwallet/sdk";
 
 enum SignTypeEn {
     Transaction,
@@ -69,7 +70,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [signing, setSigning] = useState<boolean>(false);
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [feeCost, setFeeCost] = useState("");
-    const [activeOperation, setActiveOperation] = useState("");
+    const [activeOperation, setActiveOperation] = useState<UserOperation>();
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
     const [activePaymasterData, setActivePaymasterData] = useState({});
@@ -100,10 +101,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
             if (operation) {
                 setActiveOperation(operation);
-                console.log("bbbbb", selectedChainId, config.contracts.entrypoint, operation);
-                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entrypoint, operation);
-                console.log("sign decoded", callDataDecodes);
+                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entryPoint, operation);
                 setDecodedData(callDataDecodes);
+                checkSponser(operation);
             }
 
             if (_messageToSign) {
@@ -146,6 +146,11 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const onSign = async () => {
         promiseInfo.resolve();
     };
+
+    const checkSponser = async(userOp: UserOperation) => {
+        const res = await api.sponsor.check(`0x${selectedChainId.toString(16)}`, config.contracts.entryPoint, userOp);
+        console.log('sponsor res', res)
+    }
 
     const getFeeCostAndPaymasterData = async () => {
         setLoadingFee(true);

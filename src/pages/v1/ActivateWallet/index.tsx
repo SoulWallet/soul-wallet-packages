@@ -18,7 +18,7 @@ import { useAddressStore } from "@src/store/address";
 
 export default function ActivateWallet() {
     const toast = useToast();
-    const { getWalletType, account } = useWalletContext();
+    const { account } = useWalletContext();
     const { selectedAddress } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
@@ -81,13 +81,6 @@ export default function ActivateWallet() {
 
         return () => clearInterval(intervalId);
     }, []);
-
-    useEffect(() => {
-        if (!selectedAddress) {
-            return;
-        }
-        getWalletType();
-    }, [selectedAddress]);
 
     useEffect(() => {
         if (!paymasterApproved) {

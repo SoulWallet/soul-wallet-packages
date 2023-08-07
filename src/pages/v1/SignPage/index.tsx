@@ -49,6 +49,13 @@ export default function SignPage() {
             userOp.maxFeePerGas = maxFeePerGas;
             userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
+            // get gas limit
+            const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+
+            if (gasLimit.isErr()) {
+                throw new Error(gasLimit.ERR.message);
+            }
+
             if (!userOp) {
                 throw new Error("Failed to format tx");
             }
@@ -179,9 +186,9 @@ export default function SignPage() {
         } catch (err) {
             console.log(err);
         } finally {
-            if(tabId){
+            if (tabId) {
                 window.close();
-            }else{
+            } else {
                 navigate("wallet");
             }
         }

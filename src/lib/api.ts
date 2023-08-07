@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "@src/config";
+import { UserOperation } from "@soulwallet/sdk";
 
 const axio = axios.create({
     baseURL: config.backendURL,
@@ -41,13 +42,21 @@ const guardian = {
     getSlotInfo: (params: any) => axio.get("/social-recovery/slot-info", { params }),
     createRecoverRecord: (params: any) => axio.post("/social-recovery/create-recovery-record", params),
     getRecoverRecord: (params: any) => axio.get("/social-recovery/recovery-record", { params }),
-}
+};
 
 const balance = {
     nft: (params: any) => axio.get("/nft-balance", { params }),
     token: (params: any) => axio.get("/token-balance", { params }),
 };
 
+const sponsor = {
+    check: (chainId: string, entryPoint: string, op: UserOperation) =>
+        axio.post("/sponsor/sponsor-op", {
+            chainId,
+            entryPoint,
+            op,
+        }),
+};
 
 export default {
     balance,
@@ -55,4 +64,5 @@ export default {
     account,
     notification,
     guardian,
+    sponsor,
 };

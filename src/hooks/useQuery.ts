@@ -38,18 +38,6 @@ export default function useQuery() {
 
     };
 
-    const estimateUserOperationGas = async (userOp: any) => {
-        // TODO, remove await bundler
-        // const b = await bundler;
-        // const estimateData: any = await b.eth_estimateUserOperationGas(userOp);
-        // console.log("call gas limit", userOp.callGasLimit);
-        // if (new BN(userOp.callGasLimit).isEqualTo(0)) {
-        //     userOp.callGasLimit = estimateData.callGasLimit;
-        // }
-        // userOp.preVerificationGas = estimateData.preVerificationGas;
-        // userOp.verificationGasLimit = estimateData.verificationGas;
-    };
-
     const getGasPrice = async () => {
         // if it's in the fixed price list, set fixed
         if (config.chainId === 421613 || config.chainId === 42161) {
@@ -168,6 +156,5 @@ export default function useQuery() {
         getFeeCost,
         getWalletType,
         getTokenByAddress,
-        estimateUserOperationGas,
     };
 }

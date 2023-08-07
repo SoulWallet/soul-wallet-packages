@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, createRef, useCallback, useMemo } from "react";
 import Web3 from "web3";
 import Runtime from "@src/lib/Runtime";
-import { getLocalStorage } from "@src/lib/tools";
 import { ethers } from "ethers";
 import { useSettingStore } from "@src/store/settingStore";
 import SignTransaction from "@src/components/SignTransaction";
@@ -9,7 +8,6 @@ import Locked from "@src/components/Locked";
 import config from "@src/config";
 import useKeyring from "@src/hooks/useKeyring";
 import { notify } from "@src/lib/tools";
-import useQuery from "@src/hooks/useQuery";
 const web3 = new Web3(config.provider);
 
 const ethersProvider = new ethers.JsonRpcProvider(config.provider);
@@ -19,9 +17,7 @@ interface IWalletContext {
     ethersProvider: ethers.JsonRpcProvider;
     account: string;
     // eoa, contract
-    walletType: string;
     walletAddress: string;
-    getWalletType: () => Promise<string>;
     getAccount: () => Promise<void>;
     executeOperation: (operation: any, actionName?: string, gasFormatted?: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
@@ -32,11 +28,7 @@ export const WalletContext = createContext<IWalletContext>({
     web3,
     ethersProvider,
     account: "",
-    walletType: "",
     walletAddress: "",
-    getWalletType: async () => {
-        return "";
-    },
     getAccount: async () => {},
     executeOperation: async () => {},
     replaceAddress: async () => {},
@@ -45,28 +37,16 @@ export const WalletContext = createContext<IWalletContext>({
 
 export const WalletContextProvider = ({ children }: any) => {
     const bundlerUrl = useSettingStore((state: any) => state.bundlerUrl);
-    const { estimateUserOperationGas } = useQuery();
-
     const [account, setAccount] = useState<string>("");
     const [walletAddress, setWalletAddress] = useState("");
     const [checkingLocked, setCheckingLocked] = useState(true);
-    const [walletType, setWalletType] = useState("");
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeyring();
 
     const getAccount = async () => {
         const res = await keystore.getAddress();
-        // const wAddress = await getLocalStorage("walletAddress");
         setAccount(res);
-        // setWalletAddress(wAddress);
-    };
-
-    const getWalletType = async () => {
-        const contractCode = await web3.eth.getCode(walletAddress);
-        const wType = contractCode !== "0x" ? "contract" : "eoa";
-        setWalletType(wType);
-        return wType;
     };
 
     const executeOperation = async (
@@ -79,8 +59,6 @@ export const WalletContextProvider = ({ children }: any) => {
                 const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
 
                 operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
-
-                await estimateUserOperationGas(operation);
 
                 const userOpHash = operation.getUserOpHashWithTimeRange(
                     config.contracts.entryPoint,
@@ -117,13 +95,6 @@ export const WalletContextProvider = ({ children }: any) => {
         await keystore.replaceAddress();
         await getAccount();
     };
-
-    useEffect(() => {
-        if (!walletAddress) {
-            return;
-        }
-        getWalletType();
-    }, [walletAddress]);
 
     const checkLocked = async () => {
         const current = lockedModal.current;
@@ -165,11 +136,9 @@ export const WalletContextProvider = ({ children }: any) => {
                 web3,
                 ethersProvider,
                 account,
-                walletType,
                 walletAddress,
                 getAccount,
                 executeOperation,
-                getWalletType,
                 replaceAddress,
                 showLocked,
             }}
