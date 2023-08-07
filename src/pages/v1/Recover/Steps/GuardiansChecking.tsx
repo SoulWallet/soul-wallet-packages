@@ -19,6 +19,7 @@ import ErrorIcon from "@src/components/Icons/Error";
 import useTools from "@src/hooks/useTools";
 import { useGuardianStore } from "@src/store/guardian";
 import { copyText } from "@src/lib/tools";
+import api from "@src/lib/api";
 
 interface IGuardianChecking {
   walletAddress: string;
@@ -63,6 +64,13 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
 
   useEffect(() => {
     generateQR(recoverRecordId)
+  }, []);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
+      console.log('recoveryRecordID', result)
+    }, 3000)
   }, []);
 
   const handleAskSignature = async () => {
