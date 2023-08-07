@@ -20,6 +20,7 @@ import {EnHandleMode} from '@src/lib/type'
 import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
 import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";
 import EnterGuardiansAddress from "@src/pages/v1/Recover/EnterGuardiansAddress";
+import { useGuardianStore } from "@src/store/guardian";
 
 type StepNodeInfo = {
   title: string;
@@ -32,6 +33,7 @@ const StepComponent = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [payToken, setPayToken] = useState("");
   const [recoverStatus, setRecoverStatus] = useState("n/m");
+  const { recoverRecordId } = useGuardianStore();
 
   const onRecoverSubmit = async (wAddress: string, pToken: string) => {
     setWalletAddress(wAddress);
@@ -88,6 +90,13 @@ const StepComponent = () => {
 
   useEffect(() => {
     checkRecoverStatus();
+
+    if (recoverRecordId) {
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.GuardiansChecking,
+      });
+    }
   }, []);
 
   return (

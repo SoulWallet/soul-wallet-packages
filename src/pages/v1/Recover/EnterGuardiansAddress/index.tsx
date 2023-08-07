@@ -92,6 +92,7 @@ const EnterGuardiansAddress = () => {
   const { getJsonFromFile } = useTools();
   const keystore = useKeystore();
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
@@ -163,6 +164,7 @@ const EnterGuardiansAddress = () => {
   };
 
   const handleFileChange = async (event: any) => {
+    setUploading(true)
     const file = event.target.files[0];
 
     if (!file) {
@@ -191,6 +193,7 @@ const EnterGuardiansAddress = () => {
     const result = await api.guardian.createRecoverRecord(params)
     const recoveryRecordID = result.data.recoveryRecordID
     setRecoverRecordId(recoveryRecordID)
+    setUploading(false)
     console.log('handleFileParseResult', fileJson, params, result)
 
     stepDispatch({
@@ -232,7 +235,7 @@ const EnterGuardiansAddress = () => {
               Due to your choice of private on-chain guardians, information must be manually entered to continue recovery.
             </TextBody>
           </Box>
-          <Button loading={false} _styles={{ width: '100%', marginTop: '0.75em', position: 'relative' }}>
+          <Button disabled={uploading} loading={uploading} _styles={{ width: '100%', marginTop: '0.75em', position: 'relative' }}>
             Upload file
             <Input
               type="file"
