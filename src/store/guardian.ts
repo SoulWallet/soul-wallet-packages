@@ -21,6 +21,7 @@ export interface GuardianStore {
     slot: any;
     slotInitInfo: any;
     recoverRecordId: any;
+    guardianSignatures: any;
     setGuardians: (guardian: string[]) => void;
     setGuardianDetails: (guardianDetails: any) => void;
     setGuardianNames: (guardianNames: string[]) => void;
@@ -28,6 +29,7 @@ export interface GuardianStore {
     setSlot: (slot: string) => void;
     setSlotInitInfo: (slotInitInfo: any) => void;
     setRecoverRecordId: (recoverRecordId: any) => void;
+    setGuardianSignatures: (guardianSignatures: any) => void;
 }
 
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
@@ -39,6 +41,7 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     slot: null,
     slotInitInfo: null,
     recoverRecordId: null,
+    guardianSignatures: null,
     setGuardians: (guardians: string[]) => set({ guardians }),
     setGuardianDetails: (guardianDetails: any) => set({ guardianDetails }),
     setGuardianNames: (guardianNames: string[]) => set({ guardianNames }),
@@ -46,6 +49,7 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     setSlot: (slot: string) => set({ slot }),
     setSlotInitInfo: (slotInitInfo: any) => set({ slotInitInfo }),
     setRecoverRecordId: (recoverRecordId: any) => set({ recoverRecordId }),
+    setGuardianSignatures: (guardianSignatures: any) => set({ guardianSignatures }),
 }));
 
 export type GuardianState = ReturnType<typeof createGuardianStore>;
