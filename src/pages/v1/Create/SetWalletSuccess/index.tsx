@@ -24,9 +24,7 @@ interface IStepCompletion {
 }
 
 const SetWalletSuccess = ({ mode }: IStepCompletion) => {
-  useEffect(() => {
-
-  }, [])
+  const {goPlugin} = useBrowser();
 
   if (mode === EnHandleMode.Create) {
     return (
@@ -37,7 +35,9 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
             You're now ready to navigate Ethereum with security and simplicity thanks to your new Soul Wallet.
           </TextBody>
         </Box>
-        <Button onClick={() => {}} _styles={{ width: '100%', marginTop: '0.75em' }}>
+        <Button onClick={() => {
+          goPlugin(`activate-wallet`)
+        }} _styles={{ width: '100%', marginTop: '0.75em' }}>
           Activate Wallet
         </Button>
         {createPortal(

@@ -27,12 +27,13 @@ export default function useBrowser() {
     };
 
     const goPlugin = async (route: string) => {
+        const version = 'v1'
         const tabs = await browser.tabs.query({
             active: true,
             currentWindow: true,
         });
         const windowWidth = tabs[0].width;
-        openWindow(`chrome-extension://${browser.runtime.id}/popup.html#${route}`, windowWidth || window.screen.width);
+        openWindow(`chrome-extension://${browser.runtime.id}/popup.html#${version}/${route}`, windowWidth || window.screen.width);
     };
 
     const getFullscreenUrl = (path: string) => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
 import {
     Box,
