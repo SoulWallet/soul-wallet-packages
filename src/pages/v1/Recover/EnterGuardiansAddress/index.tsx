@@ -27,6 +27,7 @@ import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
+import config from "@src/config";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -97,7 +98,7 @@ const EnterGuardiansAddress = () => {
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
-  const { guardians, threshold, slot, slotInitInfo } = useGuardianStore();
+  const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
 
   const stepDispatch = useStepDispatchContext();
@@ -106,7 +107,7 @@ const EnterGuardiansAddress = () => {
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
     validate,
-    initialValues: getInitialValues(defaultGuardianIds, ['0x8359236114AADaB0c01d6C3Aab6e97073411692D'])
+    initialValues: getInitialValues(defaultGuardianIds, guardians)
   })
 
   const amountForm = useForm({
@@ -136,8 +137,25 @@ const EnterGuardiansAddress = () => {
     setAmountData({ guardiansCount: guardiansList.length })
   }, [guardiansList])
 
-  const handleNext = () => {
-    console.log('hello')
+  const handleNext = async () => {
+    setLoading(true)
+    const keystore = config.contracts.l1Keystore
+    const newKey = ethers.zeroPadValue(account, 32)
+
+    const params = {
+      guardianDetails,
+      slot,
+      slotInitInfo,
+      keystore,
+      newKey
+    }
+
+    const result = await api.guardian.createRecoverRecord(params)
+    const recoveryRecordID = result.data.recoveryRecordID
+    setRecoverRecordId(recoveryRecordID)
+    setLoading(false)
+    console.log('handleNext', params, result)
+
     stepDispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: RecoverStepEn.GuardiansChecking,
@@ -171,8 +189,14 @@ const EnterGuardiansAddress = () => {
     }
 
     const result = await api.guardian.createRecoverRecord(params)
-
+    const recoveryRecordID = result.data.recoveryRecordID
+    setRecoverRecordId(recoveryRecordID)
     console.log('handleFileParseResult', fileJson, params, result)
+
+    stepDispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: RecoverStepEn.GuardiansChecking,
+    });
   }
 
   const addGuardian = () => {
@@ -275,7 +299,7 @@ const EnterGuardiansAddress = () => {
               _styles={{ width: '180px', marginTop: '0.75em' }}
             />
           </Box>
-          <Button loading={loading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
+          <Button disabled={loading} loading={loading} _styles={{ width: '100%', marginTop: '0.75em' }} onClick={handleNext}>
             Next
           </Button>
         </Box>

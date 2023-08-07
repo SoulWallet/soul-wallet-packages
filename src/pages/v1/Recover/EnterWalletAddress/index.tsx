@@ -35,7 +35,7 @@ const validate = (values: any) => {
 
 const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
   const [loading, setLoading] = useState(false)
-  const { setGuardians, setThreshold, setSlot, setSlotInitInfo } = useGuardianStore();
+  const { setGuardians, setThreshold, setSlot, setSlotInitInfo, setGuardianDetails } = useGuardianStore();
   const dispatch = useStepDispatchContext();
 
   const {
@@ -54,21 +54,22 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
 
   const handleNext = async () => {
     try {
-      /* setLoading(true)
-       * const result = await api.guardian.getSlotInfo({ walletAddress: values.address })
-       * const data = result.data
-       * const guardianDetails = data.guardianDetails
-       * const guardians = guardianDetails.guardians
-       * const threshold = guardianDetails.threshold
-       * const slot = result.slot
-       * const slotInitInfo = result.slotInitInfo
+      setLoading(true)
+      const result = await api.guardian.getSlotInfo({ walletAddress: values.address })
+      const data = result.data
+      const guardianDetails = data.guardianDetails
+      const guardians = guardianDetails.guardians
+      const threshold = guardianDetails.threshold
+      const slot = data.slot
+      const slotInitInfo = data.slotInitInfo
 
-       * setGuardians(guardians)
-       * setThreshold(threshold)
-       * setSlot(slot)
-       * setSlotInitInfo(slotInitInfo)
+      setGuardianDetails(guardianDetails)
+      setGuardians(guardians)
+      setThreshold(threshold)
+      setSlot(slot)
+      setSlotInitInfo(slotInitInfo)
 
-       * setLoading(false) */
+      setLoading(false)
 
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,

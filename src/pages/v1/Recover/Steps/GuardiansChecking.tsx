@@ -29,7 +29,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const [loading, setLoading] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>("");
   const { generateQrCode } = useTools();
-  const { guardians, threshold, slot, slotInitInfo } = useGuardianStore();
+  const { guardians, threshold, slot, slotInitInfo, recoverRecordId } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
 
   const formRef = useRef<IGuardianFormHandler>(null);
@@ -50,7 +50,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   };
 
   const doCopy = () => {
-    copyText('12345')
+    copyText(recoverRecordId)
   };
 
   const generateQR = async (text: string) => {
@@ -62,7 +62,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   };
 
   useEffect(() => {
-    generateQR('12345')
+    generateQR(recoverRecordId)
   }, []);
 
   const handleAskSignature = async () => {
@@ -118,7 +118,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
       </Box>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
-          Waiting for signatures (2 of 3 complete)
+          Waiting for signatures ({threshold} of {guardians.length} complete)
         </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
