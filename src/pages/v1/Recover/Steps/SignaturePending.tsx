@@ -3,7 +3,6 @@ import ModalV2 from "@src/components/ModalV2";
 import closeIcon from "@src/assets/icons/close.svg";
 import loadingGif from "@src/assets/skeleton_loading.gif";
 import React, { useEffect, useState } from "react";
-import { toast } from "material-react-toastify";
 import BN from "bignumber.js";
 import useErc20Contract from "@src/contract/useErc20Contract";
 import config from "@src/config";

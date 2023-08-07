@@ -60,7 +60,6 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	json-rpc-engine	](	https://github.com/MetaMask/json-rpc-engine	) | 	ISC	 | 	6.1.0	 |
 | [	json-rpc-middleware-stream	](	https://github.com/kumavis/json-rpc-middleware-stream	) | 	ISC	 | 	2.1.1	 |
 | [	loglevel	](	https://github.com/pimterry/loglevel	) | 	MIT	 | 	1.8.1	 |
-| [	material-react-toastify	](	https://github.com/shivanshBTW/material-react-toastify	) | 	MIT	 | 	1.0.1	 |
 | [	nanoid	](	https://github.com/ai/nanoid	) | 	MIT	 | 	4.0.1	 |
 | [	node-polyfill-webpack-plugin	](	https://github.com/Richienb/node-polyfill-webpack-plugin	) | 	MIT	 | 	2.0.1	 |
 | [	obj-multiplex	](		) | 	ISC	 | 	1.0.0	 |

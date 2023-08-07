@@ -4,11 +4,12 @@ import QRCode from "qrcode";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
-import { toast } from "material-react-toastify";
 import { DecodeUserOp } from "@soulwallet/decoder";
+import { useToast } from "@chakra-ui/react";
 import { UserOperation } from "@soulwallet/sdk";
 
 export default function useTools() {
+    const toast = useToast();
     const formatGuardianFile = (walletAddress: string, guardiansList: GuardianItem[] = []) => {
         // remove id
         const guardians = guardiansList.map((item) => {
@@ -71,7 +72,10 @@ export default function useTools() {
             backupObject: jsonToSave,
         });
         if (res.code === 200) {
-            toast.success("Success");
+            toast({
+                title: "Email sent.",
+                status: "success",
+            });
             return res;
         }
     };
@@ -82,7 +86,7 @@ export default function useTools() {
 
     const decodeCalldata = async (chainId: number, entrypoint: string, userOp: UserOperation) => {
         const decodeRet = await DecodeUserOp(chainId, entrypoint, userOp);
-        if(decodeRet.isErr()){
+        if (decodeRet.isErr()) {
             console.error(decodeRet.ERR);
             return [];
         }

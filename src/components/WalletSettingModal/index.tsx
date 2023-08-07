@@ -38,7 +38,6 @@ export default function WalletSettingModal({ onCancel }: IWalletSettingModal) {
             <ModalNavBar />
             {currentModalIndex === 0 && <SettingLinks onChange={setCurrentModalIndex} />}
             {currentModalIndex === 1 && <ResetPassword onCancel={onCancel} onChange={setCurrentModalIndex} />}
-            {currentModalIndex === 2 && <BundlerUrl onCancel={onCancel} onChange={setCurrentModalIndex} />}
         </Modal>
     );
 }

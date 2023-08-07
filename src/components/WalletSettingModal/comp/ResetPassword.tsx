@@ -3,7 +3,7 @@ import { Input } from "@src/components/Input";
 import useKeyring from "@src/hooks/useKeyring";
 import Button from "@src/components/Button";
 import PageTitle from "@src/components/PageTitle";
-import { toast } from "material-react-toastify";
+import { useToast } from "@chakra-ui/react";
 
 interface IResetPassword {
     onChange: (index: number) => void;
@@ -15,20 +15,30 @@ export default function ResetPassword({ onChange, onCancel }: IResetPassword) {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const keystore = useKeyring();
+    const toast = useToast();
 
     const doConfirm = async () => {
         if (newPassword !== confirmPassword) {
             console.log("mismatch");
-            toast.error("Password not match");
+            toast({
+                title: "Password not match",
+                status: "error",
+            });
             return;
         }
         try {
             await keystore.changePassword(originalPassword, newPassword);
-            toast.success("Password updated");
+            toast({
+                title: "Password updated",
+                status: "success",
+            });
             onChange(0);
             onCancel();
         } catch (err) {
-            toast.error("Wrong password");
+            toast({
+                title: "Wrong password",
+                status: "error",
+            });
         }
     };
 

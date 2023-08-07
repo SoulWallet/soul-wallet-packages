@@ -90,7 +90,6 @@
         "immer": "^9.0.19",
         "json-rpc-engine": "^6.1.0",
         "json-rpc-middleware-stream": "^2.1.1",
-        "material-react-toastify": "1.0.1",
         "nanoid": "^4.0.1",
         "node-polyfill-webpack-plugin": "^2.0.1",
         "qrcode": "^1.5.1",

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
 import CostItem from "@src/components/CostItem";
-import { toast } from "material-react-toastify";
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
-import { Box, Text, Flex, Divider } from "@chakra-ui/react";
+import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
 import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
 import useQuery from "@src/hooks/useQuery";
@@ -18,6 +17,7 @@ import { useAddressStore } from "@src/store/address";
 // import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
+    const toast = useToast();
     const { getWalletType, account } = useWalletContext();
     const { selectedAddress } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
@@ -31,6 +31,7 @@ export default function ActivateWallet() {
     const { tokenBalance, fetchTokenBalance } = useBalanceStore();
 
     const doActivate = async () => {
+        // TODO，add back
         // if (new BN(userBalance).isLessThan(maxCost)) {
         //     toast.error("Balance not enough");
         //     return;
@@ -39,10 +40,15 @@ export default function ActivateWallet() {
         try {
             await activateWallet(payToken, paymasterApproved, false);
             navigate("wallet");
-            toast.success("Account activated");
+            toast({
+                title: "Wallet activated",
+                status: "success",
+            })
         } catch (err) {
-            toast.error(String(err));
-            console.log("activate error", err);
+            toast({
+                title: "Activate wallet failed",
+                status: "error",
+            })
         } finally {
             setLoading(false);
         }

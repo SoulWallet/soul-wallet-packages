@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import cn from "classnames";
-import config from "@src/config";
-import { toast } from "material-react-toastify";
 import IconCopy from "@src/assets/copy.svg";
 import useTools from "@src/hooks/useTools";
 import { copyText } from "@src/lib/tools";
-import { Flex, Text, Box, Image } from "@chakra-ui/react";
+import { Flex, Text, Box, Image, useToast } from "@chakra-ui/react";
 
 interface IReceiveCode {
     walletAddress: string;
@@ -16,10 +13,14 @@ interface IReceiveCode {
 export default function ReceiveCode({ walletAddress, showFullAddress, imgWidth = "90px" }: IReceiveCode) {
     const [imgSrc, setImgSrc] = useState<string>("");
     const { generateQrCode } = useTools();
+    const toast = useToast()
 
     const doCopy = () => {
         copyText(`${walletAddress}`);
-        toast.success("Copied");
+        toast({
+            title: "Copied",
+            status: "success",
+        })
     };
 
     const generateQR = async (text: string) => {

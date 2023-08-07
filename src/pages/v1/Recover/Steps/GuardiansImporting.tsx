@@ -4,13 +4,12 @@ import useTools from "@src/hooks/useTools";
 import React, { useState } from "react";
 import { RecoveryActionTypeEn, useRecoveryDispatchContext } from "@src/context/RecoveryContext";
 import { nanoid } from "nanoid";
-import { toast } from "material-react-toastify";
-import Button from "@src/components/web/Button";
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Text, Image,useToast } from "@chakra-ui/react"
 import GardiansOptions from "@src/components/web/GardiansOptions";
 import Heading1 from "@src/components/web/Heading1";
 
 const GuardiansImporting = () => {
+  const toast = useToast();
   const [fileValid, setFileValid] = useState(false);
   const { getJsonFromFile } = useTools();
 
@@ -39,7 +38,10 @@ const GuardiansImporting = () => {
         const { address, name } = fileGuardians[i];
 
         if (!address) {
-          toast.error("Oops, something went wrong. Please check your file and try again.");
+          toast({
+            title: "Oops, something went wrong. Please check your file and try again.",
+            status: 'error'
+          })
           return;
         }
 

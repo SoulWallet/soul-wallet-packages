@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import config from "@src/config";
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Box, Text, useToast } from "@chakra-ui/react";
 import BN from "bignumber.js";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import useTransaction from "@src/hooks/useTransaction";
 import { ethers } from "ethers";
 import { useBalanceStore } from "@src/store/balanceStore";
-import { InfoWrap, InfoItem } from "../SignTransaction";
-import { toast } from "material-react-toastify";
 import { useAddressStore } from "@src/store/address";
 import AmountInput from "./comp/AmountInput";
 import AddressInput from "./comp/AddressInput";
@@ -35,21 +32,31 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
+    const toast = useToast()
 
     const { sendErc20, sendEth } = useTransaction();
 
     const confirmAddress = () => {
         if (!receiverAddress || !ethers.isAddress(receiverAddress)) {
-            toast.error("Address not valid");
+            toast({
+                title: "Address not valid",
+                status: "error",
+            })
             return;
         }
         if (!amount) {
-            toast.error("Amount not valid");
+            toast({
+                title: "Amount not valid",
+                status: "error",
+            })
             return;
         }
 
         if (new BN(amount).isGreaterThan(getTokenBalance(sendToken))) {
-            toast.error("Balance not enough");
+            toast({
+                title: "Balance not enough",
+                status: "error",
+            })
             // return;
         }
 

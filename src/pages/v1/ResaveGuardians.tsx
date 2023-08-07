@@ -12,14 +12,7 @@ const ResaveGuardians = () => {
     const handleSaved = () => {
         setSaved(true);
     };
-    // const handleNext = () => {
-    //     toast.success("Guardians saved successfully! Redirecting to the launch page...");
-
-    //     setTimeout(() => {
-    //         // goWebsite("/launch");
-    //         replaceCurrentTab("/launch");
-    //     }, 2000);
-    // };
+  
     return (
         <FullscreenContainer>
             <div className="flex flex-col pb-14">
