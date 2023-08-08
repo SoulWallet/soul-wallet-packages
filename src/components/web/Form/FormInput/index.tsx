@@ -39,7 +39,7 @@ export default function FormInput({
       <Box position="relative">
         <Box>
           <Input
-            type={isPassword ? "password" : "text"}
+            type={(isPassword && !visible) ? "password" : "text"}
             placeholder={placeholder}
             value={value ?? ""}
             onChange={handleChange}
