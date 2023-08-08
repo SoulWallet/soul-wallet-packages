@@ -13,7 +13,7 @@ import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import useSdk from '@src/hooks/useSdk';
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import Heading1 from "@src/components/web/Heading1";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
@@ -26,6 +26,14 @@ import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
+
+const getRecommandCount = (c: number) => {
+  if (!c) {
+    return 1
+  }
+
+  return Math.ceil(c / 2)
+}
 
 const getFieldsByGuardianIds = (ids: any) => {
   const fields = []
@@ -86,6 +94,7 @@ export default function GuardiansSetting() {
   const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
   const { setGuardians, setGuardianNames, setThreshold } = useGuardianStore();
+  const toast = useToast()
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -141,8 +150,11 @@ export default function GuardiansSetting() {
       setLoading(false)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     } catch (error: any) {
-      console.log('e', error.message)
       setLoading(false)
+      toast({
+        title: error.message,
+        status: "error",
+      })
     }
   }
 
@@ -225,7 +237,9 @@ export default function GuardiansSetting() {
           <Heading3 width="100%">Can I set guardians in the future?</Heading3>
           <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
           <Button width="100%" onClick={() => setSkipping(false)}>Set guardians now</Button>
-          <TextButton width="100%" onClick={handleSubmit}>I understand the risks, skip for now</TextButton>
+          <TextButton loading={loading} width="100%" onClick={handleSubmit}>
+            I understand the risks, skip for now
+          </TextButton>
         </Box>
       </Box>
     )
@@ -300,7 +314,7 @@ export default function GuardiansSetting() {
           </TextButton>
         </Box>
         <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
-          Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least X for safety.
+          Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
         </TextBody>
         <SmallFormInput
           placeholder="Enter amount"

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useKeyring from "@src/hooks/useKeyring";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCard from "@src/components/web/WalletCard";
-import { Box } from "@chakra-ui/react"
+import { Box, useToast } from "@chakra-ui/react"
 import PasswordStrengthBar from "@src/components/web/PasswordStrengthBar";
 import Button from "@src/components/web/Button";
 import FormInput from "@src/components/web/Form/FormInput";
@@ -31,6 +31,7 @@ export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const {getAccount} = useWalletContext()
+  const toast = useToast()
 
   const {
     values,
@@ -61,8 +62,12 @@ export default function SetPassword() {
           payload: CreateStepEn.SetupGuardians,
         });
       }
-    } catch (e) {
-      console.log('error', e)
+    } catch (e: any) {
+      setLoaing(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
   };
 
