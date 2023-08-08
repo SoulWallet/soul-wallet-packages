@@ -4,9 +4,13 @@ import QRCode from "qrcode";
 import { GuardianItem } from "@src/lib/type";
 import IconSend from "@src/assets/activities/send.svg";
 import IconContract from "@src/assets/activities/contract.svg";
-import { DecodeUserOp } from "@soulwallet/decoder";
+import { DecodeUserOp, DecodeResult } from "@soulwallet/decoder";
 import { useToast } from "@chakra-ui/react";
 import { UserOperation } from "@soulwallet/sdk";
+
+interface IDecodedData extends Partial<DecodeResult> {
+    functionName?: string;
+}
 
 export default function useTools() {
     const toast = useToast();
@@ -90,31 +94,29 @@ export default function useTools() {
             console.error(decodeRet.ERR);
             return [];
         }
-        return decodeRet.OK;
-        // const decoded = await Decoder.decode(chainId, entrypoint, userOp);
-        // console.log('Decoded is', decoded)
-        // TODO, add cache locally
-        // soulWalletLib.Utils.DecodeCallData.new().setStorage(
-        //     (key, value) => {
-        //         tmpMap.set(key, value);
-        //     },
-        //     (key) => {
-        //         const v = tmpMap.get(key);
-        //         if (typeof v === "string") {
-        //             return v;
-        //         }
-        //         return null;
-        //     },
-        // );
 
-        // const callDataDecode = await soulWalletLib.Utils.DecodeCallData.new().decode(callData);
-        const callDataDecode: any = {};
-        return callDataDecode;
+        const decoded:IDecodedData[] = decodeRet.OK;
+
+        if(userOp.initCode !== '0x'){
+            decoded.unshift({
+                functionName: 'Create Wallet',
+            })
+        }
+
+        for(let i of decoded){
+            if(!i.method && i.value){
+              i.functionName = 'Transfer ETH';
+            }
+        }
+
+        return decoded;
     };
 
     const getIconMapping = (name: string) => {
         switch (name) {
-            case "transfer":
+            case "Transfer ERC20":
+                return IconSend;
+            case "Transfer ETH":
                 return IconSend;
             default:
                 return IconContract;

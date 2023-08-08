@@ -31,7 +31,7 @@ export default function ActivityItem({ item }: any) {
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;
 
         setDetail({
-            functionName: item.userOp.initCode !== "0x" ? "active" : functionNames,
+            functionName: functionNames,
             txHash: item.trxHash,
             status,
         });
