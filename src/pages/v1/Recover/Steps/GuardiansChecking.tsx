@@ -7,7 +7,7 @@ import useWallet from "@src/hooks/useWallet";
 import { useRecoveryContext } from "@src/context/RecoveryContext";
 import { GuardianItem } from "@src/lib/type";
 import { notify } from "@src/lib/tools";
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import Button from "@src/components/web/Button";
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
@@ -40,6 +40,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const { generateQrCode } = useTools();
   const { guardians, threshold, slot, slotInitInfo, recoverRecordId, guardianSignatures, setGuardianSignatures } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
+  const toast = useToast()
 
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
@@ -60,6 +61,10 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
 
   const doCopy = () => {
     copyText(recoverRecordId)
+    toast({
+      title: "Copy success!",
+      status: "success",
+    });
   };
 
   const generateQR = async (text: string) => {

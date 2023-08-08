@@ -3,7 +3,7 @@ import { SButton } from "@src/components/Button";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import { useGlobalStore } from "@src/store/global";
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import useTools from "@src/hooks/useTools";
 import FormInput from "@src/components/web/Form/FormInput";
 import Heading1 from "@src/components/web/Heading1";
@@ -64,6 +64,7 @@ const SaveGuardians = () => {
   const { selectedAddressItem } = useAddressStore();
   const { guardians, guardianNames, threshold } = useGuardianStore();
   const { calcGuardianHash, getSlot } = useKeystore()
+  const toast = useToast()
 
   const emailForm = useForm({
     fields: ['email'],
@@ -153,6 +154,10 @@ const SaveGuardians = () => {
     const result = await api.guardian.backup(params)
     setLoading(false)
     setLoaded(true)
+    toast({
+      title: "OnChain Backup Success!",
+      status: "success",
+    })
     console.log('handleBackupGuardians', result)
   };
 
@@ -198,6 +203,10 @@ const SaveGuardians = () => {
     const result = await api.guardian.emailBackup(params)
     setSending(false)
     setSended(true)
+    toast({
+      title: "Email Backup Success!",
+      status: "success",
+    })
     console.log('handleEmailBackupGuardians', params, result)
   };
 
