@@ -242,8 +242,19 @@ const SaveGuardians = () => {
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.
         </TextBody>
       </Box>
-      <Box display="flex">
-        <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
+      <Box
+        display="flex"
+        flexDirection={{ base: 'column', md: 'row' }}
+      >
+        <Box
+          width="400px"
+          borderRight={{ base: 'none', md: '1px solid #D7D7D7' }}
+          padding="20px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Heading3>Set Guardians</Heading3>
           <Box marginBottom="0.75em">
             <TextBody textAlign="center">
@@ -285,7 +296,7 @@ const SaveGuardians = () => {
           </Button>
         </Box>
       </Box>
-      <Button disabled={!(loaded && downloaded && sended)} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+      <Button disabled={!(loaded && downloaded && sended)} onClick={handleNext} _styles={{ width: '359px', marginTop: '0.75em' }}>
         Continue
       </Button>
     </Box>
