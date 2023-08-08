@@ -12,6 +12,8 @@ import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import LogoIcon from "@src/assets/logo-v3.svg";
+import CurveArrowIcon from "@src/components/Icons/CurveArrow";
+import PinIcon from "@src/components/Icons/Pin";
 
 const defaultOptions = {
   loop: true,
@@ -64,7 +66,22 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
             justifyContent="flex-start"
             width="100%"
             height="100%"
+            position="relative"
           >
+            <Box
+              position="absolute"
+              right="50px"
+              top="-40px"
+            >
+              <CurveArrowIcon />
+            </Box>
+            <Box
+              position="absolute"
+              right="-30px"
+              top="-30px"
+            >
+              <PinIcon />
+            </Box>
             <Box
               display="flex"
               alignItems="flex-start"
