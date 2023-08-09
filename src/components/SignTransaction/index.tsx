@@ -1,5 +1,4 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
-import BN from "bignumber.js";
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
 import useTools from "@src/hooks/useTools";
@@ -76,10 +75,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
-    const {soulWallet} = useSdk();
+    const { soulWallet } = useSdk();
 
-    const formatUserOp: any = async (txns:any) => {
-
+    const formatUserOp: any = async (txns: any) => {
         try {
             const rawTxs = JSON.parse(txns);
 
@@ -118,13 +116,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     };
 
     useImperativeHandle(ref, () => ({
-        async show(
-            txns: any,
-            _actionName: string,
-            origin: string,
-            keepVisible: boolean,
-            _messageToSign: string = "",
-        ) {
+        async show(txns: any, _actionName: string, origin: string, keepVisible: boolean, _messageToSign: string = "") {
             // setActionName(_actionName);
             setOrigin(origin);
 
@@ -187,34 +179,23 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         promiseInfo.resolve();
     };
 
-    const checkSponser = async(userOp: UserOperation) => {
+    const checkSponser = async (userOp: UserOperation) => {
         const res = await api.sponsor.check(`0x${selectedChainId.toString(16)}`, config.contracts.entryPoint, userOp);
-        console.log('sponsor res', res)
-    }
+        console.log("sponsor res", res);
+    };
 
     const getFeeCostAndPaymasterData = async () => {
         setLoadingFee(true);
         setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requireAmountInWei, requireAmount } = await getFeeCost(
-            activeOperation,
-            payToken === config.zeroAddress ? "" : payToken,
-        );
+        const requiredAmount = await getFeeCost(activeOperation, payToken === config.zeroAddress ? "" : payToken);
 
         if (config.zeroAddress === payToken) {
             setActivePaymasterData("");
-            setFeeCost(`${requireAmount} ${config.chainToken}`);
+            setFeeCost(`${requiredAmount} ${config.chainToken}`);
         } else {
-            const maxUSDC = BN(requireAmountInWei.toString()).times(config.maxCostMultiplier).div(100);
-
-            const maxUSDCFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
-
-            // const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
-
-            // setActivePaymasterData(paymasterAndData);
-
-            setFeeCost(`${maxUSDCFormatted} USDC`);
+            setFeeCost(`${requiredAmount} USDC`);
         }
         setLoadingFee(false);
     };
@@ -333,7 +314,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                                     ? decodedData.map((item: any, index: number) => (
                                                           <span className="mr-1 capitalize" key={index}>
                                                               {decodedData.length > 1 && `${index + 1}.`}
-                                                              {item.functionName || 'Contract interaction'}
+                                                              {item.functionName || "Contract interaction"}
                                                           </span>
                                                       ))
                                                     : "Contract interaction"}

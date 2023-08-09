@@ -8,6 +8,7 @@ import { ethers } from "ethers";
 import useTools from "./useTools";
 import useSdk from "./useSdk";
 import config from "@src/config";
+import { ABI_ERC20Paymaster } from "@soulWallet/abi";
 import { addPaymasterAndData } from "@src/lib/tools";
 
 export default function useQuery() {
@@ -28,6 +29,12 @@ export default function useQuery() {
         return new BN(res).shiftedBy(-18).toString();
     };
 
+    const getEthPrice = async () => {
+        // get price from coingecko
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+        console.log("res", await res.json());
+    }
+
     const getBalances = async () => {
         if (!walletAddress) {
             return;
@@ -35,7 +42,6 @@ export default function useQuery() {
 
         // const ethBalance = await getEthBalance();
         // setBalance(config.zeroAddress, ethBalance);
-
     };
 
     const getGasPrice = async () => {
@@ -67,8 +73,8 @@ export default function useQuery() {
         userOp.maxFeePerGas = maxFeePerGas;
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
-        if(payToken && payToken!== ethers.ZeroAddress){
-            userOp.paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster)
+        if (payToken && payToken !== ethers.ZeroAddress) {
+            userOp.paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster);
         }
 
         console.log("FEE Cost: ", userOp);
@@ -83,53 +89,26 @@ export default function useQuery() {
         // get preFund
         const preFund = await soulWallet.preFund(userOp);
 
-        console.log('prefund', preFund)
+        console.log("prefund", preFund);
 
         if (preFund.isErr()) {
             throw new Error(preFund.ERR.message);
         }
 
-        return {
-            requireAmountInWei: BN(preFund.OK.missfund).toFixed(),
-            requireAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
-        };
-
-        // userOp.paymasterAndData = tokenAddress || "0x";
-
-        // await estimateUserOperationGas(userOp);
-
-        // let _requiredPrefund = await userOp.requiredPrefund(ethersProvider, config.contracts.entryPoint);
-
-        // let requiredPrefund;
-        // if (userOp.paymasterAndData === "0x") {
-        //     requiredPrefund = _requiredPrefund.requiredPrefund.sub(_requiredPrefund.deposit);
-        // } else {
-        //     requiredPrefund = _requiredPrefund.requiredPrefund;
-        // }
-
-        // const requiredFinalPrefund = requiredPrefund.gt(0) ? requiredPrefund : 0n;
-
-        // console.log("requiredPrefund: ", ethers.formatEther(requiredFinalPrefund), config.chainToken);
-        // if (!tokenAddress) {
-        //     return {
-        //         requireAmountInWei: requiredFinalPrefund,
-        //         requireAmount: ethers.formatEther(requiredFinalPrefund),
-        //     };
-        // }
-
-        // get USDC exchangeRate
-        // const exchangePrice = await soulWalletLib.getPaymasterExchangePrice(
-        //     ethersProvider,
-        //     config.contracts.paymaster,
-        //     tokenAddress,
-        //     true,
-        // );
-        // const tokenDecimals = exchangePrice.tokenDecimals || 6;
-        // // print price now
-        // console.log(
-        //     "exchangePrice: " + ethers.formatUnits(exchangePrice.price, exchangePrice.decimals),
-        //     `USDC/${config.chainToken}`,
-        // );
+        // erc20
+        if (payToken === ethers.ZeroAddress) {
+            return BN(preFund.OK.missfund).shiftedBy(-18).toFixed();
+        } else {
+            // IMPORTANT TODO, get erc20 price
+            getEthPrice();
+            const erc20Price = 1853;
+            return BN(preFund.OK.missfund)
+                .shiftedBy(-18)
+                .times(erc20Price)
+                .times(config.maxCostMultiplier)
+                .div(100)
+                .toFixed();
+        }
 
         // // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
         // const requiredUSDC = requiredFinalPrefund
@@ -138,11 +117,6 @@ export default function useQuery() {
         //     .div(BigNumber.from(10).pow(exchangePrice.decimals))
         //     .div(BigNumber.from(10).pow(18));
         // console.log("requiredUSDC: " + ethers.formatUnits(requiredUSDC, tokenDecimals), "USDC");
-
-        // return {
-        //     requireAmountInWei: requiredUSDC,
-        //     requireAmount: ethers.formatUnits(requiredUSDC, tokenDecimals),
-        // };
     };
 
     const getWalletType = async (address: string) => {

@@ -132,6 +132,8 @@ export default function useWallet() {
 
         userOp.signature = packedSignatureRet.OK;
 
+        console.log('before send', userOp)
+
         await Runtime.send("execute", {
             userOp: JSON.stringify(userOp),
             bundlerUrl,

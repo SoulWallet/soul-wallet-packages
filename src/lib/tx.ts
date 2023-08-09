@@ -15,13 +15,14 @@ const soulWallet = new SoulWallet(
 
 import { notify } from "@src/lib/tools";
 
-const ethersProvider = new ethers.JsonRpcProvider(config.provider);
+// const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: any) => {
     console.log("User OP: ", userOp);
 
     const ret = await soulWallet.sendUserOperation(userOp);
 
+    console.log('A', ret)
     if (ret.isErr()) {
         throw new Error(ret.ERR.message);
     }
@@ -30,6 +31,7 @@ export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: an
 
     const userOpHashRet = await soulWallet.userOpHash(userOp);
 
+    console.group('B', userOpHashRet)
     if (userOpHashRet.isErr()) {
         throw new Error(userOpHashRet.ERR.message);
     }

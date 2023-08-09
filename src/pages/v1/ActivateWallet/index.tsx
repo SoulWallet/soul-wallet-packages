@@ -59,8 +59,8 @@ export default function ActivateWallet() {
         setMaxCost("");
         const token = getTokenByAddress(payToken);
         setPayTokenSymbol(token.symbol);
-        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
-        setMaxCost(requireAmount);
+        const requiredAmount = await activateWallet(payToken, true);
+        setMaxCost(requiredAmount || '0');
     };
 
     const checkBalance = async () => {
