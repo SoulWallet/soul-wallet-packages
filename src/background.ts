@@ -1,8 +1,7 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
-import { getLocalStorage, openWindow } from "@src/lib/tools";
+import { getLocalStorage, openWindow, checkAllowed } from "@src/lib/tools";
 import { executeTransaction } from "@src/lib/tx";
-
 // TODO, change!
 let password = null;
 
@@ -32,17 +31,17 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
         case "getAccounts":
-            // if already allowed getting accounts, don't show popup, TODO, get from zustand
-            const walletAddress = await getLocalStorage("walletAddress");
-            const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
-
             // IMPORTANT TODO, also need to check lock state
-            if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
+            const addressStorage = JSON.parse(localStorage.getItem('address-storage') || "{}");
+            const selectedAddress = addressStorage.state.selectedAddress;
+
+            console.log('before check',msg.data.origin )
+            if (checkAllowed(msg.data.origin)) {
                 browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",
                     action: "getAccounts",
-                    data: walletAddress,
+                    data: selectedAddress,
                     tabId: senderTabId,
                 });
             } else {

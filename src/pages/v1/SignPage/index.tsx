@@ -17,7 +17,7 @@ import { useAddressStore } from "@src/store/address";
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { selectedAddress } = useAddressStore();
+    const { selectedAddress,toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
     // const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
@@ -36,17 +36,6 @@ export default function SignPage() {
         });
     }, [params[0]]);
 
-    const saveAccountsAllowed = async (origin: string) => {
-        // IMPORTANT TODO, move to store to manage
-        // let prev = (await getLocalStorage("accountsAllowed")) || {};
-        // if (prev[walletAddress] && prev[walletAddress].length > 0) {
-        //     prev[walletAddress] = [...prev[walletAddress], origin];
-        // } else {
-        //     prev[walletAddress] = [origin];
-        // }
-        // await setLocalStorage("accountsAllowed", prev);
-    };
-
     /**
      * Determine what data user want
      */
@@ -63,8 +52,9 @@ export default function SignPage() {
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
+
                 await currentSignModal.show("", actionType, origin, true);
-                await saveAccountsAllowed(searchParams.origin || "");
+                toggleAllowedOrigin(selectedAddress, origin, true);
                 await browser.runtime.sendMessage({
                     target: "soul",
                     type: "response",

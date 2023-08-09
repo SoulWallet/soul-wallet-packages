@@ -2,20 +2,22 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 
-interface IAddressItem {
+export interface IAddressItem {
     title: string;
     address: string;
     activated: boolean;
+    allowedOrigins: string[];
 }
 
-interface IAddressStore {
+export interface IAddressStore {
     selectedAddress: string;
-    selectedAddressItem: IAddressItem;
     addressList: IAddressItem[];
     setSelectedAddress: (address: string) => void;
     addAddressItem: (addressItem: IAddressItem) => void;
     updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => void;
     deleteAddress: (address: string) => void;
+    toggleAllowedOrigin: (address: string, origin: string, isAdd: boolean) => void;
+    getSelectedAddressItem: () => IAddressItem;
 }
 
 const getIndexByAddress = (addressList: IAddressItem[], address: string) => {
@@ -24,16 +26,14 @@ const getIndexByAddress = (addressList: IAddressItem[], address: string) => {
 
 const createAddressSlice = immer<IAddressStore>((set, get) => ({
     selectedAddress: "",
-    selectedAddressItem: {
-        title: "",
-        address: "",
-        activated: false,
-    },
     addressList: [],
+    getSelectedAddressItem: () => {
+        const index = getIndexByAddress(get().addressList, get().selectedAddress);
+        return get().addressList[index];
+    },
     setSelectedAddress: (address: string) =>
         set({
             selectedAddress: address,
-            selectedAddressItem: get().addressList.filter((item: IAddressItem) => item.address === address)[0],
         }),
     addAddressItem: (addressItem: IAddressItem) => {
         set((state) => {
@@ -49,16 +49,27 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
                 ...addressItem,
             };
             state.addressList[index] = itemToSet;
+            // TODO: check if getSelectedAddressItem is also triggered
             // if it's also selectedItem, update as well
-            if(state.selectedAddress === address) {
-                state.selectedAddressItem = itemToSet;
-            }
+            // if (state.selectedAddress === address) {
+            //     state.selectedAddressItem = itemToSet;
+            // }
         });
     },
     deleteAddress: (address: string) => {
         set((state: IAddressStore) => {
             const index = getIndexByAddress(state.addressList, address);
             state.addressList.splice(index, 1);
+        });
+    },
+    toggleAllowedOrigin: (address, origin, isAdd = true) => {
+        set((state: IAddressStore) => {
+            const index = getIndexByAddress(state.addressList, address);
+            if (isAdd) {
+                state.addressList[index].allowedOrigins.push(origin);
+            } else {
+                state.addressList[index].allowedOrigins.splice(index, 1);
+            }
         });
     },
 }));

@@ -141,7 +141,7 @@ export default function GuardiansSetting() {
       const walletName = `Account 1`
       // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
       const newAddress = (walletAddress as any)._value
-      addAddressItem({ title: walletName, address: newAddress, activated: false })
+      addAddressItem({ title: walletName, address: newAddress, activated: false, allowedOrigins: [] })
       setSelectedAddress(newAddress)
       setGuardians(guardianAddresses)
       setGuardianNames(guardianNames)

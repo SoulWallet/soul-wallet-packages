@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import { nanoid } from "nanoid";
 import { ethers } from "ethers";
+import { IAddressItem } from "@src/store/address";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -116,6 +117,14 @@ export const addPaymasterAndData = (payToken: string, paymaster: string) => {
 
     return paymasterAndData;
 };
+
+export const checkAllowed = (origin:string) => {
+    const addressStorage = JSON.parse(localStorage.getItem('address-storage') || "{}");
+    const selectedAddress = addressStorage.state.selectedAddress;
+    const selectedAddressItem = addressStorage.state.addressList.filter((item: IAddressItem) => item.address === selectedAddress)[0]
+    const allowedOrigins = selectedAddressItem.allowedOrigins;
+    return allowedOrigins.includes(origin);
+}
 
 // /**
 //  * hexlify all members of object, recursively

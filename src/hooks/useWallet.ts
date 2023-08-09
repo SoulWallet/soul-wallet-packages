@@ -42,7 +42,6 @@ export default function useWallet() {
             const erc20Abi = new ethers.Interface(Erc20ABI);
 
             const to = config.assetsList.filter((item: any) => item.paymaster).map((item: any) => item.address);
-            console.log('config', config.contracts.paymaster)
             const approveCalldata = erc20Abi.encodeFunctionData("approve", [
                 config.contracts.paymaster,
                 ethers.parseEther("1000"),
