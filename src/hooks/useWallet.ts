@@ -8,21 +8,21 @@ import useQuery from "./useQuery";
 import { useSettingStore } from "@src/store/settingStore";
 import { useGuardianStore } from "@src/store/guardian";
 import config from "@src/config";
-import { GuardianItem } from "@src/lib/type";
 import useKeystore from "./useKeystore";
+import Erc20ABI from "../contract/abi/ERC20.json";
 
 export default function useWallet() {
-    const { account, ethersProvider, getAccount, walletAddress } = useWalletContext();
-    const {updateAddressItem} = useAddressStore();
-    const {calcGuardianHash} = useKeystore();
+    const { account } = useWalletContext();
+    const { selectedAddress } = useAddressStore();
+    const { updateAddressItem } = useAddressStore();
+    const { calcGuardianHash } = useKeystore();
     const { bundlerUrl } = useSettingStore();
-    const { getGasPrice, getFeeCost} = useQuery();
-    const {guardians, threshold} = useGuardianStore();
+    const { getGasPrice, getFeeCost } = useQuery();
+    const { guardians, threshold } = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
-    const activateWallet = async (payToken: string, paymasterApproved: boolean, estimateCost: boolean = false) => {
-
+    const activateWallet = async (payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
 
         const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, guardianHash);
@@ -33,111 +33,37 @@ export default function useWallet() {
 
         const userOp = userOpRet.OK;
 
+        if (payToken !== ethers.ZeroAddress) {
+            const erc20Interface = new ethers.Interface(Erc20ABI);
+
+            const callData = erc20Interface.encodeFunctionData("approve", [
+                selectedAddress,
+                config.contracts.paymaster,
+                ethers.MaxUint256,
+            ]);
+
+            userOp.callData = callData;
+        }
+
         if (estimateCost) {
             return await getFeeCost(userOp, payToken === config.zeroAddress ? "" : payToken);
         } else {
             await directSignAndSend(userOp, payToken);
-            updateAddressItem(userOp.sender, {activated: true})
+            updateAddressItem(userOp.sender, { activated: true });
+        }
+    };
+    const addPaymasterData: any = async (payToken: string) => {
+        if (payToken === ethers.ZeroAddress) {
+            return "0x";
         }
 
-        // const guardiansList = guardians && guardians.length > 0 ? guardians.map((item: any) => item.address) : [];
+        // TODO, consider decimals
+        const paymasterAndData = ethers.solidityPacked(
+            ["address", "address", "uin256"],
+            [config.contracts.paymaster, payToken, ethers.parseEther("1000")],
+        );
 
-        // const guardianInitCode = getGuardianInitCode(guardiansList);
-
-        // const op = soulWalletLib.activateWalletOp(
-        //     config.contracts.walletLogic,
-        //     config.contracts.entryPoint,
-        //     account,
-        //     config.upgradeDelay,
-        //     config.guardianDelay,
-        //     guardianInitCode.address,
-        //     "0x",
-        //     maxFeePerGas,
-        //     maxPriorityFeePerGas,
-        // );
-
-        // if (paymasterApproved) {
-        //     const approveData = config.assetsList
-        //         .filter((item: any) => item.paymaster)
-        //         .map((item: any) => ({
-        //             token: item.address,
-        //             spender: config.contracts.paymaster,
-        //         }));
-
-        //     const approveCallData = soulWalletLib.Tokens.ERC20.getApproveCallData(approveData);
-
-        //     op.callGasLimit = approveCallData.callGasLimit;
-        //     op.callData = approveCallData.callData;
-        // }
-    };
-    // const addPaymasterData: any = async (op: any, payToken: string) => {
-    //     const { requireAmountInWei, requireAmount } = await getFeeCost(
-    //         op,
-    //         payToken === config.zeroAddress ? "" : payToken,
-    //     );
-
-    //     if (payToken !== config.zeroAddress) {
-    //         const maxUSD = BN(requireAmountInWei.toString()).times(config.maxCostMultiplier).div(100);
-
-    //         const maxUSDFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
-
-    //         const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSD);
-
-    //         console.log(`need ${maxUSDFormatted} USD`);
-
-    //         return { paymasterAndData, requireAmountInWei: maxUSD, requireAmount: maxUSDFormatted };
-    //     } else {
-    //         // op.paymasterAndData = "0x";
-    //         console.log(`need ${requireAmount} ${config.chainToken}`);
-    //         return { paymasterAndData: "0x", requireAmountInWei, requireAmount };
-    //     }
-    // };
-
-    const initRecoverWallet = async (walletAddress: string, guardians: GuardianItem[], payToken: string) => {
-        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-        // // const currentFee = await getGasPrice();
-        // const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        // const newOwner = await getLocalStorage("stagingAccount");
-        // const usePaymaster = payToken !== config.zeroAddress;
-        // const op = soulWalletLib.Guardian.transferOwner(
-        //     walletAddress,
-        //     nonce,
-        //     usePaymaster ? config.contracts.paymaster : config.zeroAddress,
-        //     new BN(maxFeePerGas).times(1.2).toFixed(0),
-        //     new BN(maxPriorityFeePerGas).times(1.2).toFixed(0),
-        //     newOwner,
-        // );
-        // if (!op) {
-        //     throw new Error("recoveryOp is null");
-        // }
-        // const { paymasterAndData, requireAmountInWei } = await addPaymasterData(op, payToken);
-        // op.paymasterAndData = paymasterAndData;
-        // await estimateUserOperationGas(op);
-        // const guardiansList = guardians.map((item) => item.address);
-        // const guardianInitCode = getGuardianInitCode(guardiansList);
-        // const opHash = op.getUserOpHashWithTimeRange(
-        //     config.contracts.entryPoint,
-        //     config.chainId,
-        //     guardianInitCode.address,
-        //     SignatureMode.guardian,
-        // );
-        // console.log("op hash", opHash);
-        // const res: any = await api.recovery.create({
-        //     tokenAddress: payToken,
-        //     amountInWei: requireAmountInWei.toString(),
-        //     chainId: config.chainId,
-        //     entrypointAddress: config.contracts.entryPoint,
-        //     guardianAddress: guardianInitCode.address,
-        //     newOwner,
-        //     guardians: guardiansList,
-        //     userOp: JSON.parse(op.toJSON()),
-        //     opHash,
-        // });
-        // if (res.code === 200) {
-        //     await setLocalStorage("recoverOpHash", opHash);
-        // } else {
-        //     throw new Error(res.msg);
-        // }
+        return paymasterAndData;
     };
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
@@ -165,6 +91,11 @@ export default function useWallet() {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
         userOp.maxFeePerGas = maxFeePerGas;
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+
+        // checkpaymaster
+        const paymasterAndData = await addPaymasterData(userOp, payToken);
+
+        userOp.paymasterAndData = paymasterAndData;
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
@@ -208,23 +139,11 @@ export default function useWallet() {
             userOp: JSON.stringify(userOp),
             bundlerUrl,
         });
-
-        // const { paymasterAndData } = await addPaymasterData(op, payToken);
-
-        // op.paymasterAndData = paymasterAndData;
-
-        // await estimateUserOperationGas(op);
-
-        // const opHash = op.getUserOpHashWithTimeRange(config.contracts.entryPoint, config.chainId, account);
     };
 
-    const backupGuardiansOnChain = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
+    const backupGuardiansOnChain = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {};
 
-    };
-
-    const backupGuardiansByEmail = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
-
-    };
+    const backupGuardiansByEmail = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {};
 
     const backupGuardiansByDownload = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {
         // const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(jsonToSave))}`;
@@ -237,11 +156,10 @@ export default function useWallet() {
 
     return {
         activateWallet,
-        initRecoverWallet,
         updateGuardian,
         directSignAndSend,
         backupGuardiansOnChain,
         backupGuardiansByEmail,
-        backupGuardiansByDownload
+        backupGuardiansByDownload,
     };
 }

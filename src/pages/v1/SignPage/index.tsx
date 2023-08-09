@@ -22,49 +22,8 @@ export default function SignPage() {
     const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
     const { navigate } = useBrowser();
-    const { soulWallet } = useSdk();
     const signModal = createRef<any>();
     const keyring = useKeyring();
-
-    const formatOperation: any = async () => {
-        const { txns } = searchParams;
-
-        try {
-            const rawTxs = JSON.parse(txns);
-
-            const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-
-            const userOpRet = await soulWallet.fromTransaction(
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-                selectedAddress,
-                rawTxs,
-            );
-
-            if (userOpRet.isErr()) {
-                throw new Error(userOpRet.ERR.message);
-            }
-
-            const userOp = userOpRet.OK;
-            userOp.maxFeePerGas = maxFeePerGas;
-            userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
-
-            // get gas limit
-            const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
-
-            if (gasLimit.isErr()) {
-                throw new Error(gasLimit.ERR.message);
-            }
-
-            if (!userOp) {
-                throw new Error("Failed to format tx");
-            }
-
-            return userOp;
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     useEffect(() => {
         const param = params[0];
@@ -115,13 +74,14 @@ export default function SignPage() {
                 });
             } else if (actionType === "approveTransaction") {
                 // IMPORTANT TODO, move to signModal
-                const userOp = await formatOperation();
+                // const userOp = formatOperation();
+                const { txns } = searchParams;
 
-                const paymasterAndData = await currentSignModal.show(userOp, actionType, origin, true);
+                const userOp = await currentSignModal.show(txns, actionType, origin, true);
 
-                if (paymasterAndData) {
-                    userOp.paymasterAndData = paymasterAndData;
-                }
+                // if (paymasterAndData) {
+                //     userOp.paymasterAndData = paymasterAndData;
+                // }
 
                 await directSignAndSend(userOp);
 
