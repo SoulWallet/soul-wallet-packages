@@ -5,6 +5,7 @@ import useSdk from "./useSdk";
 import { useAddressStore } from "@src/store/address";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
+import { ABI_SoulWallet } from "@soulwallet/abi";
 import { useSettingStore } from "@src/store/settingStore";
 import { useGuardianStore } from "@src/store/guardian";
 import config from "@src/config";
@@ -34,13 +35,22 @@ export default function useWallet() {
         const userOp = userOpRet.OK;
 
         if (payToken !== ethers.ZeroAddress) {
-            const erc20Interface = new ethers.Interface(Erc20ABI);
+            const soulAbi = new ethers.Interface(ABI_SoulWallet);
+            const erc20Abi = new ethers.Interface(Erc20ABI);
 
-            const callData = erc20Interface.encodeFunctionData("approve", [
+            const to = config.assetsList.filter((item: any) => item.paymaster).map((item: any) => item.address);
+            debugger
+            const approveCalldata = erc20Abi.encodeFunctionData("approve", [
                 selectedAddress,
                 config.contracts.paymaster,
-                ethers.MaxUint256,
+                ethers.parseEther("1000"),
             ]);
+
+            const approveCalldatas = [...new Array(to.length)].map((item:any) => approveCalldata)
+
+            debugger;
+
+            const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, [approveCalldatas]]);
 
             userOp.callData = callData;
         }

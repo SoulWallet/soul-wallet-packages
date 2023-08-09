@@ -1,15 +1,11 @@
 /**
- * Arbitrum
+ * Arbitrum Goerli
  */
 
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
-import IconDAI from "@src/assets/tokens/dai.png";
-import IconUSDT from "@src/assets/tokens/usdt.png";
 
-const paymasterToken_DAI = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
-const paymasterToken_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
-const paymasterToken_USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
+const erc20_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
 
 export const assetsList = [
     {
@@ -22,27 +18,9 @@ export const assetsList = [
         paymaster: false,
     },
     {
-        icon: IconDAI,
-        name: "Dai Stablecoin",
-        symbol: "DAI",
-        address: paymasterToken_DAI,
-        decimals: 18,
-        payable: true,
-        paymaster: true,
-    },
-    {
-        icon: IconUSDT,
-        symbol: "USDT",
-        name: "Tether USD",
-        address: paymasterToken_USDT,
-        decimals: 6,
-        payable: true,
-        paymaster: true,
-    },
-    {
         icon: IconUSDC,
         symbol: "USDC",
-        address: paymasterToken_USDC,
+        address: erc20_USDC,
         name: "USDCoin",
         decimals: 6,
         payable: true,
@@ -72,9 +50,7 @@ export default {
     addressPrefix: "arb:",
     support1559: true,
     tokens: {
-        usdc: paymasterToken_USDC,
-        dai: paymasterToken_DAI,
-        usdt: paymasterToken_USDT,
+        usdc: erc20_USDC,
     },
     contracts: {
         l1Keystore: "0xa0126a11877f3edb06cf6afac809f92d324007dc",
@@ -86,10 +62,10 @@ export default {
         securityControlModule: "0xe9793d7792d3d736ecde0cc89050232704ad323e",
 
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+        paymaster: "0x357c443022df521e3d6d9c5ec88c0f03fcec0cd1",
 
         walletLogic: "0x",
         guardianLogic: "0x",
-        paymaster: "0x",
         create2Factory: "0x",
     },
 };
