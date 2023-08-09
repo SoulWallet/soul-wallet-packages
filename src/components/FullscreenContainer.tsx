@@ -17,7 +17,7 @@ export default function FullscreenContainer({ children }: { children: ReactNode 
     >
       <Box
         id="animation-portal"
-        position="absolute"
+        position="fixed"
         top="0"
         bottom="0"
         left="0"
@@ -26,7 +26,7 @@ export default function FullscreenContainer({ children }: { children: ReactNode 
         alignItems="center"
         justifyContent="center"
         background="transparent"
-        zIndex="2"
+        zIndex="0"
         pointerEvents="none"
       />
       <Logo />
