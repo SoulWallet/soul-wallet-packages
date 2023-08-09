@@ -15,6 +15,7 @@ import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
 import { UserOperation } from "@soulwallet/sdk";
+import useSdk from "@src/hooks/useSdk";
 
 enum SignTypeEn {
     Transaction,
@@ -76,11 +77,51 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [activePaymasterData, setActivePaymasterData] = useState({});
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
-    const { getFeeCost } = useQuery();
+    const { getFeeCost, getGasPrice } = useQuery();
+    const {soulWallet} = useSdk();
+
+    const formatUserOp: any = async (txns:any) => {
+
+        try {
+            const rawTxs = JSON.parse(txns);
+
+            const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+
+            const userOpRet = await soulWallet.fromTransaction(
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                selectedAddress,
+                rawTxs,
+            );
+
+            if (userOpRet.isErr()) {
+                throw new Error(userOpRet.ERR.message);
+            }
+
+            const userOp = userOpRet.OK;
+            userOp.maxFeePerGas = maxFeePerGas;
+            userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+
+            // get gas limit
+            const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+
+            if (gasLimit.isErr()) {
+                throw new Error(gasLimit.ERR.message);
+            }
+
+            if (!userOp) {
+                throw new Error("Failed to format tx");
+            }
+
+            return userOp;
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useImperativeHandle(ref, () => ({
         async show(
-            operation: any,
+            txns: any,
             _actionName: string,
             origin: string,
             keepVisible: boolean,
@@ -99,11 +140,12 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                 setSignType(SignTypeEn.Transaction);
             }
 
-            if (operation) {
-                setActiveOperation(operation);
-                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entryPoint, operation);
+            if (txns) {
+                const userOp = formatUserOp(txns);
+                setActiveOperation(userOp);
+                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entryPoint, userOp);
                 setDecodedData(callDataDecodes);
-                checkSponser(operation);
+                checkSponser(userOp);
             }
 
             if (_messageToSign) {
@@ -134,7 +176,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         if (config.zeroAddress === payToken) {
             promiseInfo.resolve();
         } else {
-            promiseInfo.resolve(activePaymasterData);
+            promiseInfo.resolve(activeOperation);
         }
 
         if (!keepModalVisible) {

@@ -38,7 +38,7 @@ export default function ActivateWallet() {
         // }
         setLoading(true);
         try {
-            await activateWallet(payToken, paymasterApproved, false);
+            await activateWallet(payToken, false);
             navigate("wallet");
             toast({
                 title: "Wallet activated",
@@ -59,7 +59,7 @@ export default function ActivateWallet() {
         setMaxCost("");
         const token = getTokenByAddress(payToken);
         setPayTokenSymbol(token.symbol);
-        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, paymasterApproved, true);
+        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
         setMaxCost(requireAmount);
     };
 
