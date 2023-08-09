@@ -2,9 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from
 import BN from "bignumber.js";
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
-import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
-import AddressIcon from "../AddressIcon";
 import { useChainStore } from "@src/store/chain";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";

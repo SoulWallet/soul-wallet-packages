@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import { nanoid } from "nanoid";
+import { ethers } from "ethers";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -102,6 +103,20 @@ export const getMessageType = (msg: string) => {
 export const nextRandomId = () => {
     return nanoid()
 }
+
+export const addPaymasterAndData = (payToken: string, paymaster: string) => {
+    if (payToken === ethers.ZeroAddress) {
+        return "0x";
+    }
+
+    // TODO, consider decimals
+    const paymasterAndData = ethers.solidityPacked(
+        ["address", "address", "uint256"],
+        [paymaster, payToken, ethers.parseEther("1000")],
+    );
+
+    return paymasterAndData;
+};
 
 
 // /**

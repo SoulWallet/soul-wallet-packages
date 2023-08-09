@@ -7,7 +7,7 @@ import Theme from "@src/styles/Theme";
 
 export function Popup() {
     return (
-        <ChakraProvider theme={Theme}>
+        <ChakraProvider theme={Theme} toastOptions={{ defaultOptions: { duration: 1000 } }}>
             {/** TODO, register fonts here instead of app.css */}
             {/* <Fonts /> */}
             <HashRouter>

@@ -8,7 +8,7 @@ const tooltipTheme = defineStyleConfig({
 const menuTheme = defineStyleConfig({
   baseStyle: {
     list: {
-      borderRadius: "20px",
+      borderRadius: "16px",
       boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
       overflow: "hidden",
     },

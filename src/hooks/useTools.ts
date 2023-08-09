@@ -123,16 +123,11 @@ export default function useTools() {
         }
     };
 
-    const safeParseUnits = (val: string, digit: number) => {
-        return ethers.parseUnits(val, digit);
-    };
-
     const generateQrCode = async (text: string) => {
         return await QRCode.toDataURL(text, { margin: 2 });
     };
 
     return {
-        safeParseUnits,
         verifyAddressFormat,
         decodeCalldata,
         downloadJsonFile,

@@ -8,12 +8,12 @@ import { ethers } from "ethers";
 import useTools from "./useTools";
 import useSdk from "./useSdk";
 import config from "@src/config";
+import { addPaymasterAndData } from "@src/lib/tools";
 
 export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
     const { soulWallet } = useSdk();
-
-    const { verifyAddressFormat, safeParseUnits } = useTools();
+    const { verifyAddressFormat } = useTools();
 
     /**
      * Get token info by tokenAddress
@@ -61,13 +61,17 @@ export default function useQuery() {
         }
     };
 
-    const getFeeCost = async (userOp: any, tokenAddress?: string) => {
+    const getFeeCost = async (userOp: any, payToken?: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
         userOp.maxFeePerGas = maxFeePerGas;
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
-        console.log("FEE Cost UserOP", userOp);
+        if(payToken && payToken!== ethers.ZeroAddress){
+            userOp.paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster)
+        }
+
+        console.log("FEE Cost: ", userOp);
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);

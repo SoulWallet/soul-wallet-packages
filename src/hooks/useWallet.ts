@@ -8,6 +8,7 @@ import useQuery from "./useQuery";
 import { ABI_SoulWallet } from "@soulwallet/abi";
 import { useSettingStore } from "@src/store/settingStore";
 import { useGuardianStore } from "@src/store/guardian";
+import { addPaymasterAndData } from "@src/lib/tools";
 import config from "@src/config";
 import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
@@ -39,42 +40,27 @@ export default function useWallet() {
             const erc20Abi = new ethers.Interface(Erc20ABI);
 
             const to = config.assetsList.filter((item: any) => item.paymaster).map((item: any) => item.address);
-            debugger
+            console.log('config', config.contracts.paymaster)
             const approveCalldata = erc20Abi.encodeFunctionData("approve", [
-                selectedAddress,
                 config.contracts.paymaster,
                 ethers.parseEther("1000"),
             ]);
 
             const approveCalldatas = [...new Array(to.length)].map((item:any) => approveCalldata)
 
-            debugger;
-
-            const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, [approveCalldatas]]);
+            const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
 
             userOp.callData = callData;
         }
 
         if (estimateCost) {
-            return await getFeeCost(userOp, payToken === config.zeroAddress ? "" : payToken);
+            return await getFeeCost(userOp, payToken);
         } else {
             await directSignAndSend(userOp, payToken);
             updateAddressItem(userOp.sender, { activated: true });
         }
     };
-    const addPaymasterData: any = async (payToken: string) => {
-        if (payToken === ethers.ZeroAddress) {
-            return "0x";
-        }
-
-        // TODO, consider decimals
-        const paymasterAndData = ethers.solidityPacked(
-            ["address", "address", "uin256"],
-            [config.contracts.paymaster, payToken, ethers.parseEther("1000")],
-        );
-
-        return paymasterAndData;
-    };
+ 
 
     const updateGuardian = async (guardiansList: string[], payToken: string) => {
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
@@ -103,9 +89,10 @@ export default function useWallet() {
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
         // checkpaymaster
-        const paymasterAndData = await addPaymasterData(userOp, payToken);
-
-        userOp.paymasterAndData = paymasterAndData;
+        if(payToken && payToken !== ethers.ZeroAddress){
+            const paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster);
+            userOp.paymasterAndData = paymasterAndData;
+        }
 
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
@@ -165,6 +152,7 @@ export default function useWallet() {
     };
 
     return {
+        addPaymasterAndData,
         activateWallet,
         updateGuardian,
         directSignAndSend,
