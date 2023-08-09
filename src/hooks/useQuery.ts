@@ -33,7 +33,7 @@ export default function useQuery() {
         // get price from coingecko
         const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
         console.log("res", await res.json());
-    }
+    };
 
     const getBalances = async () => {
         if (!walletAddress) {
@@ -77,8 +77,6 @@ export default function useQuery() {
             userOp.paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster);
         }
 
-        console.log("FEE Cost: ", userOp);
-
         // get gas limit
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
@@ -97,17 +95,24 @@ export default function useQuery() {
 
         // erc20
         if (payToken === ethers.ZeroAddress) {
-            return BN(preFund.OK.missfund).shiftedBy(-18).toFixed();
+            return {
+                requiredAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
+                userOp,
+            };
         } else {
             // IMPORTANT TODO, get erc20 price
             getEthPrice();
             const erc20Price = 1853;
-            return BN(preFund.OK.missfund)
-                .shiftedBy(-18)
-                .times(erc20Price)
-                .times(config.maxCostMultiplier)
-                .div(100)
-                .toFixed();
+
+            return {
+                requiredAmount: BN(preFund.OK.missfund)
+                    .shiftedBy(-18)
+                    .times(erc20Price)
+                    .times(config.maxCostMultiplier)
+                    .div(100)
+                    .toFixed(),
+                userOp,
+            };
         }
 
         // // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)

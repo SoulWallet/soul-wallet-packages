@@ -31,7 +31,6 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const { getTokenBalance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
-    const [payToken, setPayToken] = useState(config.zeroAddress);
     const toast = useToast()
 
     const { sendErc20, sendEth } = useTransaction();

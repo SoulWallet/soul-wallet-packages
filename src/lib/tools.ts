@@ -101,8 +101,8 @@ export const getMessageType = (msg: string) => {
 };
 
 export const nextRandomId = () => {
-    return nanoid()
-}
+    return nanoid();
+};
 
 export const addPaymasterAndData = (payToken: string, paymaster: string) => {
     if (payToken === ethers.ZeroAddress) {
@@ -110,14 +110,12 @@ export const addPaymasterAndData = (payToken: string, paymaster: string) => {
     }
 
     // TODO, consider decimals
-    const paymasterAndData = ethers.solidityPacked(
-        ["address", "address", "uint256"],
-        [paymaster, payToken, ethers.parseEther("1000")],
-    );
+    const paymasterAndData = `${paymaster}${new ethers.AbiCoder()
+        .encode(["address", "uint256"], [payToken, ethers.parseEther("1000")])
+        .slice(2)}`;
 
     return paymasterAndData;
 };
-
 
 // /**
 //  * hexlify all members of object, recursively

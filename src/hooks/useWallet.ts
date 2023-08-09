@@ -11,7 +11,9 @@ import { useGuardianStore } from "@src/store/guardian";
 import { addPaymasterAndData } from "@src/lib/tools";
 import config from "@src/config";
 import useKeystore from "./useKeystore";
+import BN from 'bignumber.js'
 import Erc20ABI from "../contract/abi/ERC20.json";
+import { UserOperation } from "@soulwallet/sdk";
 
 export default function useWallet() {
     const { account } = useWalletContext();
@@ -51,10 +53,14 @@ export default function useWallet() {
             const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
 
             userOp.callData = callData;
+
+            userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
+
         }
 
         if (estimateCost) {
-            return await getFeeCost(userOp, payToken);
+            const {requiredAmount} = await getFeeCost(userOp, payToken);
+            return requiredAmount
         } else {
             await directSignAndSend(userOp, payToken);
             updateAddressItem(userOp.sender, { activated: true });
@@ -82,7 +88,10 @@ export default function useWallet() {
         // await removeLocalStorage("recoverOpHash");
     };
 
-    const directSignAndSend = async (userOp: any, payToken?: string) => {
+    const directSignAndSend = async (userOp: UserOperation, payToken?: string) => {
+
+        // TODO, estimate fee could be avoided
+
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
         userOp.maxFeePerGas = maxFeePerGas;
@@ -94,12 +103,16 @@ export default function useWallet() {
             userOp.paymasterAndData = paymasterAndData;
         }
 
-        // get gas limit
+        // set verificationGasLimit and callGasLimit
+        // can be avoided if already set
+
         const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
         if (gasLimit.isErr()) {
             throw new Error(gasLimit.ERR.message);
         }
+
+        // userOp.verificationGasLimit = `0x${(1000000).toString(16)}`;
 
         // get preFund
         const preFund = await soulWallet.preFund(userOp);
@@ -131,8 +144,6 @@ export default function useWallet() {
         }
 
         userOp.signature = packedSignatureRet.OK;
-
-        console.log('before send', userOp)
 
         await Runtime.send("execute", {
             userOp: JSON.stringify(userOp),

@@ -14,7 +14,6 @@ import { Transaction } from "@soulwallet/sdk";
 import useBrowser from "./useBrowser";
 
 export default function useTransaction() {
-    const { executeOperation } = useWalletContext();
     const { selectedAddress } = useAddressStore();
     const keyStore = useKeyring();
     const { navigateToSign } = useBrowser();
@@ -61,6 +60,5 @@ export default function useTransaction() {
         signTransaction,
         sendErc20,
         sendEth,
-        executeOperation,
     };
 }

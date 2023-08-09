@@ -5,7 +5,7 @@
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
 
-const erc20_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
+const erc20_USDC = "0xfd064A18f3BF249cf1f87FC203E90D8f650f2d63";
 
 export const assetsList = [
     {
@@ -31,7 +31,8 @@ export const assetsList = [
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH`,
+    // provider: `https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH`,
+    provider: `https://arbitrum-goerli.publicnode.com`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?

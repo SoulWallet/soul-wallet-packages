@@ -19,7 +19,6 @@ interface IWalletContext {
     // eoa, contract
     walletAddress: string;
     getAccount: () => Promise<void>;
-    executeOperation: (operation: any, actionName?: string, gasFormatted?: string) => Promise<void>;
     replaceAddress: () => Promise<void>;
     showLocked: () => void;
 }
@@ -30,7 +29,6 @@ export const WalletContext = createContext<IWalletContext>({
     account: "",
     walletAddress: "",
     getAccount: async () => {},
-    executeOperation: async () => {},
     replaceAddress: async () => {},
     showLocked: async () => {},
 });
@@ -47,48 +45,6 @@ export const WalletContextProvider = ({ children }: any) => {
     const getAccount = async () => {
         const res = await keystore.getAddress();
         setAccount(res);
-    };
-
-    const executeOperation = async (
-        operation: any,
-        // no actionName means no need to sign
-        actionName?: string,
-    ) => {
-        if (actionName) {
-            try {
-                const paymasterAndData = await signModal.current.show(operation, actionName, "Soul Wallet", false);
-
-                operation.paymasterAndData = paymasterAndData ? paymasterAndData : "0x";
-
-                const userOpHash = operation.getUserOpHashWithTimeRange(
-                    config.contracts.entryPoint,
-                    config.chainId,
-                    account,
-                );
-
-                const signature = await keystore.sign(userOpHash);
-
-                if (!signature) {
-                    throw new Error("Failed to sign");
-                }
-
-                operation.signWithSignature(account, signature || "");
-
-                await Runtime.send("execute", {
-                    // actionName,
-                    operation: operation.toJSON(),
-                    userOpHash,
-                    bundlerUrl,
-                });
-            } catch (err) {
-                if (err === "User reject") {
-                    console.warn(err);
-                } else {
-                    notify("Error", String(err));
-                }
-                throw Error(String(err));
-            }
-        }
     };
 
     const replaceAddress = async () => {
@@ -138,7 +94,6 @@ export const WalletContextProvider = ({ children }: any) => {
                 account,
                 walletAddress,
                 getAccount,
-                executeOperation,
                 replaceAddress,
                 showLocked,
             }}

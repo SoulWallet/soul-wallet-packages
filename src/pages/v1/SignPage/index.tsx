@@ -19,7 +19,7 @@ export default function SignPage() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress } = useAddressStore();
     const toast = useToast();
-    const { getGasPrice } = useQuery();
+    // const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
     const { navigate } = useBrowser();
     const signModal = createRef<any>();
@@ -77,13 +77,9 @@ export default function SignPage() {
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
 
-                const userOp = await currentSignModal.show(txns, actionType, origin, true);
+                const {userOp, payToken} = await currentSignModal.show(txns, actionType, origin, true);
 
-                // if (paymasterAndData) {
-                //     userOp.paymasterAndData = paymasterAndData;
-                // }
-
-                await directSignAndSend(userOp);
+                await directSignAndSend(userOp, payToken);
 
                 // if from dapp, return trsanction result
                 if (tabId) {
