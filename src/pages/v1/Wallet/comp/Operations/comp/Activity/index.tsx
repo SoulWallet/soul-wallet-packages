@@ -26,7 +26,7 @@ export default function Activities() {
     }, []);
 
     return (
-        <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"} minH={"120px"}>
+        <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
             {!loading && (!historyList || historyList.length === 0) && (
                 <>
                     <img src={IconEmpty} className="w-32 mx-auto my-4 block" />

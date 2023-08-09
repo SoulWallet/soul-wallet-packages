@@ -32,11 +32,10 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
         case "getAccounts":
             // IMPORTANT TODO, also need to check lock state
-            const addressStorage = JSON.parse(localStorage.getItem('address-storage') || "{}");
-            const selectedAddress = addressStorage.state.selectedAddress;
 
-            console.log('before check',msg.data.origin )
-            if (checkAllowed(msg.data.origin)) {
+            const { isAllowed, selectedAddress } = checkAllowed(msg.data.origin);
+
+            if (isAllowed) {
                 browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",

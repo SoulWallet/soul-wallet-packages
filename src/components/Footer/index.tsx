@@ -32,6 +32,7 @@ export default function Footer() {
             justify={"space-between"}
             bg="#d7d7d7"
             px="5"
+            mt="20"
             borderTop={"1px"}
             py="10px"
             borderColor={"#898989"}

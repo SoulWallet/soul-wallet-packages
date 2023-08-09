@@ -123,7 +123,10 @@ export const checkAllowed = (origin:string) => {
     const selectedAddress = addressStorage.state.selectedAddress;
     const selectedAddressItem = addressStorage.state.addressList.filter((item: IAddressItem) => item.address === selectedAddress)[0]
     const allowedOrigins = selectedAddressItem.allowedOrigins;
-    return allowedOrigins.includes(origin);
+    return {
+        isAllowed: allowedOrigins.includes(origin),
+        selectedAddress,
+    }
 }
 
 // /**
