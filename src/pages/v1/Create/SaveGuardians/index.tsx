@@ -71,50 +71,7 @@ const SaveGuardians = () => {
     validate
   })
 
-  const handleDownload = async () => {
-    setDownloading(true);
-
-    const walletAddress = await getLocalStorage("walletAddress");
-
-    const jsonToSave = formatGuardianFile(walletAddress, guardians as any);
-
-    downloadJsonFile(jsonToSave);
-
-    setDownloading(false);
-
-    // onSave();
-  };
-
-  const handleEmailChange = (val: string) => {
-    setEmail(val);
-  };
-
-  const handleSendEmail = async () => {
-    if (!email) {
-      return;
-    }
-    setSending(true);
-
-    try {
-      const walletAddress = await getLocalStorage("walletAddress");
-      const jsonToSave = formatGuardianFile(walletAddress, guardians as any);
-      const res: any = await emailJsonFile(jsonToSave, email);
-
-      if (res.code === 200) {
-        // onSave();
-      }
-    } catch {
-      // maybe toast error message?
-    } finally {
-      setSending(false);
-    }
-  };
-
   const dispatch = useStepDispatchContext();
-
-  const handleSaved = () => {
-    setHasSaved(true);
-  };
 
   const handleNext = () => {
     dispatch({
@@ -124,133 +81,157 @@ const SaveGuardians = () => {
   };
 
   const handleBackupGuardians = async () => {
-    setLoading(true)
-    const keystore = config.contracts.l1Keystore
-    const initialKey = ethers.zeroPadValue(account, 32)
-    const guardianHash = calcGuardianHash(guardians, threshold)
-    const initialGuardianHash = guardianHash
-    const salt = ethers.ZeroHash
-    let initialGuardianSafePeriod = L1KeyStore.days * 2
-    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+    try {
+      setLoading(true)
+      const keystore = config.contracts.l1Keystore
+      const initialKey = ethers.zeroPadValue(account, 32)
+      const guardianHash = calcGuardianHash(guardians, threshold)
+      const initialGuardianHash = guardianHash
+      const salt = ethers.ZeroHash
+      let initialGuardianSafePeriod = L1KeyStore.days * 2
+      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
 
 
-    const params = {
-      keystore,
-      guardianHash,
-      guardianDetails: {
-        guardians,
-        threshold,
-        salt
-      },
-      slot,
-      slotInitInfo: {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
+      const params = {
+        keystore,
+        guardianHash,
+        guardianDetails: {
+          guardians,
+          threshold,
+          salt
+        },
+        slot,
+        slotInitInfo: {
+          initialKey,
+          initialGuardianHash,
+          initialGuardianSafePeriod
+        }
       }
-    }
 
-    const result = await api.guardian.backup(params)
-    setLoading(false)
-    setLoaded(true)
-    toast({
-      title: "OnChain Backup Success!",
-      status: "success",
-    })
-    console.log('handleBackupGuardians', result)
+      const result = await api.guardian.backup(params)
+      setLoading(false)
+      setLoaded(true)
+      toast({
+        title: "OnChain Backup Success!",
+        status: "success",
+      })
+      console.log('handleBackupGuardians', result)
+    } catch (e: any) {
+      setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
+    }
   };
 
   const handleEmailBackupGuardians = async () => {
-    setSending(true)
-    const email = emailForm.values.email
+    try {
+      setSending(true)
+      const email = emailForm.values.email
 
-    if (!email) {
+      if (!email) {
 
-    }
-
-    const date = new Date()
-    const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-    const keystore = config.contracts.l1Keystore
-    const initialKey = ethers.zeroPadValue(account, 32)
-    const guardianHash = calcGuardianHash(guardians, threshold)
-    const initialGuardianHash = guardianHash
-    const salt = ethers.ZeroHash
-    let initialGuardianSafePeriod = L1KeyStore.days * 2
-    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-    // guardianNames
-
-    const params = {
-      email,
-      filename,
-      keystore,
-      guardianHash,
-      guardianNames,
-      guardianDetails: {
-        guardians,
-        threshold,
-        salt
-      },
-      slot,
-      slotInitInfo: {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
       }
-    }
 
-    const result = await api.guardian.emailBackup(params)
-    setSending(false)
-    setSended(true)
-    toast({
-      title: "Email Backup Success!",
-      status: "success",
-    })
-    console.log('handleEmailBackupGuardians', params, result)
+      const date = new Date()
+      const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
+      const keystore = config.contracts.l1Keystore
+      const initialKey = ethers.zeroPadValue(account, 32)
+      const guardianHash = calcGuardianHash(guardians, threshold)
+      const initialGuardianHash = guardianHash
+      const salt = ethers.ZeroHash
+      let initialGuardianSafePeriod = L1KeyStore.days * 2
+      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+      // guardianNames
+
+      const params = {
+        email,
+        filename,
+        keystore,
+        guardianHash,
+        guardianNames,
+        guardianDetails: {
+          guardians,
+          threshold,
+          salt
+        },
+        slot,
+        slotInitInfo: {
+          initialKey,
+          initialGuardianHash,
+          initialGuardianSafePeriod
+        }
+      }
+
+      const result = await api.guardian.emailBackup(params)
+      setSending(false)
+      setSended(true)
+      toast({
+        title: "Email Backup Success!",
+        status: "success",
+      })
+      console.log('handleEmailBackupGuardians', params, result)
+    } catch (e: any) {
+      setSending(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
+    }
   };
 
   const handleDownloadGuardians = async () => {
-    setDownloading(true)
-    const date = new Date()
-    const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-    const keystore = config.contracts.l1Keystore
-    const initialKey = ethers.zeroPadValue(account, 32)
-    const guardianHash = calcGuardianHash(guardians, threshold)
-    const initialGuardianHash = guardianHash
-    const salt = ethers.ZeroHash
-    let initialGuardianSafePeriod = L1KeyStore.days * 2
-    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-    // guardianNames
+    try {
+      setDownloading(true)
+      const date = new Date()
+      const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
+      const keystore = config.contracts.l1Keystore
+      const initialKey = ethers.zeroPadValue(account, 32)
+      const guardianHash = calcGuardianHash(guardians, threshold)
+      const initialGuardianHash = guardianHash
+      const salt = ethers.ZeroHash
+      let initialGuardianSafePeriod = L1KeyStore.days * 2
+      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+      // guardianNames
 
-    const params = {
-      filename,
-      keystore,
-      guardianHash,
-      guardianNames,
-      guardianDetails: {
-        guardians,
-        threshold,
-        salt
-      },
-      slot,
-      slotInitInfo: {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
+      const params = {
+        filename,
+        keystore,
+        guardianHash,
+        guardianNames,
+        guardianDetails: {
+          guardians,
+          threshold,
+          salt
+        },
+        slot,
+        slotInitInfo: {
+          initialKey,
+          initialGuardianHash,
+          initialGuardianSafePeriod
+        }
       }
+
+      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(params))}`
+      const link = document.createElement("a")
+      link.setAttribute("href", dataStr)
+      link.setAttribute("target", "_blank")
+      link.setAttribute("download", filename)
+      link.click()
+
+      setDownloading(false)
+      setDownloaded(true)
+    } catch (e: any) {
+      setDownloading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
-
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(params))}`
-    const link = document.createElement("a")
-    link.setAttribute("href", dataStr)
-    link.setAttribute("target", "_blank")
-    link.setAttribute("download", filename)
-    link.click()
-
-    setDownloading(false)
-    setDownloaded(true)
   };
 
   return (
@@ -261,8 +242,19 @@ const SaveGuardians = () => {
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.
         </TextBody>
       </Box>
-      <Box display="flex">
-        <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
+      <Box
+        display="flex"
+        flexDirection={{ base: 'column', md: 'row' }}
+      >
+        <Box
+          width="400px"
+          borderRight={{ base: 'none', md: '1px solid #D7D7D7' }}
+          padding="20px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Heading3>Set Guardians</Heading3>
           <Box marginBottom="0.75em">
             <TextBody textAlign="center">
@@ -304,7 +296,7 @@ const SaveGuardians = () => {
           </Button>
         </Box>
       </Box>
-      <Button disabled={!(loaded && downloaded && sended)} onClick={handleNext} _styles={{ width: '400px', marginTop: '0.75em' }}>
+      <Button disabled={!(loaded && downloaded && sended)} onClick={handleNext} _styles={{ width: '359px', marginTop: '0.75em' }}>
         Continue
       </Button>
     </Box>

@@ -7,7 +7,7 @@ import { RecoveryActionTypeEn, useRecoveryDispatchContext } from "@src/context/R
 import { nanoid } from "nanoid";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
-import { Box, Input, Text, Image } from "@chakra-ui/react"
+import { Box, Input, Text, Image, useToast } from "@chakra-ui/react"
 import FormInput from "@src/components/web/Form/FormInput";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
@@ -100,6 +100,7 @@ const EnterGuardiansAddress = () => {
   const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
   const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
+  const toast = useToast()
 
   const stepDispatch = useStepDispatchContext();
   const recoveryDispatch = useRecoveryDispatchContext();
@@ -138,67 +139,83 @@ const EnterGuardiansAddress = () => {
   }, [guardiansList])
 
   const handleNext = async () => {
-    setLoading(true)
-    const keystore = config.contracts.l1Keystore
-    const newKey = ethers.zeroPadValue(account, 32)
+    try {
+      setLoading(true)
+      const keystore = config.contracts.l1Keystore
+      const newKey = ethers.zeroPadValue(account, 32)
 
-    const params = {
-      guardianDetails,
-      slot,
-      slotInitInfo,
-      keystore,
-      newKey
+      const params = {
+        guardianDetails,
+        slot,
+        slotInitInfo,
+        keystore,
+        newKey
+      }
+
+      const result = await api.guardian.createRecoverRecord(params)
+      const recoveryRecordID = result.data.recoveryRecordID
+      setRecoverRecordId(recoveryRecordID)
+      setLoading(false)
+      console.log('handleNext', params, result)
+
+      stepDispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.GuardiansChecking,
+      });
+    } catch (e: any) {
+      setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
-
-    const result = await api.guardian.createRecoverRecord(params)
-    const recoveryRecordID = result.data.recoveryRecordID
-    setRecoverRecordId(recoveryRecordID)
-    setLoading(false)
-    console.log('handleNext', params, result)
-
-    stepDispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: RecoverStepEn.GuardiansChecking,
-    });
   };
 
   const handleFileChange = async (event: any) => {
-    setUploading(true)
-    const file = event.target.files[0];
+    try {
+      setUploading(true)
+      const file = event.target.files[0];
 
-    if (!file) {
-      return
+      if (!file) {
+        return
+      }
+
+      const fileJson: any = await getJsonFromFile(file)
+
+      const data = fileJson
+      const guardianDetails = data.guardianDetails
+      const keystore = data.keystore
+      const guardians = guardianDetails.guardians
+      const threshold = guardianDetails.threshold
+      const slot = data.slot
+      const slotInitInfo = data.slotInitInfo
+      const newKey = ethers.zeroPadValue(account, 32)
+
+      const params = {
+        guardianDetails,
+        slot,
+        slotInitInfo,
+        keystore,
+        newKey
+      }
+
+      const result = await api.guardian.createRecoverRecord(params)
+      const recoveryRecordID = result.data.recoveryRecordID
+      setRecoverRecordId(recoveryRecordID)
+      setUploading(false)
+      console.log('handleFileParseResult', fileJson, params, result)
+
+      stepDispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.GuardiansChecking,
+      });
+    } catch (e: any) {
+      setUploading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
-
-    const fileJson: any = await getJsonFromFile(file)
-
-    const data = fileJson
-    const guardianDetails = data.guardianDetails
-    const keystore = data.keystore
-    const guardians = guardianDetails.guardians
-    const threshold = guardianDetails.threshold
-    const slot = data.slot
-    const slotInitInfo = data.slotInitInfo
-    const newKey = ethers.zeroPadValue(account, 32)
-
-    const params = {
-      guardianDetails,
-      slot,
-      slotInitInfo,
-      keystore,
-      newKey
-    }
-
-    const result = await api.guardian.createRecoverRecord(params)
-    const recoveryRecordID = result.data.recoveryRecordID
-    setRecoverRecordId(recoveryRecordID)
-    setUploading(false)
-    console.log('handleFileParseResult', fileJson, params, result)
-
-    stepDispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: RecoverStepEn.GuardiansChecking,
-    });
   }
 
   const addGuardian = () => {

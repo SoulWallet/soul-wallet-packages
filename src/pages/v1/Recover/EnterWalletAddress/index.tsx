@@ -8,7 +8,7 @@ import PayTokenSelect from "@src/components/PayTokenSelect";
 import { getLocalStorage } from "@src/lib/tools";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
-import { Box, Text, Image } from "@chakra-ui/react"
+import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import FormInput from "@src/components/web/Form/FormInput";
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
@@ -37,6 +37,7 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
   const [loading, setLoading] = useState(false)
   const { setGuardians, setThreshold, setSlot, setSlotInitInfo, setGuardianDetails } = useGuardianStore();
   const dispatch = useStepDispatchContext();
+  const toast = useToast()
 
   const {
     values,
@@ -75,9 +76,12 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.ResetPassword,
       });
-    } catch (e) {
-      console.log('e', e)
+    } catch (e: any) {
       setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
   };
 
