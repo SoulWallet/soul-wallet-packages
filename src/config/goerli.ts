@@ -32,7 +32,7 @@ export default {
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://goerli.etherscan.io",
     // should it override state when we set new?
-    defaultBundlerUrl: "https://bundler-eth-goerli.soulwallets.me/rpc",
+    defaultBundlerUrl: "https://api-dev.soulwallet.io/bundler/goerli/rpc",
     maxCostMultiplier: 110,
     upgradeDelay: 10,
     guardianDelay: 10,
@@ -50,7 +50,6 @@ export default {
     },
     contracts: {
         l1Keystore: "0x76a43ef7cc3b49736951759494d2aee8cae1cdec",
-        keyStoreModule: "0x8600b46836b4b1d850bd121773ba6941cea85f78",
         keyStoreModuleProxy: "0x59b84bfaaa906a84152ded63d964cff913308921",
         soulWalletFactory: "0x576c13ccb03c21df9eeca0832719f0f6ffdc934b",
         defaultCallbackHandler: "0xb8466fa7777fbc8046fe92adab58736def8b4c8f",
