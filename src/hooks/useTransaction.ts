@@ -36,15 +36,13 @@ export default function useTransaction() {
         });
     };
 
-    const sendErc20 = async (tokenAddress: string, to: string, amount: string) => {
+    const sendErc20 = async (tokenAddress: string, to: string, amount: string, decimals: number) => {
         // const actionName = "Send Assets";
-
         // get decimals `locally`
-        const decimals = config.assetsList.filter((item: ITokenItem) => item.address === tokenAddress)[0].decimals;
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
 
         const erc20Interface = new ethers.Interface(Erc20ABI);
-        const callData = erc20Interface.encodeFunctionData("transfer", [selectedAddress, to, amountInWei]);
+        const callData = erc20Interface.encodeFunctionData("transfer", [to, amountInWei]);
         const tx: Transaction = {
             to: tokenAddress,
             value: amountInWei,

@@ -50,7 +50,9 @@ export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: an
         if (ret.isErr()) {
             const errMsg = ret.ERR.message;
             notify("Bundler Error", errMsg);
+            console.error(errMsg);
             reject(errMsg);
+            return;
         }
 
         const bundler = new Bundler(bundlerUrl);
@@ -59,8 +61,10 @@ export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: an
 
         if (userOpHashRet.isErr()) {
             const errMsg = userOpHashRet.ERR.message;
+            console.error(errMsg);
             notify("Bundler Error", errMsg);
             reject(errMsg);
+            return;
         }
 
         const userOpHash = userOpHashRet.OK;

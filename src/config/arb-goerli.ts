@@ -7,6 +7,8 @@ import IconUSDC from "@src/assets/tokens/usdc.svg";
 
 const erc20_USDC = "0xfd064A18f3BF249cf1f87FC203E90D8f650f2d63";
 
+const paymasterTokens = [erc20_USDC];
+
 export const assetsList = [
     {
         icon: IconETH,
@@ -15,7 +17,6 @@ export const assetsList = [
         address: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         payable: true,
-        paymaster: false,
     },
     {
         icon: IconUSDC,
@@ -24,7 +25,6 @@ export const assetsList = [
         name: "USDCoin",
         decimals: 6,
         payable: true,
-        paymaster: true,
     },
 ];
 
@@ -53,6 +53,7 @@ export default {
     tokens: {
         usdc: erc20_USDC,
     },
+    paymasterTokens,
     contracts: {
         l1Keystore: "0x76a43ef7Cc3b49736951759494D2aeE8cae1cdec",
         keyStoreModuleProxy: "0x59b84bfaaa906a84152ded63d964cff913308921",
@@ -60,7 +61,7 @@ export default {
         defaultCallbackHandler: "0xb8466fa7777fbc8046fe92adab58736def8b4c8f",
         securityControlModule: "0x7a711e826b6383d6791cb43bfc0a4b72a2940183",
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-        paymaster: "0x357c443022df521e3d6d9c5ec88c0f03fcec0cd1",
+        paymaster: "0xee4d0d07318dd076d588bccdf2383275b499f29f",
     },
 };
 

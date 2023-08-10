@@ -14,7 +14,6 @@ export const assetsList = [
         address: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         payable: true,
-        paymaster: false,
     },
     {
         icon: IconUSDC,
@@ -22,7 +21,6 @@ export const assetsList = [
         address: usdcAddress,
         decimals: 6,
         payable: true,
-        paymaster: true,
     },
 ];
 

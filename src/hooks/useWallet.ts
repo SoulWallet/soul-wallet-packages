@@ -11,7 +11,6 @@ import { useGuardianStore } from "@src/store/guardian";
 import { addPaymasterAndData } from "@src/lib/tools";
 import config from "@src/config";
 import useKeystore from "./useKeystore";
-import BN from 'bignumber.js'
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 
@@ -40,8 +39,7 @@ export default function useWallet() {
         if (payToken !== ethers.ZeroAddress) {
             const soulAbi = new ethers.Interface(ABI_SoulWallet);
             const erc20Abi = new ethers.Interface(Erc20ABI);
-
-            const to = config.assetsList.filter((item: any) => item.paymaster).map((item: any) => item.address);
+            const to = config.paymasterTokens;
             const approveCalldata = erc20Abi.encodeFunctionData("approve", [
                 config.contracts.paymaster,
                 ethers.parseEther("1000"),

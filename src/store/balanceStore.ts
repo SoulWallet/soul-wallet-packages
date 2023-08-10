@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import api from "@src/lib/api";
 import { persist } from "zustand/middleware";
+import { ethers } from "ethers";
+import IconDefaultToken from "@src/assets/tokens/default.svg";
+import IconEth from "@src/assets/tokens/eth.svg";
 
 export interface ITokenBalanceItem {
     chainId: number;
@@ -10,7 +13,7 @@ export interface ITokenBalanceItem {
     name: string;
     symbol: string;
     tokenBalance: string;
-    type: number;
+    type?: number;
 }
 
 export interface INftBalanceItem {
@@ -19,6 +22,16 @@ export interface INftBalanceItem {
     balance: string;
     icon: string;
 }
+
+const defaultEthBalance: ITokenBalanceItem = {
+    chainId: 1,
+    contractAddress: ethers.ZeroAddress,
+    decimals: 18,
+    logoURI: IconEth,
+    name: "Ethereum",
+    symbol: "ETH",
+    tokenBalance: "0",
+};
 
 export interface IBalanceStore {
     tokenBalance: ITokenBalanceItem[];
@@ -29,12 +42,29 @@ export interface IBalanceStore {
     fetchNftBalance: (walletAddress: string, chainId: number) => void;
 }
 
+const formatTokenBalance = (item: ITokenBalanceItem) => {
+    if (!item.logoURI) {
+        item.logoURI = IconDefaultToken;
+    }
+    if (!item.symbol) {
+        item.symbol = "Unknown";
+    }
+    if (!item.name) {
+        item.name = "Unknown";
+    }
+    if (!item.decimals) {
+        // TODO, not safe
+        item.decimals = 6;
+    }
+    return item;
+};
+
 export const useBalanceStore = create<IBalanceStore>()(
     persist(
         (set, get) => ({
-            tokenBalance: [],
+            tokenBalance: [defaultEthBalance],
             nftBalance: [],
-            getTokenBalance: async (tokenAddress: string) => {
+            getTokenBalance: (tokenAddress: string) => {
                 return get().tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === tokenAddress)[0];
             },
             fetchTokenBalance: async (walletAddress: string, chainId: number) => {
@@ -42,9 +72,15 @@ export const useBalanceStore = create<IBalanceStore>()(
                     walletAddress,
                     chainId,
                 });
-                set({ tokenBalance: res.data });
+
+                const balanceList = res.data.map((item: ITokenBalanceItem) => formatTokenBalance(item));
+
+                console.log("ready to set", balanceList);
+
+                // format balance list here
+                set({ tokenBalance: balanceList });
             },
-            getNftBalance: async (tokenAddress: string) => {
+            getNftBalance: (tokenAddress: string) => {
                 return get().nftBalance.filter((item: INftBalanceItem) => item.address === tokenAddress)[0];
             },
             fetchNftBalance: async (walletAddress: string, chainId: number) => {
