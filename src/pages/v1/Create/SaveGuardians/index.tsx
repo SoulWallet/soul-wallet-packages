@@ -86,6 +86,7 @@ const SaveGuardians = () => {
       const keystore = config.contracts.l1Keystore
       const initialKey = ethers.zeroPadValue(account, 32)
       const guardianHash = calcGuardianHash(guardians, threshold)
+      console.log('guardianHash', guardians, threshold, guardianHash)
       const initialGuardianHash = guardianHash
       const salt = ethers.ZeroHash
       let initialGuardianSafePeriod = L1KeyStore.days * 2

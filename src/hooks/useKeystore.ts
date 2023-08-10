@@ -16,7 +16,7 @@ export default function useKeystore() {
 
     /**
      * Get slot info
-     * 
+     *
      */
     const getSlot = async (initialKey: string, initialGuardianHash: string, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
         return L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
