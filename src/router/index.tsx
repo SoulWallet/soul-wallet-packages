@@ -6,12 +6,14 @@ import { Box } from "@chakra-ui/react";
 import { getLocalStorage } from "@src/lib/tools";
 import useKeyring from "../hooks/useKeyring";
 import RouterV1 from "./v1";
+import { useAddressStore } from "@src/store/address";
 
 export default function PluginRouter() {
     const location = useLocation();
     const { goWebsite, navigate } = useBrowser();
     const mode = new URLSearchParams(location.search).get("mode");
     const keystore = useKeyring();
+    const { addressList } = useAddressStore()
 
     const findRoute = async () => {
         const sessionPw = await keystore.getPassword();
@@ -28,11 +30,11 @@ export default function PluginRouter() {
             if (isActivate) {
                 navigate("activate-wallet");
             } else if (recovering) {
-                goWebsite("/v1/recover");
-            } else if ((isLocked || sessionPw) && !isSign) {
+                goWebsite("recover");
+            } else if ((isLocked || sessionPw) && !isSign && addressList.length > 0) {
                 navigate("wallet");
             } else if (!isSign) {
-                goWebsite("/v1/launch");
+                goWebsite("launch");
             }
         }
     };

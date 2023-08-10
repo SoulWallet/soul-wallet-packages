@@ -9,13 +9,12 @@ import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { Center, Flex } from "@chakra-ui/react";
 import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
-import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
   const dispatch = useStepDispatchContext();
-  const { goWebsite, replaceCurrentTab } = useBrowser();
+  const { replaceCurrentTab } = useBrowser();
   const [showModal, setShowModal] = useState(false);
 
   const getAuthorized = async () => {

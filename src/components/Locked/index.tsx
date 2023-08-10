@@ -99,7 +99,7 @@ export default forwardRef<any>((props, ref) => {
             </Button>
 
             <Text
-                onClick={() => goWebsite("/recover")}
+                onClick={() => goWebsite("recover")}
                 position={"absolute"}
                 bottom="8"
                 fontSize={"16px"}
