@@ -51,7 +51,7 @@ export default function Launch() {
       <Flex w="460px" direction="column" alignItems="center" padding="10px">
         <div
           className="w-full btn-card-primary mb-5"
-          onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD, '/create')}
+          onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD, 'create')}
         >
           <div><CreateWalletIcon /></div>
           <div className="w-full card-title">Create New Wallet</div>
@@ -59,7 +59,7 @@ export default function Launch() {
         </div>
         <div
           className="w-full btn-card"
-          onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, '/recover')}
+          onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, 'recover')}
         >
           <div><RecoverWalletIcon /></div>
           <div className="w-full card-title">Social Recover</div>

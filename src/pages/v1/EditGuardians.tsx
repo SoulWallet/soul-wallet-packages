@@ -32,7 +32,7 @@ const EditGuardians = () => {
         try {
             await updateGuardian(guardianAddressList, payToken);
             updateFinalGuardians(guardianList);
-            replaceCurrentTab("/resave-guardians");
+            replaceCurrentTab("resave-guardians");
         } catch (err) {
             notify("Error", "Failed to update guardians");
         } finally {

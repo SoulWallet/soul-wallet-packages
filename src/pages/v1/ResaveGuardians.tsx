@@ -6,7 +6,6 @@ import React, { useState } from "react";
 
 const ResaveGuardians = () => {
     const [saved, setSaved] = useState(false);
-    // const { replaceCurrentTab } = useBrowser();
     const { goPlugin } = useBrowser();
 
     const handleSaved = () => {
