@@ -1,15 +1,13 @@
 /**
- * Arbitrum
+ * Arbitrum Goerli
  */
 
 import IconETH from "@src/assets/tokens/eth.svg";
 import IconUSDC from "@src/assets/tokens/usdc.svg";
-import IconDAI from "@src/assets/tokens/dai.png";
-import IconUSDT from "@src/assets/tokens/usdt.png";
 
-const paymasterToken_DAI = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
-const paymasterToken_USDC = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8";
-const paymasterToken_USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
+const erc20_USDC = "0xfd064A18f3BF249cf1f87FC203E90D8f650f2d63";
+
+const paymasterTokens = [erc20_USDC];
 
 export const assetsList = [
     {
@@ -19,41 +17,22 @@ export const assetsList = [
         address: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         payable: true,
-        paymaster: false,
-    },
-    {
-        icon: IconDAI,
-        name: "Dai Stablecoin",
-        symbol: "DAI",
-        address: paymasterToken_DAI,
-        decimals: 18,
-        payable: true,
-        paymaster: true,
-    },
-    {
-        icon: IconUSDT,
-        symbol: "USDT",
-        name: "Tether USD",
-        address: paymasterToken_USDT,
-        decimals: 6,
-        payable: true,
-        paymaster: true,
     },
     {
         icon: IconUSDC,
         symbol: "USDC",
-        address: paymasterToken_USDC,
+        address: erc20_USDC,
         name: "USDCoin",
         decimals: 6,
         payable: true,
-        paymaster: true,
     },
 ];
 
 export default {
     assetsList,
     recoverUrl: "http://soulwallets.me/recover",
-    provider: `https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH`,
+    // provider: `https://arb-goerli.g.alchemy.com/v2/M3uND7od01QVjQN9Px8TCxnMcPRgWTCH`,
+    provider: `https://arbitrum-goerli.publicnode.com`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://testnet.arbiscan.io/",
     // should it override state when we set new?
@@ -72,25 +51,17 @@ export default {
     addressPrefix: "arb:",
     support1559: true,
     tokens: {
-        usdc: paymasterToken_USDC,
-        dai: paymasterToken_DAI,
-        usdt: paymasterToken_USDT,
+        usdc: erc20_USDC,
     },
+    paymasterTokens,
     contracts: {
-        l1Keystore: "0xa0126a11877f3edb06cf6afac809f92d324007dc",
-        
-        keyStoreModule: "0x39e5aefbcd9949d1f1d0657d380ead45c0a2367d",
-        keyStoreModuleProxy: "0xd94849d394f4b3ed342a9e01de3157128c344fd0",
-        soulWalletFactory: "0xa460c9695552d09ff6d9c93b2ea87fc606dc9900",
-        defaultCallbackHandler: "0x2de0f1b7d3fbe2a86b88446acdbc294c91aa8f97",
-        securityControlModule: "0xe9793d7792d3d736ecde0cc89050232704ad323e",
-
+        l1Keystore: "0x76a43ef7Cc3b49736951759494D2aeE8cae1cdec",
+        keyStoreModuleProxy: "0x59b84bfaaa906a84152ded63d964cff913308921",
+        soulWalletFactory: "0x576c13ccb03c21df9eeca0832719f0f6ffdc934b",
+        defaultCallbackHandler: "0xb8466fa7777fbc8046fe92adab58736def8b4c8f",
+        securityControlModule: "0x7a711e826b6383d6791cb43bfc0a4b72a2940183",
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-
-        walletLogic: "0x",
-        guardianLogic: "0x",
-        paymaster: "0x",
-        create2Factory: "0x",
+        paymaster: "0xee4d0d07318dd076d588bccdf2383275b499f29f",
     },
 };
 

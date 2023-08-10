@@ -1,6 +1,5 @@
 import { L1KeyStore, SoulWallet } from "@soulwallet/sdk";
 import config from "@src/config";
-import {ethers} from 'ethers'
 import useKeystore from "./useKeystore";
 
 export default function useSdk() {

@@ -61,7 +61,6 @@ const SaveGuardians = () => {
   const [sended, setSended] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { account } = useWalletContext();
-  const { selectedAddressItem } = useAddressStore();
   const { guardians, guardianNames, threshold } = useGuardianStore();
   const { calcGuardianHash, getSlot } = useKeystore()
   const toast = useToast()

@@ -13,13 +13,14 @@ import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useSettingStore } from "@src/store/settingStore";
 import { useAddressStore } from "@src/store/address";
+import { UserOpUtils } from "@soulwallet/sdk";
 
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { selectedAddress } = useAddressStore();
+    const { selectedAddress,toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
-    const { getGasPrice } = useQuery();
+    // const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
     const { navigate } = useBrowser();
     const signModal = createRef<any>();
@@ -35,17 +36,6 @@ export default function SignPage() {
             data: param.get("data"),
         });
     }, [params[0]]);
-
-    const saveAccountsAllowed = async (origin: string) => {
-        // IMPORTANT TODO, move to store to manage
-        // let prev = (await getLocalStorage("accountsAllowed")) || {};
-        // if (prev[walletAddress] && prev[walletAddress].length > 0) {
-        //     prev[walletAddress] = [...prev[walletAddress], origin];
-        // } else {
-        //     prev[walletAddress] = [origin];
-        // }
-        // await setLocalStorage("accountsAllowed", prev);
-    };
 
     /**
      * Determine what data user want
@@ -63,8 +53,9 @@ export default function SignPage() {
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
+
                 await currentSignModal.show("", actionType, origin, true);
-                await saveAccountsAllowed(searchParams.origin || "");
+                toggleAllowedOrigin(selectedAddress, origin, true);
                 await browser.runtime.sendMessage({
                     target: "soul",
                     type: "response",
@@ -77,13 +68,9 @@ export default function SignPage() {
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
 
-                const userOp = await currentSignModal.show(txns, actionType, origin, true);
+                const {userOp, payToken} = await currentSignModal.show(txns, actionType, origin, true);
 
-                // if (paymasterAndData) {
-                //     userOp.paymasterAndData = paymasterAndData;
-                // }
-
-                await directSignAndSend(userOp);
+                await directSignAndSend(userOp, payToken);
 
                 // if from dapp, return trsanction result
                 if (tabId) {
@@ -93,7 +80,7 @@ export default function SignPage() {
                         action: "approveTransaction",
                         tabId: searchParams.tabId,
                         data: {
-                            operation: JSON.stringify(userOp),
+                            operation: UserOpUtils.userOperationToJSON(userOp),
                             tabId,
                             bundlerUrl: config.defaultBundlerUrl,
                         },

@@ -24,11 +24,11 @@ export default function ActivateWallet() {
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
-    const { getTokenByAddress, getBalances } = useQuery();
+    const { getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
     const { navigate } = useBrowser();
-    const { tokenBalance, fetchTokenBalance } = useBalanceStore();
+    const { tokenBalance, fetchTokenBalance, getTokenBalance } = useBalanceStore();
 
     const doActivate = async () => {
         // TODO，add back
@@ -57,10 +57,10 @@ export default function ActivateWallet() {
     const onPayTokenChange = async () => {
         // important TODO, clear previous request
         setMaxCost("");
-        const token = getTokenByAddress(payToken);
+        const token = getTokenBalance(payToken);
         setPayTokenSymbol(token.symbol);
-        const { requireAmount, requireAmountInWei }: any = await activateWallet(payToken, true);
-        setMaxCost(requireAmount);
+        const requiredAmount = await activateWallet(payToken, true);
+        setMaxCost(requiredAmount || '0');
     };
 
     const checkBalance = async () => {

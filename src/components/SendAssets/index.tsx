@@ -9,17 +9,6 @@ import { useBalanceStore } from "@src/store/balanceStore";
 import { useAddressStore } from "@src/store/address";
 import AmountInput from "./comp/AmountInput";
 import AddressInput from "./comp/AddressInput";
-import GasSelect from "./comp/GasSelect";
-
-interface ErrorProps {
-    receiverAddress: string;
-    amount: string;
-}
-
-const defaultErrorValues = {
-    receiverAddress: "",
-    amount: "",
-};
 
 interface ISendAssets {
     tokenAddress: string;
@@ -31,8 +20,10 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const { getTokenBalance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
-    const [payToken, setPayToken] = useState(config.zeroAddress);
-    const toast = useToast()
+    const toast = useToast();
+
+    const selectedToken = getTokenBalance(sendToken);
+    const selectedTokenBalance= BN(selectedToken.tokenBalance).shiftedBy(-selectedToken.decimals).toFixed();
 
     const { sendErc20, sendEth } = useTransaction();
 
@@ -41,37 +32,30 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             toast({
                 title: "Address not valid",
                 status: "error",
-            })
+            });
             return;
         }
         if (!amount) {
             toast({
                 title: "Amount not valid",
                 status: "error",
-            })
+            });
             return;
         }
 
-        if (new BN(amount).isGreaterThan(getTokenBalance(sendToken))) {
+        if (new BN(amount).isGreaterThan(selectedTokenBalance)) {
             toast({
                 title: "Balance not enough",
                 status: "error",
-            })
-            // return;
+            });
+            return;
         }
 
         if (sendToken === config.zeroAddress) {
             sendEth(receiverAddress, amount);
         } else {
-            sendErc20(sendToken, receiverAddress, amount);
+            sendErc20(sendToken, receiverAddress, amount, selectedToken.decimals);
         }
-        // go sign page
-
-        // actionType: param.get("action"),
-        // tabId: param.get("tabId"),
-        // origin: param.get("origin"),
-        // txns: param.get("txns"),
-        // data: param.get("data"),
     };
 
     return (
@@ -88,15 +72,6 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
                     onChange={(e: any) => setReceiverAddress(e.target.value)}
                     onEnter={confirmAddress}
                 />
-                {/* <InfoWrap>
-                    <InfoItem>
-                        <Text>Gas fee ($2.22)</Text>
-                        <Flex gap="2">
-                            <Text>2.22</Text>
-                            <GasSelect gasToken={payToken} onChange={setPayToken} />
-                        </Flex>
-                    </InfoItem>
-                </InfoWrap> */}
             </Flex>
             <Button onClick={confirmAddress} w="100%" fontSize={"20px"} py="4" fontWeight={"800"} mt="6">
                 Review

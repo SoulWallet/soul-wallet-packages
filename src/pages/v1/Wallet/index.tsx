@@ -10,9 +10,9 @@ import { useAddressStore } from "@src/store/address";
 import Actions from "./comp/Actions";
 
 export function Wallet() {
-    const { selectedAddressItem } = useAddressStore();
+    const { getSelectedAddressItem } = useAddressStore();
 
-    console.log('selected', selectedAddressItem)
+    const selectedAddressItem = getSelectedAddressItem();
 
     return (
         <>

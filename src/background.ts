@@ -1,8 +1,8 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
-import { getLocalStorage, openWindow } from "@src/lib/tools";
+import { getLocalStorage, openWindow, checkAllowed } from "@src/lib/tools";
 import { executeTransaction } from "@src/lib/tx";
-
+import { UserOpUtils } from "@soulwallet/sdk";
 // TODO, change!
 let password = null;
 
@@ -32,17 +32,16 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
         case "getAccounts":
-            // if already allowed getting accounts, don't show popup, TODO, get from zustand
-            const walletAddress = await getLocalStorage("walletAddress");
-            const accountsAllowed = (await getLocalStorage("accountsAllowed")) || {};
-
             // IMPORTANT TODO, also need to check lock state
-            if (accountsAllowed[walletAddress] && accountsAllowed[walletAddress].includes(msg.data.origin)) {
+
+            const { isAllowed, selectedAddress } = checkAllowed(msg.data.origin);
+
+            if (isAllowed) {
                 browser.tabs.sendMessage(Number(senderTabId), {
                     target: "soul",
                     type: "response",
                     action: "getAccounts",
-                    data: walletAddress,
+                    data: selectedAddress,
                     tabId: senderTabId,
                 });
             } else {
@@ -82,9 +81,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
 
-            console.log('bunss', bundlerUrl, JSON.parse(userOp))
-
-            await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
+            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, bundlerUrl);
 
             await browser.runtime.sendMessage({
                 target: "soul",

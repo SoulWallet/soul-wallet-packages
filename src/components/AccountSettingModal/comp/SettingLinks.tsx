@@ -29,7 +29,7 @@ export default function SettingLinks({ onChange }: ISettingLinks) {
                 Account details
             </a>
             <>
-                <a onClick={() => goWebsite("/edit-guardians")} className={linksStyle}>
+                <a onClick={() => goWebsite("edit-guardians")} className={linksStyle}>
                     Edit guardian list
                 </a>
                 <a target="_blank" onClick={downloadGuardianList} className={linksStyle}>

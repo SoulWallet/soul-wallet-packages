@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input, Button } from "@chakra-ui/react";
-import IconSwap from "@src/assets/icons/swap.svg";
-import config from "@src/config";
-import { ITokenItem } from "@src/lib/type";
 import TokenLine from "./TokenLine";
+import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
 
 export default function AmountInput({ sendToken, onTokenChange, amount, onChange }: any) {
-    const selectedToken = config.assetsList.filter((item: ITokenItem) => item.address === sendToken)[0];
+    const { tokenBalance } = useBalanceStore();
+
+    const selectedToken = tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === sendToken)[0];
 
     return (
         <Flex flexDir={"column"} gap="3" py="3" px="4" bg="#fff" rounded="20px">
@@ -16,24 +16,24 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                     <>
                         <MenuButton>
                             <TokenLine
-                                icon={selectedToken.icon}
+                                icon={selectedToken.logoURI}
                                 symbol={selectedToken.symbol}
-                                memo={`Your balance: 123`}
+                                memo={`Your balance: ${selectedToken.tokenBalanceFormatted || "0"}`}
                                 rightElement={
                                     <Image src={IconChevronRight} transform={isOpen ? "rotate(90deg)" : ""} />
                                 }
                             />
                         </MenuButton>
                         <MenuList rootProps={{ w: "100%", px: "20px" }}>
-                            {config.assetsList
-                                .filter((item: ITokenItem) => item.address !== sendToken)
-                                .map((item: ITokenItem) => (
+                            {tokenBalance
+                                .filter((item: ITokenBalanceItem) => item.contractAddress !== sendToken)
+                                .map((item: ITokenBalanceItem) => (
                                     <MenuItem w="100%" key={item.symbol}>
                                         <TokenLine
-                                            icon={item.icon}
+                                            icon={item.logoURI}
                                             symbol={item.symbol}
-                                            memo="123"
-                                            onClick={() => onTokenChange(item.address)}
+                                            memo={item.tokenBalanceFormatted}
+                                            onClick={() => onTokenChange(item.contractAddress)}
                                         />
                                     </MenuItem>
                                 ))}

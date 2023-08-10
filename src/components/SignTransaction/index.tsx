@@ -1,10 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
-import BN from "bignumber.js";
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
-import CostItem from "../CostItem";
 import useTools from "@src/hooks/useTools";
-import AddressIcon from "../AddressIcon";
 import { useChainStore } from "@src/store/chain";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
@@ -14,7 +11,7 @@ import Button from "../Button";
 import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
-import { UserOperation } from "@soulwallet/sdk";
+import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useSdk from "@src/hooks/useSdk";
 
 enum SignTypeEn {
@@ -74,14 +71,12 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [activeOperation, setActiveOperation] = useState<UserOperation>();
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
-    const [activePaymasterData, setActivePaymasterData] = useState({});
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
-    const {soulWallet} = useSdk();
+    const { soulWallet } = useSdk();
 
-    const formatUserOp: any = async (txns:any) => {
-
+    const formatUserOp: any = async (txns: any) => {
         try {
             const rawTxs = JSON.parse(txns);
 
@@ -103,11 +98,11 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
             // get gas limit
-            const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+            // const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
-            if (gasLimit.isErr()) {
-                throw new Error(gasLimit.ERR.message);
-            }
+            // if (gasLimit.isErr()) {
+            //     throw new Error(gasLimit.ERR.message);
+            // }
 
             if (!userOp) {
                 throw new Error("Failed to format tx");
@@ -120,13 +115,8 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     };
 
     useImperativeHandle(ref, () => ({
-        async show(
-            txns: any,
-            _actionName: string,
-            origin: string,
-            keepVisible: boolean,
-            _messageToSign: string = "",
-        ) {
+        async show(txns: any, _actionName: string, origin: string, keepVisible: boolean, _messageToSign: string = "") {
+            setVisible(true);
             // setActionName(_actionName);
             setOrigin(origin);
 
@@ -141,7 +131,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             }
 
             if (txns) {
-                const userOp = formatUserOp(txns);
+                const userOp = await formatUserOp(txns);
                 setActiveOperation(userOp);
                 const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entryPoint, userOp);
                 setDecodedData(callDataDecodes);
@@ -157,7 +147,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                     resolve,
                     reject,
                 });
-                setVisible(true);
+                // setVisible(true);
             });
         },
     }));
@@ -174,9 +164,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         setSigning(true);
 
         if (config.zeroAddress === payToken) {
-            promiseInfo.resolve();
+            promiseInfo.resolve({ userOp: activeOperation, payToken });
         } else {
-            promiseInfo.resolve(activeOperation);
+            promiseInfo.resolve({ userOp: activeOperation, payToken });
         }
 
         if (!keepModalVisible) {
@@ -189,34 +179,26 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         promiseInfo.resolve();
     };
 
-    const checkSponser = async(userOp: UserOperation) => {
-        const res = await api.sponsor.check(`0x${selectedChainId.toString(16)}`, config.contracts.entryPoint, userOp);
-        console.log('sponsor res', res)
-    }
+    const checkSponser = async (userOp: UserOperation) => {
+        const res = await api.sponsor.check(
+            `0x${selectedChainId.toString(16)}`,
+            config.contracts.entryPoint,
+            UserOpUtils.userOperationFromJSON(UserOpUtils.userOperationToJSON(userOp)),
+        );
+        console.log("sponsor res", res);
+    };
 
-    const getFeeCostAndPaymasterData = async () => {
+    const getFeeCostA = async () => {
         setLoadingFee(true);
         setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requireAmountInWei, requireAmount } = await getFeeCost(
-            activeOperation,
-            payToken === config.zeroAddress ? "" : payToken,
-        );
+        const { requiredAmount } = await getFeeCost(activeOperation, payToken === config.zeroAddress ? "" : payToken);
 
         if (config.zeroAddress === payToken) {
-            setActivePaymasterData("");
-            setFeeCost(`${requireAmount} ${config.chainToken}`);
+            setFeeCost(`${requiredAmount} ${config.chainToken}`);
         } else {
-            const maxUSDC = BN(requireAmountInWei.toString()).times(config.maxCostMultiplier).div(100);
-
-            const maxUSDCFormatted = BN(requireAmount.toString()).times(config.maxCostMultiplier).div(100).toFixed(4);
-
-            // const paymasterAndData = soulWalletLib.getPaymasterData(config.contracts.paymaster, payToken, maxUSDC);
-
-            // setActivePaymasterData(paymasterAndData);
-
-            setFeeCost(`${maxUSDCFormatted} USDC`);
+            setFeeCost(`${requiredAmount} USDC`);
         }
         setLoadingFee(false);
     };
@@ -225,7 +207,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         if (!activeOperation || !payToken) {
             return;
         }
-        getFeeCostAndPaymasterData();
+        getFeeCostA();
     }, [payToken, activeOperation]);
 
     return (
@@ -335,7 +317,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                                     ? decodedData.map((item: any, index: number) => (
                                                           <span className="mr-1 capitalize" key={index}>
                                                               {decodedData.length > 1 && `${index + 1}.`}
-                                                              {item.functionName || 'Contract interaction'}
+                                                              {item.functionName || "Contract interaction"}
                                                           </span>
                                                       ))
                                                     : "Contract interaction"}

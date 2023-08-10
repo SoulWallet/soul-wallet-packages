@@ -1,5 +1,7 @@
 import browser from "webextension-polyfill";
 import { nanoid } from "nanoid";
+import { ethers } from "ethers";
+import { IAddressItem } from "@src/store/address";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -100,9 +102,42 @@ export const getMessageType = (msg: string) => {
 };
 
 export const nextRandomId = () => {
-    return nanoid()
-}
+    return nanoid();
+};
 
+export const formatIPFS = (url: string) => {
+    if (url && url.includes("ipfs://")) {
+        return url.replace("ipfs://", "https://ipfs.io/ipfs/");
+    } else {
+        return url;
+    }
+};
+
+export const addPaymasterAndData = (payToken: string, paymaster: string) => {
+    if (payToken === ethers.ZeroAddress) {
+        return "0x";
+    }
+
+    // TODO, consider decimals
+    const paymasterAndData = `${paymaster}${new ethers.AbiCoder()
+        .encode(["address", "uint256"], [payToken, ethers.parseEther("1000")])
+        .slice(2)}`;
+
+    return paymasterAndData;
+};
+
+export const checkAllowed = (origin: string) => {
+    const addressStorage = JSON.parse(localStorage.getItem("address-storage") || "{}");
+    const selectedAddress = addressStorage.state.selectedAddress;
+    const selectedAddressItem = addressStorage.state.addressList.filter(
+        (item: IAddressItem) => item.address === selectedAddress,
+    )[0];
+    const allowedOrigins = selectedAddressItem.allowedOrigins;
+    return {
+        isAllowed: allowedOrigins.includes(origin),
+        selectedAddress,
+    };
+};
 
 // /**
 //  * hexlify all members of object, recursively
