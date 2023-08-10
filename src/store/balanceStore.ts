@@ -52,10 +52,6 @@ const formatTokenBalance = (item: ITokenBalanceItem) => {
     if (!item.name) {
         item.name = "Unknown";
     }
-    if (!item.decimals) {
-        // TODO, not safe
-        item.decimals = 6;
-    }
     return item;
 };
 
