@@ -1,13 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import GuardianInput from "./GuardianInput";
-import { ethers } from "ethers";
 import { GuardianContext, useGuardianContext } from "@src/context/hooks/useGuardianContext";
 import { GuardianItem } from "@src/lib/type";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
-import Icon from "../Icon";
-import InputWrapper from "../InputWrapper";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
-import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { Box, Text } from "@chakra-ui/react"
 import TextBody from "@src/components/web/TextBody";

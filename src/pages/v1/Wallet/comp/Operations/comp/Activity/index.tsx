@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ActivityItem from "./comp/ActivityItem";
 import { Box } from "@chakra-ui/react";
-import IconEmpty from "@src/assets/empty.svg";
 import IconLoading from "@src/assets/activity-loading.gif";
 import config from "@src/config";
 import { Image, Text } from "@chakra-ui/react";
 import scanApi from "@src/lib/scanApi";
 import { useAddressStore } from "@src/store/address";
+import EmptyHint from "../EmptyHint";
 
 export default function Activities() {
     const { selectedAddress } = useAddressStore();
@@ -28,12 +28,7 @@ export default function Activities() {
     return (
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
             {!loading && (!historyList || historyList.length === 0) && (
-                <>
-                    <Box textAlign={"center"}>
-                        <Image src={IconEmpty} w="32" mx="auto" mt="8" display={"block"} />
-                        <Text mt="2">No activities</Text>
-                    </Box>
-                </>
+               <EmptyHint title="No activities" />
             )}
             {loading && <Image src={IconLoading} />}
             {historyList.map((item: any, idx: number) => (

@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { ethers } from "ethers";
 import IconDefaultToken from "@src/assets/tokens/default.svg";
 import IconEth from "@src/assets/tokens/eth.svg";
+import { formatIPFS } from "@src/lib/tools";
 
 export interface ITokenBalanceItem {
     chainId: number;
@@ -19,7 +20,7 @@ export interface ITokenBalanceItem {
 export interface INftBalanceItem {
     address: string;
     tokenId: string;
-    balance: string;
+    balance: number;
     icon: string;
 }
 
@@ -55,6 +56,18 @@ const formatTokenBalance = (item: ITokenBalanceItem) => {
     return item;
 };
 
+const formatNftBalance = (item: any) => {
+    const ipfsUrl = item.rawMetadata.image;
+
+    return {
+        logoURI: formatIPFS(ipfsUrl),
+        title: item.title,
+        tokenId: item.tokenId,
+        balance: item.balance,
+        tokenType: item.tokenType,
+    };
+};
+
 export const useBalanceStore = create<IBalanceStore>()(
     persist(
         (set, get) => ({
@@ -69,22 +82,25 @@ export const useBalanceStore = create<IBalanceStore>()(
                     chainId,
                 });
 
-                const balanceList = res.data.map((item: ITokenBalanceItem) => formatTokenBalance(item));
-
-                console.log("ready to set", balanceList);
+                const tokenList = res.data.map((item: ITokenBalanceItem) => formatTokenBalance(item));
 
                 // format balance list here
-                set({ tokenBalance: balanceList });
+                set({ tokenBalance: tokenList });
             },
             getNftBalance: (tokenAddress: string) => {
                 return get().nftBalance.filter((item: INftBalanceItem) => item.address === tokenAddress)[0];
             },
             fetchNftBalance: async (walletAddress: string, chainId: number) => {
                 const res = await api.balance.nft({
-                    wallet_address: walletAddress,
-                    chain: "arb-goerli",
+                    walletAddress: walletAddress,
+                    chainId: chainId,
                 });
-                set({ nftBalance: res.data });
+
+                const nftList = res.data.ownedNfts.map((item: any) => formatNftBalance(item));
+
+                console.log("aaaa", nftList);
+
+                set({ nftBalance: nftList });
             },
         }),
         {

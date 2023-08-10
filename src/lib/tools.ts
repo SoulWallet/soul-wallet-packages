@@ -105,6 +105,14 @@ export const nextRandomId = () => {
     return nanoid();
 };
 
+export const formatIPFS = (url: string) => {
+    if (url && url.includes("ipfs://")) {
+        return url.replace("ipfs://", "https://ipfs.io/ipfs/");
+    } else {
+        return url;
+    }
+};
+
 export const addPaymasterAndData = (payToken: string, paymaster: string) => {
     if (payToken === ethers.ZeroAddress) {
         return "0x";
@@ -118,16 +126,18 @@ export const addPaymasterAndData = (payToken: string, paymaster: string) => {
     return paymasterAndData;
 };
 
-export const checkAllowed = (origin:string) => {
-    const addressStorage = JSON.parse(localStorage.getItem('address-storage') || "{}");
+export const checkAllowed = (origin: string) => {
+    const addressStorage = JSON.parse(localStorage.getItem("address-storage") || "{}");
     const selectedAddress = addressStorage.state.selectedAddress;
-    const selectedAddressItem = addressStorage.state.addressList.filter((item: IAddressItem) => item.address === selectedAddress)[0]
+    const selectedAddressItem = addressStorage.state.addressList.filter(
+        (item: IAddressItem) => item.address === selectedAddress,
+    )[0];
     const allowedOrigins = selectedAddressItem.allowedOrigins;
     return {
         isAllowed: allowedOrigins.includes(origin),
         selectedAddress,
-    }
-}
+    };
+};
 
 // /**
 //  * hexlify all members of object, recursively
