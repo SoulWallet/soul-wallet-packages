@@ -14,6 +14,7 @@ export interface ITokenBalanceItem {
     name: string;
     symbol: string;
     tokenBalance: string;
+    tokenBalanceFormatted: string;
     type?: number;
 }
 
@@ -32,6 +33,7 @@ const defaultEthBalance: ITokenBalanceItem = {
     name: "Ethereum",
     symbol: "ETH",
     tokenBalance: "0",
+    tokenBalanceFormatted: "0",
 };
 
 export interface IBalanceStore {
@@ -52,6 +54,9 @@ const formatTokenBalance = (item: ITokenBalanceItem) => {
     }
     if (!item.name) {
         item.name = "Unknown";
+    }
+    if (item.tokenBalance) {
+        item.tokenBalanceFormatted = ethers.formatUnits(item.tokenBalance, item.decimals);
     }
     return item;
 };

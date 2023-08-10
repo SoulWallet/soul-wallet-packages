@@ -8,21 +8,12 @@ import { ethers } from "ethers";
 import useTools from "./useTools";
 import useSdk from "./useSdk";
 import config from "@src/config";
-import { ABI_ERC20Paymaster } from "@soulWallet/abi";
 import { addPaymasterAndData } from "@src/lib/tools";
 
 export default function useQuery() {
     const { walletAddress, web3, ethersProvider } = useWalletContext();
     const { soulWallet } = useSdk();
     const { verifyAddressFormat } = useTools();
-
-    /**
-     * Get token info by tokenAddress
-     * @param tokenAddress
-     */
-    const getTokenByAddress = (tokenAddress: string) => {
-        return config.assetsList.filter((item: any) => item.address === tokenAddress)[0];
-    };
 
     const getEthBalance = async () => {
         const res = await web3.eth.getBalance(walletAddress);
@@ -138,6 +129,5 @@ export default function useQuery() {
         getGasPrice,
         getFeeCost,
         getWalletType,
-        getTokenByAddress,
     };
 }

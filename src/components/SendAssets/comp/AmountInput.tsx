@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input, Button } from "@chakra-ui/react";
 import TokenLine from "./TokenLine";
-import BN from "bignumber.js";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
 
@@ -9,8 +8,6 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
     const { tokenBalance } = useBalanceStore();
 
     const selectedToken = tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === sendToken)[0];
-
-    const selectedTokenBalance = BN(selectedToken.tokenBalance).shiftedBy(-selectedToken.decimals).toFixed();
 
     return (
         <Flex flexDir={"column"} gap="3" py="3" px="4" bg="#fff" rounded="20px">
@@ -21,7 +18,7 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                             <TokenLine
                                 icon={selectedToken.logoURI}
                                 symbol={selectedToken.symbol}
-                                memo={`Your balance: ${selectedTokenBalance}`}
+                                memo={`Your balance: ${selectedToken.tokenBalanceFormatted || "0"}`}
                                 rightElement={
                                     <Image src={IconChevronRight} transform={isOpen ? "rotate(90deg)" : ""} />
                                 }
@@ -35,7 +32,7 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                                         <TokenLine
                                             icon={item.logoURI}
                                             symbol={item.symbol}
-                                            memo="123"
+                                            memo={item.tokenBalanceFormatted}
                                             onClick={() => onTokenChange(item.contractAddress)}
                                         />
                                     </MenuItem>
