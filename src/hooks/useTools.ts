@@ -25,16 +25,6 @@ export default function useTools() {
         return {
             walletAddress: walletAddress,
             guardians,
-            // salt: "",
-            // walletVersion: packageJson.version,
-            // walletLogic: config.contracts.walletLogic,
-            // chainId: config.chainId,
-            // entrypointAddress: config.contracts.entryPoint,
-            // guardianList: guardiansList,
-            // threshold: Math.round(guardiansList.length / 2),
-            // guardianLogic: config.contracts.guardianLogic,
-            // upgradeDelay: config.upgradeDelay,
-            // guardianDelay: config.guardianDelay,
         };
     };
 

@@ -3,7 +3,7 @@ import { Box, Image, Text } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 import ListItem from "../ListItem";
-import IconDefaultToken from '@src/assets/tokens/usdc.svg'
+import IconDefaultToken from '@src/assets/tokens/default.svg'
 import IconLoading from "@src/assets/activity-loading.gif";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";

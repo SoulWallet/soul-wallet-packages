@@ -55,19 +55,13 @@ export default {
     },
     contracts: {
         l1Keystore: "0xa0126a11877f3edb06cf6afac809f92d324007dc",
-        
         keyStoreModule: "0x39e5aefbcd9949d1f1d0657d380ead45c0a2367d",
         keyStoreModuleProxy: "0xd94849d394f4b3ed342a9e01de3157128c344fd0",
         soulWalletFactory: "0xa460c9695552d09ff6d9c93b2ea87fc606dc9900",
         defaultCallbackHandler: "0x2de0f1b7d3fbe2a86b88446acdbc294c91aa8f97",
         securityControlModule: "0xe9793d7792d3d736ecde0cc89050232704ad323e",
-
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
         paymaster: "0x357c443022df521e3d6d9c5ec88c0f03fcec0cd1",
-
-        walletLogic: "0x",
-        guardianLogic: "0x",
-        create2Factory: "0x",
     },
 };
 

@@ -49,20 +49,13 @@ export default {
         usdc: usdcAddress,
     },
     contracts: {
-        l1Keystore: "0x7a7d3f06a81fe2e4a4c3955be074fe67d9dd91e3",
-
-        keyStoreModule: "0xfeaab278ed3093f208627b9361dcd15a2a655eca",
-        keyStoreModuleProxy: "0xd94849d394f4b3ed342a9e01de3157128c344fd0",
-
-        soulWalletFactory: "",
-        defaultCallbackHandler: "",
-        securityControlModule: "",
-
+        l1Keystore: "0x76a43ef7cc3b49736951759494d2aee8cae1cdec",
+        keyStoreModule: "0x8600b46836b4b1d850bd121773ba6941cea85f78",
+        keyStoreModuleProxy: "0x59b84bfaaa906a84152ded63d964cff913308921",
+        soulWalletFactory: "0x576c13ccb03c21df9eeca0832719f0f6ffdc934b",
+        defaultCallbackHandler: "0xb8466fa7777fbc8046fe92adab58736def8b4c8f",
+        securityControlModule: "0x7a711e826b6383d6791cb43bfc0a4b72a2940183",
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-
-        walletLogic: "0x",
-        guardianLogic: "0x",
-        paymaster: "0x",
-        create2Factory: "0x",
+        paymaster: "0xee4d0d07318dd076d588bccdf2383275b499f29f",
     },
 };
