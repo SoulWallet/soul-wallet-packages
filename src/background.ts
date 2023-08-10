@@ -2,6 +2,7 @@
 import browser from "webextension-polyfill";
 import { getLocalStorage, openWindow, checkAllowed } from "@src/lib/tools";
 import { executeTransaction } from "@src/lib/tx";
+import { UserOpUtils } from "@soulwallet/sdk";
 // TODO, change!
 let password = null;
 
@@ -80,7 +81,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "execute":
             const { userOp, tabId, bundlerUrl } = msg.data;
 
-            await executeTransaction(JSON.parse(userOp), tabId, bundlerUrl);
+            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, bundlerUrl);
 
             await browser.runtime.sendMessage({
                 target: "soul",

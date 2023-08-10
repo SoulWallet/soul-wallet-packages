@@ -11,7 +11,7 @@ import Button from "../Button";
 import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
-import { UserOperation } from "@soulwallet/sdk";
+import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useSdk from "@src/hooks/useSdk";
 
 enum SignTypeEn {
@@ -164,9 +164,9 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         setSigning(true);
 
         if (config.zeroAddress === payToken) {
-            promiseInfo.resolve({userOp: activeOperation, payToken});
+            promiseInfo.resolve({ userOp: activeOperation, payToken });
         } else {
-            promiseInfo.resolve({userOp: activeOperation, payToken});
+            promiseInfo.resolve({ userOp: activeOperation, payToken });
         }
 
         if (!keepModalVisible) {
@@ -180,7 +180,11 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     };
 
     const checkSponser = async (userOp: UserOperation) => {
-        const res = await api.sponsor.check(`0x${selectedChainId.toString(16)}`, config.contracts.entryPoint, userOp);
+        const res = await api.sponsor.check(
+            `0x${selectedChainId.toString(16)}`,
+            config.contracts.entryPoint,
+            UserOpUtils.userOperationFromJSON(UserOpUtils.userOperationToJSON(userOp)),
+        );
         console.log("sponsor res", res);
     };
 

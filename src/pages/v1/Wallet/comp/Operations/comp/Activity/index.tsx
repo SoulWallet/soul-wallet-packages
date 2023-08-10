@@ -3,15 +3,15 @@ import ActivityItem from "./comp/ActivityItem";
 import { Box } from "@chakra-ui/react";
 import IconEmpty from "@src/assets/empty.svg";
 import IconLoading from "@src/assets/activity-loading.gif";
-import useWalletContext from "@src/context/hooks/useWalletContext";
 import config from "@src/config";
-import { Image } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 import scanApi from "@src/lib/scanApi";
 import { useAddressStore } from "@src/store/address";
 
 export default function Activities() {
-    const {selectedAddress} = useAddressStore()
+    const { selectedAddress } = useAddressStore();
     const [loading, setLoading] = useState(false);
+    // IMPORTANT TODO: MOVE history list to store
     const [historyList, setHistoryList] = useState<any>([]);
 
     const getHistory = async () => {
@@ -29,8 +29,10 @@ export default function Activities() {
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
             {!loading && (!historyList || historyList.length === 0) && (
                 <>
-                    <img src={IconEmpty} className="w-32 mx-auto my-4 block" />
-                    <div className="text-center">No activities</div>
+                    <Box textAlign={"center"}>
+                        <Image src={IconEmpty} w="32" mx="auto" mt="8" display={"block"} />
+                        <Text mt="2">No activities</Text>
+                    </Box>
                 </>
             )}
             {loading && <Image src={IconLoading} />}

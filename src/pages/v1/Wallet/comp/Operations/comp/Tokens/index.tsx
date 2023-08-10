@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
-import { Box } from "@chakra-ui/react";
-import useWalletContext from "@src/context/hooks/useWalletContext";
-import useQuery from "@src/hooks/useQuery";
+import { Box, Image, Text } from "@chakra-ui/react";
 import BN from "bignumber.js";
-import { useBalanceStore } from "@src/store/balanceStore";
-import { ITokenItem } from "@src/lib/type";
+import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 import ListItem from "../ListItem";
-import config from "@src/config";
+import IconDefaultToken from '@src/assets/tokens/usdc.svg'
+import IconLoading from "@src/assets/activity-loading.gif";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
 import { useChainStore } from "@src/store/chain";
@@ -21,22 +19,25 @@ export default function Tokens() {
         if (!selectedAddress) {
             return;
         }
+        console.log("Do fetch", selectedAddress, selectedChainId);
         // TODO, change chain id to config
         fetchTokenBalance(selectedAddress, selectedChainId);
     }, [selectedAddress]);
 
     return (
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>
-            {config.assetsList.map((item: ITokenItem, idx: number) => (
+            {/** only for first time loading */}
+            {(!tokenBalance || tokenBalance.length === 0) && <Image src={IconLoading} />}
+            {tokenBalance.map((item: ITokenBalanceItem, idx: number) => (
                 <ListItem
                     key={idx}
                     idx={idx}
-                    icon={item.icon}
-                    title={item.name}
+                    icon={item.logoURI || IconDefaultToken}
+                    title={item.name || 'Unknown'}
                     titleDesc={"Token"}
-                    amount={`1 ${item.symbol}`}
-                    amountDesc={`$1231.21`}
-                    onClick={() => navigate(`send/${item.address}`)}
+                    amount={`${BN(item.tokenBalance).shiftedBy(-item.decimals).toString()} ${item.symbol}`}
+                    amountDesc={``}
+                    onClick={() => navigate(`send/${item.contractAddress}`)}
                 />
             ))}
         </Box>

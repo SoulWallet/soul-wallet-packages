@@ -13,7 +13,7 @@ import config from "@src/config";
 import useKeystore from "./useKeystore";
 import BN from 'bignumber.js'
 import Erc20ABI from "../contract/abi/ERC20.json";
-import { UserOperation } from "@soulwallet/sdk";
+import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 
 export default function useWallet() {
     const { account } = useWalletContext();
@@ -145,7 +145,7 @@ export default function useWallet() {
         userOp.signature = packedSignatureRet.OK;
 
         await Runtime.send("execute", {
-            userOp: JSON.stringify(userOp),
+            userOp: UserOpUtils.userOperationToJSON(userOp),
             bundlerUrl,
         });
     };

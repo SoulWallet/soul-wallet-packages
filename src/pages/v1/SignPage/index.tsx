@@ -13,6 +13,7 @@ import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useSettingStore } from "@src/store/settingStore";
 import { useAddressStore } from "@src/store/address";
+import { UserOpUtils } from "@soulwallet/sdk";
 
 export default function SignPage() {
     const params = useSearchParams();
@@ -79,7 +80,7 @@ export default function SignPage() {
                         action: "approveTransaction",
                         tabId: searchParams.tabId,
                         data: {
-                            operation: JSON.stringify(userOp),
+                            operation: UserOpUtils.userOperationToJSON(userOp),
                             tabId,
                             bundlerUrl: config.defaultBundlerUrl,
                         },

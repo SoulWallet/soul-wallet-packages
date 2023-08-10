@@ -43,7 +43,7 @@ const printUserOp = (userOp: any) => {
 // const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: any) => {
-    printUserOp(userOp);
+    // printUserOp(userOp);
     return new Promise(async (resolve, reject) => {
         const ret = await soulWallet.sendUserOperation(userOp);
 

@@ -3,10 +3,14 @@ import api from "@src/lib/api";
 import { persist } from "zustand/middleware";
 
 export interface ITokenBalanceItem {
-    address: string;
-    balance: string;
-    icon: string;
-    usdValue: string;
+    chainId: number;
+    contractAddress: string;
+    decimals: number;
+    logoURI: string;
+    name: string;
+    symbol: string;
+    tokenBalance: string;
+    type: number;
 }
 
 export interface INftBalanceItem {
@@ -31,14 +35,14 @@ export const useBalanceStore = create<IBalanceStore>()(
             tokenBalance: [],
             nftBalance: [],
             getTokenBalance: async (tokenAddress: string) => {
-                return get().tokenBalance.filter((item: ITokenBalanceItem) => item.address === tokenAddress)[0];
+                return get().tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === tokenAddress)[0];
             },
             fetchTokenBalance: async (walletAddress: string, chainId: number) => {
                 const res = await api.balance.token({
-                    wallet_address: walletAddress,
-                    chain: 'arb-goerli',
+                    walletAddress,
+                    chainId,
                 });
-                set({ tokenBalance: res.data.tokenBalances });
+                set({ tokenBalance: res.data });
             },
             getNftBalance: async (tokenAddress: string) => {
                 return get().nftBalance.filter((item: INftBalanceItem) => item.address === tokenAddress)[0];
@@ -46,7 +50,7 @@ export const useBalanceStore = create<IBalanceStore>()(
             fetchNftBalance: async (walletAddress: string, chainId: number) => {
                 const res = await api.balance.nft({
                     wallet_address: walletAddress,
-                    chain: 'arb-goerli',
+                    chain: "arb-goerli",
                 });
                 set({ nftBalance: res.data });
             },
