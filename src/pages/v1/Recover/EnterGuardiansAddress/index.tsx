@@ -238,8 +238,7 @@ const EnterGuardiansAddress = () => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1 marginBottom="2em">
         Enter guardians’ addresses
       </Heading1>

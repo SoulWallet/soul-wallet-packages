@@ -121,7 +121,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   }
 
   return (
-    <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Guardian signature request</Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
