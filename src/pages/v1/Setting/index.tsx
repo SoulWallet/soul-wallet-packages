@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image } from "@chakra-ui/react";
-import packageJson from "../../../../package.json";
-import IconLogo from "@src/assets/logo-v3.svg";
+
 import IconSecurity from "@src/assets/icons/security.svg";
 import IconDefault from "@src/assets/icons/default.svg";
 import IconSupport from "@src/assets/icons/support.svg";
@@ -15,11 +14,14 @@ import PageTitle from "@src/components/PageTitle";
 import Switch from "@src/components/Switch";
 import ResetPassword from "./comp/ResetPassword";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import SettingFooter from "./comp/SettingFooter";
 
 const SettingBox = ({ children, ...restProps }: any) => (
     <Flex
         align={"center"}
         bg="#fff"
+        _hover={{ bg: "#e8e8e8" }}
+        transition={"all 0.2s ease-in-out"}
         cursor={"pointer"}
         fontWeight={"800"}
         justify={"space-between"}
@@ -43,7 +45,7 @@ const SettingMainpage = ({ onChange }: any) => {
     const keyring = useKeyring();
     const { showLocked } = useWalletContext();
 
-    const doLockWallet = async() => {
+    const doLockWallet = async () => {
         await keyring.lock();
         showLocked();
     };
@@ -86,21 +88,6 @@ const SettingMainpage = ({ onChange }: any) => {
                     Terms Of Services
                 </Link>
             </Flex>
-            <Flex
-                justify={"space-between"}
-                align={"center"}
-                w="100%"
-                position={"absolute"}
-                bottom={"3"}
-                px="6"
-                left="0"
-                right="0"
-            >
-                <Image src={IconLogo} w="8" />
-                <Text fontFamily={"Martian"} fontWeight={"300"} fontSize={"10px"}>
-                    Version Beta {packageJson.version}
-                </Text>
-            </Flex>
         </Box>
     );
 };
@@ -111,6 +98,7 @@ export default function Setting() {
         <>
             {!settingIndex && <SettingMainpage onChange={setSettingIndex} />}
             {settingIndex === 1 && <ResetPassword onCancel={() => setSettingIndex(0)} />}
+            <SettingFooter />
         </>
     );
 }
