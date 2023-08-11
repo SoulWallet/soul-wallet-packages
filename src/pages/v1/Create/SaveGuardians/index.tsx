@@ -235,7 +235,7 @@ const SaveGuardians = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Backup Guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">

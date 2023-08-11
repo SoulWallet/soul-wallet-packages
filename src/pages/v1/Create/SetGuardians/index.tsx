@@ -139,7 +139,7 @@ export default function GuardiansSetting() {
       const threshold = amountForm.values.amount || 0
       const walletAddress = await calcWalletAddress(0, account, guardianAddresses, threshold);
       const walletName = `Account 1`
-      // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');
+      // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');/Users/terencege/Developer/soul-wallet-packages/src/pages/v1/Create/SetPassword/.
       const newAddress = (walletAddress as any)._value
       addAddressItem({ title: walletName, address: newAddress, activated: false, allowedOrigins: [] })
       setSelectedAddress(newAddress)
@@ -246,7 +246,7 @@ export default function GuardiansSetting() {
   }
 
   return (
-    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Set Guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">

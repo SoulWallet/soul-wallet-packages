@@ -72,7 +72,7 @@ export default function SetPassword() {
   };
 
   return (
-    <Box width="428px" marginTop="1em" display="flex" flexDirection="column">
+    <Box width="428px" marginTop="1em" display="flex" flexDirection="column" paddingBottom="20px">
       <WalletCard statusText="SETTING UP..." />
       <FormInput
         label=""

@@ -79,7 +79,7 @@ export default function SetPassword() {
   };
 
   return (
-    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>
         Reset wallet password
       </Heading1>
