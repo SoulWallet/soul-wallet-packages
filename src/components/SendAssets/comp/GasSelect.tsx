@@ -7,6 +7,7 @@ import config from "@src/config";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 export default function GasSelect({ gasToken, onChange }: any) {
     const { tokenBalance } = useBalanceStore();
+
     return (
         <Menu>
             <MenuButton>
@@ -23,7 +24,9 @@ export default function GasSelect({ gasToken, onChange }: any) {
                         (item: ITokenBalanceItem) =>
                             item.contractAddress !== gasToken &&
                             (item.contractAddress === ethers.ZeroAddress ||
-                                config.gasTokens.includes(item.contractAddress)),
+                                config.paymasterTokens
+                                    .map((item: any) => item.toLowerCase())
+                                    .includes(item.contractAddress)),
                     )
                     .map((item: ITokenBalanceItem) => (
                         <MenuItem key={item.contractAddress} onClick={() => onChange(item.contractAddress)}>

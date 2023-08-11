@@ -16,29 +16,7 @@ const soulWallet = new SoulWallet(
 
 import { notify } from "@src/lib/tools";
 
-const printUserOp = (userOp: any) => {
-    const to10 = (n: any) => {
-        return BN(n).toString();
-    };
 
-    console.log(
-        JSON.stringify([
-            {
-                sender: userOp.sender,
-                nonce: userOp.nonce.toString(),
-                initCode: userOp.initCode,
-                callData: userOp.callData,
-                callGasLimit: to10(userOp.callGasLimit),
-                verificationGasLimit: to10(userOp.verificationGasLimit),
-                preVerificationGas: to10(userOp.preVerificationGas),
-                maxFeePerGas: to10(userOp.maxFeePerGas),
-                maxPriorityFeePerGas: to10(userOp.maxPriorityFeePerGas),
-                paymasterAndData: userOp.paymasterAndData,
-                signature: userOp.signature,
-            },
-        ]),
-    );
-};
 
 // const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 

@@ -45,7 +45,6 @@ export default function useTransaction() {
         const callData = erc20Interface.encodeFunctionData("transfer", [to, amountInWei]);
         const tx: Transaction = {
             to: tokenAddress,
-            value: amountInWei,
             data: callData,
         };
 

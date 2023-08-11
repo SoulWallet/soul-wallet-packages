@@ -96,14 +96,11 @@ const EnterGuardiansAddress = () => {
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
   const { account } = useWalletContext();
-  const { calcWalletAddress } = useSdk();
-  const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
   const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
   const toast = useToast()
 
   const stepDispatch = useStepDispatchContext();
-  const recoveryDispatch = useRecoveryDispatchContext();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,

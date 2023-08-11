@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import { nanoid } from "nanoid";
 import { ethers } from "ethers";
 import { IAddressItem } from "@src/store/address";
+import BN from "bignumber.js";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -167,3 +168,31 @@ export const checkAllowed = (origin: string) => {
 //   export async function resolveHexlify (a: any): Promise<any> {
 //     return deepHexlify(await resolveProperties(a))
 //   }
+
+const to10 = (n: any) => {
+    return BN(n).toString();
+};
+
+export const printUserOp = (userOp: any) => {
+    console.log(
+        JSON.stringify([
+            {
+                sender: userOp.sender,
+                nonce: userOp.nonce.toString(),
+                initCode: userOp.initCode,
+                callData: userOp.callData,
+                callGasLimit: to10(userOp.callGasLimit),
+                verificationGasLimit: to10(userOp.verificationGasLimit),
+                preVerificationGas: to10(userOp.preVerificationGas),
+                maxFeePerGas: to10(userOp.maxFeePerGas),
+                maxPriorityFeePerGas: to10(userOp.maxPriorityFeePerGas),
+                paymasterAndData: userOp.paymasterAndData,
+                signature: userOp.signature,
+            },
+        ]),
+    );
+};
+
+export const hasCommonElement = (arr1:[], arr2:[]) => {
+    return arr1.some((item) => arr2.includes(item));
+}

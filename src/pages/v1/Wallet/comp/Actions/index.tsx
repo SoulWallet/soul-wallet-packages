@@ -4,7 +4,6 @@ import useBrowser from "@src/hooks/useBrowser";
 import IconAddFunds from "@src/assets/actions/add-funds.svg";
 import IconSend from "@src/assets/actions/send.svg";
 import IconGuardians from "@src/assets/actions/guardians.svg";
-// import IconGasTokens from "@src/assets/actions/gas-tokens.svg";
 import Icon2FA from "@src/assets/actions/2fa.svg";
 import config from "@src/config";
 
