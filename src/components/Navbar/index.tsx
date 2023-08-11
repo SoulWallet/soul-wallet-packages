@@ -45,9 +45,6 @@ export function Navbar({ backUrl, title, onBack }: INavbar) {
                 <AccountSelect />
                 <Image src={IconGear} w="32px" h="32px" cursor={"pointer"} onClick={() => navigate("setting")} />
             </Flex>
-            // <div className="navbar flex items-center justify-between navbar-shadow">
-            //     {/* {settingVisible && <WalletSettingModal onCancel={() => setSettingVisible(false)} />} */}
-            // </div>
         );
     }
 }

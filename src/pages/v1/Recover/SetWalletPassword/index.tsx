@@ -59,7 +59,7 @@ export default function SetPassword() {
       if (password) {
         setLoaing(true)
         console.log('loading s', password)
-        await keystore.createNewAddress(password);
+        await keystore.createNewAddress(password, false);
         getAccount();
         console.log('loading e', password)
         setLoaing(false)
