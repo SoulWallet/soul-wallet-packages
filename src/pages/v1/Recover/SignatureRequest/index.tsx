@@ -19,6 +19,7 @@ import ErrorIcon from "@src/components/Icons/Error";
 import useTools from "@src/hooks/useTools";
 import { useGuardianStore } from "@src/store/guardian";
 import { copyText } from "@src/lib/tools";
+import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
 
 interface IGuardianChecking {
@@ -41,6 +42,7 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   const { guardians, threshold, slot, slotInitInfo, recoverRecordId, guardianSignatures, setGuardianSignatures } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
   const toast = useToast()
+  const {account} = useWalletContext()
 
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
@@ -84,7 +86,15 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     console.log('guardianSignatures', result)
     const guardianSignatures = result.data.guardianSignatures
     setGuardianSignatures(guardianSignatures)
+    const status = result.data.status
     console.log('recoveryRecordID', result, guardianSignatures)
+
+    if (status === 4) {
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.SignaturePending,
+      });
+    }
   }
 
   useEffect(() => {
@@ -114,12 +124,10 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
   };
 
   const handleNext = async () => {
-    /* dispatch({
-     *   type: StepActionTypeEn.JumpToTargetStep,
-     *   payload: RecoverStepEn.SignaturePending,
-     * }); */
+
   }
 
+  console.log('account111', account)
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Guardian signature request</Heading1>
@@ -155,13 +163,13 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
         {(guardianSignatures || []).map((item: any) =>
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
             <Box fontSize="14px" fontWeight="bold">{toShortAddress(item.guardian)}</Box>
-            {item.isValid && (
+            {item.valid && (
               <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
                 Signed
                 <Text marginLeft="4px"><CheckedIcon /></Text>
               </Box>
             )}
-            {!item.isValid && (
+            {!item.valid && (
               <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
                 Error
                 <Text marginLeft="4px"><ErrorIcon /></Text>
