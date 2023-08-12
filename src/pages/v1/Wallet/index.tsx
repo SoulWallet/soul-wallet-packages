@@ -6,14 +6,12 @@ import { Box } from "@chakra-ui/react";
 import Operations from "./comp/Operations";
 import ActivateHint from "./comp/ActivateHint";
 import Footer from "@src/components/Footer";
-import { useAddressStore } from "@src/store/address";
 import Actions from "./comp/Actions";
+import useConfig from "@src/hooks/useConfig";
 
 export function Wallet() {
-    const { getSelectedAddressItem } = useAddressStore();
-
-    const selectedAddressItem = getSelectedAddressItem();
-
+    const { selectedAddressItem } = useConfig();
+  
     return (
         <>
             <Box p="5">

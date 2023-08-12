@@ -10,6 +10,7 @@ import GuardianForm from "@src/components/GuardianForm";
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import TextBody from "@src/components/web/TextBody";
+import { useAddressStore } from "@src/store/address";
 
 interface IProps {
   onSave: () => void;
@@ -17,6 +18,7 @@ interface IProps {
 }
 
 const GuardiansSaver = ({ onSave, handleNext }: IProps) => {
+  const { selectedAddress } = useAddressStore();
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
   const { guardians } = useGlobalStore();
   const [email, setEmail] = useState<string>();
@@ -31,9 +33,7 @@ const GuardiansSaver = ({ onSave, handleNext }: IProps) => {
   const handleDownload = async () => {
     setDownloading(true);
 
-    const walletAddress = await getLocalStorage("walletAddress");
-
-    const jsonToSave = formatGuardianFile(walletAddress, guardians);
+    const jsonToSave = formatGuardianFile(selectedAddress, guardians);
 
     downloadJsonFile(jsonToSave);
 
@@ -53,9 +53,8 @@ const GuardiansSaver = ({ onSave, handleNext }: IProps) => {
     setSending(true);
 
     try {
-      const walletAddress = await getLocalStorage("walletAddress");
 
-      const jsonToSave = formatGuardianFile(walletAddress, guardians);
+      const jsonToSave = formatGuardianFile(selectedAddress, guardians);
 
       const res: any = await emailJsonFile(jsonToSave, email);
 

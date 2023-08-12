@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Button from "@src/components/Button";
-import PayTokenSelect from "@src/components/PayTokenSelect";
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import ProgressNavBar from "@src/components/ProgressNavBar";
@@ -10,6 +9,7 @@ import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import React, { useRef } from "react";
 import useBrowser from "@src/hooks/useBrowser";
+import { ethers } from 'ethers'
 import { notify } from "@src/lib/tools";
 
 const EditGuardians = () => {
@@ -17,7 +17,7 @@ const EditGuardians = () => {
     const { updateGuardian } = useWallet();
     const [updating, setUpdating] = useState(false);
     const formRef = useRef<IGuardianFormHandler>(null);
-    const [payToken, setPayToken] = useState<string>(config.zeroAddress);
+    const [payToken, setPayToken] = useState<string>(ethers.ZeroAddress);
     const { replaceCurrentTab } = useBrowser();
 
     const handleClickConfirm = async () => {
@@ -51,10 +51,6 @@ const EditGuardians = () => {
             <p className="text-base text-gray80 mt-5 mb-2">
                 Guardian addresses are only stored locally and will never be shared with us or any third parties.
             </p>
-
-            <div className="pt-4 pb-6 w-1/2">
-                <PayTokenSelect value={payToken} onChange={handleChangePayToken} />
-            </div>
 
             <GuardianForm ref={formRef} guardians={guardians} />
             {/* 

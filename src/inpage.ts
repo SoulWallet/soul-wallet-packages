@@ -17,7 +17,9 @@ const providerToInject = {
     isWeb3: true,
     isSoul: true,
     request: async (call) => {
-        return await handleRequests(call);
+        // get latest chain config
+        const chainConfig = await windowBus.send("getChainConfig", "getChainConfig");
+        return await handleRequests(call, chainConfig);
     },
     sendAsync: async (call, fn) => {
         const result = await handleRequests(call);

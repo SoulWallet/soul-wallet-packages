@@ -92,7 +92,7 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
-  const { selectedAddress, setSelectedAddress, addAddressItem } = useAddressStore();
+  const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
   const { setGuardians, setGuardianNames, setThreshold } = useGuardianStore();
   const toast = useToast()
 
@@ -137,16 +137,14 @@ export default function GuardiansSetting() {
       const guardianAddresses = guardiansList.map((item: any) => item.address)
       const guardianNames = guardiansList.map((item: any) => item.name)
       const threshold = amountForm.values.amount || 0
-      const walletAddress = await calcWalletAddress(0, account, guardianAddresses, threshold);
+      const walletAddress = await calcWalletAddress(0);
       const walletName = `Account 1`
-      // const walletAddress = await calcWalletAddress(0, account, guardiansList, '');/Users/terencege/Developer/soul-wallet-packages/src/pages/v1/Create/SetPassword/.
-      const newAddress = (walletAddress as any)._value
-      addAddressItem({ title: walletName, address: newAddress, activated: false, allowedOrigins: [] })
+      const newAddress = walletAddress
+      setAddressList([{ title: walletName, address: newAddress, activated: false, allowedOrigins: [] }])
       setSelectedAddress(newAddress)
       setGuardians(guardianAddresses)
       setGuardianNames(guardianNames)
       setThreshold(threshold)
-      console.log('handleSubmit', walletAddress, newAddress, account, guardiansList, threshold)
       setLoading(false)
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     } catch (error: any) {

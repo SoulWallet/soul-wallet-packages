@@ -1,27 +1,6 @@
 import IconTwitter from "@src/assets/socials/twitter.svg";
 import IconTelegram from "@src/assets/socials/telegram.svg";
 import IconGithub from "@src/assets/socials/github.svg";
-import IconEth from "@src/assets/chains/eth.svg";
-import IconOp from "@src/assets/chains/op.svg";
-import IconArb from "@src/assets/chains/arb.svg";
-
-export const supportedChains = [
-    {
-        icon: IconEth,
-        name: "Ethereum",
-        chainId: 1,
-    },
-    {
-        icon: IconOp,
-        name: "Optimism",
-        chainId: 10,
-    },
-    {
-        icon: IconArb,
-        name: "Arbitrum",
-        chainId: 42161,
-    },
-];
 
 export default {
     walletName: "Soul Wallet",
@@ -43,10 +22,5 @@ export default {
     magicValue: "0x1626ba7e",
     backendURL: "https://api-dev.soulwallet.io/appapi",
     soulScanURL: "https://api-dev.soulwallet.io/opapi",
-    zeroAddress: "0x0000000000000000000000000000000000000000",
-    ...require(`./${process.env.CHAIN}`).default,
+    chainList: [require(`./chains/arb-goerli`).default, require(`./chains/goerli`).default],
 };
-
-// Arbitrum: https://bundler-arb-main.soulwallets.me/rpc
-// Goerli: https://bundler-eth-goerli.soulwallets.me/rpc
-// Polygon: https://bundler-polygon-main.soulwallets.me/rpc

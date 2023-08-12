@@ -5,20 +5,14 @@
 import useWalletContext from "../context/hooks/useWalletContext";
 import BN from "bignumber.js";
 import { ethers } from "ethers";
-import useTools from "./useTools";
 import useSdk from "./useSdk";
-import config from "@src/config";
 import { addPaymasterAndData } from "@src/lib/tools";
+import useConfig from "./useConfig";
 
 export default function useQuery() {
-    const { walletAddress, web3, ethersProvider } = useWalletContext();
+    const { ethersProvider } = useWalletContext();
     const { soulWallet } = useSdk();
-    const { verifyAddressFormat } = useTools();
-
-    const getEthBalance = async () => {
-        const res = await web3.eth.getBalance(walletAddress);
-        return new BN(res).shiftedBy(-18).toString();
-    };
+    const { chainConfig } = useConfig();
 
     const getEthPrice = async () => {
         // get price from coingecko
@@ -26,26 +20,17 @@ export default function useQuery() {
         console.log("res", await res.json());
     };
 
-    const getBalances = async () => {
-        if (!walletAddress) {
-            return;
-        }
-
-        // const ethBalance = await getEthBalance();
-        // setBalance(config.zeroAddress, ethBalance);
-    };
-
     const getGasPrice = async () => {
         // if it's in the fixed price list, set fixed
-        if (config.chainId === 421613 || config.chainId === 42161) {
+        if (chainConfig.chainId === 421613 || chainConfig.chainId === 42161) {
             return {
-                maxFeePerGas: `0x${ethers.parseUnits(config.defaultMaxFee, "gwei").toString(16)}`,
-                maxPriorityFeePerGas: `0x${ethers.parseUnits(config.defaultMaxPriorityFee, "gwei").toString(16)}`,
+                maxFeePerGas: `0x${ethers.parseUnits(chainConfig.defaultMaxFee, "gwei").toString(16)}`,
+                maxPriorityFeePerGas: `0x${ethers.parseUnits(chainConfig.defaultMaxPriorityFee, "gwei").toString(16)}`,
             };
         }
 
         const feeData = await ethersProvider.getFeeData();
-        if (config.support1559) {
+        if (chainConfig.support1559) {
             return {
                 maxFeePerGas: `0x${feeData.maxFeePerGas?.toString(16)}`,
                 maxPriorityFeePerGas: `0x${feeData.maxPriorityFeePerGas?.toString(16)}`,
@@ -65,7 +50,7 @@ export default function useQuery() {
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
         if (payToken && payToken !== ethers.ZeroAddress) {
-            userOp.paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster);
+            userOp.paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
         }
 
         // get gas limit
@@ -99,7 +84,7 @@ export default function useQuery() {
                 requiredAmount: BN(preFund.OK.missfund)
                     .shiftedBy(-18)
                     .times(erc20Price)
-                    .times(config.maxCostMultiplier)
+                    .times(chainConfig.maxCostMultiplier)
                     .div(100)
                     .toFixed(),
                 userOp,
@@ -115,19 +100,16 @@ export default function useQuery() {
         // console.log("requiredUSDC: " + ethers.formatUnits(requiredUSDC, tokenDecimals), "USDC");
     };
 
-    const getWalletType = async (address: string) => {
-        if (!verifyAddressFormat(address)) {
-            return "";
-        }
-        const contractCode = await web3.eth.getCode(address);
-        return contractCode !== "0x" ? "contract" : "eoa";
-    };
+    // const getWalletType = async (address: string) => {
+    //     if (!verifyAddressFormat(address)) {
+    //         return "";
+    //     }
+    //     const contractCode = await ethersProvider.getCode(address);
+    //     return contractCode !== "0x" ? "contract" : "eoa";
+    // };
 
     return {
-        getBalances,
-        getEthBalance,
         getGasPrice,
         getFeeCost,
-        getWalletType,
     };
 }

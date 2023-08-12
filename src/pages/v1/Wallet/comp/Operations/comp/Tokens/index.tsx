@@ -6,7 +6,7 @@ import ListItem from "../ListItem";
 import IconDefaultToken from "@src/assets/tokens/default.svg";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
-import { useChainStore } from "@src/store/chain";
+import { useChainStore } from "@src/store/chainStore";
 
 export default function Tokens() {
     const { selectedAddress } = useAddressStore();
@@ -21,7 +21,7 @@ export default function Tokens() {
         console.log("Do fetch", selectedAddress, selectedChainId);
         // TODO, change chain id to config
         fetchTokenBalance(selectedAddress, selectedChainId);
-    }, [selectedAddress]);
+    }, [selectedAddress, selectedChainId]);
 
     return (
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>

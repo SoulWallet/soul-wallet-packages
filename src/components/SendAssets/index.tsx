@@ -51,7 +51,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             return;
         }
 
-        if (sendToken === config.zeroAddress) {
+        if (sendToken === ethers.ZeroAddress) {
             sendEth(receiverAddress, amount);
         } else {
             sendErc20(sendToken, receiverAddress, amount, selectedToken.decimals);

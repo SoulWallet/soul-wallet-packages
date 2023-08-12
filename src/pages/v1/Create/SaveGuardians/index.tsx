@@ -25,6 +25,7 @@ import { L1KeyStore } from "@soulwallet/sdk";
 import config from "@src/config";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
+import useConfig from "@src/hooks/useConfig";
 
 const toHex = (num: any) => {
   let hexStr = num.toString(16)
@@ -63,6 +64,7 @@ const SaveGuardians = () => {
   const { account } = useWalletContext();
   const { guardians, guardianNames, threshold } = useGuardianStore();
   const { calcGuardianHash, getSlot } = useKeystore()
+  const {chainConfig} = useConfig();
   const toast = useToast()
 
   const emailForm = useForm({
@@ -82,7 +84,7 @@ const SaveGuardians = () => {
   const handleBackupGuardians = async () => {
     try {
       setLoading(true)
-      const keystore = config.contracts.l1Keystore
+      const keystore = chainConfig.contracts.l1Keystore
       const initialKey = ethers.zeroPadValue(account, 32)
       const guardianHash = calcGuardianHash(guardians, threshold)
       console.log('guardianHash', guardians, threshold, guardianHash)
@@ -137,7 +139,7 @@ const SaveGuardians = () => {
 
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const keystore = config.contracts.l1Keystore
+      const keystore = chainConfig.contracts.l1Keystore
       const initialKey = ethers.zeroPadValue(account, 32)
       const guardianHash = calcGuardianHash(guardians, threshold)
       const initialGuardianHash = guardianHash
@@ -188,7 +190,7 @@ const SaveGuardians = () => {
       setDownloading(true)
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const keystore = config.contracts.l1Keystore
+      const keystore = chainConfig.contracts.l1Keystore
       const initialKey = ethers.zeroPadValue(account, 32)
       const guardianHash = calcGuardianHash(guardians, threshold)
       const initialGuardianHash = guardianHash

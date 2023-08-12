@@ -7,22 +7,32 @@ interface IChainItem {
     chainId: number;
     chainName: string;
     chainIcon: any;
+    contracts: any;
+    provider: string;
+    bundlerUrl: string;
 }
 
 interface IChainStore {
     selectedChainId: number;
     chainList: IChainItem[];
+    // getSelectedChainItem: () => IChainItem;
+    getSelectedChainItem: () => any;
     setSelectedChainId: (chainId: number) => void;
 }
 
-// const getIndexByChainId = (addressList: IChainItem[], chainId: number) => {
-//     return addressList.findIndex((item: IChainItem) => item.chainId === chainId);
-// };
+const getIndexByChainId = (chainList: IChainItem[], chainId: number) => {
+    return chainList.findIndex((item: IChainItem) => item.chainId === chainId);
+};
 
 const createChainSlice = immer<IChainStore>((set, get) => ({
-    // TODO, change var
-    selectedChainId: config.chainId,
-    chainList: [],
+    // default first one
+    selectedChainId: config.chainList[0].chainId,
+    // IMPORTANT TODO, don't persist this
+    chainList: config.chainList,
+    getSelectedChainItem: () => {
+        const index = getIndexByChainId(get().chainList, get().selectedChainId);
+        return get().chainList[index];
+    },
     setSelectedChainId: (chainId: number) =>
         set({
             selectedChainId: chainId,
@@ -32,5 +42,6 @@ const createChainSlice = immer<IChainStore>((set, get) => ({
 export const useChainStore = create<IChainStore>()(
     persist((...set) => ({ ...createChainSlice(...set) }), {
         name: "chain-storage",
+        partialize: (state) => ({ chainList: state.chainList }),
     }),
 );

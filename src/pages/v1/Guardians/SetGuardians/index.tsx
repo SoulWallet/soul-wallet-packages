@@ -32,20 +32,6 @@ const GuardiansSaver = ({ onSave }: IProps) => {
     setIsEmailValid(validateEmail(email));
   }, [email]);
 
-  const handleDownload = async () => {
-    setDownloading(true);
-
-    const walletAddress = await getLocalStorage("walletAddress");
-
-    const jsonToSave = formatGuardianFile(walletAddress, guardians);
-
-    downloadJsonFile(jsonToSave);
-
-    setDownloading(false);
-
-    if (onSave) onSave();
-  };
-
   const handleEmailChange = (val: string) => {
     setEmail(val);
   };
@@ -57,15 +43,15 @@ const GuardiansSaver = ({ onSave }: IProps) => {
     setSending(true);
 
     try {
-      const walletAddress = await getLocalStorage("walletAddress");
+      // const walletAddress = await getLocalStorage("walletAddress");
 
-      const jsonToSave = formatGuardianFile(walletAddress, guardians);
+      // const jsonToSave = formatGuardianFile(walletAddress, guardians);
 
-      const res: any = await emailJsonFile(jsonToSave, email);
+      // const res: any = await emailJsonFile(jsonToSave, email);
 
-      if (res.code === 200) {
-        if (onSave) onSave();
-      }
+      // if (res.code === 200) {
+      //   if (onSave) onSave();
+      // }
     } catch {
       // maybe toast error message?
     } finally {

@@ -7,13 +7,15 @@ import IconEth from "@src/assets/chains/eth.svg";
 import { copyText } from "@src/lib/tools";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
+import { useAddressStore } from "@src/store/address";
+import useQuery from "@src/hooks/useQuery";
 
 export default function AddFund() {
     const toast = useToast();
-    const { walletAddress } = useWalletContext();
+    const { selectedAddress } = useAddressStore();
 
     const doCopy = () => {
-        copyText(walletAddress);
+        copyText(selectedAddress);
         toast({
             title: "Copied",
             status: "success",
@@ -24,7 +26,7 @@ export default function AddFund() {
         <Box px="5" pt="6">
             <Navbar backUrl="wallet" title="Account 1" />
             <Box bg="#fff" rounded="20px" p="4" mb="14px">
-                <ReceiveCode walletAddress={walletAddress} imgWidth="170px" showFullAddress={true} />
+                <ReceiveCode address={selectedAddress} imgWidth="170px" showFullAddress={true} />
             </Box>
 
             <InfoWrap gap="3">

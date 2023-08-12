@@ -2,17 +2,11 @@ import React, { useEffect, useState } from "react";
 import Dropdown, { OptionItem } from "@src/components/Dropdown";
 import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
-import config from "@src/config";
 import { ethers } from "ethers";
-import PayTokenSelect from "@src/components/PayTokenSelect";
-import { getLocalStorage } from "@src/lib/tools";
 import Button from "@src/components/web/Button";
-import TextButton from "@src/components/web/TextButton";
 import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import FormInput from "@src/components/web/Form/FormInput";
 import Heading1 from "@src/components/web/Heading1";
-import Heading2 from "@src/components/web/Heading2";
-import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import useForm from "@src/hooks/useForm";
 import api from "@src/lib/api";
@@ -84,17 +78,6 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
       })
     }
   };
-
-  const getStoredWalletAddress = async () => {
-    /* const wAddress = await getLocalStorage("walletAddress");
-     * if (wAddress) {
-     *   setAddress(wAddress);
-     * } */
-  };
-
-  useEffect(() => {
-    getStoredWalletAddress();
-  }, []);
 
   return (
     <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">

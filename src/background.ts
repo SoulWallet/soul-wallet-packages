@@ -3,11 +3,12 @@ import browser from "webextension-polyfill";
 import { getLocalStorage, openWindow, checkAllowed } from "@src/lib/tools";
 import { executeTransaction } from "@src/lib/tx";
 import { UserOpUtils } from "@soulwallet/sdk";
-// TODO, change!
+
+// IMPORTANT TODO, maintain chainConfig here as well
 let password = null;
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
-    console.log("got msg", msg);
+    console.log("BG msg", msg);
     const senderTabId = sender.tab?.id;
     const windowWidth = sender.tab?.width;
 
@@ -33,7 +34,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
         case "getAccounts":
             // IMPORTANT TODO, also need to check lock state
-
             const { isAllowed, selectedAddress } = checkAllowed(msg.data.origin);
 
             if (isAllowed) {
@@ -49,6 +49,9 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             }
 
             break;
+
+        case "getChainConfig":
+            console.log('GET chain config')
 
         case "shouldInject":
             const userAllowed = await getLocalStorage("shouldInject");
@@ -79,9 +82,9 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "execute":
-            const { userOp, tabId, bundlerUrl } = msg.data;
+            const { userOp, tabId, chainName } = msg.data;
 
-            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, bundlerUrl);
+            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, chainName);
 
             await browser.runtime.sendMessage({
                 target: "soul",

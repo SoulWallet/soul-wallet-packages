@@ -13,6 +13,7 @@ export interface IAddressStore {
     selectedAddress: string;
     addressList: IAddressItem[];
     setSelectedAddress: (address: string) => void;
+    setAddressList: (addressList: IAddressItem[]) => void;
     addAddressItem: (addressItem: IAddressItem) => void;
     updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => void;
     deleteAddress: (address: string) => void;
@@ -35,6 +36,11 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
         set({
             selectedAddress: address,
         }),
+    setAddressList: (addressList: IAddressItem[]) => {
+        set((state) => {
+            state.addressList = addressList
+        })
+    },
     addAddressItem: (addressItem: IAddressItem) => {
         set((state) => {
             state.addressList.push(addressItem);

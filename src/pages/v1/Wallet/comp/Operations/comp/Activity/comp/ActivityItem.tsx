@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import config from "@src/config";
 import ListItem from "../../ListItem";
 import useTools from "@src/hooks/useTools";
-import { useChainStore } from "@src/store/chain";
 
 enum ActivityStatusEn {
     Success,
@@ -17,7 +16,7 @@ interface IActivityItem {
     amount?: string;
 }
 
-export default function ActivityItem({ item }: any) {
+export default function ActivityItem({ item, scanUrl }: any) {
     const { decodeCalldata, getIconMapping } = useTools();
     const [detail, setDetail] = useState<IActivityItem>();
 
@@ -49,7 +48,7 @@ export default function ActivityItem({ item }: any) {
     }
 
     return (
-        <a href={`${config.scanUrl}/tx/${detail.txHash}`} target="_blank">
+        <a href={`${scanUrl}/tx/${detail.txHash}`} target="_blank">
             <ListItem
                 idx={item.idx}
                 icon={getIconMapping(detail.functionName)}

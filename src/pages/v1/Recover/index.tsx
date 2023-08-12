@@ -54,7 +54,7 @@ const StepComponent = () => {
       },
       [RecoverStepEn.GuardiansChecking]: {
         title: "Enter Guardian Address",
-        element: <SignatureRequest walletAddress={walletAddress} payToken={payToken} />,
+        element: <SignatureRequest />,
       },
       [RecoverStepEn.SignaturePending]: {
         title: "Enter Guardian Address",

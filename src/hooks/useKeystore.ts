@@ -1,8 +1,10 @@
 import { L1KeyStore } from "@soulwallet/sdk";
 import config from "@src/config";
+import useConfig from "./useConfig";
 
 export default function useKeystore() {
-    const keystore = new L1KeyStore(config.l1Provider, config.contracts.l1Keystore);
+    const { chainConfig } = useConfig();
+    const keystore = new L1KeyStore(chainConfig.l1Provider, chainConfig.contracts.l1Keystore);
 
     /**
      * Calculate guardian hash
@@ -13,14 +15,17 @@ export default function useKeystore() {
         return L1KeyStore.calcGuardianHash(guardians, threshold, salt);
     };
 
-
     /**
      * Get slot info
      *
      */
-    const getSlot = async (initialKey: string, initialGuardianHash: string, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
+    const getSlot = async (
+        initialKey: string,
+        initialGuardianHash: string,
+        initialGuardianSafePeriod: number = L1KeyStore.days * 2,
+    ) => {
         return L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-    }
+    };
 
     return { keystore, calcGuardianHash, getSlot };
 }

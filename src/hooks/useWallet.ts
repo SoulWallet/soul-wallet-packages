@@ -6,24 +6,23 @@ import { useAddressStore } from "@src/store/address";
 import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { ABI_SoulWallet } from "@soulwallet/abi";
-import { useSettingStore } from "@src/store/settingStore";
 import { useGuardianStore } from "@src/store/guardian";
 import { addPaymasterAndData } from "@src/lib/tools";
-import config from "@src/config";
 import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
+import useConfig from "./useConfig";
 
 export default function useWallet() {
     const { account } = useWalletContext();
-    const { selectedAddress } = useAddressStore();
     const { updateAddressItem } = useAddressStore();
     const { calcGuardianHash } = useKeystore();
-    const { bundlerUrl } = useSettingStore();
     const { getGasPrice, getFeeCost } = useQuery();
+    const { chainConfig } = useConfig();
     const { guardians, threshold } = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
+
 
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
@@ -39,9 +38,9 @@ export default function useWallet() {
         if (payToken !== ethers.ZeroAddress) {
             const soulAbi = new ethers.Interface(ABI_SoulWallet);
             const erc20Abi = new ethers.Interface(Erc20ABI);
-            const to = config.paymasterTokens;
+            const to = chainConfig.paymasterTokens;
             const approveCalldata = erc20Abi.encodeFunctionData("approve", [
-                config.contracts.paymaster,
+                chainConfig.contracts.paymaster,
                 ethers.parseEther("1000"),
             ]);
 
@@ -96,7 +95,7 @@ export default function useWallet() {
 
         // checkpaymaster
         if(payToken && payToken !== ethers.ZeroAddress){
-            const paymasterAndData = addPaymasterAndData(payToken, config.contracts.paymaster);
+            const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
             userOp.paymasterAndData = paymasterAndData;
         }
 
@@ -144,7 +143,7 @@ export default function useWallet() {
 
         await Runtime.send("execute", {
             userOp: UserOpUtils.userOperationToJSON(userOp),
-            bundlerUrl,
+            chainName: chainConfig.fileName,
         });
     };
 

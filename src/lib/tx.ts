@@ -1,26 +1,24 @@
-import { ethers } from "ethers";
 import { SoulWallet, Bundler } from "@soulwallet/sdk";
 import browser from "webextension-polyfill";
-import config from "@src/config";
-import BN from "bignumber.js";
-
-// TODO, move to store
-const soulWallet = new SoulWallet(
-    config.provider,
-    config.defaultBundlerUrl,
-    config.contracts.soulWalletFactory,
-    config.contracts.defaultCallbackHandler,
-    config.contracts.keyStoreModuleProxy,
-    config.contracts.securityControlModule,
-);
-
 import { notify } from "@src/lib/tools";
-
-
 
 // const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
-export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: any) => {
+export const executeTransaction = async (userOp: any, tabId: any, chainName: any) => {
+    const chainConfig = require(`../config/chains/${chainName}`).default;
+
+    // TODO, move to store
+    const soulWallet = new SoulWallet(
+        chainConfig.provider,
+        chainConfig.bndlerUrl,
+        chainConfig.contracts.soulWalletFactory,
+        chainConfig.contracts.defaultCallbackHandler,
+        chainConfig.contracts.keyStoreModuleProxy,
+        chainConfig.contracts.securityControlModule,
+    );
+
+    const bundler = new Bundler(chainConfig.bundlerUrl);
+
     // printUserOp(userOp);
     return new Promise(async (resolve, reject) => {
         const ret = await soulWallet.sendUserOperation(userOp);
@@ -32,8 +30,6 @@ export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: an
             reject(errMsg);
             return;
         }
-
-        const bundler = new Bundler(bundlerUrl);
 
         const userOpHashRet = await soulWallet.userOpHash(userOp);
 
@@ -81,9 +77,4 @@ export const executeTransaction = async (userOp: any, tabId: any, bundlerUrl: an
             }
         }
     });
-    //         bundlerEvent.on("receipt", async (receipt: IUserOpReceipt) => {
-    //             console.log("receipt: ", receipt);
-    //             const txHash: string = receipt.receipt.transactionHash;
-
-    //
 };

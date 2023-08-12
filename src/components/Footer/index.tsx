@@ -5,9 +5,6 @@ import { shallow } from "zustand/shallow";
 import browser from "webextension-polyfill";
 import IconConnected from "@src/assets/icons/connected.svg";
 import { getLocalStorage } from "@src/lib/tools";
-import { useSettingStore } from "@src/store/settingStore";
-import config from "@src/config";
-import InfoTip from "../InfoTip";
 
 export default function Footer() {
     const [shouldInject, setShouldInject] = useState(false);

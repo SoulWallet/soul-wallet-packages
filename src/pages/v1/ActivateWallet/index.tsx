@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import CostItem from "@src/components/CostItem";
 import BN from 'bignumber.js'
-import config from "@src/config";
+import {ethers} from 'ethers'
 import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
@@ -22,10 +21,9 @@ export default function ActivateWallet() {
     const { account } = useWalletContext();
     const { selectedAddress, addressList } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
-    const [payToken, setPayToken] = useState(config.zeroAddress);
+    const [payToken, setPayToken] = useState(ethers.ZeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
-    const { getBalances } = useQuery();
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
     const { navigate } = useBrowser();
@@ -70,10 +68,6 @@ export default function ActivateWallet() {
         setMaxCost(requiredAmount || '0');
     };
 
-    const checkBalance = async () => {
-        getBalances();
-    };
-
     useEffect(() => {
         if (!account || !payToken || !selectedAddress) {
             return;
@@ -81,17 +75,17 @@ export default function ActivateWallet() {
         onPayTokenChange();
     }, [payToken, account, selectedAddress]);
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            checkBalance();
-        }, 3000);
+    // useEffect(() => {
+    //     const intervalId = setInterval(() => {
+    //         checkBalance();
+    //     }, 3000);
 
-        return () => clearInterval(intervalId);
-    }, []);
+    //     return () => clearInterval(intervalId);
+    // }, []);
 
     useEffect(() => {
         if (!paymasterApproved) {
-            setPayToken(config.zeroAddress);
+            setPayToken(ethers.ZeroAddress);
         }
     }, [paymasterApproved]);
 
@@ -110,7 +104,7 @@ export default function ActivateWallet() {
                 USDC, DAI, USDT.
             </Text>
             <Box bg="#fff" rounded="20px" p="3">
-                <ReceiveCode walletAddress={selectedAddress} />
+                <ReceiveCode address={selectedAddress} />
                 <Divider h="1px" bg="#d7d7d7" my="2" />
                 <InfoWrap gap="3">
                     <InfoItem>

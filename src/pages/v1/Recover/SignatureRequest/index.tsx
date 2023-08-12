@@ -22,11 +22,6 @@ import { copyText } from "@src/lib/tools";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
 
-interface IGuardianChecking {
-  walletAddress: string;
-  payToken: string;
-}
-
 const toShortAddress = (address: string) => {
   if (address.length > 10) {
     return `${address.slice(0, 5)}...${address.slice(-5)}`
@@ -35,7 +30,7 @@ const toShortAddress = (address: string) => {
   return address
 }
 
-const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
+const GuardiansChecking = () => {
   const [loading, setLoading] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>("");
   const { generateQrCode } = useTools();
@@ -110,7 +105,6 @@ const GuardiansChecking = ({ walletAddress, payToken }: IGuardianChecking) => {
     try {
       setLoading(true)
       const guardians = (await formRef.current?.submit()) as GuardianItem[];
-      // await initRecoverWallet(walletAddress, guardians, payToken);
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.SignaturePending,

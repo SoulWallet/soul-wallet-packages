@@ -4,7 +4,7 @@ import { useBalanceStore } from "@src/store/balanceStore";
 import { Grid, GridItem, Image } from "@chakra-ui/react";
 import { INftBalanceItem } from "@src/store/balanceStore";
 import { useAddressStore } from "@src/store/address";
-import { useChainStore } from "@src/store/chain";
+import { useChainStore } from "@src/store/chainStore";
 
 // used only for testing nft balance
 const testWalletAddress = "0x120b4Ba4df837507B91dbd0A250eac28bE063b39";
@@ -20,7 +20,7 @@ export default function Nfts() {
             return;
         }
         fetchNftBalance(testWalletAddress, testChainId);
-    }, [selectedAddress]);
+    }, [selectedAddress, selectedChainId]);
 
     return (
         <>

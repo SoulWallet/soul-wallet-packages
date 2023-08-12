@@ -27,6 +27,7 @@ import { useGuardianStore } from "@src/store/guardian";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import config from "@src/config";
+import useConfig from "@src/hooks/useConfig";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -99,6 +100,7 @@ const EnterGuardiansAddress = () => {
   const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
   const toast = useToast()
+  const {chainConfig} = useConfig();
 
   const stepDispatch = useStepDispatchContext();
 
@@ -138,7 +140,7 @@ const EnterGuardiansAddress = () => {
   const handleNext = async () => {
     try {
       setLoading(true)
-      const keystore = config.contracts.l1Keystore
+      const keystore = chainConfig.contracts.l1Keystore
       const newKey = ethers.zeroPadValue(account, 32)
 
       const params = {

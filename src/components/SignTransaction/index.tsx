@@ -2,9 +2,10 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
 import useTools from "@src/hooks/useTools";
-import { useChainStore } from "@src/store/chain";
+import { useChainStore } from "@src/store/chainStore";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
+import {ethers} from 'ethers'
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
 import Button from "../Button";
@@ -13,6 +14,7 @@ import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../SendAssets/comp/GasSelect";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useSdk from "@src/hooks/useSdk";
+import useConfig from "@src/hooks/useConfig";
 
 enum SignTypeEn {
     Transaction,
@@ -66,7 +68,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});
     const [signing, setSigning] = useState<boolean>(false);
-    const [payToken, setPayToken] = useState(config.zeroAddress);
+    const [payToken, setPayToken] = useState(ethers.ZeroAddress);
     const [feeCost, setFeeCost] = useState("");
     const [activeOperation, setActiveOperation] = useState<UserOperation>();
     const [signType, setSignType] = useState<SignTypeEn>();
@@ -74,6 +76,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
+    const { chainConfig} = useConfig();
     const { soulWallet } = useSdk();
 
     const formatUserOp: any = async (txns: any) => {
@@ -133,7 +136,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
             if (txns) {
                 const userOp = await formatUserOp(txns);
                 setActiveOperation(userOp);
-                const callDataDecodes = await decodeCalldata(selectedChainId, config.contracts.entryPoint, userOp);
+                const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
                 setDecodedData(callDataDecodes);
                 checkSponser(userOp);
             }
@@ -163,7 +166,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const onConfirm = async () => {
         setSigning(true);
 
-        if (config.zeroAddress === payToken) {
+        if (payToken === ethers.ZeroAddress) {
             promiseInfo.resolve({ userOp: activeOperation, payToken });
         } else {
             promiseInfo.resolve({ userOp: activeOperation, payToken });
@@ -182,7 +185,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const checkSponser = async (userOp: UserOperation) => {
         const res = await api.sponsor.check(
             `0x${selectedChainId.toString(16)}`,
-            config.contracts.entryPoint,
+            chainConfig.contracts.entryPoint,
             UserOpUtils.userOperationFromJSON(UserOpUtils.userOperationToJSON(userOp)),
         );
         console.log("sponsor res", res);
@@ -193,10 +196,10 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
         setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requiredAmount } = await getFeeCost(activeOperation, payToken === config.zeroAddress ? "" : payToken);
+        const { requiredAmount } = await getFeeCost(activeOperation, payToken === ethers.ZeroAddress ? "" : payToken);
 
-        if (config.zeroAddress === payToken) {
-            setFeeCost(`${requiredAmount} ${config.chainToken}`);
+        if (ethers.ZeroAddress === payToken) {
+            setFeeCost(`${requiredAmount} ${chainConfig.chainToken}`);
         } else {
             setFeeCost(`${requiredAmount} USDC`);
         }

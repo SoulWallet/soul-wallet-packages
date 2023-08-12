@@ -25,6 +25,8 @@ import { useAddressStore } from "@src/store/address";
 import IconPlus from "@src/assets/icons/plus.svg";
 import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
+import { clearScreenDown } from "readline";
+import useSdk from "@src/hooks/useSdk";
 
 const AccountItem = ({ item, selected, onClick }: any) => {
     const toast = useToast();
@@ -121,7 +123,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
     );
 };
 
-const AccountsNavbar = () => {
+const AccountsNavbar = ({ onAdd }: any) => {
     const { navigate } = useBrowser();
 
     return (
@@ -133,7 +135,7 @@ const AccountsNavbar = () => {
                 </Text>
             </Flex>
             <Tooltip label="Add account">
-                <Box _hover={{ bg: "#d9d9d9" }} cursor={"pointer"} rounded={"full"}>
+                <Box _hover={{ bg: "#d9d9d9" }} cursor={"pointer"} rounded={"full"} onClick={onAdd}>
                     <Image src={IconPlus} />
                 </Box>
             </Tooltip>
@@ -142,12 +144,19 @@ const AccountsNavbar = () => {
 };
 
 export default function Accounts() {
-    const { addressList, selectedAddress, setSelectedAddress } = useAddressStore();
+    const { calcWalletAddress } = useSdk();
+    const { addressList, selectedAddress, addAddressItem, setSelectedAddress } = useAddressStore();
+
+    const onAdd = async () => {
+        const newIndex = addressList.length - 1;
+        const newAddress = await calcWalletAddress(newIndex);
+        addAddressItem({ title: `Account ${newIndex + 1}`, address: newAddress, activated: false, allowedOrigins: [] });
+    };
 
     return (
         <Box p="5">
             <Navbar />
-            <AccountsNavbar />
+            <AccountsNavbar onAdd={onAdd} />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
                 {addressList.map((item: any, index: number) => {
                     return (

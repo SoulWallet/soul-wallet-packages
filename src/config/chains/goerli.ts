@@ -2,50 +2,29 @@
  * Goerli
  */
 
-import IconETH from "@src/assets/tokens/eth.svg";
-import IconUSDC from "@src/assets/tokens/usdc.svg";
-
-export const usdcAddress = "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35";
-
-export const assetsList = [
-    {
-        icon: IconETH,
-        symbol: "ETH",
-        address: "0x0000000000000000000000000000000000000000",
-        decimals: 18,
-        payable: true,
-    },
-    {
-        icon: IconUSDC,
-        symbol: "USDC",
-        address: usdcAddress,
-        decimals: 6,
-        payable: true,
-    },
-];
+import IconEth from "@src/assets/chains/eth.svg";
 
 export default {
-    assetsList,
+    icon: IconEth,
     recoverUrl: "http://soulwallet.io/recover",
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
+    l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://goerli.etherscan.io",
-    // should it override state when we set new?
-    defaultBundlerUrl: "https://api-dev.soulwallet.io/bundler/goerli/rpc",
+    bundlerUrl: "https://api-dev.soulwallet.io/bundler/goerli/rpc",
     maxCostMultiplier: 110,
-    upgradeDelay: 10,
-    guardianDelay: 10,
-    guardianSalt: "",
     chainId: 5,
     chainIdHex: (5).toString(16),
+    defaultMaxFee: "1700000000",
+    defaultMaxPriorityFee: "1500000000",
     chainName: "Goerli",
     chainToken: "ETH",
     addressPrefix: "gor:",
-    defaultMaxFee: "1700000000",
-    defaultMaxPriorityFee: "1500000000",
+    fileName: 'goerli',
     support1559: true,
-    tokens: {
-        usdc: usdcAddress,
-    },
+    paymasterTokens: [
+        // test u
+        "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35",
+    ],
     contracts: {
         l1Keystore: "0x76a43ef7cc3b49736951759494d2aee8cae1cdec",
         keyStoreModuleProxy: "0x59b84bfaaa906a84152ded63d964cff913308921",

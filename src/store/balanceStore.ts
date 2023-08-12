@@ -40,9 +40,9 @@ export interface IBalanceStore {
     tokenBalance: ITokenBalanceItem[];
     nftBalance: INftBalanceItem[];
     getTokenBalance: (tokenAddress: string) => any;
-    fetchTokenBalance: (walletAddress: string, chainId: number) => void;
+    fetchTokenBalance: (address: string, chainId: number) => void;
     getNftBalance: (tokenAddress: string) => any;
-    fetchNftBalance: (walletAddress: string, chainId: number) => void;
+    fetchNftBalance: (address: string, chainId: number) => void;
 }
 
 const formatTokenBalance = (item: ITokenBalanceItem) => {
@@ -81,9 +81,9 @@ export const useBalanceStore = create<IBalanceStore>()(
             getTokenBalance: (tokenAddress: string) => {
                 return get().tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === tokenAddress)[0];
             },
-            fetchTokenBalance: async (walletAddress: string, chainId: number) => {
+            fetchTokenBalance: async (address: string, chainId: number) => {
                 const res = await api.balance.token({
-                    walletAddress,
+                    walletAddress: address,
                     chainId,
                 });
 
@@ -95,15 +95,13 @@ export const useBalanceStore = create<IBalanceStore>()(
             getNftBalance: (tokenAddress: string) => {
                 return get().nftBalance.filter((item: INftBalanceItem) => item.address === tokenAddress)[0];
             },
-            fetchNftBalance: async (walletAddress: string, chainId: number) => {
+            fetchNftBalance: async (address: string, chainId: number) => {
                 const res = await api.balance.nft({
-                    walletAddress: walletAddress,
+                    walletAddress: address,
                     chainId: chainId,
                 });
 
                 const nftList = res.data.ownedNfts.map((item: any) => formatNftBalance(item));
-
-                console.log("aaaa", nftList);
 
                 set({ nftBalance: nftList });
             },

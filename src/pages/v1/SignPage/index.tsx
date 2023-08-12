@@ -11,14 +11,16 @@ import useSdk from "@src/hooks/useSdk";
 import SignTransaction from "@src/components/SignTransaction";
 import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
-import { useSettingStore } from "@src/store/settingStore";
 import { useAddressStore } from "@src/store/address";
 import { UserOpUtils } from "@soulwallet/sdk";
+import { useChainStore } from "@src/store/chainStore";
 
 export default function SignPage() {
+    const { getSelectedChainItem } = useChainStore();
+    const {bundlerUrl} = getSelectedChainItem();
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
-    const { selectedAddress,toggleAllowedOrigin } = useAddressStore();
+    const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
     // const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
@@ -53,7 +55,6 @@ export default function SignPage() {
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
-
                 await currentSignModal.show("", actionType, origin, true);
                 toggleAllowedOrigin(selectedAddress, origin, true);
                 await browser.runtime.sendMessage({
@@ -68,7 +69,7 @@ export default function SignPage() {
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
 
-                const {userOp, payToken} = await currentSignModal.show(txns, actionType, origin, true);
+                const { userOp, payToken } = await currentSignModal.show(txns, actionType, origin, true);
 
                 await directSignAndSend(userOp, payToken);
 
@@ -82,7 +83,7 @@ export default function SignPage() {
                         data: {
                             operation: UserOpUtils.userOperationToJSON(userOp),
                             tabId,
-                            bundlerUrl: config.defaultBundlerUrl,
+                            bundlerUrl: bundlerUrl,
                         },
                     });
                     window.close();
