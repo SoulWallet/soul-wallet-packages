@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
 import CostItem from "@src/components/CostItem";
+import BN from 'bignumber.js'
 import config from "@src/config";
 import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
@@ -13,13 +14,13 @@ import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
-import { useAddressStore } from "@src/store/address";
+import { useAddressStore, getIndexByAddress } from "@src/store/address";
 // import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
     const toast = useToast();
     const { account } = useWalletContext();
-    const { selectedAddress } = useAddressStore();
+    const { selectedAddress, addressList } = useAddressStore();
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(config.zeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
@@ -28,17 +29,23 @@ export default function ActivateWallet() {
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
     const { navigate } = useBrowser();
-    const { tokenBalance, fetchTokenBalance, getTokenBalance } = useBalanceStore();
+    const { getTokenBalance } = useBalanceStore();
 
     const doActivate = async () => {
         // TODO，add back
-        // if (new BN(userBalance).isLessThan(maxCost)) {
-        //     toast.error("Balance not enough");
-        //     return;
-        // }
+        const userBalance = getTokenBalance(payToken).tokenBalanceFormatted;
+        if (new BN(userBalance).isLessThan(maxCost)) {
+            toast({
+                title: "Balance not enough",
+                status: "error",
+            })
+            return;
+        }
         setLoading(true);
         try {
-            await activateWallet(payToken, false);
+            const activateIndex = getIndexByAddress(addressList, selectedAddress);
+            console.log('activateIndex', activateIndex);
+            await activateWallet(activateIndex, payToken, false);
             navigate("wallet");
             toast({
                 title: "Wallet activated",
@@ -59,7 +66,7 @@ export default function ActivateWallet() {
         setMaxCost("");
         const token = getTokenBalance(payToken);
         setPayTokenSymbol(token.symbol);
-        const requiredAmount = await activateWallet(payToken, true);
+        const requiredAmount = await activateWallet(0, payToken, true);
         setMaxCost(requiredAmount || '0');
     };
 

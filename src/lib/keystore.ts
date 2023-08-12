@@ -120,7 +120,7 @@ export default class KeyStore {
     public async changePassword(originalPassword: string, newPassword: string): Promise<void> {
         const val = await getLocalStorage(this.keyStoreKey);
         if (val && val.address && val.crypto) {
-            const account = await web3.eth.accounts.decrypt(val, originalPassword);
+            const account = web3.eth.accounts.decrypt(val, originalPassword);
 
             const KeystoreV3 = account.encrypt(newPassword);
 
@@ -131,7 +131,6 @@ export default class KeyStore {
                 type: 'set/password',
                 data: newPassword,
             });
-            // await setSessionStorage("pw", newPassword);
         }
     }
 

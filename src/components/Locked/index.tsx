@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef, useRef } from "react";
-import { Image, Flex, Box, Text } from "@chakra-ui/react";
+import { Image, Flex, Box, Text, useToast } from "@chakra-ui/react";
 import FormInput from "../FormInput";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLogoText from "@src/assets/logo-text.svg";
@@ -10,6 +10,7 @@ const keyStore = KeyStore.getInstance();
 
 export default forwardRef<any>((props, ref) => {
     const { goWebsite } = useBrowser();
+    const toast = useToast();
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [password, setPassword] = useState<string>("");
     const [visible, setVisible] = useState(false);
@@ -39,7 +40,11 @@ export default forwardRef<any>((props, ref) => {
             setVisible(false);
             setPassword("");
         } catch (err) {
-            setPasswordError("Wrong password. Try again.");
+            // setPasswordError("Wrong password. Try again.");
+            toast({
+                title: "Wrong password",
+                status: "error",
+            })
         } finally {
             setUnlocking(false);
         }

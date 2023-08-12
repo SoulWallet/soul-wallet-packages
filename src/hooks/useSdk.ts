@@ -17,14 +17,14 @@ export default function useSdk() {
     /**
      * Calculate wallet address
      * @param index, index of wallet address to calculate
-     * @param initialKey, signer key address
-     * @param guardians, guardian address list
-     * @param threshold, guardian threshold
+     * @param initialKey, initial signer key address
+     * @param initialGuardians, initial guardian address list
+     * @param threshold, initial guardian threshold
      * @returns
      */
-    const calcWalletAddress = async (index: number, initialKey: string, guardians: string[], threshold: number, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
-        const guardianHash = calcGuardianHash(guardians, threshold);
-        return await soulWallet.calcWalletAddress(index, initialKey,  guardianHash, initialGuardianSafePeriod);
+    const calcWalletAddress = async (index: number, initialKey: string, initialGuardians: string[], threshold: number, initialGuardianSafePeriod: number = L1KeyStore.days * 2 ) => {
+        const initialGuardianHash = calcGuardianHash(initialGuardians, threshold);
+        return await soulWallet.calcWalletAddress(index, initialKey,  initialGuardianHash, initialGuardianSafePeriod);
     };
 
     return { soulWallet, calcWalletAddress };

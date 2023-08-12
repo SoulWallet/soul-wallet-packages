@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input, Button } from "@chakra-ui/react";
+import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input } from "@chakra-ui/react";
 import TokenLine from "./TokenLine";
+import Button from "@src/components/Button";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
 
@@ -64,7 +65,6 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                         {/* <Image src={IconSwap} /> */}
                     </Flex>
                     <Button
-                        bg="brand.red"
                         color="#fff"
                         py="1"
                         fontWeight={"800"}
@@ -72,6 +72,9 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                         fontSize={"14px"}
                         height={"unset"}
                         rounded={"full"}
+                        onClick={() => {
+                            onChange(selectedToken.tokenBalanceFormatted);
+                        }}
                     >
                         MAX
                     </Button>

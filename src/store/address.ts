@@ -20,7 +20,7 @@ export interface IAddressStore {
     getSelectedAddressItem: () => IAddressItem;
 }
 
-const getIndexByAddress = (addressList: IAddressItem[], address: string) => {
+export const getIndexByAddress = (addressList: IAddressItem[], address: string) => {
     return addressList.findIndex((item: IAddressItem) => item.address === address);
 };
 

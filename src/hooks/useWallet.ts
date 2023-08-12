@@ -25,10 +25,10 @@ export default function useWallet() {
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
-    const activateWallet = async (payToken: string, estimateCost: boolean = false) => {
+    const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
 
-        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(0, account, guardianHash);
+        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(index, account, guardianHash);
 
         if (userOpRet.isErr()) {
             throw new Error(userOpRet.ERR.message);
