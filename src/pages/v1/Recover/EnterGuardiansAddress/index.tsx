@@ -96,7 +96,7 @@ const EnterGuardiansAddress = () => {
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
   const { account } = useWalletContext();
-  const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId } = useGuardianStore();
+  const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId, newKey, resetGuardians } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
   const toast = useToast()
 
@@ -139,7 +139,7 @@ const EnterGuardiansAddress = () => {
     try {
       setLoading(true)
       const keystore = config.contracts.l1Keystore
-      const newKey = ethers.zeroPadValue(account, 32)
+      // const newKey = ethers.zeroPadValue(account, 32)
 
       const params = {
         guardianDetails,
@@ -186,7 +186,7 @@ const EnterGuardiansAddress = () => {
       const threshold = guardianDetails.threshold
       const slot = data.slot
       const slotInitInfo = data.slotInitInfo
-      const newKey = ethers.zeroPadValue(account, 32)
+      // const newKey = ethers.zeroPadValue(account, 32)
 
       const params = {
         guardianDetails,

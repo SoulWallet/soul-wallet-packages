@@ -12,6 +12,8 @@ import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
 import useWalletContext from "@src/context/hooks/useWalletContext";
+import { useGuardianStore } from "@src/store/guardian";
+import { ethers } from "ethers";
 
 interface PasswordFormField {
   password?: string;
@@ -35,6 +37,7 @@ export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { getAccount } = useWalletContext()
+  const { setNewKey, setRecoverRecordId } = useGuardianStore();
   const toast = useToast()
 
   const {
@@ -59,8 +62,11 @@ export default function SetPassword() {
       if (password) {
         setLoaing(true)
         console.log('loading s', password)
-        await keystore.createNewAddress(password, false);
-        getAccount();
+        const newKey = await keystore.createNewAddress(password, false);
+        console.log('newKey', newKey, ethers.zeroPadValue(newKey, 32))
+        setNewKey(ethers.zeroPadValue(newKey, 32))
+        setRecoverRecordId(null)
+        // getAccount();
         console.log('loading e', password)
         setLoaing(false)
 

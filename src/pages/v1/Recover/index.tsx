@@ -29,7 +29,7 @@ const StepComponent = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [payToken, setPayToken] = useState("");
   const [recoverStatus, setRecoverStatus] = useState("n/m");
-  const { recoverRecordId } = useGuardianStore();
+  const { recoverRecordId, newKey } = useGuardianStore();
 
   const onRecoverSubmit = async (wAddress: string, pToken: string) => {
     setWalletAddress(wAddress);
@@ -63,7 +63,7 @@ const StepComponent = () => {
   } = useStepContext();
 
   useEffect(() => {
-    if (recoverRecordId) {
+    if (recoverRecordId && newKey) {
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.GuardiansChecking,

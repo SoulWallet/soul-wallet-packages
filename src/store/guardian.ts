@@ -14,6 +14,7 @@ export const MAX_GUARDIAN_NUMBER = 15; // 最大guardian数
 export const MIN_GUARDIAN_NUMBER = 1; // 最大guardian数
 
 export interface GuardianStore {
+    newKey: string | null;
     guardians: string[];
     guardianDetails: any;
     guardianNames: any;
@@ -22,6 +23,7 @@ export interface GuardianStore {
     slotInitInfo: any;
     recoverRecordId: any;
     guardianSignatures: any;
+    setNewKey: (newKey: string) => void;
     setGuardians: (guardian: string[]) => void;
     setGuardianDetails: (guardianDetails: any) => void;
     setGuardianNames: (guardianNames: string[]) => void;
@@ -35,6 +37,7 @@ export interface GuardianStore {
 
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
 const createGuardianSlice = immer<GuardianStore>((set) => ({
+    newKey: null,
     guardians: [],
     guardianDetails: null,
     guardianNames: null,
@@ -43,6 +46,7 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     slotInitInfo: null,
     recoverRecordId: null,
     guardianSignatures: null,
+    setNewKey: (newKey: string) => set({ newKey }),
     setGuardians: (guardians: string[]) => set({ guardians }),
     setGuardianDetails: (guardianDetails: any) => set({ guardianDetails }),
     setGuardianNames: (guardianNames: string[]) => set({ guardianNames }),
