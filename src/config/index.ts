@@ -44,7 +44,20 @@ export default {
     backendURL: "https://api-dev.soulwallet.io/appapi",
     soulScanURL: "https://api-dev.soulwallet.io/opapi",
     zeroAddress: "0x0000000000000000000000000000000000000000",
+    pluginWebUrl: "",
+    officialWebUrl: "http://localhost:8100/",
     ...require(`./${process.env.CHAIN}`).default,
+};
+
+export const chainIdMapping = {
+  1: "ETH Mainnet",
+  5: "Goerli",
+  42: "KOVAN",
+  56: "BSC Mainnet",
+  128: "HECO Mainnet",
+  97: "BSC Testnet",
+  420: "Optimism Goerli Testnet",
+  421613: "Arbitrum Goerli"
 };
 
 // Arbitrum: https://bundler-arb-main.soulwallets.me/rpc

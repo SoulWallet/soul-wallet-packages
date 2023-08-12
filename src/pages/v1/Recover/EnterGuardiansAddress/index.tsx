@@ -113,7 +113,7 @@ const EnterGuardiansAddress = () => {
     validate: amountValidate,
     restProps: amountData,
     initialValues: {
-      amount: 1
+      amount: threshold
     }
   })
 
