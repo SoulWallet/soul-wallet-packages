@@ -86,7 +86,6 @@ export default class KeyStore {
             type: 'set/password',
             data: stagingPw,
         });
-        // await setSessionStorage("pw", stagingPw);
     }
 
     public async unlock(password: string): Promise<string | null> {

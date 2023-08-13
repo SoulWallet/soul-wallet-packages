@@ -1,6 +1,7 @@
 import { SoulWallet, Bundler } from "@soulwallet/sdk";
 import browser from "webextension-polyfill";
 import { notify } from "@src/lib/tools";
+import { printUserOp } from "@src/lib/tools";
 
 // const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
@@ -22,7 +23,7 @@ export const executeTransaction = async (userOp: any, tabId: any, chainName: any
 
     const bundler = new Bundler(chainConfig.bundlerUrl);
 
-    // printUserOp(userOp);
+    printUserOp(userOp);
     return new Promise(async (resolve, reject) => {
         const ret = await soulWallet.sendUserOperation(userOp);
 
