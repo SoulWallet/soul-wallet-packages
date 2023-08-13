@@ -12,11 +12,13 @@ import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useConfig from "./useConfig";
+import { useChainStore } from "@src/store/chainStore";
 
 export default function useWallet() {
     const { account } = useWalletContext();
-    const { updateAddressItem } = useAddressStore();
+    const { toggleActivatedChain } = useAddressStore();
     const { calcGuardianHash } = useKeystore();
+    const {selectedChainId} = useChainStore();
     const { getGasPrice, getFeeCost } = useQuery();
     const { chainConfig } = useConfig();
     const { guardians, threshold } = useGuardianStore();
@@ -59,7 +61,8 @@ export default function useWallet() {
             return requiredAmount
         } else {
             await directSignAndSend(userOp, payToken);
-            updateAddressItem(userOp.sender, { activated: true });
+            // IMPORTANT TODO, what if user don't wait?
+            toggleActivatedChain(userOp.sender, selectedChainId)
         }
     };
  

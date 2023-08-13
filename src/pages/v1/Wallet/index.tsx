@@ -7,17 +7,20 @@ import Operations from "./comp/Operations";
 import ActivateHint from "./comp/ActivateHint";
 import Footer from "@src/components/Footer";
 import Actions from "./comp/Actions";
-import useConfig from "@src/hooks/useConfig";
+import { useAddressStore } from "@src/store/address";
+import { useChainStore } from "@src/store/chainStore";
 
 export function Wallet() {
-    const { selectedAddressItem } = useConfig();
-  
+    const { selectedAddress, getIsActivated } = useAddressStore();
+    const { selectedChainId } = useChainStore();
+    const isActivated = getIsActivated(selectedAddress, selectedChainId);
+
     return (
         <>
             <Box p="5">
                 <Navbar />
                 <AccountCard />
-                {!selectedAddressItem.activated ? <ActivateHint /> : <Actions />}
+                {!isActivated ? <ActivateHint /> : <Actions />}
                 <Operations />
             </Box>
             <Footer />

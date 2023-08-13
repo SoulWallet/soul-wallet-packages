@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 export interface IAddressItem {
     title: string;
     address: string;
-    activated: boolean;
+    activatedChains: number[];
     allowedOrigins: string[];
 }
 
@@ -17,7 +17,9 @@ export interface IAddressStore {
     addAddressItem: (addressItem: IAddressItem) => void;
     updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => void;
     deleteAddress: (address: string) => void;
-    toggleAllowedOrigin: (address: string, origin: string, isAdd: boolean) => void;
+    toggleAllowedOrigin: (address: string, origin: string, isAdd?: boolean) => void;
+    toggleActivatedChain: (address: string, chainId: number, isAdd?: boolean) => void;
+    getIsActivated: (address:string, chainId: number) => boolean;
     getSelectedAddressItem: () => IAddressItem;
 }
 
@@ -55,12 +57,11 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
                 ...addressItem,
             };
             state.addressList[index] = itemToSet;
-            // TODO: check if getSelectedAddressItem is also triggered
-            // if it's also selectedItem, update as well
-            // if (state.selectedAddress === address) {
-            //     state.selectedAddressItem = itemToSet;
-            // }
         });
+    },
+    getIsActivated: (address, chainId) => {
+        const index = getIndexByAddress(get().addressList, address);
+        return get().addressList[index].activatedChains.includes(chainId);
     },
     deleteAddress: (address: string) => {
         set((state: IAddressStore) => {
@@ -75,6 +76,17 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
                 state.addressList[index].allowedOrigins.push(origin);
             } else {
                 state.addressList[index].allowedOrigins.splice(index, 1);
+            }
+        });
+    },
+    // IMPORTANT TODO, need to do some onchain check as well
+    toggleActivatedChain: (address, chainId, isAdd = true) => {
+        set((state: IAddressStore) => {
+            const index = getIndexByAddress(state.addressList, address);
+            if (isAdd) {
+                state.addressList[index].activatedChains.push(chainId);
+            } else {
+                state.addressList[index].activatedChains.splice(index, 1);
             }
         });
     },

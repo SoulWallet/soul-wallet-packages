@@ -25,11 +25,15 @@ import { useAddressStore } from "@src/store/address";
 import IconPlus from "@src/assets/icons/plus.svg";
 import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
-import { clearScreenDown } from "readline";
 import useSdk from "@src/hooks/useSdk";
+import useConfig from "@src/hooks/useConfig";
+import { useChainStore } from "@src/store/chainStore";
 
 const AccountItem = ({ item, selected, onClick }: any) => {
     const toast = useToast();
+    const { getIsActivated } = useAddressStore();
+    const { selectedChainId } = useChainStore();
+    const isActivated = getIsActivated(item.address, selectedChainId);
 
     const doCopy = () => {
         copyText(item.address);
@@ -54,7 +58,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
 
     return (
         <GridItem
-            color={item.activated ? "#29510a" : "#1e1e1e"}
+            color={sAcctivated ? "#29510a" : "#1e1e1e"}
             p="10px"
             cursor={"pointer"}
             rounded="20px"
@@ -62,7 +66,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
             style={
                 selected
                     ? { border: "2px solid #000000CC" }
-                    : item.activated
+                    : sAcctivated
                     ? {
                           border: "1px solid",
                           borderImageSource:
@@ -78,7 +82,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
             }
             boxShadow={"0px 4px 8px 0px #0000001F"}
             bg={
-                item.activated
+                sAcctivated
                     ? "linear-gradient(0deg, #E2FC89, #E2FC89),linear-gradient(113.16deg, rgba(244, 255, 176, 0.8) 2.41%, rgba(182, 255, 108, 0.8) 76.58%)"
                     : "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(0deg, #D9D9D9, #D9D9D9)"
             }
@@ -89,7 +93,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
                 </Text>
                 <Menu>
                     <MenuButton>
-                        <Image src={item.activated ? IconAccountMoreGreen : IconAccountMore} />
+                        <Image src={sAcctivated ? IconAccountMoreGreen : IconAccountMore} />
                     </MenuButton>
                     <MenuList>
                         {accountMenus.map((item, idx) => (
@@ -112,7 +116,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
             <Text fontFamily={"Martian"} fontSize={"10px"} fontWeight={"600"} mb="18px">
                 {item.address.slice(0, 4)}...{item.address.slice(-4)}
             </Text>
-            {item.activated ? (
+            {isActivated ? (
                 <Text fontWeight={"800"} fontSize={"14px"} lineHeight={"1"}>
                     {item.balance}
                 </Text>
@@ -150,7 +154,7 @@ export default function Accounts() {
     const onAdd = async () => {
         const newIndex = addressList.length - 1;
         const newAddress = await calcWalletAddress(newIndex);
-        addAddressItem({ title: `Account ${newIndex + 1}`, address: newAddress, activated: false, allowedOrigins: [] });
+        addAddressItem({ title: `Account ${newIndex + 1}`, address: newAddress, activatedChains: [], allowedOrigins: [] });
     };
 
     return (
