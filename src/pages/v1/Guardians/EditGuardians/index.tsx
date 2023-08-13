@@ -61,44 +61,6 @@ export default function GuardiansSetting() {
     setShowTips(!showTips)
   }
 
-  /* return (
-   *   <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-   *     <Heading1>
-   *       Discard change
-   *     </Heading1>
-   *     <Box marginBottom="0.75em">
-   *       <TextBody textAlign="center">
-   *         New guardians updating in 12:56:73.<Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
-   *       </TextBody>
-   *     </Box>
-   *     {showTips && (
-   *       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em">
-   *         <Box>
-   *           <TextBody>
-   *             You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.
-   *           </TextBody>
-   *         </Box>
-   *       </Box>
-   *     )}
-   *     <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
-   *       <Button
-   *         disabled={false}
-   *         onClick={handleNext}
-   *         _styles={{ width: '455px' }}
-   *       >
-   *         Discard Change
-   *       </Button>
-   *       <TextButton
-   *         color="rgb(137, 137, 137)"
-   *         onClick={handleSkip}
-   *         _styles={{ width: '455px' }}
-   *       >
-   *         Backup current guardians
-   *       </TextButton>
-   *     </Box>
-   *   </Box>
-   * ) */
-
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
       <Heading1>

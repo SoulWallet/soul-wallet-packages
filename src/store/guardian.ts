@@ -58,12 +58,6 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     resetGuardians: () => {
         set({
             recoverRecordId: null,
-            guardians: [],
-            guardianDetails: null,
-            guardianNames: null,
-            threshold: 0,
-            slot: null,
-            slotInitInfo: null
         })
     }
 }));
