@@ -108,6 +108,11 @@ export default function useQuery() {
     //     return contractCode !== "0x" ? "contract" : "eoa";
     // };
 
+    const refreshActivateStatus = () => {
+        // refresh all activate status on specific chain
+
+    }
+
     return {
         getGasPrice,
         getFeeCost,

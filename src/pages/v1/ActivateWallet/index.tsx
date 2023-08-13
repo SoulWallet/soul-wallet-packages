@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import BN from 'bignumber.js'
-import {ethers} from 'ethers'
+import BN from "bignumber.js";
+import { ethers } from "ethers";
 import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
@@ -14,6 +14,7 @@ import PageTitle from "@src/components/PageTitle";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore, getIndexByAddress } from "@src/store/address";
+import useConfig from "@src/hooks/useConfig";
 // import ApprovePaymaster from "@src/components/ApprovePaymaster";
 
 export default function ActivateWallet() {
@@ -23,6 +24,7 @@ export default function ActivateWallet() {
     const [maxCost, setMaxCost] = useState("");
     const [payToken, setPayToken] = useState(ethers.ZeroAddress);
     const [paymasterApproved, setPaymasterApproved] = useState(true);
+    const { selectedChainItem } = useConfig();
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
@@ -36,24 +38,24 @@ export default function ActivateWallet() {
             toast({
                 title: "Balance not enough",
                 status: "error",
-            })
+            });
             return;
         }
         setLoading(true);
         try {
             const activateIndex = getIndexByAddress(addressList, selectedAddress);
-            console.log('activateIndex', activateIndex);
+            console.log("activateIndex", activateIndex);
             await activateWallet(activateIndex, payToken, false);
             navigate("wallet");
             toast({
                 title: "Wallet activated",
                 status: "success",
-            })
+            });
         } catch (err) {
             toast({
                 title: "Activate wallet failed",
                 status: "error",
-            })
+            });
         } finally {
             setLoading(false);
         }
@@ -65,7 +67,7 @@ export default function ActivateWallet() {
         const token = getTokenBalance(payToken);
         setPayTokenSymbol(token.symbol);
         const requiredAmount = await activateWallet(0, payToken, true);
-        setMaxCost(requiredAmount || '0');
+        setMaxCost(requiredAmount || "0");
     };
 
     useEffect(() => {
@@ -109,7 +111,7 @@ export default function ActivateWallet() {
                 <InfoWrap gap="3">
                     <InfoItem>
                         <Text>Network</Text>
-                        <Text>Ethereum</Text>
+                        <Text>{selectedChainItem.chainName}</Text>
                     </InfoItem>
                     <InfoItem>
                         <Text>Network fee</Text>
