@@ -31,7 +31,7 @@ const ActionItem = ({ icon, title, onClick }: any) => {
 };
 
 export default function Actions() {
-    const { navigate } = useBrowser();
+    const { navigate, goWebsite } = useBrowser();
     return (
         <>
             <Grid templateColumns={"repeat(2, 1fr)"} gap="1" mt="4" mb="6">
@@ -41,7 +41,7 @@ export default function Actions() {
                     icon={IconSend}
                     onClick={() => navigate(`send/${ethers.ZeroAddress}`)}
                 />
-                <ActionItem title="Guardians" icon={IconGuardians} />
+                <ActionItem title="Guardians" icon={IconGuardians} onClick={()=> goWebsite(`edit-guardians`)} />
                 <ActionItem title="Authenticate" icon={Icon2FA} />
             </Grid>
             {/* <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="1" mb="6">
