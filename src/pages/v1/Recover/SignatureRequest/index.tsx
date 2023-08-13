@@ -141,10 +141,10 @@ const GuardiansChecking = () => {
   if (!loaded) {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-        <Box marginTop="2em" marginBottom="2em">
-          <TextBody textAlign="center">
+        <Box marginTop="32" marginBottom="2em">
+          <Text fontSize="xl" textAlign="center" fontWeight={"600"} fontFamily={"Martian"}>
             Loading...
-          </TextBody>
+          </Text>
         </Box>
       </Box>
     )
@@ -183,16 +183,16 @@ const GuardiansChecking = () => {
             </Box>}
           </Box>
         </Box>
-        <Box marginTop="2em" marginBottom="2em">
+        <Box marginTop="2em" marginBottom="1em">
           <TextBody textAlign="center">
-            Estimated time until your Layer2 wallets are recovered: 12:56:73
+            L2 recover status
           </TextBody>
         </Box>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="14px" fontWeight="bold">Your {getNetwork(Number(item.chainId))} wallet(s)</Box>
-              <Box fontSize="14px" fontWeight="bold" color="#848488">{item.expectFinishTime}</Box>
+              <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))}</Box>
+              <Box fontSize="14px" fontWeight="bold" color="#848488">{new Date(item.expectFinishTime).toLocaleString()}</Box>
             </Box>
           )}
         </Box>
