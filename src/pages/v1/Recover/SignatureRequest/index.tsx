@@ -169,6 +169,11 @@ const GuardiansChecking = () => {
             </Box>}
           </Box>
         </Box>
+        <Box marginTop="2em" marginBottom="2em">
+          <TextBody textAlign="center">
+            Estimated time until your Layer2 wallets are recovered: 12:56:73
+          </TextBody>
+        </Box>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
