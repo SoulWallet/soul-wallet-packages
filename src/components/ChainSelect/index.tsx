@@ -1,17 +1,18 @@
 import React from "react";
 import { Flex, Image, Menu, MenuButton, MenuItem, Text, Button, MenuList, MenuDivider } from "@chakra-ui/react";
-import IconEth from "@src/assets/chains/eth.svg";
 import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
 import IconChecked from "@src/assets/icons/checked.svg";
 import { useChainStore } from "@src/store/chainStore";
+import useConfig from "@src/hooks/useConfig";
 
 export default function ChainSelect() {
     const { chainList, setSelectedChainId, selectedChainId } = useChainStore();
+    const { selectedChainItem } = useConfig();
     return (
         <Menu>
             <MenuButton>
                 <Flex p="5px" bg="white" rounded={"full"} cursor={"pointer"}>
-                    <Image src={IconEth} w="22px" h="22px" />
+                    <Image src={selectedChainItem.icon} w="22px" h="22px" />
                     <Image src={IconCheveronDownBlack} w="20px" h="20px" />
                 </Flex>
             </MenuButton>
