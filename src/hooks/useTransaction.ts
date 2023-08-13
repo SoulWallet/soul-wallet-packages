@@ -30,6 +30,7 @@ export default function useTransaction() {
 
         navigateToSign({
             txns: [tx],
+            sendTo: to,
         });
     };
 
@@ -44,6 +45,7 @@ export default function useTransaction() {
 
         navigateToSign({
             txns: [tx],
+            sendTo: to,
         });
     };
 

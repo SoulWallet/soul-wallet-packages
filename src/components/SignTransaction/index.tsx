@@ -76,7 +76,7 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
-    const [sendTo, setSendTo] = useState("");
+    const [sendToAddress, setSendToAddress] = useState("");
     const { chainConfig } = useConfig();
     const { soulWallet } = useSdk();
 
@@ -120,14 +120,15 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
 
     useImperativeHandle(ref, () => ({
         async show(obj: any) {
-            const { txns, actionType, origin, keepVisible, msgToSign, _sendTo } = obj;
+            const { txns, actionType, origin, keepVisible, msgToSign, sendTo } = obj;
             setVisible(true);
             // setActionName(_actionName);
             setOrigin(origin);
 
             setKeepModalVisible(keepVisible || false);
 
-            setSendTo(_sendTo);
+            console.log('send to is', sendTo)
+            setSendToAddress(sendTo);
 
             if (actionType === "getAccounts") {
                 setSignType(SignTypeEn.Account);
@@ -334,8 +335,8 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                         {signType === SignTypeEn.Message && messageToSign}
                                     </Box>
                                     <AddressInput label="From" address={selectedAddress} disabled />
-                                    {sendTo ? (
-                                        <AddressInput label="To" address={sendTo} disabled={true} />
+                                    {sendToAddress ? (
+                                        <AddressInput label="To" address={sendToAddress} disabled={true} />
                                     ) : (
                                         <AddressInput
                                             label="To"
