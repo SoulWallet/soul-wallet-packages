@@ -134,7 +134,7 @@ const GuardiansChecking = () => {
     setReplaced(true)
   }
 
-  console.log('account111', account, recoverStatus)
+  console.log('account111', account, recoverStatus, chainStatusList)
 
   if (recoverStatus === 4) {
     return (
