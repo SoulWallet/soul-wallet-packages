@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
 import { Box, Text, Flex, useToast, Image } from "@chakra-ui/react";
-import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
+import { InfoWrap, InfoItem } from "@src/components/SignModal";
 import IconEth from "@src/assets/chains/eth.svg";
 import { copyText } from "@src/lib/tools";
 import ReceiveCode from "@src/components/ReceiveCode";

@@ -8,7 +8,7 @@ import useKeyring from "@src/hooks/useKeyring";
 import { useToast } from "@chakra-ui/react";
 import { useSearchParams } from "react-router-dom";
 import useSdk from "@src/hooks/useSdk";
-import SignTransaction from "@src/components/SignTransaction";
+import SignModal from "@src/components/SignModal";
 import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
@@ -161,7 +161,7 @@ export default function SignPage() {
     return (
         <div>
             {/* <img src={LogoLoading} /> */}
-            <SignTransaction ref={signModal} />
+            <SignModal ref={signModal} />
         </div>
     );
 }

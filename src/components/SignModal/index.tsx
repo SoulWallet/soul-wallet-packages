@@ -59,7 +59,7 @@ const DappAvatar = ({ avatar }: any) => (
     </Flex>
 );
 
-const SignTransaction = (_: unknown, ref: Ref<any>) => {
+const SignModal = (_: unknown, ref: Ref<any>) => {
     const { selectedAddress } = useAddressStore();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
@@ -405,4 +405,4 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     );
 };
 
-export default forwardRef(SignTransaction);
+export default forwardRef(SignModal);

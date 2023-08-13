@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, createRef, useCallback, useMemo } from "react";
 import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
-import SignTransaction from "@src/components/SignTransaction";
+import SignModal from "@src/components/SignModal";
 import Locked from "@src/components/Locked";
 import useKeyring from "@src/hooks/useKeyring";
 import useConfig from "@src/hooks/useConfig";
@@ -93,7 +93,7 @@ export const WalletContextProvider = ({ children }: any) => {
             }}
         >
             {!!checkingLocked ? "" : children}
-            <SignTransaction ref={signModal} />
+            <SignModal ref={signModal} />
             <Locked ref={lockedModal} />
         </WalletContext.Provider>
     );

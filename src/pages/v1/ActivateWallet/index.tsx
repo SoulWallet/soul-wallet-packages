@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
-import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
+import { InfoWrap, InfoItem } from "@src/components/SignModal";
 import GasSelect from "@src/components/SendAssets/comp/GasSelect";
 import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
