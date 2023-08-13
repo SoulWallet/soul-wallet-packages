@@ -152,7 +152,7 @@ export default function Accounts() {
     const { addressList, selectedAddress, addAddressItem, setSelectedAddress } = useAddressStore();
 
     const onAdd = async () => {
-        const newIndex = addressList.length - 1;
+        const newIndex = addressList.length;
         const newAddress = await calcWalletAddress(newIndex);
         addAddressItem({ title: `Account ${newIndex + 1}`, address: newAddress, activatedChains: [], allowedOrigins: [] });
     };
