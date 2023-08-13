@@ -279,6 +279,7 @@ const EnterGuardiansAddress = () => {
                 <Box position="relative" width="100%" key={id}>
                   <FormInput
                     placeholder="Enter guardian address"
+                    readOnly={true}
                     value={values[`address_${id}`]}
                     onChange={onChange(`address_${id}`)}
                     errorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
@@ -311,7 +312,8 @@ const EnterGuardiansAddress = () => {
               placeholder="Enter amount"
               value={amountForm.values.amount}
               onChange={amountForm.onChange('amount')}
-              RightComponent={<Text fontWeight="bold">/ {guardianIds.length}</Text>}
+              readOnly={true}
+              RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
               _styles={{ width: '180px', marginTop: '0.75em' }}
             />
           </Box>

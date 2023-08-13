@@ -13,6 +13,7 @@ interface IProps {
   onBlur?: any;
   _styles?: any;
   RightComponent?: any;
+  readOnly?: boolean;
 }
 
 export default function FormInput({
@@ -23,7 +24,8 @@ export default function FormInput({
   onChange,
   onBlur,
   _styles,
-  RightComponent
+  RightComponent,
+  readOnly
 }: IProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -44,6 +46,7 @@ export default function FormInput({
             paddingLeft="1.5rem"
             paddingRight="1.5rem"
             height="3em"
+            readOnly={true}
           />
         </Box>
         <Box position="absolute" top="0" right="10px" height="100%" display="flex" alignItems="center" justifyContent="center">

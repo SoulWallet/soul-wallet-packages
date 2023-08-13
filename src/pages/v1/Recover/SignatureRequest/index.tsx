@@ -21,9 +21,11 @@ import { useGuardianStore } from "@src/store/guardian";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import api from "@src/lib/api";
 import config from "@src/config";
+import useBrowser from "@src/hooks/useBrowser";
 import { copyText, toShortAddress, getNetwork, getStatus, getKeystoreStatus } from '@src/lib/tools'
 
 const GuardiansChecking = () => {
+  const [replaced, setReplaced] = useState(false)
   const [recoverStatus, setRecoverStatus] = useState(0)
   const [chainStatusList, setChainStatusList] = useState([])
   const [loading, setLoading] = useState(false);
@@ -35,6 +37,7 @@ const GuardiansChecking = () => {
   const { account, getAccount, replaceAddress } = useWalletContext()
   const formRef = useRef<IGuardianFormHandler>(null);
   const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
+  const { goPlugin } = useBrowser();
 
   const { cachedGuardians } = useRecoveryContext();
   const dispatch = useStepDispatchContext();
@@ -51,7 +54,7 @@ const GuardiansChecking = () => {
   };
 
   const doCopy = () => {
-    copyText(recoverRecordId)
+    copyText(`${config.officialWebUrl}/recover/${recoverRecordId}`)
     toast({
       title: "Copy success!",
       status: "success",
@@ -67,7 +70,7 @@ const GuardiansChecking = () => {
   };
 
   useEffect(() => {
-    generateQR(recoverRecordId)
+    generateQR(`${config.officialWebUrl}/recover/${recoverRecordId}`)
   }, []);
 
   const getRecoverRecord = async () => {
@@ -79,15 +82,7 @@ const GuardiansChecking = () => {
     setRecoverStatus(status)
     const statusList = result.data.statusData.chainRecoveryStatus
     setChainStatusList(statusList)
-
     console.log('recoveryRecordID', result, guardianSignatures)
-
-    /* if (status === 4) {
-     *   dispatch({
-     *     type: StepActionTypeEn.JumpToTargetStep,
-     *     payload: RecoverStepEn.SignaturePending,
-     *   });
-     * } */
   }
 
   useEffect(() => {
@@ -116,17 +111,27 @@ const GuardiansChecking = () => {
   };
 
   const handleNext = async () => {
+    let url
+
     if (recoverStatus === 1) {
-      window.open(`${config.officialWebUrl}/pay-recover/${recoverRecordId}`, '_blank')
+      url = `${config.officialWebUrl}/pay-recover/${recoverRecordId}`
     } else {
-      window.open(`${config.officialWebUrl}/recover/${recoverRecordId}`, '_blank')
+      url = `${config.officialWebUrl}/recover/${recoverRecordId}`
     }
+
+    copyText(url)
+
+    toast({
+      title: "Copy success!",
+      status: "success",
+    });
   }
 
   const replaceWallet = async () => {
-    getAccount()
-    resetGuardians()
     replaceAddress()
+    resetGuardians()
+    goPlugin('wallet')
+    setReplaced(true)
   }
 
   console.log('account111', account, recoverStatus)
@@ -135,13 +140,15 @@ const GuardiansChecking = () => {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
         <Heading1 _styles={{ marginBottom: '20px' }}>Recover wallet success</Heading1>
-        <Button
-          disabled={false}
-          onClick={replaceWallet}
-          _styles={{ width: '100%' }}
-        >
-          Replace Wallet
-        </Button>
+        {!replaced && (
+          <Button
+            disabled={false}
+            onClick={replaceWallet}
+            _styles={{ width: '100%' }}
+          >
+            Replace Wallet
+          </Button>
+        )}
       </Box>
     )
   }
@@ -162,16 +169,11 @@ const GuardiansChecking = () => {
             </Box>}
           </Box>
         </Box>
-        <Box marginTop="2em" marginBottom="2em">
-          <TextBody textAlign="center">
-            Estimated time until your Layer2 wallets are recovered: 12:56:73
-          </TextBody>
-        </Box>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
               <Box fontSize="14px" fontWeight="bold">Your {getNetwork(item.chainId)} wallet(s)</Box>
-              <Box fontSize="14px" fontWeight="bold" color="#848488">{getStatus(item.status)}</Box>
+              <Box fontSize="14px" fontWeight="bold" color="#848488">{item.expectTime}</Box>
             </Box>
           )}
         </Box>
@@ -180,7 +182,7 @@ const GuardiansChecking = () => {
           onClick={handleNext}
           _styles={{ width: '100%' }}
         >
-          Share Pay Link
+          Copy Pay Link
         </Button>
       </Box>
     )
@@ -235,29 +237,6 @@ const GuardiansChecking = () => {
             )}
           </Box>
         )}
-
-        {/* <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-            <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
-            </Box>
-            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-            <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
-            Error
-            <Text marginLeft="4px"><ErrorIcon /></Text>
-            </Box>
-            </Box>
-            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-            <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
-            Signed
-            <Text marginLeft="4px"><CheckedIcon /></Text>
-            </Box>
-            </Box>
-            <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">0xFDF7...7890</Box>
-            <Box fontSize="14px" fontWeight="bold" color="#848488">Waiting</Box>
-            </Box> */}
       </Box>
       <Button
         disabled={false}
