@@ -16,7 +16,6 @@ import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
 import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";
 import EnterGuardiansAddress from "@src/pages/v1/Recover/EnterGuardiansAddress";
 import SignatureRequest from "@src/pages/v1/Recover/SignatureRequest";
-import RecoverWalletSuccess from "@src/pages/v1/Recover/RecoverWalletSuccess";
 import { useGuardianStore } from "@src/store/guardian";
 
 type StepNodeInfo = {
@@ -30,7 +29,7 @@ const StepComponent = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [payToken, setPayToken] = useState("");
   const [recoverStatus, setRecoverStatus] = useState("n/m");
-  const { recoverRecordId } = useGuardianStore();
+  const { recoverRecordId, newKey } = useGuardianStore();
 
   const onRecoverSubmit = async (wAddress: string, pToken: string) => {
     setWalletAddress(wAddress);
@@ -55,11 +54,7 @@ const StepComponent = () => {
       [RecoverStepEn.GuardiansChecking]: {
         title: "Enter Guardian Address",
         element: <SignatureRequest />,
-      },
-      [RecoverStepEn.SignaturePending]: {
-        title: "Enter Guardian Address",
-        element: <RecoverWalletSuccess />,
-      },
+      }
     };
   }, [walletAddress, payToken, recoverStatus]);
 
@@ -68,7 +63,7 @@ const StepComponent = () => {
   } = useStepContext();
 
   useEffect(() => {
-    if (recoverRecordId) {
+    if (recoverRecordId && newKey) {
       dispatch({
         type: StepActionTypeEn.JumpToTargetStep,
         payload: RecoverStepEn.GuardiansChecking,
