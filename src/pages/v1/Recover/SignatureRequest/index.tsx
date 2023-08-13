@@ -177,7 +177,7 @@ const GuardiansChecking = () => {
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="14px" fontWeight="bold">Your {getNetwork(item.chainId)} wallet(s)</Box>
+              <Box fontSize="14px" fontWeight="bold">Your {getNetwork(Number(item.chainId))} wallet(s)</Box>
               <Box fontSize="14px" fontWeight="bold" color="#848488">{item.expectTime}</Box>
             </Box>
           )}
