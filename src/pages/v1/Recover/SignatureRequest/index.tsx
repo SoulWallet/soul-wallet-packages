@@ -25,6 +25,7 @@ import useBrowser from "@src/hooks/useBrowser";
 import { copyText, toShortAddress, getNetwork, getStatus, getKeystoreStatus } from '@src/lib/tools'
 
 const GuardiansChecking = () => {
+  const [loaded, setLoaded] = useState(false)
   const [replaced, setReplaced] = useState(false)
   const [recoverStatus, setRecoverStatus] = useState(0)
   const [chainStatusList, setChainStatusList] = useState([])
@@ -90,6 +91,7 @@ const GuardiansChecking = () => {
 
     setInterval(async () => {
       getRecoverRecord()
+      setLoaded(true)
     }, 5000)
   }, []);
 
@@ -136,6 +138,18 @@ const GuardiansChecking = () => {
 
   console.log('account111', account, recoverStatus, chainStatusList)
 
+  if (!loaded) {
+    return (
+      <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Box marginTop="2em" marginBottom="2em">
+          <TextBody textAlign="center">
+            Loading...
+          </TextBody>
+        </Box>
+      </Box>
+    )
+  }
+
   if (recoverStatus === 4) {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
@@ -178,7 +192,7 @@ const GuardiansChecking = () => {
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
               <Box fontSize="14px" fontWeight="bold">Your {getNetwork(Number(item.chainId))} wallet(s)</Box>
-              <Box fontSize="14px" fontWeight="bold" color="#848488">{item.expectTime}</Box>
+              <Box fontSize="14px" fontWeight="bold" color="#848488">{item.expectFinishTime}</Box>
             </Box>
           )}
         </Box>
