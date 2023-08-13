@@ -319,7 +319,7 @@ const SaveGuardians = () => {
           </Button>
         </Box>
       </Box>
-      <Button disabled={!(loaded || downloaded || sended || creating)} onClick={handleNext} loading={creating} _styles={{ width: '359px', marginTop: '0.75em' }}>
+      <Button disabled={!(loaded || downloaded || sended) || creating} onClick={handleNext} loading={creating} _styles={{ width: '359px', marginTop: '0.75em' }}>
         Continue
       </Button>
     </Box>

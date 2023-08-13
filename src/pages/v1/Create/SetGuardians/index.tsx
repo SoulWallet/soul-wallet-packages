@@ -186,18 +186,6 @@ export default function GuardiansSetting() {
 
   const handleNext = async () => {
     try {
-      /* const guardianList = (await formRef.current?.submit()) as GuardianItem[];
-       * if (guardianList?.length === 0) {
-       *   return;
-       * }
-       * updateFinalGuardians(guardianList);
-
-       * const eoaAddress = await keystore.getAddress();
-
-       * const guardianAddress = guardianList.map((item) => item.address);
-
-       * generateWalletAddress(eoaAddress, guardianAddress, true);
-       */
       handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
     } catch (err) {
       console.error(err);
@@ -206,10 +194,6 @@ export default function GuardiansSetting() {
 
   const handleSkip = () => {
     setSkipping(true)
-    /* updateFinalGuardians([]);
-     * const eoaAddress = await keystore.getAddress();
-     * generateWalletAddress(eoaAddress, [], true);
-     * handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault); */
   };
 
   const toggleTips = (event: any) => {
