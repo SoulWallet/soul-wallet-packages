@@ -137,11 +137,7 @@ export default function GuardiansSetting() {
       const guardianAddresses = guardiansList.map((item: any) => item.address)
       const guardianNames = guardiansList.map((item: any) => item.name)
       const threshold = amountForm.values.amount || 0
-      const walletAddress = await calcWalletAddress(0);
-      const walletName = `Account 1`
-      const newAddress = walletAddress
-      setAddressList([{ title: walletName, address: newAddress, activated: false, allowedOrigins: [] }])
-      setSelectedAddress(newAddress)
+
       setGuardians(guardianAddresses)
       setGuardianNames(guardianNames)
       setThreshold(threshold)

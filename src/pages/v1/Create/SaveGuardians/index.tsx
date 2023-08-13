@@ -5,6 +5,7 @@ import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import { useGlobalStore } from "@src/store/global";
 import { Box, Text, Image, useToast } from "@chakra-ui/react"
 import useTools from "@src/hooks/useTools";
+import useSdk from '@src/hooks/useSdk';
 import FormInput from "@src/components/web/Form/FormInput";
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
@@ -58,13 +59,16 @@ const SaveGuardians = () => {
   const [downloading, setDownloading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
   const [sended, setSended] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { account } = useWalletContext();
-  const { guardians, guardianNames, threshold } = useGuardianStore();
+  const { guardians, guardianNames, threshold, setSlotInitInfo } = useGuardianStore();
+  const { setSelectedAddress, setAddressList } = useAddressStore();
   const { calcGuardianHash, getSlot } = useKeystore()
   const {chainConfig} = useConfig();
+  const { calcWalletAddress } = useSdk();
   const toast = useToast()
 
   const emailForm = useForm({
@@ -74,12 +78,24 @@ const SaveGuardians = () => {
 
   const dispatch = useStepDispatchContext();
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    setCreating(true)
+    await createInitialWallet()
+    setCreating(false)
+
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: CreateStepEn.SetSoulWalletAsDefault,
     });
   };
+
+  const createInitialWallet = async () => {
+    const newAddress = await calcWalletAddress(0);
+    const walletName = `Account 1`
+    setAddressList([{ title: walletName, address: newAddress, activated: false, allowedOrigins: [] }])
+    console.log('createInitialWallet', newAddress)
+    setSelectedAddress(newAddress)
+  }
 
   const handleBackupGuardians = async () => {
     try {
@@ -93,7 +109,11 @@ const SaveGuardians = () => {
       let initialGuardianSafePeriod = L1KeyStore.days * 2
       initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
       const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-
+      const slotInitInfo = {
+        initialKey,
+        initialGuardianHash,
+        initialGuardianSafePeriod
+      }
 
       const params = {
         keystore,
@@ -104,14 +124,11 @@ const SaveGuardians = () => {
           salt
         },
         slot,
-        slotInitInfo: {
-          initialKey,
-          initialGuardianHash,
-          initialGuardianSafePeriod
-        }
+        slotInitInfo
       }
 
       const result = await api.guardian.backup(params)
+      setSlotInitInfo(slotInitInfo)
       setLoading(false)
       setLoaded(true)
       toast({
@@ -148,6 +165,11 @@ const SaveGuardians = () => {
       initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
       const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
       // guardianNames
+      const slotInitInfo = {
+        initialKey,
+        initialGuardianHash,
+        initialGuardianSafePeriod
+      }
 
       const params = {
         email,
@@ -161,14 +183,11 @@ const SaveGuardians = () => {
           salt
         },
         slot,
-        slotInitInfo: {
-          initialKey,
-          initialGuardianHash,
-          initialGuardianSafePeriod
-        }
+        slotInitInfo
       }
 
       const result = await api.guardian.emailBackup(params)
+      setSlotInitInfo(slotInitInfo)
       setSending(false)
       setSended(true)
       toast({
@@ -199,6 +218,11 @@ const SaveGuardians = () => {
       initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
       const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
       // guardianNames
+      const slotInitInfo = {
+        initialKey,
+        initialGuardianHash,
+        initialGuardianSafePeriod
+      }
 
       const params = {
         filename,
@@ -211,11 +235,7 @@ const SaveGuardians = () => {
           salt
         },
         slot,
-        slotInitInfo: {
-          initialKey,
-          initialGuardianHash,
-          initialGuardianSafePeriod
-        }
+        slotInitInfo
       }
 
       const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(params))}`
@@ -225,6 +245,7 @@ const SaveGuardians = () => {
       link.setAttribute("download", filename)
       link.click()
 
+      setSlotInitInfo(slotInitInfo)
       setDownloading(false)
       setDownloaded(true)
     } catch (e: any) {
@@ -298,7 +319,7 @@ const SaveGuardians = () => {
           </Button>
         </Box>
       </Box>
-      <Button disabled={!(loaded || downloaded || sended)} onClick={handleNext} _styles={{ width: '359px', marginTop: '0.75em' }}>
+      <Button disabled={!(loaded || downloaded || sended || creating)} onClick={handleNext} loading={creating} _styles={{ width: '359px', marginTop: '0.75em' }}>
         Continue
       </Button>
     </Box>

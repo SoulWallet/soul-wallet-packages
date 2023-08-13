@@ -148,7 +148,7 @@ const GuardiansChecking = () => {
 
   if (recoverStatus > 0) {
     return (
-      <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginBottom="20px">
         <Heading1 _styles={{ marginBottom: "0.75em" }}>Recovery in progress</Heading1>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
@@ -175,6 +175,13 @@ const GuardiansChecking = () => {
             </Box>
           )}
         </Box>
+        <Button
+          disabled={false}
+          onClick={handleNext}
+          _styles={{ width: '100%' }}
+        >
+          Share Pay Link
+        </Button>
       </Box>
     )
   }
