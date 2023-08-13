@@ -154,7 +154,15 @@ const GuardiansChecking = () => {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
         <Heading1 _styles={{ marginBottom: '20px' }}>Recover wallet success</Heading1>
-        {!replaced && (
+
+        {replaced ? (
+          <Button
+            disabled={true}
+            _styles={{ width: '100%' }}
+          >
+            Replaced
+          </Button>
+        ): (
           <Button
             disabled={false}
             onClick={replaceWallet}

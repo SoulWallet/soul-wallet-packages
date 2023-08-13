@@ -8,11 +8,12 @@ import { copyText } from "@src/lib/tools";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore } from "@src/store/address";
-import useQuery from "@src/hooks/useQuery";
+import { useChainStore } from "@src/store/chainStore";
 
 export default function AddFund() {
     const toast = useToast();
     const { selectedAddress } = useAddressStore();
+    const { chainList } = useChainStore();
 
     const doCopy = () => {
         copyText(selectedAddress);
@@ -33,8 +34,8 @@ export default function AddFund() {
                 <InfoItem>
                     <Text>Supported Networks:</Text>
                     <Flex align="center" gap="2px">
-                        {[...Array(3)].map((_, i) => (
-                            <Image key={i} src={IconEth} w="20px" />
+                        {chainList.map((item, index) => (
+                            <Image key={index} src={item.icon} w="20px" />
                         ))}
                     </Flex>
                 </InfoItem>

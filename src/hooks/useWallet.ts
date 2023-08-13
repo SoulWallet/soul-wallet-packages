@@ -36,23 +36,22 @@ export default function useWallet() {
 
         const userOp = userOpRet.OK;
 
-        if (payToken !== ethers.ZeroAddress) {
-            const soulAbi = new ethers.Interface(ABI_SoulWallet);
-            const erc20Abi = new ethers.Interface(Erc20ABI);
-            const to = chainConfig.paymasterTokens;
-            const approveCalldata = erc20Abi.encodeFunctionData("approve", [
-                chainConfig.contracts.paymaster,
-                ethers.parseEther("1000"),
-            ]);
+        // approve paymaster to spend ERC-20
+        const soulAbi = new ethers.Interface(ABI_SoulWallet);
+        const erc20Abi = new ethers.Interface(Erc20ABI);
+        const to = chainConfig.paymasterTokens;
+        const approveCalldata = erc20Abi.encodeFunctionData("approve", [
+            chainConfig.contracts.paymaster,
+            ethers.parseEther("1000"),
+        ]);
 
-            const approveCalldatas = [...new Array(to.length)].map((item: any) => approveCalldata);
+        const approveCalldatas = [...new Array(to.length)].map((item: any) => approveCalldata);
 
-            const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
+        const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
 
-            userOp.callData = callData;
+        userOp.callData = callData;
 
-            userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
-        }
+        userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
 
         if (estimateCost) {
             const { requiredAmount } = await getFeeCost(userOp, payToken);

@@ -17,7 +17,7 @@ import { useChainStore } from "@src/store/chainStore";
 
 export default function SignPage() {
     const { getSelectedChainItem } = useChainStore();
-    const {bundlerUrl} = getSelectedChainItem();
+    const { bundlerUrl } = getSelectedChainItem();
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
@@ -36,6 +36,7 @@ export default function SignPage() {
             origin: param.get("origin"),
             txns: param.get("txns"),
             data: param.get("data"),
+            sendTo: param.get("sendTo"),
         });
     }, [params[0]]);
 
@@ -43,7 +44,7 @@ export default function SignPage() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        const { actionType, origin, tabId, data } = searchParams;
+        const { actionType, origin, tabId, data, sendTo } = searchParams;
 
         const currentSignModal = signModal.current;
 
@@ -55,7 +56,7 @@ export default function SignPage() {
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
-                await currentSignModal.show("", actionType, origin, true);
+                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true });
                 toggleAllowedOrigin(selectedAddress, origin, true);
                 await browser.runtime.sendMessage({
                     target: "soul",
@@ -69,7 +70,13 @@ export default function SignPage() {
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
 
-                const { userOp, payToken } = await currentSignModal.show(txns, actionType, origin, true);
+                const { userOp, payToken } = await currentSignModal.show({
+                    txns,
+                    actionType,
+                    origin,
+                    keepVisible: true,
+                    sendTo,
+                });
 
                 await directSignAndSend(userOp, payToken);
 
@@ -99,7 +106,7 @@ export default function SignPage() {
             } else if (actionType === "signMessage") {
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
-                await currentSignModal.show("", actionType, origin, true, msgToSign);
+                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true, msgToSign });
 
                 const signature = await keyring.signMessage(msgToSign);
 
@@ -115,7 +122,7 @@ export default function SignPage() {
             } else if (actionType === "signMessageV4") {
                 const parsedData = JSON.parse(data);
 
-                await currentSignModal.show("", actionType, origin, true, data);
+                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true, msgToSign: data });
 
                 const signature = await keyring.signMessageV4(parsedData);
 

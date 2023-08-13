@@ -5,7 +5,7 @@ import useTools from "@src/hooks/useTools";
 import { useChainStore } from "@src/store/chainStore";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
-import {ethers} from 'ethers'
+import { ethers } from "ethers";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLock from "@src/assets/icons/lock.svg";
 import Button from "../Button";
@@ -76,7 +76,8 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
-    const { chainConfig} = useConfig();
+    const [sendTo, setSendTo] = useState("");
+    const { chainConfig } = useConfig();
     const { soulWallet } = useSdk();
 
     const formatUserOp: any = async (txns: any) => {
@@ -118,16 +119,19 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
     };
 
     useImperativeHandle(ref, () => ({
-        async show(txns: any, _actionName: string, origin: string, keepVisible: boolean, _messageToSign: string = "") {
+        async show(obj: any) {
+            const { txns, actionType, origin, keepVisible, msgToSign, _sendTo } = obj;
             setVisible(true);
             // setActionName(_actionName);
             setOrigin(origin);
 
             setKeepModalVisible(keepVisible || false);
 
-            if (_actionName === "getAccounts") {
+            setSendTo(_sendTo);
+
+            if (actionType === "getAccounts") {
                 setSignType(SignTypeEn.Account);
-            } else if (_actionName === "signMessage" || _actionName === "signMessageV4") {
+            } else if (actionType === "signMessage" || actionType === "signMessageV4") {
                 setSignType(SignTypeEn.Message);
             } else {
                 setSignType(SignTypeEn.Transaction);
@@ -137,12 +141,13 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                 const userOp = await formatUserOp(txns);
                 setActiveOperation(userOp);
                 const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
+                console.log('decoded data', callDataDecodes)
                 setDecodedData(callDataDecodes);
                 checkSponser(userOp);
             }
 
-            if (_messageToSign) {
-                setMessageToSign(_messageToSign);
+            if (msgToSign) {
+                setMessageToSign(msgToSign);
             }
 
             return new Promise((resolve, reject) => {
@@ -329,12 +334,22 @@ const SignTransaction = (_: unknown, ref: Ref<any>) => {
                                         {signType === SignTypeEn.Message && messageToSign}
                                     </Box>
                                     <AddressInput label="From" address={selectedAddress} disabled />
-                                    <AddressInput label="To" address={"0x1111"} disabled={true} />
+                                    {sendTo ? (
+                                        <AddressInput label="To" address={sendTo} disabled={true} />
+                                    ) : (
+                                        <AddressInput
+                                            label="To"
+                                            address={decodedData[0] && decodedData[0].to}
+                                            disabled={true}
+                                        />
+                                    )}
+
                                     {signType === SignTypeEn.Transaction && (
                                         <>
                                             <InfoWrap>
                                                 <InfoItem>
-                                                    <Text>Gas fee ($2.22)</Text>
+                                                    <Text>Gas fee</Text>
+                                                    {/* <Text>Gas fee ($2.22)</Text> */}
                                                     <Flex gap="2">
                                                         <Text>{feeCost.split(" ")[0]}</Text>
                                                         <GasSelect gasToken={payToken} onChange={setPayToken} />

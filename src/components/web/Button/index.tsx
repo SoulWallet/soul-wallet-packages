@@ -55,10 +55,10 @@ export default function RoundButton({
       borderRadius="1em"
       height="3rem"
       fontWeight="bold"
-      _hover={_hover || { background: 'brand.black' }}
+      _hover={_hover || { background: '#000' }}
       _disabled={{ opacity: '0.7', cursor: 'not-allowed' }}
       isDisabled={disabled}
-      bg="#1E1E1E"
+      bg="brand.black"
       color="white"
       {..._styles}
     >

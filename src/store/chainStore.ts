@@ -6,7 +6,7 @@ import config from "@src/config";
 interface IChainItem {
     chainId: number;
     chainName: string;
-    chainIcon: any;
+    icon: any;
     contracts: any;
     provider: string;
     bundlerUrl: string;
