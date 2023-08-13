@@ -42,6 +42,6 @@ const createChainSlice = immer<IChainStore>((set, get) => ({
 export const useChainStore = create<IChainStore>()(
     persist((...set) => ({ ...createChainSlice(...set) }), {
         name: "chain-storage",
-        partialize: (state) => ({ chainList: state.chainList }),
+        partialize: (state) => ({ selectedChainId: state.selectedChainId }),
     }),
 );

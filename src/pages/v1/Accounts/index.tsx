@@ -58,7 +58,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
 
     return (
         <GridItem
-            color={sAcctivated ? "#29510a" : "#1e1e1e"}
+            color={isActivated ? "#29510a" : "#1e1e1e"}
             p="10px"
             cursor={"pointer"}
             rounded="20px"
@@ -66,7 +66,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
             style={
                 selected
                     ? { border: "2px solid #000000CC" }
-                    : sAcctivated
+                    : isActivated
                     ? {
                           border: "1px solid",
                           borderImageSource:
@@ -82,7 +82,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
             }
             boxShadow={"0px 4px 8px 0px #0000001F"}
             bg={
-                sAcctivated
+                isActivated
                     ? "linear-gradient(0deg, #E2FC89, #E2FC89),linear-gradient(113.16deg, rgba(244, 255, 176, 0.8) 2.41%, rgba(182, 255, 108, 0.8) 76.58%)"
                     : "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(0deg, #D9D9D9, #D9D9D9)"
             }
@@ -93,7 +93,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
                 </Text>
                 <Menu>
                     <MenuButton>
-                        <Image src={sAcctivated ? IconAccountMoreGreen : IconAccountMore} />
+                        <Image src={isActivated ? IconAccountMoreGreen : IconAccountMore} />
                     </MenuButton>
                     <MenuList>
                         {accountMenus.map((item, idx) => (

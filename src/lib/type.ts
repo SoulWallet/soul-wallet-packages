@@ -13,11 +13,3 @@ export enum EnHandleMode {
     Recover,
 }
 
-export interface ITokenItem {
-    icon: any;
-    name: string;
-    symbol: string;
-    address: string;
-    decimals: number;
-    payable: boolean;
-}

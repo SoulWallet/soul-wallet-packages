@@ -10,7 +10,7 @@ export default {
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://goerli.etherscan.io",
-    bundlerUrl: "https://api-dev.soulwallet.io/bundler/goerli/rpc",
+    bundlerUrl: "https://api-dev.soulwallet.io/bundler/eth-goerli/rpc",
     maxCostMultiplier: 110,
     chainId: 5,
     chainIdHex: (5).toString(16),

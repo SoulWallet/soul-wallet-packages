@@ -5,12 +5,15 @@ import { notify } from "@src/lib/tools";
 // const ethersProvider = new ethers.JsonRpcProvider(config.provider);
 
 export const executeTransaction = async (userOp: any, tabId: any, chainName: any) => {
+
     const chainConfig = require(`../config/chains/${chainName}`).default;
+
+    console.log('chainConfig', chainConfig, chainName)
 
     // TODO, move to store
     const soulWallet = new SoulWallet(
         chainConfig.provider,
-        chainConfig.bndlerUrl,
+        chainConfig.bundlerUrl,
         chainConfig.contracts.soulWalletFactory,
         chainConfig.contracts.defaultCallbackHandler,
         chainConfig.contracts.keyStoreModuleProxy,

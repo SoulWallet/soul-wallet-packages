@@ -18,13 +18,12 @@ export default function useWallet() {
     const { account } = useWalletContext();
     const { toggleActivatedChain } = useAddressStore();
     const { calcGuardianHash } = useKeystore();
-    const {selectedChainId} = useChainStore();
+    const { selectedChainId } = useChainStore();
     const { getGasPrice, getFeeCost } = useQuery();
     const { chainConfig } = useConfig();
     const { guardians, threshold } = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
-
 
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
@@ -46,49 +45,31 @@ export default function useWallet() {
                 ethers.parseEther("1000"),
             ]);
 
-            const approveCalldatas = [...new Array(to.length)].map((item:any) => approveCalldata)
+            const approveCalldatas = [...new Array(to.length)].map((item: any) => approveCalldata);
 
             const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
 
             userOp.callData = callData;
 
             userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
-
         }
 
         if (estimateCost) {
-            const {requiredAmount} = await getFeeCost(userOp, payToken);
-            return requiredAmount
+            const { requiredAmount } = await getFeeCost(userOp, payToken);
+            return requiredAmount;
         } else {
             await directSignAndSend(userOp, payToken);
             // IMPORTANT TODO, what if user don't wait?
-            toggleActivatedChain(userOp.sender, selectedChainId)
+            toggleActivatedChain(userOp.sender, selectedChainId);
         }
     };
- 
 
-    const updateGuardian = async (guardiansList: string[], payToken: string) => {
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-
-        // const nonce = await soulWalletLib.Utils.getNonce(walletAddress, ethersProvider);
-
-        // const guardianInitCode = getGuardianInitCode(guardiansList);
-        // const setGuardianOp = soulWalletLib.Guardian.setGuardian(
-        //     walletAddress,
-        //     guardianInitCode.address,
-        //     nonce,
-        //     "0x",
-        //     maxFeePerGas,
-        //     maxPriorityFeePerGas,
-        // );
-
-        // await directSignAndSend(setGuardianOp, payToken);
-
-        // await removeLocalStorage("recoverOpHash");
+    const getSetGuardianCalldata = async (slot: string, guardianHash: string, keySignature: string) => {
+        const soulAbi = new ethers.Interface(ABI_SoulWallet);
+        return soulAbi.encodeFunctionData("setGuardian(bytes32,bytes32,bytes32)", [slot, guardianHash, keySignature]);
     };
 
     const directSignAndSend = async (userOp: UserOperation, payToken?: string) => {
-
         // TODO, estimate fee could be avoided
 
         // set 1559 fee
@@ -97,7 +78,7 @@ export default function useWallet() {
         userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
         // checkpaymaster
-        if(payToken && payToken !== ethers.ZeroAddress){
+        if (payToken && payToken !== ethers.ZeroAddress) {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
             userOp.paymasterAndData = paymasterAndData;
         }
@@ -166,7 +147,7 @@ export default function useWallet() {
     return {
         addPaymasterAndData,
         activateWallet,
-        updateGuardian,
+        getSetGuardianCalldata,
         directSignAndSend,
         backupGuardiansOnChain,
         backupGuardiansByEmail,

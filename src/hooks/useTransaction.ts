@@ -1,13 +1,10 @@
 /**
- * Transaction
+ * In-wallet Transactions
  */
 
-import useWalletContext from "../context/hooks/useWalletContext";
 import { ethers } from "ethers";
 import BN from "bignumber.js";
-import { ITokenItem } from "@src/lib/type";
 import useKeyring from "./useKeyring";
-import config from "@src/config";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { useAddressStore } from "@src/store/address";
 import { Transaction } from "@soulwallet/sdk";
@@ -37,10 +34,7 @@ export default function useTransaction() {
     };
 
     const sendErc20 = async (tokenAddress: string, to: string, amount: string, decimals: number) => {
-        // const actionName = "Send Assets";
-        // get decimals `locally`
         const amountInWei = new BN(amount).shiftedBy(decimals).toString();
-
         const erc20Interface = new ethers.Interface(Erc20ABI);
         const callData = erc20Interface.encodeFunctionData("transfer", [to, amountInWei]);
         const tx: Transaction = {
@@ -52,6 +46,9 @@ export default function useTransaction() {
             txns: [tx],
         });
     };
+
+    const setGuardian = () => {
+    }
 
     return {
         signTransaction,

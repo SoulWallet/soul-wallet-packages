@@ -7,7 +7,6 @@ import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balanceStore";
 import { InfoWrap, InfoItem } from "@src/components/SignTransaction";
-import useQuery from "@src/hooks/useQuery";
 import GasSelect from "@src/components/SendAssets/comp/GasSelect";
 import useBrowser from "@src/hooks/useBrowser";
 import PageTitle from "@src/components/PageTitle";
@@ -15,26 +14,27 @@ import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore, getIndexByAddress } from "@src/store/address";
 import useConfig from "@src/hooks/useConfig";
-// import ApprovePaymaster from "@src/components/ApprovePaymaster";
+import { useChainStore } from "@src/store/chainStore";
 
 export default function ActivateWallet() {
     const toast = useToast();
     const { account } = useWalletContext();
     const { selectedAddress, addressList } = useAddressStore();
-    const [maxCost, setMaxCost] = useState("");
+    const { selectedChainId } = useChainStore();
+    const [needCost, setNeedCost] = useState("");
     const [payToken, setPayToken] = useState(ethers.ZeroAddress);
-    const [paymasterApproved, setPaymasterApproved] = useState(true);
     const { selectedChainItem } = useConfig();
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
+    const [userBalance, setUserBalance] = useState("");
+    const [balanceEnough, setBalanceEnough] = useState(true);
     const [loading, setLoading] = useState(false);
     const { activateWallet } = useWallet();
     const { navigate } = useBrowser();
-    const { getTokenBalance } = useBalanceStore();
+    const { getTokenBalance, fetchTokenBalance } = useBalanceStore();
 
     const doActivate = async () => {
         // TODO，add back
-        const userBalance = getTokenBalance(payToken).tokenBalanceFormatted;
-        if (new BN(userBalance).isLessThan(maxCost)) {
+        if (new BN(userBalance).isLessThan(needCost)) {
             toast({
                 title: "Balance not enough",
                 status: "error",
@@ -61,13 +61,18 @@ export default function ActivateWallet() {
         }
     };
 
+    useEffect(() => {
+        const userBalance = getTokenBalance(payToken).tokenBalanceFormatted;
+        setBalanceEnough(new BN(userBalance).isGreaterThanOrEqualTo(needCost));
+    }, [payToken, needCost, userBalance]);
+
     const onPayTokenChange = async () => {
         // important TODO, clear previous request
-        setMaxCost("");
+        setNeedCost("");
         const token = getTokenBalance(payToken);
         setPayTokenSymbol(token.symbol);
         const requiredAmount = await activateWallet(0, payToken, true);
-        setMaxCost(requiredAmount || "0");
+        setNeedCost(requiredAmount || "0");
     };
 
     useEffect(() => {
@@ -77,21 +82,22 @@ export default function ActivateWallet() {
         onPayTokenChange();
     }, [payToken, account, selectedAddress]);
 
-    // useEffect(() => {
-    //     const intervalId = setInterval(() => {
-    //         checkBalance();
-    //     }, 3000);
-
-    //     return () => clearInterval(intervalId);
-    // }, []);
+    const checkBalance = async () => {
+        if (!selectedAddress || !selectedChainId) {
+            return;
+        }
+        // set user balance
+        setUserBalance(getTokenBalance(payToken).tokenBalanceFormatted);
+        fetchTokenBalance(selectedAddress, selectedChainId);
+    };
 
     useEffect(() => {
-        if (!paymasterApproved) {
-            setPayToken(ethers.ZeroAddress);
-        }
-    }, [paymasterApproved]);
+        const intervalId = setInterval(() => {
+            checkBalance();
+        }, 3000);
 
-    const balanceEnough = true;
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <Box px="5" pt="6">
@@ -115,9 +121,9 @@ export default function ActivateWallet() {
                     </InfoItem>
                     <InfoItem>
                         <Text>Network fee</Text>
-                        {maxCost ? (
+                        {needCost ? (
                             <Flex gap="2">
-                                <Text>{maxCost}</Text>
+                                <Text>{needCost}</Text>
                                 <GasSelect gasToken={payToken} onChange={setPayToken} />
                             </Flex>
                         ) : (
@@ -128,7 +134,7 @@ export default function ActivateWallet() {
             </Box>
 
             <Button
-                disabled={!maxCost || !balanceEnough}
+                disabled={!needCost || !balanceEnough}
                 w="full"
                 loading={loading}
                 onClick={doActivate}
@@ -140,7 +146,7 @@ export default function ActivateWallet() {
                 Activate
             </Button>
 
-            {!balanceEnough && (
+            {!balanceEnough && needCost && (
                 <Text
                     color="#FF2096"
                     textAlign={"center"}
@@ -163,10 +169,6 @@ export default function ActivateWallet() {
                             </Button>
                         </>
                     )} */}
-
-            {/* <div className="px-6">
-                            <ApprovePaymaster value={paymasterApproved} onChange={setPaymasterApproved} />
-                        </div> */}
         </Box>
     );
 }
