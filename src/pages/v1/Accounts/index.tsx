@@ -93,7 +93,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
                     </MenuButton>
                     <MenuList>
                         {accountMenus.map((item, idx) => (
-                            <>
+                            <React.Fragment key={idx}>
                                 {idx > 0 && <MenuDivider />}
                                 <MenuItem
                                     fontWeight={"700"}
@@ -104,7 +104,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
                                 >
                                     {item.title}
                                 </MenuItem>
-                            </>
+                            </React.Fragment>
                         ))}
                     </MenuList>
                 </Menu>
