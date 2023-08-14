@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { L1KeyStore, SoulWallet } from "@soulwallet/sdk";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import { useGuardianStore } from "@src/store/guardian";
 
 export default function useSdk() {

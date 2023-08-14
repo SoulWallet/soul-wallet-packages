@@ -28,7 +28,7 @@ import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
 import useSdk from "@src/hooks/useSdk";
 import useConfig from "@src/hooks/useConfig";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 const AccountItem = ({ item, selected, onClick }: any) => {
     const toast = useToast();

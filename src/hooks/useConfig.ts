@@ -1,7 +1,7 @@
 /**
  * Query current configs
  */
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import { useAddressStore } from "@src/store/address";
 
 export default function useConfig() {

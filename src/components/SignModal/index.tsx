@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
 import useTools from "@src/hooks/useTools";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
 import { ethers } from "ethers";

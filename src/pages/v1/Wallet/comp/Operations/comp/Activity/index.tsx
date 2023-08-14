@@ -7,7 +7,7 @@ import scanApi from "@src/lib/scanApi";
 import { useAddressStore } from "@src/store/address";
 import EmptyHint from "../EmptyHint";
 import useConfig from "@src/hooks/useConfig";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export default function Activities() {
     const { selectedAddress } = useAddressStore();

@@ -8,7 +8,7 @@ import { copyText } from "@src/lib/tools";
 import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore } from "@src/store/address";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export default function AddFund() {
     const toast = useToast();

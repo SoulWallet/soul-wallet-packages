@@ -12,7 +12,7 @@ import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useConfig from "./useConfig";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export default function useWallet() {
     const { account } = useWalletContext();

@@ -5,7 +5,7 @@ import BN from "bignumber.js";
 import { ethers } from "ethers";
 import useWallet from "@src/hooks/useWallet";
 import { Box, Text, Flex, Divider, useToast } from "@chakra-ui/react";
-import { useBalanceStore } from "@src/store/balanceStore";
+import { useBalanceStore } from "@src/store/balance";
 import { InfoWrap, InfoItem } from "@src/components/SignModal";
 import GasSelect from "@src/components/SendAssets/comp/GasSelect";
 import useBrowser from "@src/hooks/useBrowser";
@@ -14,7 +14,7 @@ import ReceiveCode from "@src/components/ReceiveCode";
 import Button from "@src/components/Button";
 import { useAddressStore, getIndexByAddress } from "@src/store/address";
 import useConfig from "@src/hooks/useConfig";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export default function ActivateWallet() {
     const toast = useToast();

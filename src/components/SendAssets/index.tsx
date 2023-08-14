@@ -5,7 +5,7 @@ import { Flex, Box, Text, useToast } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import useTransaction from "@src/hooks/useTransaction";
 import { ethers } from "ethers";
-import { useBalanceStore } from "@src/store/balanceStore";
+import { useBalanceStore } from "@src/store/balance";
 import { useAddressStore } from "@src/store/address";
 import AmountInput from "./comp/AmountInput";
 import AddressInput from "./comp/AddressInput";

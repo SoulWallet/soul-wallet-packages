@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import useSdk from "./useSdk";
 import { addPaymasterAndData } from "@src/lib/tools";
 import useConfig from "./useConfig";
-import { useBalanceStore } from "@src/store/balanceStore";
+import { useBalanceStore } from "@src/store/balance";
 
 export default function useQuery() {
     const { ethersProvider } = useWalletContext();

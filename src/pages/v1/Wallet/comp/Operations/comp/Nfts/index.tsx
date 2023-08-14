@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import EmptyHint from "../EmptyHint";
-import { useBalanceStore } from "@src/store/balanceStore";
+import { useBalanceStore } from "@src/store/balance";
 import { Grid, GridItem, Image } from "@chakra-ui/react";
-import { INftBalanceItem } from "@src/store/balanceStore";
+import { INftBalanceItem } from "@src/store/balance";
 import { useAddressStore } from "@src/store/address";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 // used only for testing nft balance
 const testWalletAddress = "0x120b4Ba4df837507B91dbd0A250eac28bE063b39";

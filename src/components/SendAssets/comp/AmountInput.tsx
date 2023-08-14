@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input } from "@chakra-ui/react";
 import TokenLine from "./TokenLine";
 import Button from "@src/components/Button";
-import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
+import { ITokenBalanceItem, useBalanceStore } from "@src/store/balance";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
 
 export default function AmountInput({ sendToken, onTokenChange, amount, onChange }: any) {
