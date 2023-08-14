@@ -2,7 +2,6 @@ import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef, useState, useEffect } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
-import ModalV2 from "@src/components/ModalV2";
 import useWallet from "@src/hooks/useWallet";
 import { useRecoveryContext } from "@src/context/RecoveryContext";
 import { GuardianItem } from "@src/lib/type";

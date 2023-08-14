@@ -6,7 +6,7 @@ import { StepActionTypeEn, useStepDispatchContext, CreateStepEn, RecoverStepEn }
 import useBrowser from "@src/hooks/useBrowser";
 import IconClose from '@src/assets/icons/close.svg';
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
-import { Center, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Text, Image } from "@chakra-ui/react";
 import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
 import React, { useEffect, useState } from "react";
@@ -49,43 +49,113 @@ export default function Launch() {
   return (
     <FullscreenContainer>
       <Flex w="460px" direction="column" alignItems="center" padding="10px">
-        <div
-          className="w-full btn-card-primary mb-5"
+        <Box
+          width="100%"
+          boxShadow="0px 4px 4px 0px #0000001A"
+          borderRadius="10px"
+          cursor="pointer"
+          background="#E3FD8A"
+          color="black"
+          padding="1em"
+          border="2px solid transparent"
+          marginBottom="20px"
+          _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD, 'create')}
         >
-          <div><CreateWalletIcon /></div>
-          <div className="w-full card-title">Create New Wallet</div>
-          <div className="w-full card-text">Begin your Web3 journey by creating a smart contract wallet with us.</div>
-        </div>
-        <div
-          className="w-full btn-card"
+          <Box><CreateWalletIcon /></Box>
+          <Box
+            width="100%"
+            fontSize="24px"
+            fontWeight="bold"
+            marginTop="10px"
+            marginBottom="5px"
+          >
+            Create New Wallet
+          </Box>
+          <Box
+            width="100%"
+            fontSize="14px"
+          >
+            Begin your Web3 journey by creating a smart contract wallet with us.
+          </Box>
+        </Box>
+        <Box
+          width="100%"
+          boxShadow="0px 4px 4px 0px #0000001A"
+          borderRadius="10px"
+          cursor="pointer"
+          background="white"
+          color="black"
+          padding="1em"
+          border="2px solid transparent"
+          _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, 'recover')}
         >
-          <div><RecoverWalletIcon /></div>
-          <div className="w-full card-title">Social Recover</div>
-          <div className="w-full card-text">Social recovery help you retrieve wallets easily with guardian signatures.</div>
-        </div>
+          <Box><RecoverWalletIcon /></Box>
+          <Box
+            width="100%"
+            fontSize="24px"
+            fontWeight="bold"
+            marginTop="10px"
+            marginBottom="5px"
+          >
+            Social Recover
+          </Box>
+          <Box
+            width="100%"
+            fontSize="14px"
+          >
+            Social recovery help you retrieve wallets easily with guardian signatures.
+          </Box>
+        </Box>
       </Flex>
-      {/* Risk Disclosure Statement Modal */}
-      <ModalV2 visible={showModal} className="bg-white min-w-[800px] relative">
-        <img src={IconClose} className="absolute right-6 top-6 cursor-pointer" onClick={handleCloseModal} />
-        <div className="flex flex-col items-center gap-4 px-2">
+      <ModalV2 visible={showModal}>
+        <Image
+          src={IconClose}
+          position="absolute"
+          right="20px"
+          top="20px"
+          cursor="pointer"
+          onClick={handleCloseModal}
+        />
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap="1em"
+          paddingLeft="0.5em"
+          paddingRight="0.5em"
+        >
           <Statement />
           {!authorized ? (
             <>
-              <Button onClick={handleAuthorize} type="primary" className="w-base" py="3" px="4">
+              <Button
+                onClick={handleAuthorize}
+                type="primary"
+                py="3"
+                px="4"
+              >
                 I Understand
               </Button>
-              <a className="skip-text mb-2" onClick={handleCloseModal}>
+              <Text
+                color="#898989"
+                cursor="pointer"
+                fontWeight="bold"
+                fontSize="16px"
+                onClick={handleCloseModal}
+              >
                 No, thanks
-              </a>
+              </Text>
             </>
           ) : (
-            <span onClick={handleCloseModal} className="cursor-pointer">
+            <Text
+              onClick={handleCloseModal}
+              cursor="pointer"
+            >
               Thank you for your agreement.
-            </span>
+            </Text>
           )}
-        </div>
+        </Box>
       </ModalV2>
     </FullscreenContainer>
   );
