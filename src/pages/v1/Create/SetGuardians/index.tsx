@@ -24,8 +24,22 @@ import WarningIcon from "@src/components/Icons/Warning";
 import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
+import useConfig from "@src/hooks/useConfig";
+import { L1KeyStore } from "@soulwallet/sdk";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
+
+const toHex = (num: any) => {
+  let hexStr = num.toString(16)
+
+  if (hexStr.length % 2 === 1) {
+    hexStr = '0' + hexStr
+  }
+
+  hexStr = '0x' + hexStr
+
+  return hexStr
+}
 
 const getRecommandCount = (c: number) => {
   if (!c) {
@@ -82,6 +96,7 @@ const amountValidate = (values: any, props: any) => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
+  const { calcGuardianHash } = useKeystore()
   const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -93,8 +108,9 @@ export default function GuardiansSetting() {
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
-  const { setGuardians, setGuardianNames, setThreshold } = useGuardianStore();
+  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo } = useGuardianStore();
   const toast = useToast()
+  const {chainConfig} = useConfig();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -152,6 +168,63 @@ export default function GuardiansSetting() {
     }
   }
 
+  const createInitialWallet = async () => {
+    const keystore = chainConfig.contracts.l1Keystore
+    const initialKey = ethers.zeroPadValue(account, 32)
+    const guardianHash = calcGuardianHash([], 0)
+    const initialGuardianHash = guardianHash
+    let initialGuardianSafePeriod = L1KeyStore.days * 2
+    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+
+    const slotInitInfo = {
+      initialKey,
+      initialGuardianHash,
+      initialGuardianSafePeriod
+    }
+    setSlotInitInfo(slotInitInfo)
+
+    const newAddress = await calcWalletAddress(0);
+    const walletName = `Account 1`
+    setAddressList([{ title: walletName, address: newAddress, activatedChains: [], allowedOrigins: [] }])
+    console.log('createInitialWallet', newAddress)
+    setSelectedAddress(newAddress)
+  }
+
+  const handleSkip = async () => {
+    try {
+      setLoading(true)
+
+      const guardiansList = guardianIds.map(id => {
+        const addressKey = `address_${id}`
+        const nameKey = `name_${id}`
+        let address = values[addressKey]
+
+        if (address && address.length) {
+          return { address, name: values[nameKey] }
+        }
+
+        return null
+      }).filter(i => !!i)
+      console.log('guardiansList', guardiansList)
+
+      const guardianAddresses = guardiansList.map((item: any) => item.address)
+      const guardianNames = guardiansList.map((item: any) => item.name)
+      const threshold = amountForm.values.amount || 0
+
+      setGuardians(guardianAddresses)
+      setGuardianNames(guardianNames)
+      setThreshold(threshold)
+      await createInitialWallet()
+      setLoading(false)
+      handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault);
+    } catch (error: any) {
+      setLoading(false)
+      toast({
+        title: error.message,
+        status: "error",
+      })
+    }
+  }
   console.log('selectedAddress', selectedAddress, amountForm)
 
   const addGuardian = () => {
@@ -192,7 +265,7 @@ export default function GuardiansSetting() {
     }
   };
 
-  const handleSkip = () => {
+  const onSkip = () => {
     setSkipping(true)
   };
 
@@ -215,7 +288,7 @@ export default function GuardiansSetting() {
           <Heading3 width="100%">Can I set guardians in the future?</Heading3>
           <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
           <Button width="100%" onClick={() => setSkipping(false)}>Set guardians now</Button>
-          <TextButton loading={loading} width="100%" onClick={handleSubmit}>
+          <TextButton loading={loading} width="100%" onClick={handleSkip}>
             I understand the risks, skip for now
           </TextButton>
         </Box>
@@ -315,7 +388,7 @@ export default function GuardiansSetting() {
         </Button>
         <TextButton
           color="rgb(137, 137, 137)"
-          onClick={handleSkip}
+          onClick={onSkip}
           _styles={{ width: '455px' }}
         >
           Skip for now
