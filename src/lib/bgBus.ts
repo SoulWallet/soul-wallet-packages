@@ -23,4 +23,10 @@ export default {
             }
         });
     },
+    resolve(id: string, data: any) {
+        browser.runtime.sendMessage({
+            id,
+            data,
+        });
+    }
 };

@@ -1,23 +1,24 @@
+import { useMemo } from "react";
 import { L1KeyStore, SoulWallet } from "@soulwallet/sdk";
-import config from "@src/config";
-import useKeystore from "./useKeystore";
 import { useChainStore } from "@src/store/chainStore";
 import { useGuardianStore } from "@src/store/guardian";
 
 export default function useSdk() {
-    const { calcGuardianHash } = useKeystore();
-    const { getSelectedChainItem } = useChainStore();
+    const { getSelectedChainItem, selectedChainId } = useChainStore();
     const { slotInitInfo } = useGuardianStore();
     const selectedChainItem = getSelectedChainItem();
 
-    const soulWallet = new SoulWallet(
-        selectedChainItem.provider,
-        selectedChainItem.bundlerUrl,
-        selectedChainItem.contracts.soulWalletFactory,
-        selectedChainItem.contracts.defaultCallbackHandler,
-        selectedChainItem.contracts.keyStoreModuleProxy,
-        selectedChainItem.contracts.securityControlModule,
-    );
+    const soulWallet = useMemo(() => {
+        console.log('generate new soulwallet sdk', selectedChainId)
+        return new SoulWallet(
+            selectedChainItem.provider,
+            selectedChainItem.bundlerUrl,
+            selectedChainItem.contracts.soulWalletFactory,
+            selectedChainItem.contracts.defaultCallbackHandler,
+            selectedChainItem.contracts.keyStoreModuleProxy,
+            selectedChainItem.contracts.securityControlModule,
+        );
+    }, [selectedChainId]);
 
     /**
      * Calculate wallet address
@@ -28,11 +29,16 @@ export default function useSdk() {
      * @returns
      */
     const calcWalletAddress = async (index: number) => {
-        console.log('calcWalletAddress', slotInitInfo)
+        console.log("calcWalletAddress", slotInitInfo);
         const { initialKey, initialGuardianHash, initialGuardianSafePeriod } = slotInitInfo;
-        const initialKeyAddress = `0x${initialKey.slice(-40)}`
+        const initialKeyAddress = `0x${initialKey.slice(-40)}`;
         // TODO, talk with cejey
-        const wAddress = await soulWallet.calcWalletAddress(index, initialKeyAddress, initialGuardianHash, Number(initialGuardianSafePeriod))
+        const wAddress = await soulWallet.calcWalletAddress(
+            index,
+            initialKeyAddress,
+            initialGuardianHash,
+            Number(initialGuardianSafePeriod),
+        );
         return wAddress.OK;
     };
 

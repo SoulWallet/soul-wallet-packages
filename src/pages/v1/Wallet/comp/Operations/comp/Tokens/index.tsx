@@ -18,8 +18,6 @@ export default function Tokens() {
         if (!selectedAddress) {
             return;
         }
-        console.log("Do fetch", selectedAddress, selectedChainId);
-        // TODO, change chain id to config
         fetchTokenBalance(selectedAddress, selectedChainId);
     }, [selectedAddress, selectedChainId]);
 

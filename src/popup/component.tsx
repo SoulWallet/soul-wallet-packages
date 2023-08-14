@@ -1,5 +1,6 @@
 import React from "react";
 import { WalletContextProvider } from "@src/context/WalletContext";
+import MessageContext from "@src/context/MessageContext";
 import { HashRouter } from "react-router-dom";
 import PluginRouter from "@src/router";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -12,7 +13,9 @@ export function Popup() {
             {/* <Fonts /> */}
             <HashRouter>
                 <WalletContextProvider>
+                    {/* <MessageContext> */}
                     <PluginRouter />
+                    {/* </MessageContext> */}
                 </WalletContextProvider>
             </HashRouter>
         </ChakraProvider>

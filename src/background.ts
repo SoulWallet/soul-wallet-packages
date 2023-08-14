@@ -1,8 +1,9 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
-import { getLocalStorage, openWindow, checkAllowed } from "@src/lib/tools";
+import { getLocalStorage, openWindow, checkAllowed, getSelectedChainItem } from "@src/lib/tools";
 import { executeTransaction } from "@src/lib/tx";
 import { UserOpUtils } from "@soulwallet/sdk";
+import bgBus from "./lib/bgBus";
 
 // IMPORTANT TODO, maintain chainConfig here as well
 let password = null;
@@ -21,10 +22,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "get/password":
             // TODO, remove timeout logic
             setTimeout(() => {
-                browser.runtime.sendMessage({
-                    id: msg.id,
-                    data: password,
-                });
+                bgBus.resolve(msg.id, password);
             }, 1);
 
             break;
@@ -51,7 +49,16 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "getChainConfig":
-            console.log('GET chain config')
+            const chainConfig = getSelectedChainItem();
+            console.log("GET chain config", chainConfig);
+            browser.tabs.sendMessage(Number(senderTabId), {
+                target: "soul",
+                type: "response",
+                action: "getChainConfig",
+                data: chainConfig,
+                tabId: senderTabId,
+            });
+            break;
 
         case "shouldInject":
             const userAllowed = await getLocalStorage("shouldInject");

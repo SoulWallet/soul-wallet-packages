@@ -6,7 +6,6 @@ import IconArb from "@src/assets/chains/arb.svg";
 
 export default {
     icon: IconArb,
-    recoverUrl: "http://soulwallets.me/recover",
     provider: `https://arbitrum-goerli.publicnode.com`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://testnet.arbiscan.io/",

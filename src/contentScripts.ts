@@ -27,6 +27,7 @@ function sendMessage(data) {
 window.addEventListener(
     "message",
     (msg) => {
+        console.log('CS msg', msg)
         if (msg.data.target === "soul" && msg.data.type !== "response") {
             sendMessage(msg.data);
         }
@@ -36,7 +37,9 @@ window.addEventListener(
 
 //receive message from background
 browser.runtime.onMessage.addListener((msg) => {
+    console.log('CS runtime msg', msg)
     if (msg.target === "soul" && msg.type === "response") {
+        msg.isResponse = true;
         window.postMessage(msg);
     }
 });

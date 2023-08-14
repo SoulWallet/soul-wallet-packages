@@ -1,8 +1,12 @@
+import { nanoid } from "nanoid";
+
 export default {
     send(actionType: string, actionName: string, data?: any) {
+        const id = nanoid();
         return new Promise((resolve, reject) => {
             try {
                 window.postMessage({
+                    id,
                     target: "soul",
                     type: actionType,
                     action: actionName,
@@ -15,6 +19,7 @@ export default {
                 window.addEventListener(
                     "message",
                     (msg) => {
+                        // TODO, refactor this
                         if (
                             msg.data.target === "soul" &&
                             msg.data.type === "response" &&
@@ -28,6 +33,12 @@ export default {
             } catch (err) {
                 reject(err);
             }
+        });
+    },
+    resolve(id: string, data: any) {
+        window.postMessage({
+            id,
+            data,
         });
     },
 };

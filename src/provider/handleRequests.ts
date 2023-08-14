@@ -4,6 +4,9 @@ import { getMessageType } from "./tools";
 import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 
+let ethersProvider: any = null;
+let currentChainId: any = undefined;
+
 const getAccounts = async () => {
     console.log("get account 2");
     return [await windowBus.send("getAccounts", "getAccounts")];
@@ -25,31 +28,31 @@ const sendTransaction = async (params: any) => {
     }
 };
 
-const estimateGas = async (provider: any, params: any) => {
-    return await provider.estimateGas(params[0]);
+const estimateGas = async (params: any) => {
+    return await ethersProvider.estimateGas(params[0]);
 };
 
-const gasPrice = async (provider: any) => {
-    const feeData = await provider.getFeeData();
+const gasPrice = async () => {
+    const feeData = await ethersProvider.getFeeData();
 
     // TODO, changed
     return feeData.gasPrice?.toString();
 };
 
-const getCode = async (provider: any, params: any) => {
-    return await provider.getCode(params[0], params[1]);
+const getCode = async (params: any) => {
+    return await ethersProvider.getCode(params[0], params[1]);
 };
 
-const getBalance = async (provider:any, params: any) => {
-    return await provider.getBalance(params[0], params[1]);
+const getBalance = async (params: any) => {
+    return await ethersProvider.getBalance(params[0], params[1]);
 };
 
-const getTransactionReceipt = async (provider:any, params: any) => {
-    return await provider.getTransactionReceipt(params[0]);
+const getTransactionReceipt = async (params: any) => {
+    return await ethersProvider.getTransactionReceipt(params[0]);
 };
 
-const getTransactionByHash = async (provider:any, params: any) => {
-    return await provider.getTransaction(params[0]);
+const getTransactionByHash = async (params: any) => {
+    return await ethersProvider.getTransaction(params[0]);
 };
 
 const signTypedDataV4 = async (params: any) => {
@@ -70,7 +73,7 @@ const personalSign = async (params: any) => {
     return res;
 };
 
-const personalRecover = async (provider: any, params: string[]) => {
+const personalRecover = async (params: string[]) => {
     // judge msg type
     const msgType = getMessageType(params[0]);
     const signature = params[1];
@@ -85,7 +88,7 @@ const personalRecover = async (provider: any, params: string[]) => {
     }
 
     const walletAddress = await windowBus.send("getAccounts", "getAccounts");
-    const walletContract = new ethers.Contract(walletAddress as string, WalletABI, provider);
+    const walletContract = new ethers.Contract(walletAddress as string, WalletABI, ethersProvider);
     const isValid = await walletContract.isValidSignature(msgHash, signature);
 
     if (isValid === config.magicValue) {
@@ -97,28 +100,31 @@ const chainId = async (chainConfig: any) => {
     return chainConfig.chainIdHex;
 };
 
-const blockNumber = async (provider: any, ) => {
-    return await provider.getBlockNumber();
+const blockNumber = async () => {
+    return await ethersProvider.getBlockNumber();
 };
 
-const ethCall = async (provider: any, params: any) => {
+const ethCall = async (params: any) => {
     console.log("params", params);
     // return await ethersProvider.call(params[0], params[1]);
     // TODO, realize this
-    return await provider.call({});
+    return await ethersProvider.call({});
 };
 
 export default async function handleRequests(call: any, chainConfig: any) {
+    // if no provider or chain id changed, reset provider
+    if (!ethersProvider || currentChainId !== chainConfig.chainId) {
+        ethersProvider = new ethers.JsonRpcProvider(chainConfig.provider);
+    }
+    console.log("Handle Request ChainConfig: ", chainConfig);
+    currentChainId = chainConfig.chainId;
     const { method, params } = call;
-
-    // TODO, construct only once
-    const provider = new ethers.JsonRpcProvider(chainConfig.provider);
 
     switch (method) {
         case "eth_chainId":
             return await chainId(chainConfig);
         case "eth_blockNumber":
-            return await blockNumber(provider);
+            return await blockNumber();
         case "eth_accounts":
             return await getAccounts();
         case "eth_requestAccounts":
@@ -126,23 +132,23 @@ export default async function handleRequests(call: any, chainConfig: any) {
         case "eth_sendTransaction":
             return await sendTransaction(params);
         case "eth_estimateGas":
-            return await estimateGas(provider, params);
+            return await estimateGas(params);
         case "eth_call":
-            return await ethCall(provider, params);
+            return await ethCall(params);
         case "eth_getCode":
-            return await getCode(provider, params);
+            return await getCode(params);
         case "eth_getBalance":
-            return await getBalance(provider, params);
+            return await getBalance(params);
         case "eth_gasPrice":
-            return await gasPrice(provider);
+            return await gasPrice();
         case "eth_getTransactionReceipt":
-            return await getTransactionReceipt(provider, params);
+            return await getTransactionReceipt(params);
         case "eth_getTransactionByHash":
-            return await getTransactionByHash(provider, params);
+            return await getTransactionByHash(params);
         case "personal_sign":
             return await personalSign(params);
         case "personal_ecRecover":
-            return await personalRecover(provider, params);
+            return await personalRecover(params);
         case "eth_signTypedData_v4":
             return await signTypedDataV4(params);
         case "wallet_switchEthereumChain":

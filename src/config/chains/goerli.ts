@@ -6,7 +6,6 @@ import IconEth from "@src/assets/chains/eth.svg";
 
 export default {
     icon: IconEth,
-    recoverUrl: "http://soulwallet.io/recover",
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://goerli.etherscan.io",

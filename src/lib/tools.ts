@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { ethers } from "ethers";
 import { IAddressItem } from "@src/store/address";
 import BN from "bignumber.js";
-import { chainIdMapping } from '@src/config'
+import { chainIdMapping } from "@src/config";
 
 export function notify(title: string, message: string) {
     const notifyId = Math.ceil(Math.random() * 1000).toString();
@@ -141,6 +141,13 @@ export const checkAllowed = (origin: string) => {
     };
 };
 
+export const getSelectedChainItem = () => {
+    const chainStorage = JSON.parse(localStorage.getItem("chain-storage") || "{}");
+    const selectedChainId = chainStorage.state.selectedChainId;
+    const selectedChainItem = chainStorage.state.chainList.filter((item: any) => item.chainId === selectedChainId)[0];
+    return selectedChainItem;
+};
+
 // /**
 //  * hexlify all members of object, recursively
 //  * @param obj
@@ -194,38 +201,38 @@ export const printUserOp = (userOp: any) => {
     );
 };
 
-export const hasCommonElement = (arr1:[], arr2:[]) => {
+export const hasCommonElement = (arr1: [], arr2: []) => {
     return arr1.some((item) => arr2.includes(item));
-}
+};
 
 export const toShortAddress = (address: string) => {
-  if (address.length > 10) {
-    return `${address.slice(0, 5)}...${address.slice(-5)}`
-  }
+    if (address.length > 10) {
+        return `${address.slice(0, 5)}...${address.slice(-5)}`;
+    }
 
-  return address
-}
+    return address;
+};
 
 export const getNetwork = (chainId: number) => {
-  const name = chainIdMapping[chainId as keyof typeof chainIdMapping] || ''
-  console.log('getNetwork', chainId, name)
-  return name
-}
+    const name = chainIdMapping[chainId as keyof typeof chainIdMapping] || "";
+    console.log("getNetwork", chainId, name);
+    return name;
+};
 
 export const getStatus = (statusId: number) => {
-  if (statusId === 1) {
-    return 'Recovered'
-  } else if (statusId === 0) {
-    return 'Pending'
-  }
+    if (statusId === 1) {
+        return "Recovered";
+    } else if (statusId === 0) {
+        return "Pending";
+    }
 
-  return 'Pending'
-}
+    return "Pending";
+};
 
 export const getKeystoreStatus = (statusId: number) => {
-  if (statusId === 3) {
-    return 'Recovered'
-  }
+    if (statusId === 3) {
+        return "Recovered";
+    }
 
-  return 'Pending'
-}
+    return "Pending";
+};
