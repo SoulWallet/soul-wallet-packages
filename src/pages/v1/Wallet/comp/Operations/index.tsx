@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import cn from "classnames";
 import { Box, Flex, Text } from "@chakra-ui/react";
 // import * as abi from "@soulwallet/abi";
 import Tokens from "./comp/Tokens";

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import cn from "classnames";
 import { Routes, useLocation } from "react-router-dom";
 import useBrowser from "../hooks/useBrowser";
 import { Box } from "@chakra-ui/react";

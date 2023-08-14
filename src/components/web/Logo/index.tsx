@@ -1,7 +1,6 @@
 import React from "react";
 import LogoIcon from "@src/assets/logo-v3.svg";
 import LogoText from "@src/assets/logo-text-v3.svg";
-import classNames from "classnames";
 import { Box, Image } from '@chakra-ui/react'
 
 export default function Logo() {

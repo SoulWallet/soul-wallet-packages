@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import EyeOpen from "@src/assets/icons/eye-open.svg";
 import EyeClose from "@src/assets/icons/eye-close.svg";
-import classNames from "classnames";
 import { Box, Text, Image, Input } from "@chakra-ui/react"
 
 interface IProps {

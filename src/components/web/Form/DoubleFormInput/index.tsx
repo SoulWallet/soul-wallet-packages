@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import classNames from "classnames";
-import { Box, Text, Image, Input } from "@chakra-ui/react"
+import { Box, Text, Input } from "@chakra-ui/react"
 
 interface IProps {
   leftValue?: string;

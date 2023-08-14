@@ -1,5 +1,4 @@
-import React, { ReactNode } from "react";
-import classNames from "classnames";
+import React from "react";
 import { Text, TextProps } from '@chakra-ui/react'
 
 export default function TextBody({ children, ...restProps }: TextProps) {

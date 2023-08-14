@@ -158,17 +158,6 @@ export default function ActivateWallet() {
                     Not enough {payTokenSymbol} for activation
                 </Text>
             )}
-
-            {/* {step === 1 && (
-                        <>
-                            <Button type="reject" className="flex-1 w-full" onClick={() => navigate("wallet")}>
-                                Reject
-                            </Button>
-                            <Button type="primary" className="flex-1 w-full" onClick={doActivate} loading={loading}>
-                                Confirm
-                            </Button>
-                        </>
-                    )} */}
         </Box>
     );
 }

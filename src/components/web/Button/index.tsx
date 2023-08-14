@@ -1,5 +1,4 @@
 import React from "react";
-import cn from "classnames";
 import { Image, Button, ButtonProps } from "@chakra-ui/react";
 import IconLoading from "@src/assets/loading.gif";
 import { Box } from "@chakra-ui/react"

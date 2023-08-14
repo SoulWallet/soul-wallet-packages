@@ -1,15 +1,13 @@
 import { usePasswordStrength } from "@src/hooks/usePasswordStrength";
 import React from "react";
 import { Text, Box } from "@chakra-ui/react"
-import classNames from "classnames";
 
 interface IPasswordStrengthBarProps {
   password: string;
-  className?: string;
   _styles?: any;
 }
 
-const PasswordStrengthBar = ({ password, className, _styles }: IPasswordStrengthBarProps) => {
+const PasswordStrengthBar = ({ password, _styles }: IPasswordStrengthBarProps) => {
   const passwordStrength = usePasswordStrength(password);
 
   if (!(password.length && passwordStrength >= 0)) {
