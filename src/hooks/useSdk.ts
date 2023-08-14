@@ -9,7 +9,6 @@ export default function useSdk() {
     const selectedChainItem = getSelectedChainItem();
 
     const soulWallet = useMemo(() => {
-        console.log('generate new soulwallet sdk', selectedChainId)
         return new SoulWallet(
             selectedChainItem.provider,
             selectedChainItem.bundlerUrl,
