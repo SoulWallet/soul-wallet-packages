@@ -288,8 +288,9 @@ export default function GuardiansSetting() {
           <Heading3 width="100%">Can I set guardians in the future?</Heading3>
           <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
           <Button width="100%" onClick={() => setSkipping(false)}>Set guardians now</Button>
-          <TextButton loading={loading} width="100%" onClick={handleSkip}>
-            I understand the risks, skip for now
+          <TextButton loading={loading} width="100%" disabled={loading} onClick={handleSkip}>
+            {loading && 'skipping'}
+            {!loading && 'I understand the risks, skip for now'}
           </TextButton>
         </Box>
       </Box>
