@@ -107,7 +107,6 @@ export default function ActivateWallet() {
                 Setting up your wallet requires a fee to cover deployment gas costs. This is not a Soul Wallet service
                 charge.
                 <br />
-                <br />
                 Add any of the following tokens to your wallet, and then you can continue the activation process: ETH,
                 USDC, DAI, USDT.
             </Text>
