@@ -22,7 +22,7 @@ export default {
     support1559: true,
     paymasterTokens: [
         // test u
-        "0x55dFb37E7409c4e2B114f8893E67D4Ff32783b35",
+        "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
     ],
     contracts: {
         l1Keystore: "0x76a43ef7cc3b49736951759494d2aee8cae1cdec",

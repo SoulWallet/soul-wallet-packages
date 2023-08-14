@@ -106,9 +106,7 @@ const blockNumber = async () => {
 
 const ethCall = async (params: any) => {
     console.log("params", params);
-    // return await ethersProvider.call(params[0], params[1]);
-    // TODO, realize this
-    return await ethersProvider.call({});
+    return await ethersProvider.call(params[0], params[1]);
 };
 
 export default async function handleRequests(call: any, chainConfig: any) {

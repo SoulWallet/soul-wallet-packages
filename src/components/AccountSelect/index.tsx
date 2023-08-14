@@ -4,11 +4,13 @@ import IconCheveronDown from "@src/assets/icons/chevron-down.svg";
 import { useLocation } from "react-router-dom";
 import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
 import useBrowser from "@src/hooks/useBrowser";
+import useConfig from "@src/hooks/useConfig";
 
 export default function AccountSelect() {
     const { navigate } = useBrowser();
     const [hovered, setHovered] = useState(false);
     const location = useLocation();
+    const { selectedAddressItem } = useConfig();
 
     const isAccountsPage = location.pathname.includes("/accounts");
 
@@ -27,7 +29,7 @@ export default function AccountSelect() {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            <Text>Account 1</Text>
+            <Text>{selectedAddressItem.title}</Text>
             <Image src={hovered ? IconCheveronDown : IconCheveronDownBlack} w="20px" h="20px" />
         </Flex>
     );

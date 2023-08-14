@@ -74,7 +74,7 @@
         "@metamask/eth-sig-util": "^4.0.1",
         "@soulwallet/abi": "^0.0.8",
         "@soulwallet/decoder": "^0.0.12",
-        "@soulwallet/sdk": "^0.0.16",
+        "@soulwallet/sdk": "^0.0.19",
         "@types/qrcode": "^1.5.0",
         "@types/react-router-dom": "^5.3.3",
         "@zxcvbn-ts/core": "^2.2.1",

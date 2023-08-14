@@ -77,7 +77,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
     const [sendToAddress, setSendToAddress] = useState("");
-    const { chainConfig } = useConfig();
+    const { chainConfig, selectedAddressItem } = useConfig();
     const { soulWallet } = useSdk();
 
     const formatUserOp: any = async (txns: any) => {
@@ -284,7 +284,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                                         <Text color={getSecurityColor(SecurityLevel.High)}>{SecurityLevel.High}</Text>
                                     </InfoItem>
                                     <InfoItem>
-                                        <Text>Account 1:</Text>
+                                        <Text>{selectedAddressItem.title}:</Text>
                                         <Text>
                                             {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
                                         </Text>
