@@ -127,7 +127,7 @@ export default function ActivateWallet() {
                                 <GasSelect gasToken={payToken} onChange={setPayToken} />
                             </Flex>
                         ) : (
-                            "Loading..."
+                            <Text>Loading...</Text>
                         )}
                     </InfoItem>
                 </InfoWrap>

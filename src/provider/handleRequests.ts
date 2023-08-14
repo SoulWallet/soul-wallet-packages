@@ -114,7 +114,6 @@ export default async function handleRequests(call: any, chainConfig: any) {
     if (!ethersProvider || currentChainId !== chainConfig.chainId) {
         ethersProvider = new ethers.JsonRpcProvider(chainConfig.provider);
     }
-    console.log("Handle Request ChainConfig: ", chainConfig);
     currentChainId = chainConfig.chainId;
     const { method, params } = call;
 
