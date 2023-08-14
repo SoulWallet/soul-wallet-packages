@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import InputWrapper from "@src/components/InputWrapper";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { ethers } from "ethers";
 import Button from "@src/components/web/Button";

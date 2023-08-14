@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import FileUploader from "@src/components/FileUploader";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import useTools from "@src/hooks/useTools";
 import { useGlobalStore } from "@src/store/global";

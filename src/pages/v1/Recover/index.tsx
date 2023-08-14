@@ -10,7 +10,6 @@ import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
-import StepCompletion from "@src/components/StepCompletion";
 import {EnHandleMode} from '@src/lib/type'
 import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
 import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";

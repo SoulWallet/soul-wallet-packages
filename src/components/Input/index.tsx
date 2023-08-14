@@ -52,7 +52,7 @@ export function Input({
                     }}
                     onKeyDown={onKeyDown}
                     placeholder={placeholder}
-                    className={cn(
+                    className="" {cn(
                         "input w-full",
                         error && "input-error",
                         className,

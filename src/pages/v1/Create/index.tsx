@@ -3,8 +3,6 @@ import React, { ReactNode, useMemo } from "react";
 import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import ProgressNavBar from "@src/components/ProgressNavBar";
-import StepCompletion from "@src/components/StepCompletion";
-import GuardianHint from "@src/components/GuardianHint";
 import SetPassword from "@src/pages/v1/Create/SetPassword";
 import SetGuardians from "@src/pages/v1/Create/SetGuardians";
 import SaveGuardians from "@src/pages/v1/Create/SaveGuardians";
