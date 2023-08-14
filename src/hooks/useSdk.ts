@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { L1KeyStore, SoulWallet } from "@soulwallet/sdk";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import { useGuardianStore } from "@src/store/guardian";
 
 export default function useSdk() {
@@ -9,7 +9,6 @@ export default function useSdk() {
     const selectedChainItem = getSelectedChainItem();
 
     const soulWallet = useMemo(() => {
-        console.log("sdk config: ", selectedChainItem.provider, selectedChainItem.bundlerUrl);
         return new SoulWallet(
             selectedChainItem.provider,
             selectedChainItem.bundlerUrl,

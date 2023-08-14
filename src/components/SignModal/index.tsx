@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from
 import useQuery from "@src/hooks/useQuery";
 import config from "@src/config";
 import useTools from "@src/hooks/useTools";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
 import { ethers } from "ethers";
@@ -77,7 +77,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
     const [sendToAddress, setSendToAddress] = useState("");
-    const { chainConfig } = useConfig();
+    const { chainConfig, selectedAddressItem } = useConfig();
     const { soulWallet } = useSdk();
 
     const formatUserOp: any = async (txns: any) => {
@@ -127,7 +127,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
             setKeepModalVisible(keepVisible || false);
 
-            console.log('send to is', sendTo)
+            console.log("send to is", sendTo);
             setSendToAddress(sendTo);
 
             if (actionType === "getAccounts") {
@@ -142,7 +142,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                 const userOp = await formatUserOp(txns);
                 setActiveOperation(userOp);
                 const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
-                console.log('decoded data', callDataDecodes)
+                console.log("decoded data", callDataDecodes);
                 setDecodedData(callDataDecodes);
                 checkSponser(userOp);
             }
@@ -202,7 +202,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requiredAmount } = await getFeeCost(activeOperation, payToken === ethers.ZeroAddress ? "" : payToken);
+        const { requiredAmount } = await getFeeCost(activeOperation, payToken);
 
         if (ethers.ZeroAddress === payToken) {
             setFeeCost(`${requiredAmount} ${chainConfig.chainToken}`);
@@ -284,7 +284,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                                         <Text color={getSecurityColor(SecurityLevel.High)}>{SecurityLevel.High}</Text>
                                     </InfoItem>
                                     <InfoItem>
-                                        <Text>Account 1:</Text>
+                                        <Text>{selectedAddressItem.title}:</Text>
                                         <Text>
                                             {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
                                         </Text>
@@ -351,10 +351,14 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                                                 <InfoItem>
                                                     <Text>Gas fee</Text>
                                                     {/* <Text>Gas fee ($2.22)</Text> */}
-                                                    <Flex gap="2">
-                                                        <Text>{feeCost.split(" ")[0]}</Text>
-                                                        <GasSelect gasToken={payToken} onChange={setPayToken} />
-                                                    </Flex>
+                                                    {feeCost ? (
+                                                        <Flex gap="2">
+                                                            <Text>{feeCost.split(" ")[0]}</Text>
+                                                            <GasSelect gasToken={payToken} onChange={setPayToken} />
+                                                        </Flex>
+                                                    ) : (
+                                                        <Text>Loading...</Text>
+                                                    )}
                                                 </InfoItem>
                                                 <InfoItem>
                                                     <Text>Total</Text>

@@ -3,7 +3,7 @@ import { Flex, Text, MenuButton, Menu, MenuList, MenuItem, Image } from "@chakra
 import IconChevronRightRed from "@src/assets/icons/chevron-right-red.svg";
 import { ethers } from "ethers";
 import TokenLine from "./TokenLine";
-import { ITokenBalanceItem, useBalanceStore } from "@src/store/balanceStore";
+import { ITokenBalanceItem, useBalanceStore } from "@src/store/balance";
 import useConfig from "@src/hooks/useConfig";
 export default function GasSelect({ gasToken, onChange }: any) {
     const { tokenBalance } = useBalanceStore();

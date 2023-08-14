@@ -13,7 +13,7 @@ import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
 import { UserOpUtils } from "@soulwallet/sdk";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export default function SignPage() {
     const { getSelectedChainItem } = useChainStore();

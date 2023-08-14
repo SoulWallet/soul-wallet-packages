@@ -2,7 +2,7 @@ import React from "react";
 import { Flex, Image, Menu, MenuButton, MenuItem, Text, Button, MenuList, MenuDivider } from "@chakra-ui/react";
 import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
 import IconChecked from "@src/assets/icons/checked.svg";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 import useConfig from "@src/hooks/useConfig";
 
 export default function ChainSelect() {

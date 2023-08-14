@@ -8,11 +8,13 @@ import { ethers } from "ethers";
 import useSdk from "./useSdk";
 import { addPaymasterAndData } from "@src/lib/tools";
 import useConfig from "./useConfig";
+import { useBalanceStore } from "@src/store/balance";
 
 export default function useQuery() {
     const { ethersProvider } = useWalletContext();
     const { soulWallet } = useSdk();
     const { chainConfig } = useConfig();
+    const { getTokenBalance } = useBalanceStore();
 
     const getEthPrice = async () => {
         // get price from coingecko
@@ -43,7 +45,7 @@ export default function useQuery() {
         }
     };
 
-    const getFeeCost = async (userOp: any, payToken?: string) => {
+    const getFeeCost = async (userOp: any, payToken: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
         userOp.maxFeePerGas = maxFeePerGas;
@@ -71,6 +73,7 @@ export default function useQuery() {
 
         // erc20
         if (payToken === ethers.ZeroAddress) {
+            console.log('11111111111', BN(preFund.OK.missfund).shiftedBy(-18).toFixed(), ethers.formatEther(preFund.OK.missfund))
             return {
                 requiredAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
                 userOp,
@@ -80,9 +83,12 @@ export default function useQuery() {
             getEthPrice();
             const erc20Price = 1853;
 
+            const tokenBalanceItem = getTokenBalance(payToken);
+
             return {
+                // IMPORTANT TODO, not fixed -18
                 requiredAmount: BN(preFund.OK.missfund)
-                    .shiftedBy(-18)
+                    .shiftedBy(-tokenBalanceItem.decimals)
                     .times(erc20Price)
                     .times(chainConfig.maxCostMultiplier)
                     .div(100)

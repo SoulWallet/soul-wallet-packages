@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import IconLoading from "@src/assets/loading.gif";
 import { Navbar } from "@src/components/Navbar";
 import {
     Box,
@@ -27,7 +28,7 @@ import IconEdit from "@src/assets/icons/edit.svg";
 import IconCopy from "@src/assets/icons/copy.svg";
 import useSdk from "@src/hooks/useSdk";
 import useConfig from "@src/hooks/useConfig";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 const AccountItem = ({ item, selected, onClick }: any) => {
     const toast = useToast();
@@ -127,7 +128,7 @@ const AccountItem = ({ item, selected, onClick }: any) => {
     );
 };
 
-const AccountsNavbar = ({ onAdd }: any) => {
+const AccountsNavbar = ({ onAdd, adding }: any) => {
     const { navigate } = useBrowser();
 
     return (
@@ -139,9 +140,15 @@ const AccountsNavbar = ({ onAdd }: any) => {
                 </Text>
             </Flex>
             <Tooltip label="Add account">
-                <Box _hover={{ bg: "#d9d9d9" }} cursor={"pointer"} rounded={"full"} onClick={onAdd}>
-                    <Image src={IconPlus} />
-                </Box>
+                {adding ? (
+                    <Flex align={"center"} justify={"center"} h="8" w="8" bg="#d9d9d9" rounded="full">
+                        <Image src={IconLoading} w="6" h="6" />
+                    </Flex>
+                ) : (
+                    <Box _hover={{ bg: "#d9d9d9" }} cursor={"pointer"} rounded={"full"} onClick={onAdd}>
+                        <Image src={IconPlus} />
+                    </Box>
+                )}
             </Tooltip>
         </Flex>
     );
@@ -149,18 +156,26 @@ const AccountsNavbar = ({ onAdd }: any) => {
 
 export default function Accounts() {
     const { calcWalletAddress } = useSdk();
+    const [adding, setAdding] = useState(false);
     const { addressList, selectedAddress, addAddressItem, setSelectedAddress } = useAddressStore();
 
     const onAdd = async () => {
+        setAdding(true);
         const newIndex = addressList.length;
         const newAddress = await calcWalletAddress(newIndex);
-        addAddressItem({ title: `Account ${newIndex + 1}`, address: newAddress, activatedChains: [], allowedOrigins: [] });
+        addAddressItem({
+            title: `Account ${newIndex + 1}`,
+            address: newAddress,
+            activatedChains: [],
+            allowedOrigins: [],
+        });
+        setAdding(false);
     };
 
     return (
         <Box p="5">
             <Navbar />
-            <AccountsNavbar onAdd={onAdd} />
+            <AccountsNavbar onAdd={onAdd} adding={adding} />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
                 {addressList.map((item: any, index: number) => {
                     return (

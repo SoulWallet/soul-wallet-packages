@@ -8,7 +8,7 @@ import ActivateHint from "./comp/ActivateHint";
 import Footer from "@src/components/Footer";
 import Actions from "./comp/Actions";
 import { useAddressStore } from "@src/store/address";
-import { useChainStore } from "@src/store/chainStore";
+import { useChainStore } from "@src/store/chain";
 
 export function Wallet() {
     const { selectedAddress, getIsActivated } = useAddressStore();
