@@ -9,7 +9,7 @@ export const chainIdMapping = {
     56: "BSC Mainnet",
     128: "HECO Mainnet",
     97: "BSC Testnet",
-    420: "Optimism Goerli Testnet",
+    420: "Optimism Goerli",
     421613: "Arbitrum Goerli"
   };
 

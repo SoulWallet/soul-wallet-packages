@@ -199,7 +199,7 @@ const GuardiansChecking = () => {
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
               <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))}</Box>
-              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending ({new Date(item.expectFinishTime).toLocaleString()})</Box>}
+              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending {item.expectFinishTime && `(${new Date(item.expectFinishTime).toLocaleString()})`}</Box>}
               {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">Recovered</Box>}
             </Box>
           )}

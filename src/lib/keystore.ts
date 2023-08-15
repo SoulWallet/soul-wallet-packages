@@ -1,19 +1,13 @@
 import { ethers } from "ethers";
 import Web3 from "web3";
-import config from "@src/config";
 import { getMessageType } from "@src/lib/tools";
-import browser from 'webextension-polyfill'
+import browser from "webextension-polyfill";
 import bgBus from "./bgBus";
-import { TypedDataUtils } from "@metamask/eth-sig-util";
+// import { TypedDataUtils } from "@metamask/eth-sig-util";
 
 const web3 = new Web3();
 
-import {
-    setLocalStorage,
-    getLocalStorage,
-    clearLocalStorage,
-    removeLocalStorage,
-} from "@src/lib/tools";
+import { setLocalStorage, getLocalStorage, clearLocalStorage, removeLocalStorage } from "@src/lib/tools";
 
 export default class KeyStore {
     private static instance: KeyStore;
@@ -60,7 +54,7 @@ export default class KeyStore {
                 await setLocalStorage(this.keyStoreKey, KeystoreV3);
                 await browser.runtime.sendMessage({
                     target: "soul",
-                    type: 'set/password',
+                    type: "set/password",
                     data: password,
                 });
             } else {
@@ -70,7 +64,7 @@ export default class KeyStore {
             }
             return account.address;
         } catch (error) {
-            console.log('error', error)
+            console.log("error", error);
             return "";
         }
     }
@@ -82,8 +76,8 @@ export default class KeyStore {
         await removeLocalStorage("recoverOpHash");
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
         browser.runtime.sendMessage({
-            target: 'soul',
-            type: 'set/password',
+            target: "soul",
+            type: "set/password",
             data: stagingPw,
         });
     }
@@ -97,8 +91,8 @@ export default class KeyStore {
                 this._privateKey = account.privateKey;
 
                 browser.runtime.sendMessage({
-                    target: 'soul',
-                    type: 'set/password',
+                    target: "soul",
+                    type: "set/password",
                     data: password,
                 });
                 return account.address;
@@ -110,8 +104,8 @@ export default class KeyStore {
     public async lock(): Promise<void> {
         this._privateKey = null;
         browser.runtime.sendMessage({
-            target: 'soul',
-            type: 'set/password',
+            target: "soul",
+            type: "set/password",
             data: null,
         });
     }
@@ -126,8 +120,8 @@ export default class KeyStore {
             await setLocalStorage(this.keyStoreKey, KeystoreV3);
 
             browser.runtime.sendMessage({
-                target: 'soul',
-                type: 'set/password',
+                target: "soul",
+                type: "set/password",
                 data: newPassword,
             });
         }
@@ -142,7 +136,7 @@ export default class KeyStore {
      * get password set by user
      */
     public async getPassword(): Promise<any> {
-        return await bgBus.send('get/password')
+        return await bgBus.send("get/password");
     }
 
     /**
@@ -202,22 +196,18 @@ export default class KeyStore {
 
             const signHash4 = ethers.hashMessage(message);
 
-            console.log('msg', message)
-            console.log('hash is', signHash4)
+            console.log("msg", message);
+            console.log("hash is", signHash4);
 
             const prefix = Buffer.from("\x19Ethereum Signed Message:\n");
             const msg = Buffer.concat([prefix, Buffer.from(String(message.length)), Buffer.from(message)]);
             const signHash5 = web3.utils.keccak256(msg as any);
 
-            const signHash6 = web3.eth.accounts.hashMessage(message)
+            const signHash6 = web3.eth.accounts.hashMessage(message);
 
             console.log("111111111", signHash, signHash4, signHash5, signHash6);
 
-            const packedSignature = await this.getPackedSignature(signHash4);
-
-            console.log('packed signature', packedSignature)
-
-            return packedSignature;
+            return signHash4;
         }
     }
 
@@ -230,22 +220,20 @@ export default class KeyStore {
         if (!this._privateKey) {
             return null;
         }
-        const signBuffer = TypedDataUtils.eip712Hash(typedData as any, "V4" as any);
 
-        console.log("sign buf", signBuffer);
+        // IMPORTANT TODO, get from rpc provider
+        const signer = new ethers.Wallet(this._privateKey);
 
-        const signHash = `0x${Buffer.from(signBuffer).toString("hex")}`;
+        const { domain, types, message } = typedData;
 
-        return await this.getPackedSignature(signHash);
-    }
+        return signer.signTypedData(domain, types, message);
 
-    public async getPackedSignature(hashMsg: any) {
-        const ownerAddress = await this.getAddress();
-        return 'xxx'
-        // const packedHash = soulWalletLib.EIP1271.packHashMessageWithTimeRange(hashMsg, ownerAddress);
-        // const signature = await this.sign(packedHash);
-        // if (signature) {
-        //     return soulWalletLib.EIP1271.encodeSignature(ownerAddress, signature);
-        // }
+        // const typedMessageHash = ethers.TypedDataEncoder.hash(domain, types, message);
+
+        // const signBuffer = TypedDataUtils.eip712Hash(typedData as any, "V4" as any);
+
+        // console.log("sign buf", signBuffer);
+
+        // return `0x${Buffer.from(signBuffer).toString("hex")}`;
     }
 }

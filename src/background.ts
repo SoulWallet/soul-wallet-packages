@@ -15,12 +15,12 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
     switch (msg.type) {
         case "set/password":
-            if (msg.data) {
-                password = msg.data;
-            }
+            console.log("to set password", msg.data);
+            password = msg.data;
             break;
         case "get/password":
             // TODO, remove timeout logic
+            console.log("to get password", password);
             setTimeout(() => {
                 bgBus.resolve(msg.id, password);
             }, 1);

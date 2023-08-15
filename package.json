@@ -71,7 +71,6 @@
         "@chakra-ui/react": "^2.7.1",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
-        "@metamask/eth-sig-util": "^4.0.1",
         "@soulwallet/abi": "^0.0.8",
         "@soulwallet/decoder": "^0.0.12",
         "@soulwallet/sdk": "^0.0.19",
