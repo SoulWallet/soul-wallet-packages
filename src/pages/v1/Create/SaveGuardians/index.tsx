@@ -278,12 +278,16 @@ const SaveGuardians = () => {
           alignItems="center"
           justifyContent="flex-start"
         >
-          <Heading3>Set Guardians</Heading3>
+          <Heading3>Save by yourself</Heading3>
           <Box marginBottom="0.75em">
             <TextBody textAlign="center">
               If you choose to store your own guardian list, make you save the file and remember it's location as it will be needed for future wallet recovery.
             </TextBody>
           </Box>
+          <Button onClick={handleDownloadGuardians} disabled={downloading} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} LeftIcon={<DownloadIcon />}>
+            Download to Local
+          </Button>
+          <TextBody marginTop="0.75em">Or</TextBody>
           <FormInput
             label=""
             placeholder="Send to Email"
@@ -303,9 +307,6 @@ const SaveGuardians = () => {
               </IconButton>
             )}
           />
-          <Button onClick={handleDownloadGuardians} disabled={downloading} loading={downloading} _styles={{ width: '100%', marginTop: '0.75em' }} LeftIcon={<DownloadIcon />}>
-            Download
-          </Button>
         </Box>
         <Box width="400px" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
           <Heading3>Save with Soul Wallet</Heading3>
