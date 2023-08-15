@@ -74,15 +74,20 @@ const GuardiansChecking = () => {
   }, []);
 
   const getRecoverRecord = async () => {
-    const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
-    console.log('guardianSignatures', result)
-    const guardianSignatures = result.data.guardianSignatures
-    setGuardianSignatures(guardianSignatures)
-    const status = result.data.status
-    setRecoverStatus(status)
-    const statusList = result.data.statusData.chainRecoveryStatus
-    setChainStatusList(statusList)
-    console.log('recoveryRecordID', result, guardianSignatures)
+    try {
+      const result = await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })
+      console.log('guardianSignatures', result)
+      const guardianSignatures = result.data.guardianSignatures
+      setGuardianSignatures(guardianSignatures)
+      const status = result.data.status
+      setRecoverStatus(status)
+      const statusList = result.data.statusData.chainRecoveryStatus
+      setChainStatusList(statusList)
+      setLoaded(true)
+      console.log('recoveryRecordID', result, guardianSignatures)
+    } catch (error: any) {
+      console.log('error', error.message)
+    }
   }
 
   useEffect(() => {
@@ -90,7 +95,6 @@ const GuardiansChecking = () => {
 
     setInterval(async () => {
       getRecoverRecord()
-      setLoaded(true)
     }, 5000)
   }, []);
 
