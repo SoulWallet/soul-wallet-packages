@@ -38,6 +38,7 @@ export interface GuardianStore {
     setThreshold: (threshold: number) => void;
     setSlot: (slot: string) => void;
     setSlotInitInfo: (slotInitInfo: any) => void;
+    getSlotInitInfo: () => void;
 
     setNewKey: (newKey: string) => void;
     setRecoverRecordId: (recoverRecordId: any) => void;
@@ -54,7 +55,7 @@ export interface GuardianStore {
 }
 
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
-const createGuardianSlice = immer<GuardianStore>((set) => ({
+const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     guardians: [],
     guardianNames: null,
     threshold: 0,
@@ -79,6 +80,9 @@ const createGuardianSlice = immer<GuardianStore>((set) => ({
     setThreshold: (threshold: number) => set({ threshold }),
     setSlot: (slot: string) => set({ slot }),
     setSlotInitInfo: (slotInitInfo: any) => set({ slotInitInfo }),
+    getSlotInitInfo: () => {
+        return get().slotInitInfo
+    },
 
     setNewKey: (newKey: string) => set({ newKey }),
     setRecoverRecordId: (recoverRecordId: any) => set({ recoverRecordId }),
