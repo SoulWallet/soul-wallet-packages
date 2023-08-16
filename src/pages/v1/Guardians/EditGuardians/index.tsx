@@ -105,7 +105,7 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
-  const [paymentParems, setPaymentParems] = useState(null)
+  const [paymentParems, setPaymentParems] = useState<any>(null)
 
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
@@ -216,14 +216,16 @@ export default function GuardiansSetting() {
   }
 
   const openPayLink = async () => {
-    const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
+    if (paymentParems) {
+      const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
 
-    copyText(url)
+      copyText(url)
 
-    toast({
-      title: "Copy success!",
-      status: "success",
-    });
+      toast({
+        title: "Copy success!",
+        status: "success",
+      });
+    }
   };
 
   if (paymentRequesting) {
