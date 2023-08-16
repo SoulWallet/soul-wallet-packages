@@ -123,8 +123,8 @@ const GuardiansChecking = () => {
     setGuardians(recoveringGuardians)
     setGuardianNames(recoveringGuardianNames)
     setThreshold(recoveringThreshold)
-    setSlot(recoveringSlot)
-    setSlotInitInfo(recoveringSlotInitInfo)
+    // setSlot(recoveringSlot)
+    // setSlotInitInfo(recoveringSlotInitInfo)
     goPlugin('wallet')
     setReplaced(true)
   }

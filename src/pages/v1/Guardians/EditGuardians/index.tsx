@@ -96,7 +96,7 @@ const amountValidate = (values: any, props: any) => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
-  const { calcGuardianHash, getReplaceGuardianInfo } = useKeystore()
+  const { calcGuardianHash, getReplaceGuardianInfo, getActiveGuardianHash } = useKeystore()
   const [showTips, setShowTips] = useState(false)
 
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
@@ -141,6 +141,19 @@ export default function GuardiansSetting() {
       payload: targetStep,
     });
   };
+
+  const getActiveGuardiansHash = async () => {
+    const result = await getActiveGuardianHash()
+    console.log('getActiveGuardiansHash', result)
+  }
+
+  useEffect(() => {
+    getActiveGuardiansHash()
+
+    setInterval(() => {
+      getActiveGuardiansHash()
+    }, 5000)
+  }, [])
 
   const handleSubmit = async () => {
     try {
