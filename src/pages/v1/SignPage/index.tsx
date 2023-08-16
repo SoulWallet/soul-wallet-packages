@@ -22,7 +22,6 @@ export default function SignPage() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
-    // const { getGasPrice } = useQuery();
     const { directSignAndSend } = useWallet();
     const { navigate } = useBrowser();
     const signModal = createRef<any>();

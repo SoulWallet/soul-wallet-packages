@@ -57,6 +57,17 @@ export default function useWallet() {
 
         userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
 
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+        userOp.maxFeePerGas = maxFeePerGas;
+        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+
+        // set preVerificationGas
+        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+
+        if (gasLimit.isErr()) {
+            throw new Error(gasLimit.ERR.message);
+        }
+
         if (estimateCost) {
             const { requiredAmount } = await getFeeCost(userOp, payToken);
             return requiredAmount;
