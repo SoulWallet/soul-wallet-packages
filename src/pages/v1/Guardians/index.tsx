@@ -19,10 +19,6 @@ const StepComponent = () => {
         title: "Get Started",
         element: <EditGuardians />,
       },
-      [GuardiansStepEn.Set]: {
-        title: "Get Started",
-        element: <SetGuardians />,
-      },
       [GuardiansStepEn.Save]: {
         title: "Get Started",
         element: <SaveGuardians />,

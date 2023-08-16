@@ -97,7 +97,6 @@ export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
   const { calcGuardianHash } = useKeystore()
-  const { updateFinalGuardians } = useGlobalStore();
   const [showTips, setShowTips] = useState(false)
   const [loading, setLoading] = useState(false)
   const [skipping, setSkipping] = useState(false)
@@ -245,10 +244,6 @@ export default function GuardiansSetting() {
       removeFields(getFieldsByGuardianIds([deleteId]))
     }
   }
-
-  const handleAddGuardian = () => {
-    // addGuardian();
-  };
 
   const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
     dispatch({

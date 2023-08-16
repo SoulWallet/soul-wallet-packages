@@ -1,4 +1,3 @@
-import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { RecoverStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import React, { useRef, useState, useEffect } from "react";
 import attentionIcon from "@src/assets/icons/attention.svg";
@@ -35,7 +34,6 @@ const GuardiansChecking = () => {
   // const { initRecoverWallet } = useWallet();
   const toast = useToast()
   const { account, getAccount, replaceAddress } = useWalletContext()
-  const formRef = useRef<IGuardianFormHandler>(null);
   const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
   const { goPlugin } = useBrowser();
 
@@ -97,23 +95,6 @@ const GuardiansChecking = () => {
       getRecoverRecord()
     }, 5000)
   }, []);
-
-  const handleAskSignature = async () => {
-    handleCheckGuardianAddresses();
-    try {
-      setLoading(true)
-      const guardians = (await formRef.current?.submit()) as GuardianItem[];
-      dispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: RecoverStepEn.SignaturePending,
-      });
-    } catch (error) {
-      notify("Error", "Failed to init recover request")
-      console.error(error);
-    }finally{
-      setLoading(false)
-    }
-  };
 
   const handleNext = async () => {
     let url
