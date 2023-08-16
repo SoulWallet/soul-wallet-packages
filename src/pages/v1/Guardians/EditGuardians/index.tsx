@@ -7,7 +7,7 @@ import useKeyring from "@src/hooks/useKeyring";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import { Box, Text, Image, useToast } from "@chakra-ui/react"
-import { nextRandomId } from "@src/lib/tools";
+import { copyText, nextRandomId } from "@src/lib/tools";
 import useConfig from "@src/hooks/useConfig";
 import { L1KeyStore } from "@soulwallet/sdk";
 import { useAddressStore } from "@src/store/address";
@@ -25,6 +25,7 @@ import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
 import MinusIcon from "@src/assets/icons/minus.svg";
 import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
+import config from "@src/config";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
@@ -103,7 +104,8 @@ export default function GuardiansSetting() {
   const [guardiansList, setGuardiansList] = useState([])
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
-  const [requesting, setRequesting] = useState(false)
+  const [paymentRequesting, setPaymentRequesting] = useState(false)
+  const [paymentParems, setPaymentParems] = useState(null)
 
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
@@ -168,6 +170,8 @@ export default function GuardiansSetting() {
       console.log('threshold', threshold)
       console.log('guardianHash', guardianHash)
       console.log('replaceGuardiansInfo', replaceGuardiansInfo)
+      setPaymentParems(replaceGuardiansInfo)
+      setPaymentRequesting(true)
 
       // setGuardians(guardianAddresses)
       // setGuardianNames(guardianNames)
@@ -209,6 +213,40 @@ export default function GuardiansSetting() {
   const toggleTips = (event: any) => {
     console.log('toggleTips', event)
     setShowTips(!showTips)
+  }
+
+  const openPayLink = async () => {
+    const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
+
+    copyText(url)
+
+    toast({
+      title: "Copy success!",
+      status: "success",
+    });
+  };
+
+  if (paymentRequesting) {
+    return (
+      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Heading1>
+          Request Payment
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center">
+
+          </TextBody>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+          <Button
+            onClick={openPayLink}
+            _styles={{ width: '455px' }}
+          >
+            Open Pay Link
+          </Button>
+        </Box>
+      </Box>
+    )
   }
 
   return (
@@ -296,7 +334,8 @@ export default function GuardiansSetting() {
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
         <Button
-          // disabled={disabled}
+          disabled={disabled}
+          loading={loading}
           onClick={handleSubmit}
           _styles={{ width: '455px' }}
         >
