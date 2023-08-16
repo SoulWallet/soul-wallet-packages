@@ -297,7 +297,7 @@ export default function GuardiansSetting() {
       <Heading1>Set Guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
-          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show more</Text>
+          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
         </TextBody>
       </Box>
       {showTips && (
