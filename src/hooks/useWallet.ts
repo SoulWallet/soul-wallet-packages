@@ -19,7 +19,7 @@ export default function useWallet() {
     const { toggleActivatedChain } = useAddressStore();
     const { calcGuardianHash } = useKeystore();
     const { selectedChainId } = useChainStore();
-    const { getGasPrice, getFeeCost } = useQuery();
+    const { getFeeCost, getPrefund } = useQuery();
     const { chainConfig } = useConfig();
     const { guardians, threshold } = useGuardianStore();
     const keystore = useKeyring();
@@ -38,7 +38,7 @@ export default function useWallet() {
             throw new Error(userOpRet.ERR.message);
         }
 
-        const userOp = userOpRet.OK;
+        let userOp = userOpRet.OK;
 
         // approve paymaster to spend ERC-20
         const soulAbi = new ethers.Interface(ABI_SoulWallet);
@@ -57,23 +57,16 @@ export default function useWallet() {
 
         userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
 
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = maxFeePerGas;
-        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        const feeCost = await getFeeCost(userOp, payToken);
 
-        // set preVerificationGas
-        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
-
-        if (gasLimit.isErr()) {
-            throw new Error(gasLimit.ERR.message);
-        }
+        userOp = feeCost.userOp;
 
         if (estimateCost) {
-            const { requiredAmount } = await getFeeCost(userOp, payToken);
+            const { requiredAmount } = await getPrefund(userOp, payToken);
             return requiredAmount;
         } else {
             // TODO, estimate fee could be avoided
-            await directSignAndSend(userOp, payToken);
+            await signAndSend(userOp, payToken);
             // IMPORTANT TODO, what if user don't wait?
             toggleActivatedChain(userOp.sender, selectedChainId);
         }
@@ -84,7 +77,7 @@ export default function useWallet() {
         return soulAbi.encodeFunctionData("setGuardian(bytes32,bytes32,bytes32)", [slot, guardianHash, keySignature]);
     };
 
-    const directSignAndSend = async (userOp: UserOperation, payToken?: string) => {
+    const signAndSend = async (userOp: UserOperation, payToken?: string) => {
         // checkpaymaster
         if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
@@ -138,7 +131,7 @@ export default function useWallet() {
         addPaymasterAndData,
         activateWallet,
         getSetGuardianCalldata,
-        directSignAndSend,
+        signAndSend,
         backupGuardiansOnChain,
         backupGuardiansByEmail,
         backupGuardiansByDownload,

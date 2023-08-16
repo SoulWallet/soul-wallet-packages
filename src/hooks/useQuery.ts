@@ -45,23 +45,7 @@ export default function useQuery() {
         }
     };
 
-    const getFeeCost = async (userOp: any, payToken: string) => {
-        // set 1559 fee
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = maxFeePerGas;
-        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
-
-        if (payToken && payToken !== ethers.ZeroAddress) {
-            userOp.paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
-        }
-
-        // get gas limit
-        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
-
-        if (gasLimit.isErr()) {
-            throw new Error(gasLimit.ERR.message);
-        }
-
+    const getPrefund = async (userOp: any, payToken: string) => {
         // get preFund
         const preFund = await soulWallet.preFund(userOp);
 
@@ -95,14 +79,30 @@ export default function useQuery() {
                 userOp,
             };
         }
+    };
 
-        // // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
-        // const requiredUSDC = requiredFinalPrefund
-        //     .mul(exchangePrice.price)
-        //     .mul(BigNumber.from(10).pow(tokenDecimals))
-        //     .div(BigNumber.from(10).pow(exchangePrice.decimals))
-        //     .div(BigNumber.from(10).pow(18));
-        // console.log("requiredUSDC: " + ethers.formatUnits(requiredUSDC, tokenDecimals), "USDC");
+    const getFeeCost = async (userOp: any, payToken: string) => {
+        // set 1559 fee
+        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
+        userOp.maxFeePerGas = maxFeePerGas;
+        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+
+        if (payToken && payToken !== ethers.ZeroAddress) {
+            userOp.paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
+        }
+
+        // get gas limit
+        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+
+        if (gasLimit.isErr()) {
+            throw new Error(gasLimit.ERR.message);
+        }
+
+        return {
+            userOp,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        };
     };
 
     // const getWalletType = async (address: string) => {
@@ -115,11 +115,11 @@ export default function useQuery() {
 
     const refreshActivateStatus = () => {
         // refresh all activate status on specific chain
-
-    }
+    };
 
     return {
         getGasPrice,
         getFeeCost,
+        getPrefund,
     };
 }

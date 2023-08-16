@@ -79,9 +79,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
     const [sponsor, setSponsor] = useState<any>(null);
+    const [activeTxns, setActiveTxns] = useState<any>(null); // [
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
-    const { getFeeCost, getGasPrice } = useQuery();
+    const { getFeeCost, getGasPrice, getPrefund } = useQuery();
     const [sendToAddress, setSendToAddress] = useState("");
     const { chainConfig, selectedAddressItem } = useConfig();
     const { soulWallet } = useSdk();
@@ -103,7 +104,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                 throw new Error(userOpRet.ERR.message);
             }
 
-            const userOp = userOpRet.OK;
+            let userOp = userOpRet.OK;
 
             // set preVerificationGas
             const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
@@ -111,14 +112,15 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             if (gasLimit.isErr()) {
                 throw new Error(gasLimit.ERR.message);
             }
-            console.log("000000", userOp.preVerificationGas, userOp.verificationGasLimit);
+
+            const feeCost = await getFeeCost(userOp, payToken);
+            userOp = feeCost.userOp;
+
             // paymasterAndData length calc 1872 = ((236 - 2) / 2) * 16;
             userOp.preVerificationGas = `0x${BN(userOp.preVerificationGas.toString()).plus(1872).toString(16)}`;
             userOp.verificationGasLimit = `0x${BN(userOp.verificationGasLimit.toString()).plus(30000).toString(16)}`;
 
-            if (!userOp) {
-                throw new Error("Failed to format tx");
-            }
+            getFinalPrefund();
 
             return userOp;
         } catch (err) {
@@ -135,7 +137,6 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
             setKeepModalVisible(keepVisible || false);
 
-            console.log("send to is", sendTo);
             setSendToAddress(sendTo);
 
             if (actionType === "getAccounts") {
@@ -148,6 +149,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
             if (txns) {
                 const userOp = await formatUserOp(txns);
+                setActiveTxns(txns);
                 setActiveOperation(userOp);
                 const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
                 console.log("decoded data", callDataDecodes);
@@ -211,12 +213,12 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         }
     };
 
-    const getFeeCostA = async () => {
+    const getFinalPrefund = async () => {
         setLoadingFee(true);
         setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requiredAmount } = await getFeeCost(activeOperation, payToken);
+        const { requiredAmount } = await getPrefund(activeOperation, payToken);
 
         if (ethers.ZeroAddress === payToken) {
             setFeeCost(`${requiredAmount} ${chainConfig.chainToken}`);
@@ -231,14 +233,16 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             return;
         }
         setPayTokenSymbol(getTokenBalance(payToken).symbol || "Unknown");
+        const newUserOp = formatUserOp(activeTxns);
+        setActiveOperation(newUserOp);
     }, [payToken]);
 
-    useEffect(() => {
-        if (!activeOperation || !payToken) {
-            return;
-        }
-        getFeeCostA();
-    }, [payToken, activeOperation]);
+    // useEffect(() => {
+    //     if (!activeOperation || !payToken) {
+    //         return;
+    //     }
+    //     getFinalPrefund();
+    // }, [payToken, activeOperation]);
 
     return (
         <div ref={ref}>

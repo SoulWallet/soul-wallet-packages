@@ -22,7 +22,7 @@ export default function SignPage() {
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
-    const { directSignAndSend } = useWallet();
+    const { signAndSend } = useWallet();
     const { navigate } = useBrowser();
     const signModal = createRef<any>();
     const keyring = useKeyring();
@@ -77,7 +77,7 @@ export default function SignPage() {
                     sendTo,
                 });
 
-                await directSignAndSend(userOp, payToken);
+                await signAndSend(userOp, payToken);
 
                 // if from dapp, return trsanction result
                 if (tabId) {
