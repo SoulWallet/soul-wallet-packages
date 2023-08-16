@@ -120,7 +120,7 @@ const SaveGuardians = () => {
         guardianHash,
         guardianDetails: {
           guardians,
-          threshold,
+          threshold: Number(threshold),
           salt
         },
         slot,
@@ -180,7 +180,7 @@ const SaveGuardians = () => {
         guardianNames,
         guardianDetails: {
           guardians,
-          threshold,
+          threshold: Number(threshold),
           salt
         },
         slot,
@@ -233,7 +233,7 @@ const SaveGuardians = () => {
         guardianNames,
         guardianDetails: {
           guardians,
-          threshold,
+          threshold: Number(threshold),
           salt
         },
         slot,
