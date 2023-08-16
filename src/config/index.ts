@@ -34,6 +34,6 @@ export default {
     magicValue: "0x1626ba7e",
     backendURL: "https://api-dev.soulwallet.io/appapi",
     soulScanURL: "https://api-dev.soulwallet.io/opapi",
-    officialWebUrl: "http://localhost:8100",
+    officialWebUrl: process.env.OFFICIAL_WEB_URL,
     chainList: [require(`./chains/arb-goerli`).default, require(`./chains/goerli`).default],
 };

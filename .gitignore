@@ -11,3 +11,4 @@ play.ts
 .vscode
 todo.md
 memo.md
+.env

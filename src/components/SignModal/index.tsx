@@ -11,9 +11,11 @@ import IconLock from "@src/assets/icons/lock.svg";
 import Button from "../Button";
 import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
+import { useBalanceStore } from "@src/store/balance";
 import GasSelect from "../SendAssets/comp/GasSelect";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useSdk from "@src/hooks/useSdk";
+import BN from "bignumber.js";
 import useConfig from "@src/hooks/useConfig";
 
 enum SignTypeEn {
@@ -63,16 +65,20 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const { selectedAddress } = useAddressStore();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
-    const [loadingFee, setLoadingFee] = useState(false);
+    const [loadingFee, setLoadingFee] = useState(true);
     const [origin, setOrigin] = useState<string>("");
     const [promiseInfo, setPromiseInfo] = useState<any>({});
     const [decodedData, setDecodedData] = useState<any>({});
     const [signing, setSigning] = useState<boolean>(false);
+    const { getTokenBalance } = useBalanceStore();
+    // TODO, remember user's last select
     const [payToken, setPayToken] = useState(ethers.ZeroAddress);
+    const [payTokenSymbol, setPayTokenSymbol] = useState("");
     const [feeCost, setFeeCost] = useState("");
     const [activeOperation, setActiveOperation] = useState<UserOperation>();
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
+    const [sponsor, setSponsor] = useState<any>(null);
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
     const { getFeeCost, getGasPrice } = useQuery();
@@ -98,15 +104,17 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             }
 
             const userOp = userOpRet.OK;
-            userOp.maxFeePerGas = maxFeePerGas;
-            userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
 
-            // get gas limit
-            // const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
+            // set preVerificationGas
+            const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
 
-            // if (gasLimit.isErr()) {
-            //     throw new Error(gasLimit.ERR.message);
-            // }
+            if (gasLimit.isErr()) {
+                throw new Error(gasLimit.ERR.message);
+            }
+            console.log("000000", userOp.preVerificationGas, userOp.verificationGasLimit);
+            // paymasterAndData length calc 1872 = ((236 - 2) / 2) * 16;
+            userOp.preVerificationGas = `0x${BN(userOp.preVerificationGas.toString()).plus(1872).toString(16)}`;
+            userOp.verificationGasLimit = `0x${BN(userOp.verificationGasLimit.toString()).plus(30000).toString(16)}`;
 
             if (!userOp) {
                 throw new Error("Failed to format tx");
@@ -156,7 +164,6 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                     resolve,
                     reject,
                 });
-                // setVisible(true);
             });
         },
     }));
@@ -171,8 +178,12 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
     const onConfirm = async () => {
         setSigning(true);
-
-        if (payToken === ethers.ZeroAddress) {
+        if (sponsor && sponsor.paymasterAndData) {
+            promiseInfo.resolve({
+                userOp: { ...activeOperation, paymasterAndData: sponsor.paymasterAndData },
+                payToken,
+            });
+        } else if (payToken === ethers.ZeroAddress) {
             promiseInfo.resolve({ userOp: activeOperation, payToken });
         } else {
             promiseInfo.resolve({ userOp: activeOperation, payToken });
@@ -194,7 +205,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             chainConfig.contracts.entryPoint,
             UserOpUtils.userOperationFromJSON(UserOpUtils.userOperationToJSON(userOp)),
         );
-        console.log("sponsor res", res);
+        if (res.data.sponsorInfos && res.data.sponsorInfos.length > 0) {
+            // TODO, check >1 sponsor
+            setSponsor(res.data.sponsorInfos[0]);
+        }
     };
 
     const getFeeCostA = async () => {
@@ -211,6 +225,13 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         }
         setLoadingFee(false);
     };
+
+    useEffect(() => {
+        if (!payToken) {
+            return;
+        }
+        setPayTokenSymbol(getTokenBalance(payToken).symbol || "Unknown");
+    }, [payToken]);
 
     useEffect(() => {
         if (!activeOperation || !payToken) {
@@ -348,10 +369,23 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                                     {signType === SignTypeEn.Transaction && (
                                         <>
                                             <InfoWrap>
-                                                <InfoItem>
+                                                <InfoItem align={sponsor && "flex-start"}>
                                                     <Text>Gas fee</Text>
-                                                    {/* <Text>Gas fee ($2.22)</Text> */}
-                                                    {feeCost ? (
+                                                    {sponsor ? (
+                                                        <Box textAlign={"right"}>
+                                                            <Flex mb="1" gap="4" justify={"flex-end"}>
+                                                                {feeCost && (
+                                                                    <Text textDecoration={"line-through"}>
+                                                                        {feeCost.split(" ")[0]} {payTokenSymbol}
+                                                                    </Text>
+                                                                )}
+                                                                <Text>0 ETH</Text>
+                                                            </Flex>
+                                                            <Text color="#898989">
+                                                                Sponsored by {sponsor.sponsorParty || "Soul Wallet"}
+                                                            </Text>
+                                                        </Box>
+                                                    ) : feeCost ? (
                                                         <Flex gap="2">
                                                             <Text>{feeCost.split(" ")[0]}</Text>
                                                             <GasSelect gasToken={payToken} onChange={setPayToken} />
@@ -380,7 +414,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                                 mt="6"
                                 onClick={onConfirm}
                                 loading={signing}
-                                disabled={loadingFee}
+                                disabled={loadingFee && !sponsor}
                             >
                                 Sign
                             </Button>

@@ -73,7 +73,6 @@ export default function useQuery() {
 
         // erc20
         if (payToken === ethers.ZeroAddress) {
-            console.log('11111111111', BN(preFund.OK.missfund).shiftedBy(-18).toFixed(), ethers.formatEther(preFund.OK.missfund))
             return {
                 requiredAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
                 userOp,
