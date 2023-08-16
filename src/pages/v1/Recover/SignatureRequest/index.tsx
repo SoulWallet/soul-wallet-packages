@@ -30,7 +30,22 @@ const GuardiansChecking = () => {
   const [loading, setLoading] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>("");
   const { generateQrCode } = useTools();
-  const { guardians, threshold, slot, slotInitInfo, recoverRecordId, guardianSignatures, setGuardianSignatures, resetGuardians } = useGuardianStore();
+  const {
+    recoveringGuardians,
+    recoveringGuardianNames,
+    recoveringThreshold,
+    recoverRecordId,
+    recoveringSlot,
+    recoveringSlotInitInfo,
+    guardianSignatures,
+    setGuardianSignatures,
+    setRecoverRecordId,
+    setGuardians,
+    setGuardianNames,
+    setThreshold,
+    setSlot,
+    setSlotInitInfo
+  } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
   const toast = useToast()
   const { account, getAccount, replaceAddress } = useWalletContext()
@@ -39,17 +54,6 @@ const GuardiansChecking = () => {
 
   const { cachedGuardians } = useRecoveryContext();
   const dispatch = useStepDispatchContext();
-  const handleCheckGuardianAddresses = () => {
-    // TODO: here
-    // // 👇 mock logic, delete it
-    // setShowVerificationModal(true);
-    // setTimeout(() => {
-    //     setShowVerificationModal(false);
-    // }, 3000);
-    // ! if check pass, then submit guardians to the global store
-    // formRef.current?.submit();
-    // TODO: once the guardians are submitted, clear the temporary guardians
-  };
 
   const doCopy = () => {
     copyText(`${config.officialWebUrl}/recover/${recoverRecordId}`)
@@ -115,7 +119,12 @@ const GuardiansChecking = () => {
 
   const replaceWallet = async () => {
     replaceAddress()
-    resetGuardians()
+    setRecoverRecordId(null)
+    setGuardians(recoveringGuardians)
+    setGuardianNames(recoveringGuardianNames)
+    setThreshold(recoveringThreshold)
+    setSlot(recoveringSlot)
+    setSlotInitInfo(recoveringSlotInitInfo)
     goPlugin('wallet')
     setReplaced(true)
   }
@@ -228,7 +237,7 @@ const GuardiansChecking = () => {
       </Box>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
-          Waiting for signatures ({threshold} of {guardians.length} complete)
+          Waiting for signatures ({recoveringThreshold} of {recoveringGuardians.length} complete)
         </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">

@@ -96,7 +96,7 @@ const EnterGuardiansAddress = () => {
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
   const { account } = useWalletContext();
-  const { guardianDetails, guardians, threshold, slot, slotInitInfo, setRecoverRecordId, newKey, resetGuardians } = useGuardianStore();
+  const { recoveringGuardians, recoveringThreshold, recoveringSlot, recoveringSlotInitInfo, setRecoverRecordId, newKey } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
   const toast = useToast()
   const {chainConfig} = useConfig();
@@ -106,7 +106,7 @@ const EnterGuardiansAddress = () => {
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
     validate,
-    initialValues: getInitialValues(defaultGuardianIds, guardians)
+    initialValues: getInitialValues(defaultGuardianIds, recoveringGuardians)
   })
 
   const amountForm = useForm({
@@ -114,7 +114,7 @@ const EnterGuardiansAddress = () => {
     validate: amountValidate,
     restProps: amountData,
     initialValues: {
-      amount: threshold
+      amount: recoveringThreshold
     }
   })
 
@@ -123,10 +123,6 @@ const EnterGuardiansAddress = () => {
   useEffect(() => {
     setAmountData({ guardiansCount: guardiansList.length })
   }, [guardiansList])
-
-  useEffect(() => {
-    console.log('info', { guardians, threshold, slot, slotInitInfo })
-  }, [])
 
   useEffect(() => {
     setGuardiansList(Object.keys(values).filter(key => key.indexOf('address') === 0).map(key => values[key]).filter(address => !!String(address).trim().length) as any)
@@ -142,9 +138,13 @@ const EnterGuardiansAddress = () => {
       const keystore = chainConfig.contracts.l1Keystore
 
       const params = {
-        guardianDetails,
-        slot,
-        slotInitInfo,
+        guardianDetails: {
+          guardians: recoveringGuardians,
+          threshold: recoveringThreshold,
+          salt: ethers.ZeroHash
+        },
+        slot: recoveringSlot,
+        slotInitInfo: recoveringSlotInitInfo,
         keystore,
         newKey
       }

@@ -103,6 +103,7 @@ export default function GuardiansSetting() {
   const [guardiansList, setGuardiansList] = useState([])
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
+  const [requesting, setRequesting] = useState(false)
 
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
@@ -172,7 +173,7 @@ export default function GuardiansSetting() {
       // setGuardianNames(guardianNames)
       // setThreshold(threshold)
       setLoading(false)
-      handleJumpToTargetStep(GuardiansStepEn.Save);
+      // handleJumpToTargetStep(GuardiansStepEn.Save);
     } catch (error: any) {
       setLoading(false)
       toast({

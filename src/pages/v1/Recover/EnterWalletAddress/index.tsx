@@ -27,7 +27,7 @@ const validate = (values: any) => {
 
 const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
   const [loading, setLoading] = useState(false)
-  const { setGuardians, setThreshold, setSlot, setSlotInitInfo, setGuardianDetails, resetGuardians } = useGuardianStore();
+  const { setRecoveringGuardians, setRecoveringThreshold, setRecoveringSlot, setRecoveringSlotInitInfo, setRecoverRecordId } = useGuardianStore();
   const dispatch = useStepDispatchContext();
   const toast = useToast()
 
@@ -56,12 +56,11 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
       const slot = data.slot
       const slotInitInfo = data.slotInitInfo
 
-      resetGuardians()
-      setGuardianDetails(guardianDetails)
-      setGuardians(guardians)
-      setThreshold(threshold)
-      setSlot(slot)
-      setSlotInitInfo(slotInitInfo)
+      setRecoverRecordId(null)
+      setRecoveringGuardians(guardians)
+      setRecoveringThreshold(threshold)
+      setRecoveringSlot(slot)
+      setRecoveringSlotInitInfo(slotInitInfo)
 
       setLoading(false)
 

@@ -64,7 +64,7 @@ const SaveGuardians = () => {
   const [sended, setSended] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { account } = useWalletContext();
-  const { guardians, guardianNames, threshold, setSlotInitInfo } = useGuardianStore();
+  const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot } = useGuardianStore();
   const { setSelectedAddress, setAddressList } = useAddressStore();
   const { calcGuardianHash, getSlot } = useKeystore()
   const {chainConfig} = useConfig();
@@ -128,6 +128,7 @@ const SaveGuardians = () => {
       }
 
       const result = await api.guardian.backup(params)
+      setSlot(slot)
       setSlotInitInfo(slotInitInfo)
       setLoading(false)
       setLoaded(true)
@@ -187,6 +188,7 @@ const SaveGuardians = () => {
       }
 
       const result = await api.guardian.emailBackup(params)
+      setSlot(slot)
       setSlotInitInfo(slotInitInfo)
       setSending(false)
       setSended(true)
@@ -245,6 +247,7 @@ const SaveGuardians = () => {
       link.setAttribute("download", filename)
       link.click()
 
+      setSlot(slot)
       setSlotInitInfo(slotInitInfo)
       setDownloading(false)
       setDownloaded(true)
