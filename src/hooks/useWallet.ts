@@ -25,6 +25,10 @@ export default function useWallet() {
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
+    const getIsOwner = (signerKey: string) => {
+        
+    }
+
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
 
@@ -45,7 +49,7 @@ export default function useWallet() {
             ethers.parseEther("1000"),
         ]);
 
-        const approveCalldatas = [...new Array(to.length)].map((item: any) => approveCalldata);
+        const approveCalldatas = [...new Array(to.length)].map(() => approveCalldata);
 
         const callData = soulAbi.encodeFunctionData("executeBatch(address[],bytes[])", [to, approveCalldatas]);
 
@@ -57,6 +61,7 @@ export default function useWallet() {
             const { requiredAmount } = await getFeeCost(userOp, payToken);
             return requiredAmount;
         } else {
+            // TODO, estimate fee could be avoided
             await directSignAndSend(userOp, payToken);
             // IMPORTANT TODO, what if user don't wait?
             toggleActivatedChain(userOp.sender, selectedChainId);
@@ -69,35 +74,10 @@ export default function useWallet() {
     };
 
     const directSignAndSend = async (userOp: UserOperation, payToken?: string) => {
-        // TODO, estimate fee could be avoided
-
-        // set 1559 fee
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = maxFeePerGas;
-        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
-
         // checkpaymaster
-        if (payToken && payToken !== ethers.ZeroAddress) {
+        if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
             userOp.paymasterAndData = paymasterAndData;
-        }
-
-        // set verificationGasLimit and callGasLimit
-        // can be avoided if already set
-
-        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
-
-        if (gasLimit.isErr()) {
-            throw new Error(gasLimit.ERR.message);
-        }
-
-        // userOp.verificationGasLimit = `0x${(1000000).toString(16)}`;
-
-        // get preFund
-        const preFund = await soulWallet.preFund(userOp);
-
-        if (preFund.isErr()) {
-            throw new Error(preFund.ERR.message);
         }
 
         const validAfter = Math.floor(Date.now() / 1000);
@@ -126,7 +106,7 @@ export default function useWallet() {
 
         await Runtime.send("execute", {
             userOp: UserOpUtils.userOperationToJSON(userOp),
-            chainName: chainConfig.fileName,
+            chainConfig,
         });
     };
 

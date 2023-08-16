@@ -50,7 +50,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
         case "getChainConfig":
             const chainConfig = getSelectedChainItem();
-            console.log("GET chain config", chainConfig);
             browser.tabs.sendMessage(Number(senderTabId), {
                 target: "soul",
                 type: "response",
@@ -89,9 +88,9 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "execute":
-            const { userOp, tabId, chainName } = msg.data;
+            const { userOp, tabId, chainConfig: chainConfig2 } = msg.data;
 
-            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, chainName);
+            await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), tabId, chainConfig2);
 
             await browser.runtime.sendMessage({
                 target: "soul",
