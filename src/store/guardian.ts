@@ -38,7 +38,7 @@ export interface GuardianStore {
     setThreshold: (threshold: number) => void;
     setSlot: (slot: string) => void;
     setSlotInitInfo: (slotInitInfo: any) => void;
-    getSlotInitInfo: () => void;
+    getSlotInitInfo: () => any;
 
     setNewKey: (newKey: string) => void;
     setRecoverRecordId: (recoverRecordId: any) => void;
