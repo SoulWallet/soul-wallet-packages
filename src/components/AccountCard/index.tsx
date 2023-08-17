@@ -4,11 +4,14 @@ import { copyText } from "@src/lib/tools";
 import IconCopy from "@src/assets/copy.svg";
 import IconScan from "@src/assets/icons/scan.svg";
 import IconTrendUp from "@src/assets/icons/trend-up.svg";
-import ImgEthFaded from "@src/assets/chains/eth-faded.svg";
 import { useAddressStore } from "@src/store/address";
+import useConfig from "@src/hooks/useConfig";
 
 export default function AccountCard() {
     const { selectedAddress } = useAddressStore();
+    const { selectedChainItem } = useConfig();
+
+    console.log('selected item', selectedChainItem)
 
     const toast = useToast();
 
@@ -27,7 +30,7 @@ export default function AccountCard() {
             rounded="24px"
             py="16px"
             px="24px"
-            bg="radial-gradient(51.95% 100.00% at 100.00% 100.00%, #A3B2FF 0%, #E2FC89 100%)"
+            bg={selectedChainItem.cardBg}
             boxShadow={"0px 4px 8px 0px rgba(0, 0, 0, 0.12)"}
         >
             <Flex align={"center"} justify={"space-between"}>
@@ -51,7 +54,7 @@ export default function AccountCard() {
                         </Text>
                     </Flex>
                 </Box>
-                <Image src={ImgEthFaded} />
+                <Image src={selectedChainItem.iconFaded} />
             </Flex>
         </Flex>
     );

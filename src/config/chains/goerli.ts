@@ -3,9 +3,12 @@
  */
 
 import IconEth from "@src/assets/chains/eth.svg";
+import IconEthFaded from "@src/assets/chains/eth-faded.svg";
 
 export default {
     icon: IconEth,
+    iconFaded: IconEthFaded,
+    cardBg: "radial-gradient(51.95% 100.00% at 100.00% 100.00%, #A3B2FF 0%, #E2FC89 100%)",
     provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
     scanUrl: "https://goerli.etherscan.io",
