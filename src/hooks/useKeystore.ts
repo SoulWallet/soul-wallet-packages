@@ -26,7 +26,7 @@ export default function useKeystore() {
      * Get slot info
      *
      */
-    const getSlot = async (
+    const getSlot = (
         initialKey: string,
         initialGuardianHash: string,
         initialGuardianSafePeriod: number = L1KeyStore.days * 2,
@@ -39,7 +39,8 @@ export default function useKeystore() {
     };
 
     const getActiveGuardianHash = async () => {
-        const { slot } = slotInitInfo;
+        const { initialKey, initialGuardianHash, initialGuardianSafePeriod } = slotInitInfo;
+        const slot = getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
         const now = Math.floor(Date.now() / 1000);
         const res = await getKeyStoreInfo(slot);
         if (res.isErr()) {
