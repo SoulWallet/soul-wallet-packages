@@ -10,6 +10,24 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
 
     const selectedToken = tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === sendToken)[0];
 
+    const onInputChange = (event: any) => {
+        const inputValue = event.target.value;
+
+        if (inputValue === ".") {
+            return;
+        }
+
+        // only allow number
+        const filteredValue = inputValue.replace(/[^0-9.]/g, "");
+
+        // remove extra dot
+        if ((filteredValue.match(/\./g) || []).length > 1) {
+            onChange(filteredValue.replace(/\.(?=.*\.)/g, ""));
+        } else {
+            onChange(filteredValue);
+        }
+    };
+
     return (
         <Flex flexDir={"column"} gap="3" py="3" px="4" bg="#fff" rounded="20px">
             <Menu>
@@ -46,7 +64,7 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
             <Box>
                 <Input
                     value={amount}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={onInputChange}
                     outline="none"
                     bg="none"
                     border="none"

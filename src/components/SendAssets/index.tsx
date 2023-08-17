@@ -23,12 +23,13 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
     const toast = useToast();
 
     const selectedToken = getTokenBalance(sendToken);
-    const selectedTokenBalance= BN(selectedToken.tokenBalance).shiftedBy(-selectedToken.decimals).toFixed();
+    const selectedTokenBalance = BN(selectedToken.tokenBalance).shiftedBy(-selectedToken.decimals).toFixed();
 
     const { sendErc20, sendEth } = useTransaction();
 
     const confirmAddress = () => {
-        if (!receiverAddress || !ethers.isAddress(receiverAddress)) {
+        const trimedAddress = receiverAddress ? receiverAddress.trim() : "";
+        if (!trimedAddress || !ethers.isAddress(trimedAddress)) {
             toast({
                 title: "Address not valid",
                 status: "error",
@@ -52,9 +53,9 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         }
 
         if (sendToken === ethers.ZeroAddress) {
-            sendEth(receiverAddress, amount);
+            sendEth(trimedAddress, amount);
         } else {
-            sendErc20(sendToken, receiverAddress, amount, selectedToken.decimals);
+            sendErc20(sendToken, trimedAddress, amount, selectedToken.decimals);
         }
     };
 
