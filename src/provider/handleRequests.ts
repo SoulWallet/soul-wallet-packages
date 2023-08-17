@@ -8,8 +8,8 @@ let ethersProvider: any = null;
 let currentChainId: any = undefined;
 
 const getAccounts = async () => {
-    console.log("get account 2");
-    return [await windowBus.send("getAccounts")];
+    const account = await windowBus.send("getAccounts")
+    return [account];
 };
 
 const sendTransaction = async (params: any) => {

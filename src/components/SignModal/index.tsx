@@ -167,6 +167,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         }
     };
 
+    const onConnect = () => {
+        promiseInfo.resolve();
+    };
+
     const onSign = async () => {
         promiseInfo.resolve();
     };
@@ -241,7 +245,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                         overflow={"hidden"}
                         p="5"
                     >
-                        {signType === SignTypeEn.Account && <ConnectDapp origin={origin} onConfirm={onConfirm} />}
+                        {signType === SignTypeEn.Account && <ConnectDapp origin={origin} onConfirm={onConnect} />}
                         {signType === SignTypeEn.Transaction && (
                             <SignTransaction
                                 decodedData={decodedData}

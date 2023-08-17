@@ -51,17 +51,21 @@ export default function SignPage() {
             return;
         }
 
+        console.log("IDDDDDDDDD:", id)
+
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
                 await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true });
                 toggleAllowedOrigin(selectedAddress, origin, true);
+                console.log("getAccounts params", { id, isResponse: true, data: selectedAddress, tabId });
                 await browser.tabs.sendMessage(Number(tabId), {
                     id,
                     isResponse: true,
                     data: selectedAddress,
                     tabId,
                 });
+                window.close();
             } else if (actionType === "approve") {
                 // IMPORTANT TODO, move to signModal
                 // const userOp = formatOperation();

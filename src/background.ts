@@ -61,7 +61,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
                     tabId: senderTabId,
                 });
             } else {
-                openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}`, windowWidth);
+                openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}`, windowWidth);
             }
 
             break;
@@ -91,7 +91,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "approve":
             const { origin, txns } = msg.data;
 
-            console.log("BEFORE APPROVE", msg.data)
+            console.log("BEFORE APPROVE ID IS", id)
             openWindow(
                 `${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}&id=${id}`,
                 windowWidth,

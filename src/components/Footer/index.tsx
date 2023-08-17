@@ -9,10 +9,12 @@ export default function Footer() {
     // IMPORTANT TODO, get from website
     const { getConnectedDapp } = useBrowser();
     const [origin, setOrigin] = useState<any>("");
+    const [host, setHost] = useState("");
 
     const getOrigin = async () => {
-        const res = await getConnectedDapp();
-        setOrigin(res);
+        const url = new URL((await getConnectedDapp()) || "");
+        setOrigin(url.origin);
+        setHost(url.host);
     };
 
     useEffect(() => {
@@ -67,7 +69,7 @@ export default function Footer() {
             <Flex bg="#fff" rounded={"20px"} px="8px">
                 <Image src={IconConnected} />
                 <Text fontFamily={"Martian"} fontWeight={"500"} fontSize={"10px"}>
-                    {origin}
+                    {host}
                 </Text>
             </Flex>
             <Tooltip label="Set Soul Wallet as default wallet for this dapp.">
