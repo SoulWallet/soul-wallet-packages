@@ -52,13 +52,11 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	eslint-visitor-keys	](	https://github.com/eslint/eslint-visitor-keys	) | 	Apache-2.0	 | 	2.1.0	 |
 | [	eslint	](	https://github.com/eslint/eslint	) | 	MIT	 | 	7.32.0	 |
 | [	eth-json-rpc-middleware	](	https://github.com/MetaMask/eth-json-rpc-middleware	) | 	ISC	 | 	9.0.1	 |
-| [	ethereumjs-util	](	https://github.com/ethereumjs/ethereumjs-monorepo	) | 	MPL-2.0	 | 	7.1.5	 |
 | [	ethers	](	https://github.com/ethers-io/ethers.js	) | 	MIT	 | 	5.7.2	 |
 | [	immer	](	https://github.com/immerjs/immer	) | 	MIT	 | 	9.0.19	 |
 | [	jest-css-modules	](	https://github.com/justinsisley/Jest-CSS-Modules	) | 	ISC	 | 	2.1.0	 |
 | [	jest	](	https://github.com/facebook/jest	) | 	MIT	 | 	26.6.3	 |
 | [	json-rpc-engine	](	https://github.com/MetaMask/json-rpc-engine	) | 	ISC	 | 	6.1.0	 |
-| [	json-rpc-middleware-stream	](	https://github.com/kumavis/json-rpc-middleware-stream	) | 	ISC	 | 	2.1.1	 |
 | [	loglevel	](	https://github.com/pimterry/loglevel	) | 	MIT	 | 	1.8.1	 |
 | [	nanoid	](	https://github.com/ai/nanoid	) | 	MIT	 | 	4.0.1	 |
 | [	node-polyfill-webpack-plugin	](	https://github.com/Richienb/node-polyfill-webpack-plugin	) | 	MIT	 | 	2.0.1	 |
