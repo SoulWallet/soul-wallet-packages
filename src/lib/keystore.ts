@@ -53,7 +53,6 @@ export default class KeyStore {
             if (saveKey) {
                 await setLocalStorage(this.keyStoreKey, KeystoreV3);
                 await browser.runtime.sendMessage({
-                    target: "soul",
                     type: "set/password",
                     data: password,
                 });
@@ -76,7 +75,6 @@ export default class KeyStore {
         await removeLocalStorage("recoverOpHash");
         await setLocalStorage(this.keyStoreKey, stagingKeystore);
         browser.runtime.sendMessage({
-            target: "soul",
             type: "set/password",
             data: stagingPw,
         });
@@ -91,7 +89,6 @@ export default class KeyStore {
                 this._privateKey = account.privateKey;
 
                 browser.runtime.sendMessage({
-                    target: "soul",
                     type: "set/password",
                     data: password,
                 });
@@ -104,7 +101,6 @@ export default class KeyStore {
     public async lock(): Promise<void> {
         this._privateKey = null;
         browser.runtime.sendMessage({
-            target: "soul",
             type: "set/password",
             data: null,
         });
@@ -120,7 +116,6 @@ export default class KeyStore {
             await setLocalStorage(this.keyStoreKey, KeystoreV3);
 
             browser.runtime.sendMessage({
-                target: "soul",
                 type: "set/password",
                 data: newPassword,
             });

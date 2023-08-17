@@ -15,6 +15,7 @@ import Switch from "@src/components/Switch";
 import ResetPassword from "./comp/ResetPassword";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import SettingFooter from "./comp/SettingFooter";
+import { useSettingStore } from "@src/store/setting";
 
 const SettingBox = ({ children, ...restProps }: any) => (
     <Flex
@@ -44,6 +45,7 @@ const SettingLeft = ({ icon, title }: any) => (
 const SettingMainpage = ({ onChange }: any) => {
     const keyring = useKeyring();
     const { showLocked } = useWalletContext();
+    const { globalShouldInject, setGlobalShouldInject } = useSettingStore();
 
     const doLockWallet = async () => {
         await keyring.lock();
@@ -61,7 +63,7 @@ const SettingMainpage = ({ onChange }: any) => {
                 </SettingBox>
                 <SettingBox>
                     <SettingLeft icon={IconDefault} title={"Set As Default"} />
-                    <Switch checked={false} onChange={() => {}} />
+                    <Switch checked={globalShouldInject} onChange={(val) => setGlobalShouldInject(val)} />
                 </SettingBox>
                 <SettingBox onClick={doLockWallet}>
                     <SettingLeft icon={IconLockWallet} title={"Lock wallet"} />

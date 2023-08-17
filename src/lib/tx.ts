@@ -1,7 +1,6 @@
 import { SoulWallet, Bundler } from "@soulwallet/sdk";
-import browser from "webextension-polyfill";
 import { notify } from "@src/lib/tools";
-import { printUserOp } from "@src/lib/tools";
+// import { printUserOp } from "@src/lib/tools";
 
 let soulWallet: any = null;
 let currentChainId: any = null;
@@ -24,7 +23,7 @@ export const initBundler = (bundlerUrl: string) => {
     bundler = new Bundler(bundlerUrl);
 };
 
-export const executeTransaction = async (userOp: any, tabId: any, chainConfig: any) => {
+export const executeTransaction = async (userOp: any, chainConfig: any) => {
     if (!soulWallet || currentChainId !== chainConfig.chainId) {
         initSoulWallet(chainConfig);
     }
@@ -33,7 +32,7 @@ export const executeTransaction = async (userOp: any, tabId: any, chainConfig: a
         initBundler(chainConfig.bundlerUrl);
     }
 
-    printUserOp(userOp);
+    // printUserOp(userOp);
     return new Promise(async (resolve, reject) => {
         const ret = await soulWallet.sendUserOperation(userOp);
 
@@ -73,17 +72,7 @@ export const executeTransaction = async (userOp: any, tabId: any, chainConfig: a
             } else {
                 console.log("receipt is", receipt);
                 if (receipt.OK.success) {
-                    if (tabId) {
-                        browser.tabs.sendMessage(Number(tabId), {
-                            target: "soul",
-                            type: "response",
-                            action: "signTransaction",
-                            data: receipt.OK.receipt.hash,
-                            tabId,
-                        });
-                    }
-                    notify("Transaction success", "Your transaction was confirmed on chain");
-                    resolve(receipt.OK);
+                    resolve(receipt.OK.receipt);
                 } else {
                     reject("tx failed");
                 }

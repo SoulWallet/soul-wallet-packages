@@ -3,7 +3,6 @@ import useKeyring from "./useKeyring";
 import { ethers } from "ethers";
 import useSdk from "./useSdk";
 import { useAddressStore } from "@src/store/address";
-import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { ABI_SoulWallet } from "@soulwallet/abi";
 import { useGuardianStore } from "@src/store/guardian";
@@ -12,6 +11,7 @@ import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useConfig from "./useConfig";
+import bgBus from "@src/lib/bgBus";
 import { useChainStore } from "@src/store/chain";
 
 export default function useWallet() {
@@ -25,9 +25,7 @@ export default function useWallet() {
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
-    const getIsOwner = (signerKey: string) => {
-        
-    }
+    const getIsOwner = (signerKey: string) => {};
 
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
@@ -66,7 +64,7 @@ export default function useWallet() {
             return requiredAmount;
         } else {
             // TODO, estimate fee could be avoided
-            await signAndSend(userOp, payToken);
+            await signAndSend(userOp, payToken, true);
             // IMPORTANT TODO, what if user don't wait?
             toggleActivatedChain(userOp.sender, selectedChainId);
         }
@@ -77,7 +75,7 @@ export default function useWallet() {
         return soulAbi.encodeFunctionData("setGuardian(bytes32,bytes32,bytes32)", [slot, guardianHash, keySignature]);
     };
 
-    const signAndSend = async (userOp: UserOperation, payToken?: string) => {
+    const signAndSend = async (userOp: UserOperation, payToken?: string, waitFinish?: boolean, tabId?: any) => {
         // checkpaymaster
         if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
@@ -108,10 +106,15 @@ export default function useWallet() {
 
         userOp.signature = packedSignatureRet.OK;
 
-        await Runtime.send("execute", {
+        const resultPromise = bgBus.send("execute", {
             userOp: UserOpUtils.userOperationToJSON(userOp),
             chainConfig,
+            tabId,
         });
+
+        if (waitFinish) {
+            await resultPromise;
+        }
     };
 
     const backupGuardiansOnChain = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {};

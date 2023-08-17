@@ -23,23 +23,22 @@ function sendMessage(data) {
     browser.runtime.sendMessage(data);
 }
 
-// pass message to background
+// transfer msg from window to background
 window.addEventListener(
     "message",
     (msg) => {
-        console.log('CS msg', msg)
-        if (msg.data.target === "soul" && msg.data.type !== "response") {
+        console.log("ContentScript Window msg", msg);
+        if (!msg.data.isResponse) {
             sendMessage(msg.data);
         }
     },
     false,
 );
 
-//receive message from background
+// transfer msg from background to window
 browser.runtime.onMessage.addListener((msg) => {
-    console.log('CS runtime msg', msg)
-    if (msg.target === "soul" && msg.type === "response") {
-        msg.isResponse = true;
+    console.log("ContentScript Runtime msg", msg);
+    if (msg.isResponse) {
         window.postMessage(msg);
     }
 });

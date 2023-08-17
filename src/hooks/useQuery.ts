@@ -55,27 +55,21 @@ export default function useQuery() {
             throw new Error(preFund.ERR.message);
         }
 
+        const requiredEth = BN(preFund.OK.missfund).shiftedBy(-18);
+
         // erc20
         if (payToken === ethers.ZeroAddress) {
             return {
-                requiredAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
+                requiredAmount: requiredEth.toFixed(),
                 userOp,
             };
         } else {
             // IMPORTANT TODO, get erc20 price
             getEthPrice();
             const erc20Price = 1853;
-
-            const tokenBalanceItem = getTokenBalance(payToken);
-
             return {
                 // IMPORTANT TODO, not fixed -18
-                requiredAmount: BN(preFund.OK.missfund)
-                    .shiftedBy(-tokenBalanceItem.decimals)
-                    .times(erc20Price)
-                    .times(chainConfig.maxCostMultiplier)
-                    .div(100)
-                    .toFixed(),
+                requiredAmount: requiredEth.times(erc20Price).times(chainConfig.maxCostMultiplier).div(100).toFixed(),
                 userOp,
             };
         }
