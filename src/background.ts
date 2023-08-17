@@ -13,7 +13,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
     console.log("BG msg", msg);
     const senderTabId = sender.tab?.id;
     const windowWidth = sender.tab?.width;
-    const {id} = msg;
+    const { id } = msg;
 
     switch (msg.type) {
         // send UserOP to bundler
@@ -25,18 +25,15 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             if (tabId) {
                 //return to dapp
                 browser.tabs.sendMessage(Number(tabId), {
+                    id,
                     tabId,
                     isResponse: true,
-                    action: "signTransaction",
                     data: receipt.hash,
                 });
             } else {
                 // return to popup
                 bgBus.resolve(id, receipt);
             }
-            break;
-        case "response":
-            browser.tabs.sendMessage(Number(msg.tabId), msg);
             break;
 
         case "set/password":
@@ -57,7 +54,8 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
             if (isAllowed) {
                 browser.tabs.sendMessage(Number(senderTabId), {
-                    type: "response",
+                    id,
+                    isResponse: true,
                     action: "getAccounts",
                     data: selectedAddress,
                     tabId: senderTabId,
@@ -71,7 +69,8 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "getChainConfig":
             const chainConfig = getSelectedChainItem();
             browser.tabs.sendMessage(Number(senderTabId), {
-                type: "response",
+                id,
+                isResponse: true,
                 action: "getChainConfig",
                 data: chainConfig,
                 tabId: senderTabId,
@@ -80,29 +79,38 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
 
         case "shouldInject":
             const shouldInject = checkShouldInject(msg.data.origin);
-
             await browser.tabs.sendMessage(Number(senderTabId), {
-                type: "response",
+                id,
+                isResponse: true,
                 action: "shouldInject",
                 data: shouldInject,
                 tabId: senderTabId,
             });
-
             break;
 
         case "approve":
             const { origin, txns } = msg.data;
 
-            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}`, windowWidth);
+            console.log("BEFORE APPROVE", msg.data)
+            openWindow(
+                `${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}&id=${id}`,
+                windowWidth,
+            );
 
             break;
 
         case "signMessage":
-            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}`, windowWidth);
+            openWindow(
+                `${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}&id=${id}`,
+                windowWidth,
+            );
             break;
 
         case "signMessageV4":
-            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}`, windowWidth);
+            openWindow(
+                `${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&data=${msg.data.data}&id=${id}`,
+                windowWidth,
+            );
             break;
     }
 });

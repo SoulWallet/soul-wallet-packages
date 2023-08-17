@@ -3,11 +3,22 @@ import Switch from "../Switch";
 import { Box, Text, Flex, Image, Tooltip } from "@chakra-ui/react";
 import IconConnected from "@src/assets/icons/connected.svg";
 import { useSettingStore } from "@src/store/setting";
-import { checkShouldInject } from "@src/lib/tools";
+import useBrowser from "@src/hooks/useBrowser";
 
 export default function Footer() {
     // IMPORTANT TODO, get from website
-    const origin = "app.uniswap.org";
+    const { getConnectedDapp } = useBrowser();
+    const [origin, setOrigin] = useState<any>("");
+
+    const getOrigin = async () => {
+        const res = await getConnectedDapp();
+        setOrigin(res);
+    };
+
+    useEffect(() => {
+        getOrigin();
+    }, []);
+
     const [shouldInject, setShouldInject] = useState(false);
     const { globalShouldInject, shouldInjectList, shouldNotInjectList, addShouldInject, removeShouldInject } =
         useSettingStore();
@@ -36,8 +47,8 @@ export default function Footer() {
     };
 
     useEffect(() => {
-        if(!origin){
-            return
+        if (!origin) {
+            return;
         }
         checkShouldInject();
     }, [origin]);

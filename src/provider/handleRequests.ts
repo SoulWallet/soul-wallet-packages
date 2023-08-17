@@ -9,7 +9,7 @@ let currentChainId: any = undefined;
 
 const getAccounts = async () => {
     console.log("get account 2");
-    return [await windowBus.send("getAccounts", "getAccounts")];
+    return [await windowBus.send("getAccounts")];
 };
 
 const sendTransaction = async (params: any) => {
@@ -19,10 +19,10 @@ const sendTransaction = async (params: any) => {
         }
     });
 
-    const opData: any = await windowBus.send("approve", "approveTransaction", { txns: params });
+    const opData: any = await windowBus.send("approve", { txns: params });
 
     try {
-        return await windowBus.send("execute", "signTransaction", opData);
+        return await windowBus.send("execute", opData);
     } catch (err) {
         throw new Error("Failed to execute");
     }
@@ -56,7 +56,7 @@ const getTransactionByHash = async (params: any) => {
 };
 
 const signTypedDataV4 = async (params: any) => {
-    const res = await windowBus.send("signMessageV4", "signMessageV4", {
+    const res = await windowBus.send("signMessageV4", {
         data: params[1],
     });
     console.log("signTypeV4 sig: ", res);
@@ -67,7 +67,7 @@ const personalSign = async (params: any) => {
     const msg = params[0];
     // const msgToSign = getMessageType(params[0]) === "hash" ? msg : ethers.utils.toUtf8String(msg);
     // console.log('before send personal sign', msgToSign)
-    const res = await windowBus.send("signMessage", "signMessage", {
+    const res = await windowBus.send("signMessage", {
         data: msg,
     });
     return res;
@@ -87,7 +87,7 @@ const personalRecover = async (params: string[]) => {
         msgHash = params[0];
     }
 
-    const walletAddress = await windowBus.send("getAccounts", "getAccounts");
+    const walletAddress = await windowBus.send("getAccounts");
     const walletContract = new ethers.Contract(walletAddress as string, WalletABI, ethersProvider);
     const isValid = await walletContract.isValidSignature(msgHash, signature);
 

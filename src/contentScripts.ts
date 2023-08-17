@@ -1,5 +1,6 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
+import windowBus from "./lib/windowBus";
 
 function injectScript(file, node) {
     var th = document.getElementsByTagName(node)[0];
@@ -13,7 +14,7 @@ injectScript(browser.runtime.getURL("js/inpage.js"), "html");
 
 function sendMessage(data) {
     // todo, make version variable
-    data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.action}`;
+    data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.type}`;
     data.pos = {
         width: 360,
         height: 600 + 28, // 28 is title bar
@@ -37,8 +38,8 @@ window.addEventListener(
 
 // transfer msg from background to window
 browser.runtime.onMessage.addListener((msg) => {
-    console.log("ContentScript Runtime msg", msg);
+    console.log("ContentScript to resolve", msg);
     if (msg.isResponse) {
-        window.postMessage(msg);
+        windowBus.resolve(msg);
     }
 });

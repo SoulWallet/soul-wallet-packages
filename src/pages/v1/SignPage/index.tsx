@@ -12,11 +12,8 @@ import SignModal from "@src/components/SignModal";
 import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
-import { UserOpUtils } from "@soulwallet/sdk";
-import { useChainStore } from "@src/store/chain";
 
 export default function SignPage() {
-    const { getSelectedChainItem } = useChainStore();
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
@@ -25,6 +22,8 @@ export default function SignPage() {
     const { navigate } = useBrowser();
     const signModal = createRef<any>();
     const keyring = useKeyring();
+
+    console.log("sign page triggered", searchParams);
 
     useEffect(() => {
         const param = params[0];
@@ -35,6 +34,7 @@ export default function SignPage() {
             txns: param.get("txns"),
             data: param.get("data"),
             sendTo: param.get("sendTo"),
+            id: param.get("id"),
         });
     }, [params[0]]);
 
@@ -42,7 +42,7 @@ export default function SignPage() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        const { actionType, origin, tabId, data, sendTo } = searchParams;
+        const { actionType, origin, tabId, data, sendTo, id } = searchParams;
 
         const currentSignModal = signModal.current;
 
@@ -56,13 +56,13 @@ export default function SignPage() {
             if (actionType === "getAccounts") {
                 await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true });
                 toggleAllowedOrigin(selectedAddress, origin, true);
-                await browser.runtime.sendMessage({
-                    type: "response",
-                    action: "getAccounts",
+                await browser.tabs.sendMessage(Number(tabId), {
+                    id,
+                    isResponse: true,
                     data: selectedAddress,
-                    tabId: searchParams.tabId,
+                    tabId,
                 });
-            } else if (actionType === "approveTransaction") {
+            } else if (actionType === "approve") {
                 // IMPORTANT TODO, move to signModal
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
@@ -74,8 +74,6 @@ export default function SignPage() {
                     keepVisible: true,
                     sendTo,
                 });
-
-                console.log("signAndSend tab id", tabId);
 
                 // if from dapp, return trsanction result
                 if (tabId) {
@@ -90,29 +88,6 @@ export default function SignPage() {
                     });
                     navigate("wallet");
                 }
-
-                // if (tabId) {
-                //     console.log('ready to send bg', '???????????')
-                //     await browser.runtime.sendMessage({
-                //         type: "response",
-                //         action: "approveTransaction",
-                //         tabId: searchParams.tabId,
-                //         data: {
-                //             operation: UserOpUtils.userOperationToJSON(userOp),
-                //             tabId,
-                //             bundlerUrl: bundlerUrl,
-                //         },
-                //     });
-                //     window.close();
-                // } else {
-                //     // if internal tx, return to wallet page
-                //     toast({
-                //         title: "Transaction sent.",
-                //         status: "success",
-                //     });
-
-                //     navigate("wallet");
-                // }
             } else if (actionType === "signMessage") {
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
@@ -120,11 +95,12 @@ export default function SignPage() {
 
                 const signature = await keyring.signMessage(msgToSign);
 
-                await browser.runtime.sendMessage({
-                    type: "response",
-                    action: "signMessage",
+                await browser.tabs.sendMessage(Number(tabId), {
+                    id,
+                    isResponse: true,
+                    // action: "signMessage",
                     data: signature,
-                    tabId: searchParams.tabId,
+                    tabId,
                 });
 
                 window.close();
@@ -137,11 +113,12 @@ export default function SignPage() {
 
                 console.log("v4 signature", signature);
 
-                await browser.runtime.sendMessage({
-                    type: "response",
-                    action: "signMessageV4",
+                await browser.tabs.sendMessage(Number(tabId), {
+                    id,
+                    isResponse: true,
+                    // action: "signMessageV4",
                     data: signature,
-                    tabId: searchParams.tabId,
+                    tabId,
                 });
 
                 window.close();

@@ -221,7 +221,7 @@ export default class KeyStore {
 
         const { domain, types, message } = typedData;
 
-        return signer.signTypedData(domain, types, message);
+        return await signer.signTypedData(domain, types, message);
 
         // const typedMessageHash = ethers.TypedDataEncoder.hash(domain, types, message);
 

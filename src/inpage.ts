@@ -18,7 +18,7 @@ const providerToInject = {
     isSoul: true,
     request: async (call) => {
         // get latest chain config
-        const chainConfig = await windowBus.send("getChainConfig", "getChainConfig");
+        const chainConfig = await windowBus.send("getChainConfig");
         return await handleRequests(call, chainConfig);
     },
     sendAsync: async (call, fn) => {
@@ -26,7 +26,7 @@ const providerToInject = {
         fn(null, { result });
     },
     enable: async () => {
-        const res = await windowBus.send("getAccounts", "getAccounts");
+        const res = await windowBus.send("getAccounts");
         return [res];
     },
     on: (eventName) => {
@@ -51,7 +51,7 @@ const providerToInject = {
 
 // const proxiedProvider = new Proxy(providerToInject, {});
 const injectProvider = async () => {
-    const shouldInject = await windowBus.send("shouldInject", "shouldInject");
+    const shouldInject = await windowBus.send("shouldInject");
     if (shouldInject) {
         window.ethereum = providerToInject;
         window.soul = providerToInject;

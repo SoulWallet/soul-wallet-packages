@@ -156,6 +156,7 @@ export const checkShouldInject = (origin: string) => {
     } else if (!globalShouldInject) {
         flag = false;
     }
+
     return flag;
 };
 
