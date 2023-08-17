@@ -30,7 +30,7 @@ export default function Tokens() {
                     icon={item.logoURI || IconDefaultToken}
                     title={item.name || "Unknown"}
                     titleDesc={"Token"}
-                    amount={`${BN(item.tokenBalance).shiftedBy(-item.decimals).toString()} ${item.symbol}`}
+                    amount={`${item.tokenBalanceFormatted} ${item.symbol}`}
                     amountDesc={``}
                     onClick={() => navigate(`send/${item.contractAddress}`)}
                 />

@@ -3,7 +3,6 @@ import useKeyring from "./useKeyring";
 import { ethers } from "ethers";
 import useSdk from "./useSdk";
 import { useAddressStore } from "@src/store/address";
-import Runtime from "@src/lib/Runtime";
 import useQuery from "./useQuery";
 import { ABI_SoulWallet } from "@soulwallet/abi";
 import { useGuardianStore } from "@src/store/guardian";
@@ -12,6 +11,7 @@ import useKeystore from "./useKeystore";
 import Erc20ABI from "../contract/abi/ERC20.json";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useConfig from "./useConfig";
+import bgBus from "@src/lib/bgBus";
 import { useChainStore } from "@src/store/chain";
 
 export default function useWallet() {
@@ -19,15 +19,13 @@ export default function useWallet() {
     const { toggleActivatedChain } = useAddressStore();
     const { calcGuardianHash } = useKeystore();
     const { selectedChainId } = useChainStore();
-    const { getGasPrice, getFeeCost } = useQuery();
+    const { getFeeCost, getPrefund } = useQuery();
     const { chainConfig } = useConfig();
     const { guardians, threshold } = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
-    const getIsOwner = (signerKey: string) => {
-        
-    }
+    const getIsOwner = (signerKey: string) => {};
 
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
@@ -38,7 +36,7 @@ export default function useWallet() {
             throw new Error(userOpRet.ERR.message);
         }
 
-        const userOp = userOpRet.OK;
+        let userOp = userOpRet.OK;
 
         // approve paymaster to spend ERC-20
         const soulAbi = new ethers.Interface(ABI_SoulWallet);
@@ -57,23 +55,16 @@ export default function useWallet() {
 
         userOp.callGasLimit = `0x${(50000 * to.length + 1).toString(16)}`;
 
-        const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
-        userOp.maxFeePerGas = maxFeePerGas;
-        userOp.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        const feeCost = await getFeeCost(userOp, payToken);
 
-        // set preVerificationGas
-        const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
-
-        if (gasLimit.isErr()) {
-            throw new Error(gasLimit.ERR.message);
-        }
+        userOp = feeCost.userOp;
 
         if (estimateCost) {
-            const { requiredAmount } = await getFeeCost(userOp, payToken);
+            const { requiredAmount } = await getPrefund(userOp, payToken);
             return requiredAmount;
         } else {
             // TODO, estimate fee could be avoided
-            await directSignAndSend(userOp, payToken);
+            await signAndSend(userOp, payToken, true);
             // IMPORTANT TODO, what if user don't wait?
             toggleActivatedChain(userOp.sender, selectedChainId);
         }
@@ -84,7 +75,7 @@ export default function useWallet() {
         return soulAbi.encodeFunctionData("setGuardian(bytes32,bytes32,bytes32)", [slot, guardianHash, keySignature]);
     };
 
-    const directSignAndSend = async (userOp: UserOperation, payToken?: string) => {
+    const signAndSend = async (userOp: UserOperation, payToken?: string, waitFinish?: boolean, tabId?: any) => {
         // checkpaymaster
         if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
@@ -115,10 +106,15 @@ export default function useWallet() {
 
         userOp.signature = packedSignatureRet.OK;
 
-        await Runtime.send("execute", {
+        const resultPromise = bgBus.send("execute", {
             userOp: UserOpUtils.userOperationToJSON(userOp),
             chainConfig,
+            tabId,
         });
+
+        if (waitFinish) {
+            await resultPromise;
+        }
     };
 
     const backupGuardiansOnChain = async (keystoreAddress: string, guardiansList: string[], threshold: number) => {};
@@ -138,7 +134,7 @@ export default function useWallet() {
         addPaymasterAndData,
         activateWallet,
         getSetGuardianCalldata,
-        directSignAndSend,
+        signAndSend,
         backupGuardiansOnChain,
         backupGuardiansByEmail,
         backupGuardiansByDownload,

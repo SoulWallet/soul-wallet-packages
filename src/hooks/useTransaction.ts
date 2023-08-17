@@ -20,7 +20,6 @@ export default function useTransaction() {
     };
 
     const sendEth = async (to: string, amount: string) => {
-        // const actionName = `Send ${config.chainToken}`;
         const amountInWei = new BN(amount).shiftedBy(18).toString();
         const tx: Transaction = {
             to,

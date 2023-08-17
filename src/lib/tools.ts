@@ -6,9 +6,8 @@ import BN from "bignumber.js";
 import { chainIdMapping } from "@src/config";
 
 export function notify(title: string, message: string) {
-    const notifyId = Math.ceil(Math.random() * 1000).toString();
-
-    browser.notifications.create(notifyId, {
+    const randomId = nanoid();
+    browser.notifications.create(randomId, {
         type: "basic",
         iconUrl: "../icon-48.png",
         title,
@@ -139,6 +138,25 @@ export const checkAllowed = (origin: string) => {
         isAllowed: allowedOrigins.includes(origin),
         selectedAddress,
     };
+};
+
+export const checkShouldInject = (origin: string) => {
+    const settingStorage = JSON.parse(localStorage.getItem("setting-storage") || "{}");
+    const globalShouldInject = settingStorage.state.globalShouldInject;
+    const shouldInjectList = settingStorage.state.shouldInjectList;
+    const shouldNotInjectList = settingStorage.state.shouldNotInjectList;
+
+    let flag = true;
+    if (shouldInjectList.includes(origin)) {
+        flag = true;
+    } else if (shouldNotInjectList.includes(origin)) {
+        flag = false;
+    } else if (globalShouldInject) {
+        flag = true;
+    } else if (!globalShouldInject) {
+        flag = false;
+    }
+    return flag;
 };
 
 export const getSelectedChainItem = () => {

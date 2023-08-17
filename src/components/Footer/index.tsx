@@ -1,27 +1,46 @@
 import React, { useEffect, useState } from "react";
 import Switch from "../Switch";
 import { Box, Text, Flex, Image, Tooltip } from "@chakra-ui/react";
-import { shallow } from "zustand/shallow";
-import browser from "webextension-polyfill";
 import IconConnected from "@src/assets/icons/connected.svg";
-import { getLocalStorage } from "@src/lib/tools";
+import { useSettingStore } from "@src/store/setting";
+import { checkShouldInject } from "@src/lib/tools";
 
 export default function Footer() {
+    // IMPORTANT TODO, get from website
+    const origin = "app.uniswap.org";
     const [shouldInject, setShouldInject] = useState(false);
+    const { globalShouldInject, shouldInjectList, shouldNotInjectList, addShouldInject, removeShouldInject } =
+        useSettingStore();
 
-    const toggleDefaultProvider = async (val: boolean) => {
-        await browser.storage.local.set({ shouldInject: val });
-        setShouldInject(val);
+    const onChange = async (checked: boolean) => {
+        setShouldInject(checked);
+        if (checked) {
+            addShouldInject(origin);
+        } else {
+            removeShouldInject(origin);
+        }
     };
 
     const checkShouldInject = async () => {
-        const res: any = await getLocalStorage("shouldInject");
-        setShouldInject(res);
+        let flag = true;
+        if (shouldInjectList.includes(origin)) {
+            flag = true;
+        } else if (shouldNotInjectList.includes(origin)) {
+            flag = false;
+        } else if (globalShouldInject) {
+            flag = true;
+        } else if (!globalShouldInject) {
+            flag = false;
+        }
+        setShouldInject(flag);
     };
 
     useEffect(() => {
+        if(!origin){
+            return
+        }
         checkShouldInject();
-    }, []);
+    }, [origin]);
 
     return (
         <Flex
@@ -37,12 +56,12 @@ export default function Footer() {
             <Flex bg="#fff" rounded={"20px"} px="8px">
                 <Image src={IconConnected} />
                 <Text fontFamily={"Martian"} fontWeight={"500"} fontSize={"10px"}>
-                    APP.UNISWAP.ORG
+                    {origin}
                 </Text>
             </Flex>
             <Tooltip label="Set Soul Wallet as default wallet for this dapp.">
                 <Box>
-                    <Switch checked={shouldInject} onChange={toggleDefaultProvider} />
+                    <Switch checked={shouldInject} onChange={onChange} />
                 </Box>
             </Tooltip>
         </Flex>

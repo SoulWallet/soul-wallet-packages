@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, createRef, useCallback, useMemo } from "react";
-import Runtime from "@src/lib/Runtime";
 import { ethers } from "ethers";
 import SignModal from "@src/components/SignModal";
 import Locked from "@src/components/Locked";

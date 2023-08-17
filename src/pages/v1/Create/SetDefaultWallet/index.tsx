@@ -11,13 +11,17 @@ import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import { useSettingStore } from "@src/store/setting";
 
 
 const SetDefaultWallet = () => {
   const dispatch = useStepDispatchContext();
+  const { setGlobalShouldInject } = useSettingStore();
+
 
   const handleNext = async (setDefault = true) => {
     await browser.storage.local.set({ shouldInject: setDefault });
+    setGlobalShouldInject(setDefault);
 
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,

@@ -1,47 +1,25 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect, Ref } from "react";
 import useQuery from "@src/hooks/useQuery";
-import config from "@src/config";
 import useTools from "@src/hooks/useTools";
 import { useChainStore } from "@src/store/chain";
 import api from "@src/lib/api";
 import { useAddressStore } from "@src/store/address";
 import { ethers } from "ethers";
-import IconLogo from "@src/assets/logo-v3.svg";
-import IconLock from "@src/assets/icons/lock.svg";
-import Button from "../Button";
-import AddressInput from "../SendAssets/comp/AddressInput";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import { useBalanceStore } from "@src/store/balance";
-import GasSelect from "../SendAssets/comp/GasSelect";
 import { UserOpUtils, UserOperation } from "@soulwallet/sdk";
 import useSdk from "@src/hooks/useSdk";
 import BN from "bignumber.js";
 import useConfig from "@src/hooks/useConfig";
+import ConnectDapp from "./comp/ConnectDapp";
+import SignTransaction from "./comp/SignTransaction";
+import SignMessage from "./comp/SignMessage";
 
 enum SignTypeEn {
     Transaction,
     Message,
     Account,
 }
-
-enum SecurityLevel {
-    High = "High",
-    Medium = "Medium",
-    Low = "Low",
-}
-
-const getSecurityColor = (level: SecurityLevel) => {
-    switch (level) {
-        case SecurityLevel.High:
-            return "#1CD20F";
-        case SecurityLevel.Medium:
-            return "#DB9E00";
-        case SecurityLevel.Low:
-            return "#E83D26";
-        default:
-            return "#000";
-    }
-};
 
 export const InfoWrap = ({ children, ...restProps }: any) => (
     <Flex fontSize="12px" fontWeight={"500"} px="4" gap="6" fontFamily={"Martian"} flexDir={"column"} {...restProps}>
@@ -55,12 +33,6 @@ export const InfoItem = ({ children, ...restProps }: any) => (
     </Flex>
 );
 
-const DappAvatar = ({ avatar }: any) => (
-    <Flex align="center" justify={"center"} bg="#fff" rounded="full" w="72px" h="72px">
-        <Image src={avatar} w="44px" h="44px" />
-    </Flex>
-);
-
 const SignModal = (_: unknown, ref: Ref<any>) => {
     const { selectedAddress } = useAddressStore();
     const [keepModalVisible, setKeepModalVisible] = useState(false);
@@ -71,6 +43,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const [decodedData, setDecodedData] = useState<any>({});
     const [signing, setSigning] = useState<boolean>(false);
     const { getTokenBalance } = useBalanceStore();
+    const [prefundCalculated, setPrefundCalculated] = useState(false);
     // TODO, remember user's last select
     const [payToken, setPayToken] = useState(ethers.ZeroAddress);
     const [payTokenSymbol, setPayTokenSymbol] = useState("");
@@ -79,9 +52,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const [signType, setSignType] = useState<SignTypeEn>();
     const [messageToSign, setMessageToSign] = useState("");
     const [sponsor, setSponsor] = useState<any>(null);
+    const [activeTxns, setActiveTxns] = useState<any>(null); // [
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
-    const { getFeeCost, getGasPrice } = useQuery();
+    const { getFeeCost, getGasPrice, getPrefund } = useQuery();
     const [sendToAddress, setSendToAddress] = useState("");
     const { chainConfig, selectedAddressItem } = useConfig();
     const { soulWallet } = useSdk();
@@ -103,7 +77,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                 throw new Error(userOpRet.ERR.message);
             }
 
-            const userOp = userOpRet.OK;
+            let userOp = userOpRet.OK;
 
             // set preVerificationGas
             const gasLimit = await soulWallet.estimateUserOperationGas(userOp);
@@ -111,14 +85,13 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             if (gasLimit.isErr()) {
                 throw new Error(gasLimit.ERR.message);
             }
-            console.log("000000", userOp.preVerificationGas, userOp.verificationGasLimit);
+
+            const feeCost = await getFeeCost(userOp, payToken);
+            userOp = feeCost.userOp;
+
             // paymasterAndData length calc 1872 = ((236 - 2) / 2) * 16;
             userOp.preVerificationGas = `0x${BN(userOp.preVerificationGas.toString()).plus(1872).toString(16)}`;
             userOp.verificationGasLimit = `0x${BN(userOp.verificationGasLimit.toString()).plus(30000).toString(16)}`;
-
-            if (!userOp) {
-                throw new Error("Failed to format tx");
-            }
 
             return userOp;
         } catch (err) {
@@ -130,12 +103,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         async show(obj: any) {
             const { txns, actionType, origin, keepVisible, msgToSign, sendTo } = obj;
             setVisible(true);
-            // setActionName(_actionName);
             setOrigin(origin);
 
             setKeepModalVisible(keepVisible || false);
 
-            console.log("send to is", sendTo);
             setSendToAddress(sendTo);
 
             if (actionType === "getAccounts") {
@@ -148,11 +119,12 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
             if (txns) {
                 const userOp = await formatUserOp(txns);
+                setActiveTxns(txns);
                 setActiveOperation(userOp);
                 const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
                 console.log("decoded data", callDataDecodes);
                 setDecodedData(callDataDecodes);
-                checkSponser(userOp);
+                // checkSponser(userOp);
             }
 
             if (msgToSign) {
@@ -211,12 +183,13 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         }
     };
 
-    const getFeeCostA = async () => {
-        setLoadingFee(true);
-        setFeeCost("");
+    const getFinalPrefund = async () => {
+        // IMPORTANT TODO, uncomment this to show double loading fee issue
+        // setLoadingFee(true);
+        // setFeeCost("");
 
         // TODO, extract this for other functions
-        const { requiredAmount } = await getFeeCost(activeOperation, payToken);
+        const { requiredAmount } = await getPrefund(activeOperation, payToken);
 
         if (ethers.ZeroAddress === payToken) {
             setFeeCost(`${requiredAmount} ${chainConfig.chainToken}`);
@@ -226,19 +199,32 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         setLoadingFee(false);
     };
 
+    const onPayTokenChange = async () => {
+        setPayTokenSymbol(getTokenBalance(payToken).symbol || "Unknown");
+        const newUserOp = await formatUserOp(activeTxns);
+        setActiveOperation(newUserOp);
+        setPrefundCalculated(false);
+        setLoadingFee(true);
+    };
+
     useEffect(() => {
-        if (!payToken) {
+        if (!payToken || !activeTxns || !activeTxns.length) {
             return;
         }
-        setPayTokenSymbol(getTokenBalance(payToken).symbol || "Unknown");
-    }, [payToken]);
+        console.log("on pay token change", payToken, activeTxns);
+        onPayTokenChange();
+    }, [payToken, activeTxns]);
 
     useEffect(() => {
         if (!activeOperation || !payToken) {
             return;
         }
-        getFeeCostA();
-    }, [payToken, activeOperation]);
+        if (prefundCalculated) {
+            return;
+        }
+        setPrefundCalculated(true);
+        getFinalPrefund();
+    }, [payToken, activeOperation, prefundCalculated]);
 
     return (
         <div ref={ref}>
@@ -255,174 +241,24 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                         overflow={"hidden"}
                         p="5"
                     >
-                        {signType === SignTypeEn.Account && (
-                            <Box pt="5">
-                                <Box textAlign={"center"}>
-                                    <Flex
-                                        align="center"
-                                        display={"inline-flex"}
-                                        gap="3"
-                                        border={"dashed 2px"}
-                                        p="4"
-                                        borderColor={"#898989"}
-                                        rounded="100px"
-                                        mx="auto"
-                                        mb="5"
-                                        position={"relative"}
-                                    >
-                                        <DappAvatar avatar={IconLogo} />
-                                        {/** TODO, get favicon here */}
-                                        <DappAvatar avatar={`${config.faviconUrl}${origin}`} />
-                                        <Image
-                                            src={IconLock}
-                                            position={"absolute"}
-                                            left="0"
-                                            right="0"
-                                            bottom="-3"
-                                            m="auto"
-                                        />
-                                    </Flex>
-                                </Box>
-
-                                <Box textAlign={"center"} mb="14px">
-                                    <Text fontSize={"20px"} fontWeight={"800"} mb="1">
-                                        Connect to dapp
-                                    </Text>
-                                    <Text fontWeight={"600"}>{origin}</Text>
-                                </Box>
-                                <Box bg="#fff" rounded="20px" p="4" mb="6">
-                                    <Text fontSize={"18px"} fontWeight={"800"} mb="1">
-                                        Allow
-                                    </Text>
-                                    <Box fontSize={"14px"} fontWeight={"600"}>
-                                        <Text mb="1">•&nbsp;&nbsp;View account address and transactions</Text>
-                                        <Text>•&nbsp;&nbsp;Suggest transactions</Text>
-                                    </Box>
-                                </Box>
-                                <InfoWrap>
-                                    <InfoItem>
-                                        <Text>Site security:</Text>
-                                        <Text color={getSecurityColor(SecurityLevel.High)}>{SecurityLevel.High}</Text>
-                                    </InfoItem>
-                                    <InfoItem>
-                                        <Text>{selectedAddressItem.title}:</Text>
-                                        <Text>
-                                            {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
-                                        </Text>
-                                    </InfoItem>
-                                </InfoWrap>
-                                <Button
-                                    w="100%"
-                                    fontSize={"20px"}
-                                    py="5"
-                                    fontWeight={"800"}
-                                    mt="6"
-                                    onClick={onConfirm}
-                                    loading={signing}
-                                    disabled={loadingFee}
-                                >
-                                    Connect
-                                </Button>
-                            </Box>
-                        )}
-
-                        {signType !== SignTypeEn.Account && (
-                            <>
-                                <Text fontSize="20px" fontWeight="800" color="#1e1e1e">
-                                    {signType === SignTypeEn.Transaction && `Signature Request`}
-                                    {signType === SignTypeEn.Message && `Sign Message`}
-                                </Text>
-
-                                {origin && (
-                                    <Text fontWeight={"600"} mt="1">
-                                        {origin}
-                                    </Text>
-                                )}
-
-                                <Flex flexDir={"column"} gap="5" mt="6">
-                                    <Box bg="#fff" py="3" px="4" rounded="20px" fontWeight={"800"}>
-                                        {signType === SignTypeEn.Transaction && (
-                                            <div>
-                                                {decodedData && decodedData.length > 0
-                                                    ? decodedData.map((item: any, index: number) => (
-                                                          <span className="mr-1 capitalize" key={index}>
-                                                              {decodedData.length > 1 && `${index + 1}.`}
-                                                              {item.functionName || "Contract interaction"}
-                                                          </span>
-                                                      ))
-                                                    : "Contract interaction"}
-                                            </div>
-                                        )}
-                                        {signType === SignTypeEn.Message && messageToSign}
-                                    </Box>
-                                    <AddressInput label="From" address={selectedAddress} disabled />
-                                    {sendToAddress ? (
-                                        <AddressInput label="To" address={sendToAddress} disabled={true} />
-                                    ) : (
-                                        <AddressInput
-                                            label="To"
-                                            address={decodedData[0] && decodedData[0].to}
-                                            disabled={true}
-                                        />
-                                    )}
-
-                                    {signType === SignTypeEn.Transaction && (
-                                        <>
-                                            <InfoWrap>
-                                                <InfoItem align={sponsor && "flex-start"}>
-                                                    <Text>Gas fee</Text>
-                                                    {sponsor ? (
-                                                        <Box textAlign={"right"}>
-                                                            <Flex mb="1" gap="4" justify={"flex-end"}>
-                                                                {feeCost && (
-                                                                    <Text textDecoration={"line-through"}>
-                                                                        {feeCost.split(" ")[0]} {payTokenSymbol}
-                                                                    </Text>
-                                                                )}
-                                                                <Text>0 ETH</Text>
-                                                            </Flex>
-                                                            <Text color="#898989">
-                                                                Sponsored by {sponsor.sponsorParty || "Soul Wallet"}
-                                                            </Text>
-                                                        </Box>
-                                                    ) : feeCost ? (
-                                                        <Flex gap="2">
-                                                            <Text>{feeCost.split(" ")[0]}</Text>
-                                                            <GasSelect gasToken={payToken} onChange={setPayToken} />
-                                                        </Flex>
-                                                    ) : (
-                                                        <Text>Loading...</Text>
-                                                    )}
-                                                </InfoItem>
-                                                <InfoItem>
-                                                    <Text>Total</Text>
-                                                    <Text>$1736.78</Text>
-                                                </InfoItem>
-                                            </InfoWrap>
-                                        </>
-                                    )}
-                                </Flex>
-                            </>
-                        )}
-
+                        {signType === SignTypeEn.Account && <ConnectDapp origin={origin} onConfirm={onConfirm} />}
                         {signType === SignTypeEn.Transaction && (
-                            <Button
-                                w="100%"
-                                fontSize={"20px"}
-                                py="4"
-                                fontWeight={"800"}
-                                mt="6"
-                                onClick={onConfirm}
-                                loading={signing}
-                                disabled={loadingFee && !sponsor}
-                            >
-                                Sign
-                            </Button>
+                            <SignTransaction
+                                decodedData={decodedData}
+                                sendToAddress={sendToAddress}
+                                sponsor={sponsor}
+                                origin={origin}
+                                feeCost={feeCost}
+                                payToken={payToken}
+                                setPayToken={setPayToken}
+                                payTokenSymbol={payTokenSymbol}
+                                loadingFee={loadingFee}
+                                signing={signing}
+                                onConfirm={onConfirm}
+                            />
                         )}
                         {signType === SignTypeEn.Message && (
-                            <Button w="100%" fontSize={"20px"} py="4" fontWeight={"800"} mt="6" onClick={onSign}>
-                                Sign
-                            </Button>
+                            <SignMessage messageToSign={messageToSign} onSign={onSign} origin={origin} />
                         )}
                         <Text
                             color="danger"

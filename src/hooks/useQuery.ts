@@ -45,6 +45,36 @@ export default function useQuery() {
         }
     };
 
+    const getPrefund = async (userOp: any, payToken: string) => {
+        // get preFund
+        const preFund = await soulWallet.preFund(userOp);
+
+        console.log("prefund", preFund);
+
+        if (preFund.isErr()) {
+            throw new Error(preFund.ERR.message);
+        }
+
+        const requiredEth = BN(preFund.OK.missfund).shiftedBy(-18);
+
+        // erc20
+        if (payToken === ethers.ZeroAddress) {
+            return {
+                requiredAmount: requiredEth.toFixed(),
+                userOp,
+            };
+        } else {
+            // IMPORTANT TODO, get erc20 price
+            getEthPrice();
+            const erc20Price = 1853;
+            return {
+                // IMPORTANT TODO, not fixed -18
+                requiredAmount: requiredEth.times(erc20Price).times(chainConfig.maxCostMultiplier).div(100).toFixed(),
+                userOp,
+            };
+        }
+    };
+
     const getFeeCost = async (userOp: any, payToken: string) => {
         // set 1559 fee
         const { maxFeePerGas, maxPriorityFeePerGas } = await getGasPrice();
@@ -62,47 +92,11 @@ export default function useQuery() {
             throw new Error(gasLimit.ERR.message);
         }
 
-        // get preFund
-        const preFund = await soulWallet.preFund(userOp);
-
-        console.log("prefund", preFund);
-
-        if (preFund.isErr()) {
-            throw new Error(preFund.ERR.message);
-        }
-
-        // erc20
-        if (payToken === ethers.ZeroAddress) {
-            return {
-                requiredAmount: BN(preFund.OK.missfund).shiftedBy(-18).toFixed(),
-                userOp,
-            };
-        } else {
-            // IMPORTANT TODO, get erc20 price
-            getEthPrice();
-            const erc20Price = 1853;
-
-            const tokenBalanceItem = getTokenBalance(payToken);
-
-            return {
-                // IMPORTANT TODO, not fixed -18
-                requiredAmount: BN(preFund.OK.missfund)
-                    .shiftedBy(-tokenBalanceItem.decimals)
-                    .times(erc20Price)
-                    .times(chainConfig.maxCostMultiplier)
-                    .div(100)
-                    .toFixed(),
-                userOp,
-            };
-        }
-
-        // // get required USDC : (requiredPrefund/10^18) * (exchangePrice.price/10^exchangePrice.decimals)
-        // const requiredUSDC = requiredFinalPrefund
-        //     .mul(exchangePrice.price)
-        //     .mul(BigNumber.from(10).pow(tokenDecimals))
-        //     .div(BigNumber.from(10).pow(exchangePrice.decimals))
-        //     .div(BigNumber.from(10).pow(18));
-        // console.log("requiredUSDC: " + ethers.formatUnits(requiredUSDC, tokenDecimals), "USDC");
+        return {
+            userOp,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        };
     };
 
     // const getWalletType = async (address: string) => {
@@ -115,11 +109,11 @@ export default function useQuery() {
 
     const refreshActivateStatus = () => {
         // refresh all activate status on specific chain
-
-    }
+    };
 
     return {
         getGasPrice,
         getFeeCost,
+        getPrefund,
     };
 }

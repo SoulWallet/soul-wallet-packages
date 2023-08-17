@@ -17,12 +17,11 @@ import { useChainStore } from "@src/store/chain";
 
 export default function SignPage() {
     const { getSelectedChainItem } = useChainStore();
-    const { bundlerUrl } = getSelectedChainItem();
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
     const toast = useToast();
-    const { directSignAndSend } = useWallet();
+    const { signAndSend } = useWallet();
     const { navigate } = useBrowser();
     const signModal = createRef<any>();
     const keyring = useKeyring();
@@ -58,7 +57,6 @@ export default function SignPage() {
                 await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true });
                 toggleAllowedOrigin(selectedAddress, origin, true);
                 await browser.runtime.sendMessage({
-                    target: "soul",
                     type: "response",
                     action: "getAccounts",
                     data: selectedAddress,
@@ -77,31 +75,44 @@ export default function SignPage() {
                     sendTo,
                 });
 
-                await directSignAndSend(userOp, payToken);
+                console.log("signAndSend tab id", tabId);
 
                 // if from dapp, return trsanction result
                 if (tabId) {
-                    await browser.runtime.sendMessage({
-                        target: "soul",
-                        type: "response",
-                        action: "approveTransaction",
-                        tabId: searchParams.tabId,
-                        data: {
-                            operation: UserOpUtils.userOperationToJSON(userOp),
-                            tabId,
-                            bundlerUrl: bundlerUrl,
-                        },
-                    });
+                    await signAndSend(userOp, payToken, false, tabId);
                     window.close();
                 } else {
-                    // if internal tx, return to wallet page
+                    await signAndSend(userOp, payToken, true, tabId);
+
                     toast({
                         title: "Transaction sent.",
                         status: "success",
                     });
-
                     navigate("wallet");
                 }
+
+                // if (tabId) {
+                //     console.log('ready to send bg', '???????????')
+                //     await browser.runtime.sendMessage({
+                //         type: "response",
+                //         action: "approveTransaction",
+                //         tabId: searchParams.tabId,
+                //         data: {
+                //             operation: UserOpUtils.userOperationToJSON(userOp),
+                //             tabId,
+                //             bundlerUrl: bundlerUrl,
+                //         },
+                //     });
+                //     window.close();
+                // } else {
+                //     // if internal tx, return to wallet page
+                //     toast({
+                //         title: "Transaction sent.",
+                //         status: "success",
+                //     });
+
+                //     navigate("wallet");
+                // }
             } else if (actionType === "signMessage") {
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
@@ -110,7 +121,6 @@ export default function SignPage() {
                 const signature = await keyring.signMessage(msgToSign);
 
                 await browser.runtime.sendMessage({
-                    target: "soul",
                     type: "response",
                     action: "signMessage",
                     data: signature,
@@ -128,7 +138,6 @@ export default function SignPage() {
                 console.log("v4 signature", signature);
 
                 await browser.runtime.sendMessage({
-                    target: "soul",
                     type: "response",
                     action: "signMessageV4",
                     data: signature,
@@ -140,11 +149,11 @@ export default function SignPage() {
         } catch (err) {
             console.log(err);
         } finally {
-            if (tabId) {
-                window.close();
-            } else {
-                navigate("wallet");
-            }
+            // if (tabId) {
+            //     window.close();
+            // } else {
+            //     navigate("wallet");
+            // }
         }
     };
 
