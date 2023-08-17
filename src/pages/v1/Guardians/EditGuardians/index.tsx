@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { useGlobalStore } from "@src/store/global";
@@ -22,6 +22,7 @@ import TextBody from "@src/components/web/TextBody";
 import useKeystore from "@src/hooks/useKeystore";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
+import ArrowRightIcon from "@src/components/Icons/ArrowRight";
 import MinusIcon from "@src/assets/icons/minus.svg";
 import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
@@ -105,6 +106,7 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
+  const [reediting, setReediting] = useState(false)
   const [paymentParems, setPaymentParems] = useState<any>(null)
 
   const { account } = useWalletContext();
@@ -220,7 +222,7 @@ export default function GuardiansSetting() {
   }
 
   const handleNext = async () => {
-    handleJumpToTargetStep(GuardiansStepEn.Set);
+    handleJumpToTargetStep(GuardiansStepEn.Save);
   };
 
   const toggleTips = (event: any) => {
@@ -257,9 +259,131 @@ export default function GuardiansSetting() {
             onClick={openPayLink}
             _styles={{ width: '455px' }}
           >
-            Open Pay Link
+            Copy Pay Link
           </Button>
         </Box>
+        {!reediting && (
+          <Box display="flex" flexDirection="column" alignItems="center" marginTop="300px">
+            <TextButton
+              color="rgb(137, 137, 137)"
+              onClick={() => setReediting(true)}
+              _styles={{ width: '455px', cursor: 'pointer' }}
+            >
+              Edit Guardians
+              <Text marginLeft="5px"><ArrowRightIcon color="rgb(137, 137, 137)" /></Text>
+            </TextButton>
+            <TextButton
+              color="rgb(137, 137, 137)"
+              onClick={handleNext}
+              _styles={{ width: '455px' }}
+            >
+              Backup current guardians
+            </TextButton>
+          </Box>
+        )}
+        {reediting && (
+          <Box display="flex" flexDirection="column" alignItems="center" marginTop="40px">
+            <Text fontSize="24px" fontWeight="800" marginBottom="10px" color="#1E1E1E" cursor="pointer"  onClick={() => setReediting(false)} display="flex" alignItems="center" justifyContent="flex-start">
+              <Text>Edit Guardians</Text>
+              <Text marginLeft="10px" transform="rotate(90deg)"><ArrowRightIcon /></Text>
+            </Text>
+            <Box marginBottom="0.75em">
+              <TextBody textAlign="center">
+                Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
+              </TextBody>
+            </Box>
+            {showTips && (
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
+                <Box>
+                  <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
+                  <TextBody marginBottom="1em">
+                    Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
+                  </TextBody>
+
+                  <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
+                  <TextBody marginBottom="1em">
+                    You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
+                  </TextBody>
+
+                  <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
+                  <TextBody marginBottom="1em">
+                    If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
+                  </TextBody>
+                  <TextBody marginBottom="1em">
+                    After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
+                  </TextBody>
+                </Box>
+              </Box>
+            )}
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
+                {(guardianIds).map((id: any) => (
+                  <Box position="relative" width="100%" key={id}>
+                    <DoubleFormInput
+                      leftPlaceholder="Enter guardian address"
+                      leftValue={values[`address_${id}`]}
+                      leftOnChange={onChange(`address_${id}`)}
+                      leftOnBlur={onBlur(`address_${id}`)}
+                      leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                      rightPlaceholder="Assign nickname"
+                      rightValue={values[`name_${id}`]}
+                      rightOnChange={onChange(`name_${id}`)}
+                      rightOnBlur={onBlur(`name_${id}`)}
+                      rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                      _styles={{ width: '100%' }}
+                    />
+                    <Box
+                      onClick={() => removeGuardian(id)}
+                      position="absolute"
+                      width="40px"
+                      right="-40px"
+                      top="0"
+                      height="100%"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      cursor="pointer"
+                    >
+                      <Icon src={MinusIcon} />
+                    </Box>
+                  </Box>
+                ))}
+                <TextButton onClick={() => addGuardian()} color="#EC588D">
+                  Add More Guardian
+                </TextButton>
+              </Box>
+              <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
+                Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
+              </TextBody>
+              <SmallFormInput
+                placeholder="Enter amount"
+                value={amountForm.values.amount}
+                onChange={amountForm.onChange('amount')}
+                onBlur={amountForm.onBlur('amount')}
+                errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+                RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
+                _styles={{ width: '180px', marginTop: '0.75em' }}
+              />
+            </Box>
+            <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+              <Button
+                disabled={disabled}
+                loading={loading}
+                onClick={handleSubmit}
+                _styles={{ width: '455px' }}
+              >
+                Continue
+              </Button>
+              <TextButton
+                color="rgb(137, 137, 137)"
+                onClick={handleNext}
+                _styles={{ width: '455px' }}
+              >
+                Backup current guardians
+              </TextButton>
+            </Box>
+          </Box>
+        )}
       </Box>
     )
   }
@@ -358,7 +482,7 @@ export default function GuardiansSetting() {
         </Button>
         <TextButton
           color="rgb(137, 137, 137)"
-          onClick={() => {}}
+          onClick={handleNext}
           _styles={{ width: '455px' }}
         >
           Backup current guardians
