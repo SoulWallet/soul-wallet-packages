@@ -31,6 +31,8 @@ const theme = extendTheme({
             red: "#EC588D",
             redDarken: "#d8507f",
             black: "#1E1E1E",
+            green: "#29510A",
+            greenDarken: "#1b3507",
         },
     },
     breakpoints: {

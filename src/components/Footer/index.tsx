@@ -10,11 +10,13 @@ export default function Footer() {
     const { getConnectedDapp } = useBrowser();
     const [origin, setOrigin] = useState<any>("");
     const [host, setHost] = useState("");
+    const [isValidOrigin, setIsValidOrigin] = useState(false);
 
     const getOrigin = async () => {
         const url = new URL((await getConnectedDapp()) || "");
         setOrigin(url.origin);
         setHost(url.host);
+        setIsValidOrigin(url.origin.startsWith("http"));
     };
 
     useEffect(() => {
@@ -54,6 +56,10 @@ export default function Footer() {
         }
         checkShouldInject();
     }, [origin]);
+
+    if (!isValidOrigin) {
+        return <></>;
+    }
 
     return (
         <Flex
