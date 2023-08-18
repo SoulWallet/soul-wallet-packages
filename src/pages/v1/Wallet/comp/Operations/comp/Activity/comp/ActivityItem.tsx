@@ -25,7 +25,7 @@ export default function ActivityItem({ item, scanUrl }: any) {
 
         console.log('activity decoded', callDataDecodes)
 
-        const functionNames = callDataDecodes.map((item: any) => item.functionName).join(", ");
+        const functionNames = callDataDecodes.map((item: any) => item.functionName || item.method.name).join(", ");
 
         const status = item.success ? ActivityStatusEn.Success : ActivityStatusEn.Error;
 

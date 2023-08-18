@@ -105,6 +105,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
             setVisible(true);
             setOrigin(origin);
 
+            console.log('show sign modal', txns, actionType, origin, keepVisible, msgToSign, sendTo);
             setKeepModalVisible(keepVisible || false);
 
             setSendToAddress(sendTo);
@@ -142,9 +143,11 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
     const onReject = async () => {
         promiseInfo.reject("User reject");
-        if (!keepModalVisible) {
+        if (keepModalVisible) {
             setVisible(false);
             setSigning(false);
+        } else {
+            window.close();
         }
     };
 

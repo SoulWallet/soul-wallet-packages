@@ -51,12 +51,10 @@ export default function SignPage() {
             return;
         }
 
-        console.log("IDDDDDDDDD:", id)
-
         try {
             // TODO, 1. need to check if account is locked.
             if (actionType === "getAccounts") {
-                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true });
+                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: false });
                 toggleAllowedOrigin(selectedAddress, origin, true);
                 console.log("getAccounts params", { id, isResponse: true, data: selectedAddress, tabId });
                 await browser.tabs.sendMessage(Number(tabId), {
@@ -75,7 +73,7 @@ export default function SignPage() {
                     txns,
                     actionType,
                     origin,
-                    keepVisible: true,
+                    keepVisible: tabId ? false : true,
                     sendTo,
                 });
 
@@ -95,7 +93,13 @@ export default function SignPage() {
             } else if (actionType === "signMessage") {
                 const msgToSign = getMessageType(data) === "hash" ? data : ethers.toUtf8String(data);
 
-                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true, msgToSign });
+                await currentSignModal.show({
+                    txns: "",
+                    actionType,
+                    origin,
+                    keepVisible: tabId ? false : true,
+                    msgToSign,
+                });
 
                 const signature = await keyring.signMessage(msgToSign);
 
@@ -111,7 +115,13 @@ export default function SignPage() {
             } else if (actionType === "signMessageV4") {
                 const parsedData = JSON.parse(data);
 
-                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: true, msgToSign: data });
+                await currentSignModal.show({
+                    txns: "",
+                    actionType,
+                    origin,
+                    keepVisible: tabId ? false : true,
+                    msgToSign: data,
+                });
 
                 const signature = await keyring.signMessageV4(parsedData);
 

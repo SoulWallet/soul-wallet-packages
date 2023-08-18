@@ -15,7 +15,7 @@ export default function useBrowser() {
     };
 
     const navigateToSign = async ({ txns, sendTo }: any) => {
-        navigate(`sign?action=approveTransaction&txns=${JSON.stringify(txns)}&sendTo=${sendTo}`);
+        navigate(`sign?action=approve&txns=${JSON.stringify(txns)}&sendTo=${sendTo}`);
     };
 
     const goWebsite = async (path = "/") => {
