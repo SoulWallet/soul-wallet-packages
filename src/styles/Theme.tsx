@@ -13,38 +13,45 @@ const menuTheme = defineStyleConfig({
             overflow: "hidden",
         },
         divider: {
-            my: 1,
-            borderColor: "#E6E6E6",
-            mx: 3,
-        },
+          my: 1,
+          borderColor: "#E6E6E6",
+          mx: 3,
+        }
     },
 });
 
 const theme = extendTheme({
-    fonts: {
-        body: `'Nunito', sans-serif`,
+  fonts: {
+    body: `'Nunito', sans-serif`,
+  },
+  colors: {
+    appBg: "#F7F7F7",
+    danger: "#E83D26",
+    brand: {
+      red: "#EC588D",
+      redDarken: "#d8507f",
+      black: "#1E1E1E",
+      green: "#29510A",
+      greenDarken: "#1b3507",
     },
-    colors: {
-        appBg: "#F7F7F7",
-        danger: "#E83D26",
-        brand: {
-            red: "#EC588D",
-            redDarken: "#d8507f",
-            black: "#1E1E1E",
-            green: "#29510A",
-            greenDarken: "#1b3507",
-        },
+  },
+  breakpoints: {
+    sm: "320px",
+    md: "768px",
+    lg: "960px",
+    xl: "1200px",
+  },
+  components: {
+    Tooltip: tooltipTheme,
+    Menu: menuTheme,
+    Modal:{
+      baseStyle: {
+        dialog: {
+          maxHeight: "calc(100vh - 50px)",
+        }
+      }
     },
-    breakpoints: {
-        sm: "320px",
-        md: "768px",
-        lg: "960px",
-        xl: "1200px",
-    },
-    components: {
-        Tooltip: tooltipTheme,
-        Menu: menuTheme,
-        Switch: {
+    Switch: {
             baseStyle: {
                 thumb: {
                     boxShadow:

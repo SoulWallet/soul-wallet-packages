@@ -19,18 +19,26 @@ interface IProps {
   children: React.ReactNode;
   id?: string;
   onClose?: any;
+  footerComponent: any
 }
 
-const ModalV2 = ({ visible, children, onClose, id = nanoid() }: IProps) => {
+const ModalV2 = ({ visible, children, onClose, footerComponent, id = nanoid() }: IProps) => {
   return (
-    <Modal isOpen={visible} onClose={onClose}>
+    <Modal
+      isOpen={visible}
+      onClose={onClose}
+      isCentered
+    >
       <ModalOverlay />
-      <ModalContent maxWidth="800px">
+      <ModalContent maxWidth="800px" padding="20px">
         <ModalHeader>Risk Disclosure Statement</ModalHeader>
         <ModalCloseButton />
-        <ModalBody fontSize="16px">
+        <ModalBody fontSize="16px" overflow="scroll">
           {children}
         </ModalBody>
+        <ModalFooter padding="0">
+          {footerComponent}
+        </ModalFooter>
       </ModalContent>
     </Modal>
   )
