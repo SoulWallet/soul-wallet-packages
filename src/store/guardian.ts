@@ -32,6 +32,7 @@ export interface GuardianStore {
     editingGuardians: string[];
     editingGuardianNames: any;
     editingThreshold: number;
+    editingGuardiansInfo: any;
 
     setGuardians: (guardian: string[]) => void;
     setGuardianNames: (guardianNames: string[]) => void;
@@ -52,6 +53,7 @@ export interface GuardianStore {
     setEditingGuardians: (editingGuardians: string[]) => void;
     setEditingGuardianNames: (editingGuardianNames: string[]) => void;
     setEditingThreshold: (editingThreshold: number) => void;
+    setEditingGuardiansInfo: (editingGuardiansInfo: any) => void;
 }
 
 // IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
@@ -74,6 +76,7 @@ const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     editingGuardians: [],
     editingGuardianNames: null,
     editingThreshold: 0,
+    editingGuardiansInfo: null,
 
     setGuardians: (guardians: string[]) => set({ guardians }),
     setGuardianNames: (guardianNames: string[]) => set({ guardianNames }),
@@ -96,6 +99,7 @@ const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     setEditingGuardians: (editingGuardians: string[]) => set({ editingGuardians }),
     setEditingGuardianNames: (editingGuardianNames: string[]) => set({ editingGuardianNames }),
     setEditingThreshold: (editingThreshold: number) => set({ editingThreshold }),
+    setEditingGuardiansInfo: (editingGuardiansInfo: any) => set({ editingGuardiansInfo }),
 }));
 
 export type GuardianState = ReturnType<typeof createGuardianStore>;

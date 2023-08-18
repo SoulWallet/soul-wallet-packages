@@ -106,13 +106,15 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
+  const [updatingInfo, setUpdatingInfo] = useState<any>(null)
   const [reediting, setReediting] = useState(false)
   const [paymentParems, setPaymentParems] = useState<any>(null)
+  const [activeGuardiansInfo, setActiveGuardiansInfo] = useState<any>(null)
 
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
-  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, slotInitInfo } = useGuardianStore();
+  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, slotInitInfo, editingGuardiansInfo, setEditingGuardiansInfo } = useGuardianStore();
   const toast = useToast()
   const { chainConfig } = useConfig();
 
@@ -147,6 +149,7 @@ export default function GuardiansSetting() {
   const getActiveGuardiansHash = async () => {
     const result = await getActiveGuardianHash()
     console.log('getActiveGuardiansHash', result)
+    setActiveGuardiansInfo(result)
   }
 
   useEffect(() => {
@@ -178,15 +181,19 @@ export default function GuardiansSetting() {
       const guardianNames = guardiansList.map((item: any) => item.name)
       const threshold = amountForm.values.amount || 0
       const guardianHash = calcGuardianHash(guardianAddresses, threshold)
-      const replaceGuardiansInfo = await getReplaceGuardianInfo(guardianHash)
+      const replaceGuardiansInfo: any = await getReplaceGuardianInfo(guardianHash)
 
       console.log('guardianAddresses', guardianAddresses)
       console.log('guardianNames', guardianNames)
       console.log('threshold', threshold)
       console.log('guardianHash', guardianHash)
       console.log('replaceGuardiansInfo', replaceGuardiansInfo)
-      setPaymentParems(replaceGuardiansInfo)
-      setPaymentRequesting(true)
+
+      if (replaceGuardiansInfo.keySignature) {
+        setEditingGuardiansInfo(replaceGuardiansInfo)
+        setPaymentParems(replaceGuardiansInfo)
+        setPaymentRequesting(true)
+      }
 
       // setGuardians(guardianAddresses)
       // setGuardianNames(guardianNames)
@@ -243,7 +250,7 @@ export default function GuardiansSetting() {
     }
   };
 
-  if (paymentRequesting) {
+  if (editingGuardiansInfo) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
@@ -260,6 +267,35 @@ export default function GuardiansSetting() {
             _styles={{ width: '455px' }}
           >
             Copy Pay Link
+          </Button>
+        </Box>
+      </Box>
+    )
+  }
+
+  if (activeGuardiansInfo && activeGuardiansInfo.guardianActivateAt) {
+    return (
+      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Heading1>
+          Discard Change
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center">
+            New guardians updating in {new Date(activeGuardiansInfo.guardianActivateAt).toLocaleString()}
+            {showTips && (
+              <Text>
+                {`You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.`}
+              </Text>
+            )}
+            <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
+          </TextBody>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+          <Button
+            onClick={() => {}}
+            _styles={{ width: '455px' }}
+          >
+            Discard Change
           </Button>
         </Box>
         {!reediting && (
