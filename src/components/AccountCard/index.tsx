@@ -6,12 +6,16 @@ import IconScan from "@src/assets/icons/scan.svg";
 import IconTrendUp from "@src/assets/icons/trend-up.svg";
 import { useAddressStore } from "@src/store/address";
 import useConfig from "@src/hooks/useConfig";
+import ImgNotActived from "@src/assets/not-activated.svg";
+import { useChainStore } from "@src/store/chain";
 
 export default function AccountCard() {
-    const { selectedAddress } = useAddressStore();
-    const { selectedChainItem } = useConfig();
+    const { selectedAddress, getIsActivated } = useAddressStore();
+    const { selectedChainId } = useChainStore();
+    const { selectedChainItem, selectedAddressItem } = useConfig();
+    const isActivated = getIsActivated(selectedAddress, selectedChainId);
 
-    console.log('selected item', selectedChainItem)
+    console.log("selected item", selectedChainItem);
 
     const toast = useToast();
 
@@ -29,13 +33,14 @@ export default function AccountCard() {
             flexDir={"column"}
             rounded="24px"
             py="16px"
+            color={isActivated ? "#29510A" : "#1e1e1e"}
             px="24px"
-            bg={selectedChainItem.cardBg}
+            bg={isActivated ? selectedChainItem.cardBg : selectedChainItem.cardBgUnactivated}
             boxShadow={"0px 4px 8px 0px rgba(0, 0, 0, 0.12)"}
         >
             <Flex align={"center"} justify={"space-between"}>
                 <Flex gap="1">
-                    <Text fontSize={"12px"} fontFamily={"Martian"} fontWeight={"600"} color="#29510A">
+                    <Text fontSize={"12px"} fontFamily={"Martian"} fontWeight={"600"}>
                         {selectedAddress.slice(0, 5)}...{selectedAddress.slice(-4)}
                     </Text>
                     <Image src={IconCopy} w="20px" cursor={"pointer"} onClick={() => doCopy()} />
@@ -44,15 +49,19 @@ export default function AccountCard() {
             </Flex>
             <Flex justify={"space-between"} align="center">
                 <Box>
-                    <Text color="#29510A" fontSize={"26px"} fontWeight={"800"} mb="6px" lineHeight={"1"}>
+                    <Text fontSize={"26px"} fontWeight={"800"} mb="6px" lineHeight={"1"}>
                         $0
                     </Text>
-                    <Flex gap="1" align="center">
-                        <Image src={IconTrendUp} w="12px" h={"12px"} />
-                        <Text color="#848488" fontSize="12px" fontWeight={"600"}>
-                            $123.45
-                        </Text>
-                    </Flex>
+                    {isActivated ? (
+                        <Flex gap="1" align="center">
+                            <Image src={IconTrendUp} w="12px" h={"12px"} />
+                            <Text color="#848488" fontSize="12px" fontWeight={"600"}>
+                                $123.45
+                            </Text>
+                        </Flex>
+                    ) : (
+                        <Image src={ImgNotActived} mt="1" />
+                    )}
                 </Box>
                 <Image src={selectedChainItem.iconFaded} />
             </Flex>

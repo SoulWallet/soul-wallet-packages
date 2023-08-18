@@ -65,12 +65,19 @@ const SettingMainpage = ({ onChange }: any) => {
                     <SettingLeft icon={IconDefault} title={"Set As Default"} />
                     <Switch checked={globalShouldInject} onChange={(val) => setGlobalShouldInject(val)} />
                 </SettingBox>
-                <SettingBox onClick={doLockWallet}>
-                    <SettingLeft icon={IconLockWallet} title={"Lock wallet"} />
-                </SettingBox>
                 <SettingBox>
                     <SettingLeft icon={IconSupport} title={"Support"} />
                     <Image src={IconChevronRight} w="6" h="6" />
+                </SettingBox>
+                <SettingBox
+                    mt="4"
+                    onClick={doLockWallet}
+                    color="#fff"
+                    bg="#1e1e1e"
+                    justify="center"
+                    _hover={{ bg: "#343434" }}
+                >
+                    <SettingLeft icon={IconLockWallet} title={"Lock wallet"} />
                 </SettingBox>
             </Flex>
             <Flex justify={"center"} align="center" gap="15px" mt="6" mb="3">

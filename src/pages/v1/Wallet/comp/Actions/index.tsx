@@ -1,12 +1,11 @@
 import React from "react";
-import { Text, Grid, GridItem, Image } from "@chakra-ui/react";
+import { Text, Grid, GridItem, Image, Tooltip, useToast } from "@chakra-ui/react";
 import useBrowser from "@src/hooks/useBrowser";
 import IconAddFunds from "@src/assets/actions/add-funds.svg";
 import IconSend from "@src/assets/actions/send.svg";
 import IconGuardians from "@src/assets/actions/guardians.svg";
 import Icon2FA from "@src/assets/actions/2fa.svg";
-import {ethers} from 'ethers'
-import config from "@src/config";
+import { ethers } from "ethers";
 
 const ActionItem = ({ icon, title, onClick }: any) => {
     return (
@@ -32,6 +31,7 @@ const ActionItem = ({ icon, title, onClick }: any) => {
 
 export default function Actions() {
     const { navigate, goWebsite } = useBrowser();
+    const toast = useToast();
     return (
         <>
             <Grid templateColumns={"repeat(2, 1fr)"} gap="1" mt="4" mb="6">
@@ -41,12 +41,13 @@ export default function Actions() {
                     icon={IconSend}
                     onClick={() => navigate(`send/${ethers.ZeroAddress}`)}
                 />
-                <ActionItem title="Guardians" icon={IconGuardians} onClick={()=> goWebsite(`edit-guardians`)} />
-                <ActionItem title="Authenticate" icon={Icon2FA} />
+                <ActionItem title="Guardians" icon={IconGuardians} onClick={() => goWebsite(`edit-guardians`)} />
+                <ActionItem
+                    title="Authenticate"
+                    icon={Icon2FA}
+                    onClick={() => toast({ title: "Coming soon", status: "info" })}
+                />
             </Grid>
-            {/* <Grid templateColumns={"repeat(3, 1fr)"} gap="1" mt="1" mb="6">
-               
-            </Grid> */}
         </>
     );
 }

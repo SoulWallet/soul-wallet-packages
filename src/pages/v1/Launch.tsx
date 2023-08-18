@@ -99,13 +99,13 @@ export default function Launch() {
             marginTop="10px"
             marginBottom="5px"
           >
-            Social Recover
+            Wallet recovery
           </Box>
           <Box
             width="100%"
             fontSize="14px"
           >
-            Social recovery help you retrieve wallets easily with guardian signatures.
+            If your wallet is lost, recover easily with guardian signatures.
           </Box>
         </Box>
       </Flex>

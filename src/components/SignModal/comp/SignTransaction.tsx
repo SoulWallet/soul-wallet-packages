@@ -5,6 +5,7 @@ import AddressInput from "../../SendAssets/comp/AddressInput";
 import { useAddressStore } from "@src/store/address";
 import Button from "../../Button";
 import { InfoWrap, InfoItem } from "../index";
+import BN from "bignumber.js";
 
 export default function SignTransaction({
     decodedData,
@@ -62,7 +63,7 @@ export default function SignTransaction({
                                     <Flex mb="1" gap="4" justify={"flex-end"}>
                                         {feeCost && (
                                             <Text textDecoration={"line-through"}>
-                                                {feeCost.split(" ")[0]} {payTokenSymbol}
+                                                {BN(feeCost.split(" ")[0]).toFixed(6)} {payTokenSymbol}
                                             </Text>
                                         )}
                                         <Text>0 ETH</Text>
