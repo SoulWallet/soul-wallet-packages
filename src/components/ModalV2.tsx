@@ -36,7 +36,7 @@ const ModalV2 = ({ visible, children, onClose, footerComponent, id = nanoid() }:
         <ModalBody fontSize="16px" overflow="scroll">
           {children}
         </ModalBody>
-        <ModalFooter padding="0">
+        <ModalFooter paddingBottom="0">
           {footerComponent}
         </ModalFooter>
       </ModalContent>
