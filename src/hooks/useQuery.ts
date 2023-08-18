@@ -68,7 +68,6 @@ export default function useQuery() {
             getEthPrice();
             const erc20Price = 1853;
             return {
-                // IMPORTANT TODO, not fixed -18
                 requiredAmount: requiredEth.times(erc20Price).times(chainConfig.maxCostMultiplier).div(100).toFixed(),
                 userOp,
             };

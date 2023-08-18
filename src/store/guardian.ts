@@ -56,7 +56,6 @@ export interface GuardianStore {
     setEditingGuardiansInfo: (editingGuardiansInfo: any) => void;
 }
 
-// IMPORTANT TODO, save initialKey, initialGuardianHash, initialGuardianSafePeriod
 const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     guardians: [],
     guardianNames: null,

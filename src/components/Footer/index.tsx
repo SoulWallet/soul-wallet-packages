@@ -6,7 +6,6 @@ import { useSettingStore } from "@src/store/setting";
 import useBrowser from "@src/hooks/useBrowser";
 
 export default function Footer() {
-    // IMPORTANT TODO, get from website
     const { getConnectedDapp } = useBrowser();
     const [origin, setOrigin] = useState<any>("");
     const [host, setHost] = useState("");

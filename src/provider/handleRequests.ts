@@ -1,6 +1,7 @@
 import windowBus from "../lib/windowBus";
 import { ethers } from "ethers";
 import { getMessageType } from "./tools";
+// IMPORTANT TODO, still available on newer structure?
 import WalletABI from "@src/abi/Wallet.json";
 import config from "@src/config";
 

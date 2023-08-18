@@ -6,7 +6,6 @@ import { UserOpUtils } from "@soulwallet/sdk";
 import bgBus from "./lib/bgBus";
 import { notify } from "@src/lib/tools";
 
-// IMPORTANT TODO, maintain chainConfig here as well
 let password = null;
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
@@ -49,7 +48,6 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             break;
 
         case "getAccounts":
-            // IMPORTANT TODO, also need to check lock state
             const { isAllowed, selectedAddress } = checkAllowed(msg.data.origin);
 
             if (isAllowed) {
