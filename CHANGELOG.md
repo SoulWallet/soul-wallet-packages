@@ -1,3 +1,7 @@
+## 0.1.0
+
+-   Brand new plugin based on new keystore structure
+
 ## alpha-0.0.17
 
 -   Switched default chain to Polygon

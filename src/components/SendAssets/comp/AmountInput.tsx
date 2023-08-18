@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Image, Input } from "@chakra-ui/react";
 import TokenLine from "./TokenLine";
 import Button from "@src/components/Button";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balance";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
+import { useAddressStore } from "@src/store/address";
+import { useChainStore } from "@src/store/chain";
 
 export default function AmountInput({ sendToken, onTokenChange, amount, onChange }: any) {
-    const { tokenBalance } = useBalanceStore();
+    const { tokenBalance, fetchTokenBalance } = useBalanceStore();
+    const { selectedAddress } = useAddressStore();
+    const { selectedChainId } = useChainStore();
 
     const selectedToken = tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === sendToken)[0];
 
@@ -27,6 +31,13 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
             onChange(filteredValue);
         }
     };
+
+    useEffect(() => {
+        if (!selectedAddress || !selectedChainId) {
+            return;
+        }
+        fetchTokenBalance(selectedAddress, selectedChainId);
+    }, [selectedAddress, selectedChainId]);
 
     return (
         <Flex flexDir={"column"} gap="3" py="3" px="4" bg="#fff" rounded="20px">

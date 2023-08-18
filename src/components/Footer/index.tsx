@@ -73,12 +73,12 @@ export default function Footer() {
             borderColor={"#898989"}
         >
             <Flex bg="#fff" rounded={"20px"} px="8px">
-                <Image src={IconConnected} />
+                {shouldInject && <Image src={IconConnected} />}
                 <Text fontFamily={"Martian"} fontWeight={"500"} fontSize={"10px"}>
                     {host}
                 </Text>
             </Flex>
-            <Tooltip label="Set Soul Wallet as default wallet for this dapp.">
+            <Tooltip label={`Set Soul Wallet as default wallet for this dapp.`}>
                 <Box>
                     <Switch checked={shouldInject} onChange={onChange} />
                 </Box>

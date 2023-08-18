@@ -87,8 +87,8 @@ export default function ActivateWallet() {
             return;
         }
         // set user balance
-        setUserBalance(getTokenBalance(payToken).tokenBalanceFormatted);
         fetchTokenBalance(selectedAddress, selectedChainId);
+        setUserBalance(getTokenBalance(payToken).tokenBalanceFormatted);
     };
 
     useEffect(() => {
