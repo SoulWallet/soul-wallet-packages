@@ -1,17 +1,39 @@
 import { nanoid } from "nanoid";
 import React, { useEffect, useState } from "react";
-import { Box, Text, Image } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button
+} from "@chakra-ui/react";
 
 interface IProps {
   visible: boolean;
   children: React.ReactNode;
   id?: string;
+  onClose?: any;
 }
 
-const ModalV2 = ({ visible, children, id = nanoid() }: IProps) => {
-  if (!visible) {
-    return null
-  }
+const ModalV2 = ({ visible, children, onClose, id = nanoid() }: IProps) => {
+  return (
+    <Modal isOpen={visible} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent width="600px">
+        <ModalHeader>Risk Disclosure Statement</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {children}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  )
 
   return (
     <Box

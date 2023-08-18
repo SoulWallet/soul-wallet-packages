@@ -109,15 +109,7 @@ export default function Launch() {
           </Box>
         </Box>
       </Flex>
-      <ModalV2 visible={showModal}>
-        <Image
-          src={IconClose}
-          position="absolute"
-          right="20px"
-          top="20px"
-          cursor="pointer"
-          onClick={handleCloseModal}
-        />
+      <ModalV2 visible={showModal} onClose={handleCloseModal}>
         <Box
           display="flex"
           flexDirection="column"
