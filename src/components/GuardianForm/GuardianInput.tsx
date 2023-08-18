@@ -1,5 +1,4 @@
 import React from "react";
-import InputWrapper from "../InputWrapper";
 import MinusIcon from "@src/assets/icons/minus.svg";
 import Icon from "../Icon";
 import { GuardianItem } from "@src/lib/type";
