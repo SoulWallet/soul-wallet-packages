@@ -115,7 +115,26 @@ export default function GuardiansSetting() {
   const { account } = useWalletContext();
   const { calcWalletAddress } = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
-  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, slotInitInfo, editingGuardiansInfo, setEditingGuardiansInfo } = useGuardianStore();
+  const {
+    guardians,
+    guardianNames,
+    threshold,
+
+    setGuardians,
+    setGuardianNames,
+    setThreshold,
+
+    editingGuardians,
+    editingGuardianNames,
+    editingThreshold,
+
+    setEditingGuardians,
+    setEditingGuardianNames,
+    setEditingThreshold,
+
+    editingGuardiansInfo,
+    setEditingGuardiansInfo,
+  } = useGuardianStore();
   const toast = useToast()
   const { chainConfig } = useConfig();
 
@@ -151,6 +170,10 @@ export default function GuardiansSetting() {
     const result = await getActiveGuardianHash()
     console.log('getActiveGuardiansHash', result)
     setActiveGuardiansInfo(result)
+
+    if (result.guardianActivateAt) {
+      onUpdateSuccess()
+    }
   }
 
   useEffect(() => {
@@ -194,11 +217,10 @@ export default function GuardiansSetting() {
         setEditingGuardiansInfo(replaceGuardiansInfo)
         setPaymentParems(replaceGuardiansInfo)
         setPaymentRequesting(true)
+        setEditingGuardians(guardianAddresses)
+        setEditingGuardianNames(guardianNames)
+        setEditingThreshold(threshold)
       }
-
-      // setGuardians(guardianAddresses)
-      // setGuardianNames(guardianNames)
-      // setThreshold(threshold)
       setLoading(false)
       // handleJumpToTargetStep(GuardiansStepEn.Save);
     } catch (error: any) {
@@ -207,6 +229,12 @@ export default function GuardiansSetting() {
         title: error.message,
         status: "error",
       })
+    }
+  }
+
+  const onUpdateSuccess = async () => {
+    if (editingGuardians.length && editingThreshold && (JSON.stringify(editingGuardians) !== JSON.stringify(guardians) || JSON.stringify(editingGuardianNames) !== JSON.stringify(guardianNames) || editingThreshold !== threshold)) {
+      console.log('onUpdateSuccess')
     }
   }
 
@@ -287,7 +315,7 @@ export default function GuardiansSetting() {
         </Heading1>
         <Box marginBottom="0.75em">
           <TextBody textAlign="center">
-            New guardians updating in {new Date(activeGuardiansInfo.guardianActivateAt).toLocaleString()}
+            New guardians updating in {new Date(activeGuardiansInfo.guardianActivateAt * 1000).toLocaleString()}
             {showStatusTips && (
               <Text>
                 {`You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.`}
