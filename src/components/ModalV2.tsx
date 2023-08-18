@@ -25,10 +25,10 @@ const ModalV2 = ({ visible, children, onClose, id = nanoid() }: IProps) => {
   return (
     <Modal isOpen={visible} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent width="600px">
+      <ModalContent maxWidth="800px">
         <ModalHeader>Risk Disclosure Statement</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody fontSize="16px">
           {children}
         </ModalBody>
       </ModalContent>
