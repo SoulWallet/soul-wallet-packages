@@ -23,12 +23,12 @@ prompt.get(
     {
         properties: {
             version: {
-                description: `当前manifest版本号为(${currentVersion})，如果需要更改请输入，否则默认使用当前值`,
+                description: `Current version is: (${currentVersion}), type if you want change`,
                 default: currentVersion,
                 pattern: /^\d+\.\d+\.\d+$/,
             },
             useDateTime: {
-                description: "是否需要打包时间作为后缀 (y/n)?",
+                description: "Add timestamp as postfix (y/n)?",
                 pattern: /^[yn]$/,
                 default: "n",
             },
@@ -50,16 +50,15 @@ prompt.get(
                 obj.version = version;
                 const newData = JSON.stringify(obj, null, 2);
                 fs.writeFileSync(mPath, newData, "utf-8");
-                console.log(`${mName}文件中的版本号已更新为${version}`);
+                console.log(`version in ${mName} updated to ${version}`);
             });
         } else {
-            console.log("版本号未改变，无需更新");
+            console.log("version not changed");
         }
 
         shell.exec("pnpm build");
 
         let formattedDate = "";
-
         if (useDateTime === "y") {
             const date = new Date();
             const year = date.getFullYear();
@@ -74,6 +73,6 @@ prompt.get(
         const outputFolder = path.resolve(ROOT_PATH, "dist");
         zipdir(outputFolder, { saveTo: `${outputFileName}.zip` });
 
-        console.log(`构建并打包完成，文件名称为 ${outputFolder}\/${outputFileName}`);
+        console.log(`Completed, file name: ${outputFolder}\/${outputFileName}`);
     },
 );

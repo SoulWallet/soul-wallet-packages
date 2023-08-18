@@ -44,7 +44,10 @@ export default function useKeystore() {
         const now = Math.floor(Date.now() / 1000);
         const res = await getKeyStoreInfo(slot);
         if (res.isErr()) {
-            return;
+            return {
+                activeGuardianHash: null,
+                guardianActivateAt: null,
+            };
         }
         const { guardianHash, pendingGuardianHash, guardianActivateAt } = res.OK;
 
