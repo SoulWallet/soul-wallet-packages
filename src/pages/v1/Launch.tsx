@@ -9,7 +9,7 @@ import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { Box, Center, Flex, Text, Image } from "@chakra-ui/react";
 import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
@@ -109,7 +109,43 @@ export default function Launch() {
           </Box>
         </Box>
       </Flex>
-      <ModalV2 visible={showModal} onClose={handleCloseModal}>
+      <ModalV2
+        visible={showModal}
+        onClose={handleCloseModal}
+        footerComponent={
+          <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" width="100%">
+            {!authorized ? (
+              <>
+                <Button
+                  onClick={handleAuthorize}
+                  type="primary"
+                  py="3"
+                  px="4"
+                  marginBottom="10px"
+                >
+                  I Understand
+                </Button>
+                <Text
+                  color="#898989"
+                  cursor="pointer"
+                  fontWeight="bold"
+                  fontSize="16px"
+                  onClick={handleCloseModal}
+                >
+                  No, thanks
+                </Text>
+              </>
+            ) : (
+              <Text
+                onClick={handleCloseModal}
+                cursor="pointer"
+              >
+                Thank you for your agreement.
+              </Text>
+            )}
+          </Box>
+        }
+      >
         <Box
           display="flex"
           flexDirection="column"
@@ -119,34 +155,6 @@ export default function Launch() {
           paddingRight="0.5em"
         >
           <Statement />
-          {!authorized ? (
-            <>
-              <Button
-                onClick={handleAuthorize}
-                type="primary"
-                py="3"
-                px="4"
-              >
-                I Understand
-              </Button>
-              <Text
-                color="#898989"
-                cursor="pointer"
-                fontWeight="bold"
-                fontSize="16px"
-                onClick={handleCloseModal}
-              >
-                No, thanks
-              </Text>
-            </>
-          ) : (
-            <Text
-              onClick={handleCloseModal}
-              cursor="pointer"
-            >
-              Thank you for your agreement.
-            </Text>
-          )}
         </Box>
       </ModalV2>
     </FullscreenContainer>

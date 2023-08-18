@@ -171,7 +171,7 @@ export default function GuardiansSetting() {
     console.log('getActiveGuardiansHash', result)
     setActiveGuardiansInfo(result)
 
-    if (result.guardianActivateAt) {
+    if (result && result.guardianActivateAt) {
       onUpdateSuccess()
     }
   }
