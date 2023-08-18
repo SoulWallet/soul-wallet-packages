@@ -99,6 +99,7 @@ export default function GuardiansSetting() {
   const keystore = useKeyring();
   const { calcGuardianHash, getReplaceGuardianInfo, getActiveGuardianHash } = useKeystore()
   const [showTips, setShowTips] = useState(false)
+  const [showStatusTips, setShowStatusTips] = useState(false)
 
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
@@ -237,6 +238,11 @@ export default function GuardiansSetting() {
     setShowTips(!showTips)
   }
 
+  const toggleStatusTips = (event: any) => {
+    console.log('toggleStatusTips', event)
+    setShowStatusTips(!showStatusTips)
+  }
+
   const openPayLink = async () => {
     if (paymentParems) {
       const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
@@ -282,12 +288,12 @@ export default function GuardiansSetting() {
         <Box marginBottom="0.75em">
           <TextBody textAlign="center">
             New guardians updating in {new Date(activeGuardiansInfo.guardianActivateAt).toLocaleString()}
-            {showTips && (
+            {showStatusTips && (
               <Text>
                 {`You have a pending update, and it can be canceled before the time above runs out. To cancel this pending update, click "Discard Changes" below.`}
               </Text>
             )}
-            <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
+            <Text onClick={toggleStatusTips} color="#EC588D" cursor="pointer">Show {showStatusTips ? 'less' : 'more'}</Text>
           </TextBody>
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
