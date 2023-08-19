@@ -1,12 +1,11 @@
-import classNames from "classnames";
 import React from "react";
+import { Box, Text, Image } from "@chakra-ui/react"
 
 interface IProps {
-    src: string;
-    className?: string;
-    onClick?: () => void;
+  src: string;
+  onClick?: () => void;
 }
 
-export default function Icon({ src, className, onClick }: IProps) {
-    return <img src={src} className={classNames("w-6 h-6", className)} onClick={onClick} />;
+export default function Icon({ src, onClick }: IProps) {
+  return <Image src={src} w="6" h="6" onClick={onClick} />;
 }

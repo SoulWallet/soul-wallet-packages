@@ -30,9 +30,13 @@ export default function FullscreenContainer({ children }: { children: ReactNode 
         pointerEvents="none"
       />
       <Logo />
-      <div className="max-w-5xl border-white rounded-3xl progress-window-shadow px-4 pt-4 max-h-fit justify-self-center mt-4">
+      <Box
+        background="rgba(255, 255, 255, 0.02)"
+        padding="1em"
+        marginTop="1em"
+      >
         {children}
-      </div>
+      </Box>
     </Box>
   );
 }
