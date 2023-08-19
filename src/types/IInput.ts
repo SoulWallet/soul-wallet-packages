@@ -1,7 +1,6 @@
 export interface IInputProps {
     label?: string;
     type?: string;
-    className?: string;
     memo?: string;
     placeholder?: string;
     verified?: boolean;

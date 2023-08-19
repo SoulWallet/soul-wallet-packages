@@ -36,16 +36,16 @@ export default function SignTransaction({
 
             <Flex flexDir={"column"} gap="5" mt="6">
                 <Box bg="#fff" py="3" px="4" rounded="20px" fontWeight={"800"}>
-                    <div>
+                    <Box>
                         {decodedData && decodedData.length > 0
                             ? decodedData.map((item: any, index: number) => (
-                                  <span className="mr-1 capitalize" key={index}>
+                                  <Text mr="1"  textTransform="capitalize" key={index}>
                                       {decodedData.length > 1 && `${index + 1}.`}
                                       {item.functionName || "Contract interaction"}
-                                  </span>
+                                  </Text>
                               ))
                             : "Contract interaction"}
-                    </div>
+                    </Box>
                 </Box>
                 <AddressInput label="From" address={selectedAddress} disabled />
                 {sendToAddress ? (
