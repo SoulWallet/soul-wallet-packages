@@ -7,7 +7,6 @@ import {
 } from "@src/context/StepContext";
 import React, { useEffect, useMemo, useState } from "react";
 import FullscreenContainer from "@src/components/FullscreenContainer";
-import ProgressNavBar from "@src/components/ProgressNavBar";
 import { getLocalStorage, setLocalStorage } from "@src/lib/tools";
 import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 import {EnHandleMode} from '@src/lib/type'

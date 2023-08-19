@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import MinusIcon from "@src/assets/icons/minus.svg";
-import GuardianForm, { IGuardianFormHandler } from "@src/components/GuardianForm";
 import { useGlobalStore } from "@src/store/global";
 import { GuardianState, createGuardianStore } from "@src/store/guardian";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";

@@ -2,7 +2,6 @@ import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/
 import React, { ReactNode, useMemo } from "react";
 import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
-import ProgressNavBar from "@src/components/ProgressNavBar";
 import SetPassword from "@src/pages/v1/Create/SetPassword";
 import SetGuardians from "@src/pages/v1/Create/SetGuardians";
 import SaveGuardians from "@src/pages/v1/Create/SaveGuardians";

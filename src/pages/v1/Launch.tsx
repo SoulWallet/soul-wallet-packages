@@ -37,13 +37,13 @@ export default function Launch() {
   };
 
   const handleJumpToTargetStep = (targetStep: number, to: string) => {
-    // if (authorized) {
-    dispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: targetStep,
-    });
-    replaceCurrentTab(to)
-    // }
+    if (authorized) {
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: targetStep,
+      });
+      replaceCurrentTab(to)
+    }
   };
 
   return (
