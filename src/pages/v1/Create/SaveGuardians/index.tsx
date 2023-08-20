@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { SButton } from "@src/components/Button";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import { useGlobalStore } from "@src/store/global";

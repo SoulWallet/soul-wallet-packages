@@ -7,7 +7,6 @@ type ButtonType = "default" | "primary" | "disabled" | "error" | "reject" | "lin
 interface IProps extends Omit<ButtonProps, 'type'> {
   children: React.ReactNode;
   type?: ButtonType;
-  className?: string;
   onClick?: () => void;
   loading?: boolean;
   disabled?: boolean;
@@ -16,7 +15,6 @@ interface IProps extends Omit<ButtonProps, 'type'> {
 }
 
 export default function TextButton({
-  className,
   onClick,
   children,
   loading,

@@ -45,15 +45,20 @@ export default function PluginRouter() {
     // TODO, judge website as well
 
     return (
-        <Box
-            bg="appBg"
-            fontSize={"16px"}
-            w={mode === "web" ? "" : "360px"}
-            h={mode === "web" ? "" : "600px"}
-            overflow={"auto"}
-            className="hide-scrollbar"
-        >
-            <Routes>{RouterV1}</Routes>
-        </Box>
+      <Box
+        bg="appBg"
+        fontSize={"16px"}
+        w={mode === "web" ? "" : "360px"}
+        h={mode === "web" ? "" : "600px"}
+        overflow={"auto"}
+        sx={{
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          }
+        }}
+      >
+        <Routes>{RouterV1}</Routes>
+      </Box>
     );
 }

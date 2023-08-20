@@ -1,4 +1,3 @@
-import { SButton } from "@src/components/Button";
 import browser from "webextension-polyfill";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import WalletCardIcon from "@src/components/Icons/WalletCard";

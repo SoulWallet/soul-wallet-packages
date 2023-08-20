@@ -3,7 +3,6 @@ export type GuardianItem = {
     name: string;
     address: string;
     errorMsg?: string;
-    inputClassName?: string;
     GuardianItem?: boolean;
     noNameInput?: boolean;
 };
