@@ -1,3 +1,9 @@
+## 0.1.1
+
+-   Optimized component style
+-   Optimized sponsor check logic
+
+
 ## 0.1.0
 
 -   Brand new plugin based on new keystore structure
