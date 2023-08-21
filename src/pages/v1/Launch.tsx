@@ -43,6 +43,8 @@ export default function Launch() {
         payload: targetStep,
       });
       replaceCurrentTab(to)
+    } else {
+      setShowModal(true)
     }
   };
 
