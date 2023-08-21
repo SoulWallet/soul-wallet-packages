@@ -151,8 +151,8 @@ export default function Launch() {
           flexDirection="column"
           alignItems="center"
           gap="1em"
-          paddingLeft="0.5em"
-          paddingRight="0.5em"
+          // paddingLeft="0.5em"
+          // paddingRight="0.5em"
         >
           <Statement />
         </Box>
