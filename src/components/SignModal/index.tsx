@@ -125,7 +125,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                 const callDataDecodes = await decodeCalldata(selectedChainId, chainConfig.contracts.entryPoint, userOp);
                 console.log("decoded data", callDataDecodes);
                 setDecodedData(callDataDecodes);
-                // checkSponser(userOp);
+                checkSponser(userOp);
             }
 
             if (msgToSign) {

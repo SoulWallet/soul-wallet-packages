@@ -14,10 +14,10 @@ export const AUTHORIZED_STORAGE_KEY = "authorized";
 
 const Statement = () => {
   return (
-    <Box>
+    <Box h="400px" overflowY={"auto"}>
       <Box>
         <Text marginBottom="20px">Soul Wallet (&quot;Soulwallet App&quot;, &quot;we&quot; or &quot;us&quot;) is a blockchain-based smart-contract wallet service that allows users to store and manage their digital assets. However, like all blockchain services, Soul Wallet comes with a certain level of risk. By using Soul Wallet, you acknowledge and accept these risks. Please read this Risks Disclosure Statement carefully before using Soul Wallet.</Text>
-        <OrderedList paddingLeft="20px">
+        <OrderedList>
           <ListItem>
             <Text marginBottom="14px">
               We have released an internal test version of alpha to gather more feedback to improve our
