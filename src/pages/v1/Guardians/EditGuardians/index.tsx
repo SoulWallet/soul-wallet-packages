@@ -97,7 +97,7 @@ const amountValidate = (values: any, props: any) => {
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
-  const { calcGuardianHash, getReplaceGuardianInfo, getActiveGuardianHash } = useKeystore()
+  const { calcGuardianHash, getReplaceGuardianInfo, getCancelSetGuardianInfo, getActiveGuardianHash } = useKeystore()
   const [showTips, setShowTips] = useState(false)
   const [showStatusTips, setShowStatusTips] = useState(false)
 
@@ -106,10 +106,14 @@ export default function GuardiansSetting() {
   const [guardiansList, setGuardiansList] = useState([])
   const [amountData, setAmountData] = useState<any>({})
   const [loading, setLoading] = useState(false)
+  const [canceling, setCanceling] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  // const [canceling, setCanceling] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
   const [updatingInfo, setUpdatingInfo] = useState<any>(null)
   const [reediting, setReediting] = useState(false)
   const [paymentParems, setPaymentParems] = useState<any>(null)
+  const [paymentCancelParems, setPaymentCancelParems] = useState<any>(null)
   const [activeGuardiansInfo, setActiveGuardiansInfo] = useState<any>(null)
 
   const { account } = useWalletContext();
@@ -170,6 +174,7 @@ export default function GuardiansSetting() {
     const result = await getActiveGuardianHash()
     console.log('getActiveGuardiansHash', result)
     setActiveGuardiansInfo(result)
+    setLoaded(true)
 
     if (result && result.guardianActivateAt) {
       onUpdateSuccess()
@@ -271,7 +276,33 @@ export default function GuardiansSetting() {
     setShowStatusTips(!showStatusTips)
   }
 
-  const openPayLink = async () => {
+  const copyPayCancelLink = async () => {
+    try {
+      setCanceling(true)
+      const cancelSetGuardianInfo: any = await getCancelSetGuardianInfo()
+      console.log('cancelSetGuardianInfo', cancelSetGuardianInfo)
+
+      if (cancelSetGuardianInfo && cancelSetGuardianInfo.keySignature) {
+        const url = `${config.officialWebUrl}/pay-cancel-edit-guardians/${cancelSetGuardianInfo.slot}?keySignature=${paymentParems.keySignature}&slot=${cancelSetGuardianInfo.slot}`
+
+        copyText(url)
+
+        setCanceling(false)
+        toast({
+          title: "Copy success!",
+          status: "success",
+        });
+      }
+    } catch (error: any) {
+      setCanceling(false)
+      toast({
+        title: error.message,
+        status: "error",
+      })
+    }
+  };
+
+  const copyPayLink = async () => {
     if (paymentParems) {
       const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
 
@@ -284,25 +315,14 @@ export default function GuardiansSetting() {
     }
   };
 
-  if (editingGuardiansInfo) {
+  console.log('activeGuardiansInfo', activeGuardiansInfo)
+
+  if (!loaded) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
-          Request Payment
+          Loading...
         </Heading1>
-        <Box marginBottom="0.75em">
-          <TextBody textAlign="center">
-
-          </TextBody>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
-          <Button
-            onClick={openPayLink}
-            _styles={{ width: '455px' }}
-          >
-            Copy Pay Link
-          </Button>
-        </Box>
       </Box>
     )
   }
@@ -326,7 +346,9 @@ export default function GuardiansSetting() {
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
           <Button
-            onClick={() => {}}
+            disabled={canceling}
+            loading={canceling}
+            onClick={copyPayCancelLink}
             _styles={{ width: '455px' }}
           >
             Discard Change
@@ -454,6 +476,29 @@ export default function GuardiansSetting() {
             </Box>
           </Box>
         )}
+      </Box>
+    )
+  }
+
+  if (editingGuardiansInfo) {
+    return (
+      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Heading1>
+          Request Payment
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center">
+
+          </TextBody>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+          <Button
+            onClick={copyPayLink}
+            _styles={{ width: '455px' }}
+          >
+            Copy Pay Link
+          </Button>
+        </Box>
       </Box>
     )
   }
