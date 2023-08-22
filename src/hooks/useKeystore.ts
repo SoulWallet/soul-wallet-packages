@@ -62,7 +62,6 @@ export default function useKeystore() {
 
     const getReplaceGuardianInfo = async (newGuardianHash: string) => {
         const { initialKey, initialGuardianHash, initialGuardianSafePeriod } = slotInitInfo;
-        // const keyInfo = await keystore.getKeyStoreInfo(slot);
         const initialKeyAddress = `0x${initialKey.slice(-40)}`;
         if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
             return;
@@ -86,5 +85,26 @@ export default function useKeystore() {
         };
     };
 
-    return { keystore, calcGuardianHash, getSlot, getKeyStoreInfo, getActiveGuardianHash, getReplaceGuardianInfo };
+    const getCancelSetGuardianInfo = async () => {
+        const { initialKey } = slotInitInfo;
+        const initialKeyAddress = `0x${initialKey.slice(-40)}`;
+        if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
+            return;
+        }
+        const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_CANCEL_SET_GUARDIAN, slot, ethers.ZeroHash);
+        if (ret.isErr()) {
+            return;
+        }
+        const { domain, types, value: message } = ret.OK;
+
+        // IMPORTANT TODO, use wallet to sign
+        const keySignature = await keyring.signMessageV4({ domain, types, message });
+
+        return {
+            slot,
+            keySignature,
+        };
+    };
+
+    return { keystore, calcGuardianHash, getSlot, getKeyStoreInfo, getActiveGuardianHash, getReplaceGuardianInfo, getCancelSetGuardianInfo };
 }

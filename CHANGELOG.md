@@ -2,6 +2,7 @@
 
 -   Optimized component style
 -   Optimized sponsor check logic
+-   Optimized some function call logic
 
 
 ## 0.1.0
