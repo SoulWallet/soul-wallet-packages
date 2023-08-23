@@ -163,6 +163,25 @@ export default function GuardiansSetting() {
     setAmountData({ guardiansCount: guardiansList.length })
   }, [guardiansList])
 
+  const addGuardian = () => {
+    const id = nextRandomId()
+    const newGuardianIds = [...guardianIds, id]
+    const newFields = getFieldsByGuardianIds(newGuardianIds)
+    setGuardianIds(newGuardianIds)
+    setFields(newFields)
+    addFields(getFieldsByGuardianIds([id]))
+  };
+
+  const removeGuardian = (deleteId: string) => {
+    if (guardianIds.length > 1) {
+      const newGuardianIds = guardianIds.filter(id => id !== deleteId)
+      const newFields = getFieldsByGuardianIds(newGuardianIds)
+      setGuardianIds(newGuardianIds)
+      setFields(newFields)
+      removeFields(getFieldsByGuardianIds([deleteId]))
+    }
+  }
+
   const handleJumpToTargetStep = (targetStep: GuardiansStepEn) => {
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
@@ -172,10 +191,15 @@ export default function GuardiansSetting() {
 
   const getActiveGuardiansHash = async () => {
     const result = await getActiveGuardianHash()
-    console.log('getActiveGuardiansHash', result)
     setActiveGuardiansInfo(result)
     setLoaded(true)
+    const guardianActivateAt = result.guardianActivateAt
 
+    if (guardianActivateAt * 1000 < Date.now()) {
+      console.log('finished')
+    }
+
+    console.log('getActiveGuardiansHash', result, result && result.guardianActivateAt, Date.now())
     if (result && result.guardianActivateAt) {
       onUpdateSuccess()
     }
@@ -238,27 +262,9 @@ export default function GuardiansSetting() {
   }
 
   const onUpdateSuccess = async () => {
+    console.log('onUpdateSuccess 1')
     if (editingGuardians.length && editingThreshold && (JSON.stringify(editingGuardians) !== JSON.stringify(guardians) || JSON.stringify(editingGuardianNames) !== JSON.stringify(guardianNames) || editingThreshold !== threshold)) {
-      console.log('onUpdateSuccess')
-    }
-  }
-
-  const addGuardian = () => {
-    const id = nextRandomId()
-    const newGuardianIds = [...guardianIds, id]
-    const newFields = getFieldsByGuardianIds(newGuardianIds)
-    setGuardianIds(newGuardianIds)
-    setFields(newFields)
-    addFields(getFieldsByGuardianIds([id]))
-  };
-
-  const removeGuardian = (deleteId: string) => {
-    if (guardianIds.length > 1) {
-      const newGuardianIds = guardianIds.filter(id => id !== deleteId)
-      const newFields = getFieldsByGuardianIds(newGuardianIds)
-      setGuardianIds(newGuardianIds)
-      setFields(newFields)
-      removeFields(getFieldsByGuardianIds([deleteId]))
+      console.log('onUpdateSuccess 2')
     }
   }
 
@@ -292,6 +298,12 @@ export default function GuardiansSetting() {
           title: "Copy success!",
           status: "success",
         });
+      } else {
+        setCanceling(false)
+        toast({
+          title: 'failed',
+          status: "error",
+        })
       }
     } catch (error: any) {
       setCanceling(false)
@@ -303,8 +315,10 @@ export default function GuardiansSetting() {
   };
 
   const copyPayLink = async () => {
-    if (paymentParems) {
-      const url = `${config.officialWebUrl}/pay-edit-guardians/${paymentParems.newGuardianHash}?newGuardianHash=${paymentParems.newGuardianHash}&keySignature=${paymentParems.keySignature}&initialKey=${paymentParems.initialKey}&initialGuardianHash=${paymentParems.initialGuardianHash}&initialGuardianSafePeriod=${paymentParems.initialGuardianSafePeriod}`
+    const params = paymentParems || editingGuardiansInfo
+
+    if (params) {
+      const url = `${config.officialWebUrl}/pay-edit-guardians/${params.newGuardianHash}?newGuardianHash=${params.newGuardianHash}&keySignature=${params.keySignature}&initialKey=${params.initialKey}&initialGuardianHash=${params.initialGuardianHash}&initialGuardianSafePeriod=${params.initialGuardianSafePeriod}`
 
       copyText(url)
 
@@ -314,8 +328,6 @@ export default function GuardiansSetting() {
       });
     }
   };
-
-  console.log('activeGuardiansInfo', activeGuardiansInfo)
 
   if (!loaded) {
     return (

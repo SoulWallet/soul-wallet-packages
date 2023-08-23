@@ -67,7 +67,7 @@ export default function useKeystore() {
             return;
         }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash);
-        console.log('getReplaceGuardianInfo', KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash, ret.isErr())
+        console.log('getReplaceGuardianInfo', KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash, ret)
         if (ret.isErr()) {
             return;
         }
@@ -92,7 +92,7 @@ export default function useKeystore() {
             return;
         }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_CANCEL_SET_GUARDIAN, slot, ethers.ZeroHash);
-        console.log('getCancelSetGuardianInfo', ret, ret.isErr())
+        console.log('getCancelSetGuardianInfo', ret)
         if (ret.isErr()) {
             return;
         }

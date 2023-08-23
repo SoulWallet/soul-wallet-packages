@@ -63,7 +63,7 @@ const SaveGuardians = () => {
   const [sended, setSended] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { account } = useWalletContext();
-  const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot } = useGuardianStore();
+  const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot, setEditingGuardiansInfo } = useGuardianStore();
   const { setSelectedAddress, setAddressList } = useAddressStore();
   const { calcGuardianHash, getSlot } = useKeystore()
   const {chainConfig} = useConfig();
@@ -94,6 +94,7 @@ const SaveGuardians = () => {
     setAddressList([{ title: walletName, address: newAddress, activatedChains: [], allowedOrigins: [] }])
     console.log('createInitialWallet', newAddress)
     setSelectedAddress(newAddress)
+    setEditingGuardiansInfo(null)
   }
 
   const handleBackupGuardians = async () => {
