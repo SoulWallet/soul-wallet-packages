@@ -195,7 +195,7 @@ export default function GuardiansSetting() {
     setLoaded(true)
     const guardianActivateAt = result.guardianActivateAt
 
-    if (guardianActivateAt * 1000 < Date.now()) {
+    if (guardianActivateAt && guardianActivateAt * 1000 < Date.now()) {
       console.log('finished')
     }
 
