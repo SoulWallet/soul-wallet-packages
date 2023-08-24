@@ -31,7 +31,7 @@ const SetDefaultWallet = () => {
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <WalletCard statusText="SET AS DEFAULT" />
-      <Heading1>Set as defaul wallet</Heading1>
+      <Heading1>Set as default wallet</Heading1>
       <Box marginBottom="2em">
         <TextBody textAlign="center" maxWidth="400px">
           Boost your Ethereum journey by setting Soul Wallet as your primary plugin wallet. You can always easily change this setting.
