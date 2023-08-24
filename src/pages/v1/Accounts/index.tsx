@@ -213,18 +213,16 @@ const AccountItem = ({ item, selected, onClick }: any) => {
     );
 };
 
-const AccountsNavbar = ({ onAdd, adding }: any) => {
-    const { navigate } = useBrowser();
-
+const AccountsNavbar = ({ onAdd, onBack, adding }: any) => {
     return (
         <Flex align="center" justify={"space-between"} mb="6">
-            <Flex align="center" onClick={() => navigate("wallet")} cursor={"pointer"}>
+            <Flex align="center" onClick={onBack} cursor={"pointer"}>
                 <Image src={IconChevronLeft} w="20px" h="20px" />
                 <Text fontWeight="800" color="#1C1C1E">
                     Back
                 </Text>
             </Flex>
-            <Tooltip label="Add account">
+            <Tooltip label="Create new account">
                 {adding ? (
                     <Flex align={"center"} justify={"center"} h="8" w="8" bg="#d9d9d9" rounded="full">
                         <Image src={IconLoading} w="6" h="6" />
@@ -241,6 +239,8 @@ const AccountsNavbar = ({ onAdd, adding }: any) => {
 
 export default function Accounts() {
     const { calcWalletAddress } = useSdk();
+    const { navigate } = useBrowser();
+
     const [adding, setAdding] = useState(false);
     const { addressList, selectedAddress, addAddressItem, setSelectedAddress } = useAddressStore();
 
@@ -257,6 +257,10 @@ export default function Accounts() {
         setAdding(false);
     };
 
+    const onBack = () => {
+        navigate("wallet");
+    };
+
     return (
         <Box p="5">
             <Navbar />
@@ -270,6 +274,7 @@ export default function Accounts() {
                             selected={item.address === selectedAddress}
                             onClick={() => {
                                 setSelectedAddress(item.address);
+                                onBack();
                             }}
                         />
                     );

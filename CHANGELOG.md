@@ -1,3 +1,7 @@
+## 0.1.2
+
+-   Fixed multi wallet activate issue
+
 ## 0.1.1
 
 -   Optimized component style

@@ -35,16 +35,22 @@ export default forwardRef<any>((props, ref) => {
 
     const doUnlock = async () => {
         try {
+            if (!password) {
+                toast({
+                    title: "Please enter password",
+                    status: "error",
+                });
+                return;
+            }
             setUnlocking(true);
             await keyStore.unlock(password);
             setVisible(false);
             setPassword("");
         } catch (err) {
-            // setPasswordError("Wrong password. Try again.");
             toast({
                 title: "Wrong password",
                 status: "error",
-            })
+            });
         } finally {
             setUnlocking(false);
         }

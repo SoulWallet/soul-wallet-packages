@@ -68,10 +68,11 @@ export default function ActivateWallet() {
 
     const onPayTokenChange = async () => {
         // important TODO, clear previous request
+        const activateIndex = getIndexByAddress(addressList, selectedAddress);
         setNeedCost("");
         const token = getTokenBalance(payToken);
         setPayTokenSymbol(token.symbol);
-        const requiredAmount = await activateWallet(0, payToken, true);
+        const requiredAmount = await activateWallet(activateIndex, payToken, true);
         setNeedCost(requiredAmount || "0");
     };
 

@@ -3,6 +3,7 @@ import { Box, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { copyText } from "@src/lib/tools";
 import IconCopy from "@src/assets/copy.svg";
 import IconScan from "@src/assets/icons/scan.svg";
+import IconScanFaded from "@src/assets/icons/scan-faded.svg";
 import IconTrendUp from "@src/assets/icons/trend-up.svg";
 import { useAddressStore } from "@src/store/address";
 import useConfig from "@src/hooks/useConfig";
@@ -45,7 +46,7 @@ export default function AccountCard() {
                     </Text>
                     <Image src={IconCopy} w="20px" cursor={"pointer"} onClick={() => doCopy()} />
                 </Flex>
-                <Image src={IconScan} w="28px" h="28px" />
+                <Image src={isActivated ? IconScan : IconScanFaded} w="28px" h="28px" />
             </Flex>
             <Flex justify={"space-between"} align="center">
                 <Box>
