@@ -110,19 +110,21 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
               flexDirection="column"
             >
               <Box
-                fontWeight="bold"
                 color="#29510A"
                 fontSize="12px"
                 background="white"
                 borderRadius="20px"
                 padding="0 10px"
                 marginBottom="6px"
+                fontWeight="600"
+                fontFamily="Martian"
               >
                 {`WELCOME:)`}
               </Box>
               <Box
-                fontWeight="bold"
                 color="#29510A"
+                fontWeight="600"
+                fontFamily="Martian"
               >
                 PIN SOUL WALLET HERE!
               </Box>
