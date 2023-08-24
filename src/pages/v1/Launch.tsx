@@ -88,6 +88,7 @@ export default function Launch() {
             width="100%"
             fontSize="14px"
             fontWeight="700"
+            line-height="normal"
           >
             Begin your Web3 journey by creating a smart contract wallet with us.
           </Box>
@@ -127,6 +128,7 @@ export default function Launch() {
             width="100%"
             fontSize="14px"
             fontWeight="700"
+            line-height="normal"
           >
             If your wallet is lost, recover easily with guardian signatures.
           </Box>
