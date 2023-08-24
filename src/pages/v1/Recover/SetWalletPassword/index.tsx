@@ -14,6 +14,8 @@ import TextBody from "@src/components/web/TextBody";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { useGuardianStore } from "@src/store/guardian";
 import { ethers } from "ethers";
+import useConfig from "@src/hooks/useConfig";
+import api from "@src/lib/api";
 
 interface PasswordFormField {
   password?: string;
@@ -37,8 +39,9 @@ export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { getAccount } = useWalletContext()
-  const { setNewKey, setRecoverRecordId } = useGuardianStore();
+  const { setNewKey, setRecoverRecordId, recoveringGuardians, recoveringThreshold, recoveringSlot, recoveringSlotInitInfo, newKey } = useGuardianStore();
   const toast = useToast()
+  const { chainConfig } = useConfig();
 
   const {
     values,
@@ -62,18 +65,46 @@ export default function SetPassword() {
       if (password) {
         setLoaing(true)
         console.log('loading s', password)
-        const newKey = await keystore.createNewAddress(password, false);
-        console.log('newKey', newKey, ethers.zeroPadValue(newKey, 32))
-        setNewKey(ethers.zeroPadValue(newKey, 32))
+        let newKey = await keystore.createNewAddress(password, false);
+        newKey = ethers.zeroPadValue(newKey, 32)
+        console.log('newKey', newKey)
+        setNewKey(newKey)
         setRecoverRecordId(null)
         // getAccount();
         console.log('loading e', password)
         setLoaing(false)
 
-        dispatch({
-          type: StepActionTypeEn.JumpToTargetStep,
-          payload: RecoverStepEn.GuardiansImporting
-        });
+        console.log('recoveringSlot', recoveringSlot)
+        console.log('recoveringSlotInitInfo', recoveringSlotInitInfo)
+        if (recoveringSlot && recoveringSlotInitInfo) {
+          const keystore = chainConfig.contracts.l1Keystore
+
+          const params = {
+            guardianDetails: {
+              guardians: recoveringGuardians,
+              threshold: recoveringThreshold,
+              salt: ethers.ZeroHash
+            },
+            slot: recoveringSlot,
+            slotInitInfo: recoveringSlotInitInfo,
+            keystore,
+            newKey
+          }
+
+          const result = await api.guardian.createRecoverRecord(params)
+          const recoveryRecordID = result.data.recoveryRecordID
+          setRecoverRecordId(recoveryRecordID)
+
+          dispatch({
+            type: StepActionTypeEn.JumpToTargetStep,
+            payload: RecoverStepEn.GuardiansChecking
+          });
+        } else {
+          dispatch({
+            type: StepActionTypeEn.JumpToTargetStep,
+            payload: RecoverStepEn.GuardiansImporting
+          });
+        }
       }
     } catch (e: any) {
       setLoaing(false)
@@ -118,6 +149,7 @@ export default function SetPassword() {
       <Button
         disabled={disabled}
         onClick={handleNext}
+        loading={loading}
         _styles={{ marginTop: '0.75em', width: '100%' }}
       >
         Continue
