@@ -10,6 +10,7 @@ import { Box, Center, Flex, Text, Image } from "@chakra-ui/react";
 import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
 import React, { useEffect, useState, Fragment } from "react";
+import TextButton from "@src/components/web/TextButton";
 
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
@@ -129,23 +130,20 @@ export default function Launch() {
                 >
                   I Understand
                 </Button>
-                <Text
-                  color="#898989"
-                  cursor="pointer"
-                  fontWeight="bold"
-                  fontSize="16px"
+                <TextButton
                   onClick={handleCloseModal}
+                  _styles={{ fontSize: '16px' }}
                 >
                   No, thanks
-                </Text>
+                </TextButton>
               </>
             ) : (
-              <Text
+              <TextButton
                 onClick={handleCloseModal}
-                cursor="pointer"
+                _styles={{ fontSize: '16px' }}
               >
                 Thank you for your agreement.
-              </Text>
+              </TextButton>
             )}
           </Box>
         }

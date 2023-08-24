@@ -46,7 +46,7 @@ export default function TextButton({
       height="3rem"
       fontWeight="bold"
       fontSize="1em"
-      _hover={{ bg: 'transparent' }}
+      _hover={{ bg: 'transparent', color: '#1e1e1e' }}
       _disabled={{ opacity: '0.7', cursor: 'not-allowed' }}
       isDisabled={disabled}
       bg="transparent"
