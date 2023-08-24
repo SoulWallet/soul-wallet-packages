@@ -338,6 +338,7 @@ export default function GuardiansSetting() {
                 rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
+                _inputStyles={{ fontFamily: "Martian", fontWeight: 600 }}
               />
               <Box
                 onClick={() => removeGuardian(id)}
