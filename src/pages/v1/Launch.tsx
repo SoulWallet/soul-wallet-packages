@@ -10,6 +10,7 @@ import { Box, Center, Flex, Text, Image } from "@chakra-ui/react";
 import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
 import React, { useEffect, useState, Fragment } from "react";
+import TextButton from "@src/components/web/TextButton";
 
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
@@ -58,7 +59,7 @@ export default function Launch() {
           cursor="pointer"
           background="#E3FD8A"
           color="black"
-          padding="1em"
+          padding="16px"
           border="2px solid transparent"
           marginBottom="20px"
           _hover={{ border: '2px solid black' }}
@@ -68,7 +69,7 @@ export default function Launch() {
           <Box
             width="100%"
             fontSize="24px"
-            fontWeight="bold"
+            fontWeight="800"
             marginTop="10px"
             marginBottom="5px"
           >
@@ -77,6 +78,7 @@ export default function Launch() {
           <Box
             width="100%"
             fontSize="14px"
+            fontWeight="700"
           >
             Begin your Web3 journey by creating a smart contract wallet with us.
           </Box>
@@ -88,7 +90,7 @@ export default function Launch() {
           cursor="pointer"
           background="white"
           color="black"
-          padding="1em"
+          padding="16px"
           border="2px solid transparent"
           _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, 'recover')}
@@ -97,7 +99,7 @@ export default function Launch() {
           <Box
             width="100%"
             fontSize="24px"
-            fontWeight="bold"
+            fontWeight="800"
             marginTop="10px"
             marginBottom="5px"
           >
@@ -106,6 +108,7 @@ export default function Launch() {
           <Box
             width="100%"
             fontSize="14px"
+            fontWeight="700"
           >
             If your wallet is lost, recover easily with guardian signatures.
           </Box>
@@ -127,23 +130,20 @@ export default function Launch() {
                 >
                   I Understand
                 </Button>
-                <Text
-                  color="#898989"
-                  cursor="pointer"
-                  fontWeight="bold"
-                  fontSize="16px"
+                <TextButton
                   onClick={handleCloseModal}
+                  _styles={{ fontSize: '16px' }}
                 >
                   No, thanks
-                </Text>
+                </TextButton>
               </>
             ) : (
-              <Text
+              <TextButton
                 onClick={handleCloseModal}
-                cursor="pointer"
+                _styles={{ fontSize: '16px' }}
               >
                 Thank you for your agreement.
-              </Text>
+              </TextButton>
             )}
           </Box>
         }

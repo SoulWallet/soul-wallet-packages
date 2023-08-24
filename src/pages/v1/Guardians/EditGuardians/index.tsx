@@ -388,7 +388,7 @@ export default function GuardiansSetting() {
         {reediting && (
           <Box display="flex" flexDirection="column" alignItems="center" marginTop="40px">
             <Text fontSize="24px" fontWeight="800" marginBottom="10px" color="#1E1E1E" cursor="pointer"  onClick={() => setReediting(false)} display="flex" alignItems="center" justifyContent="flex-start">
-              <Text>Edit Guardians</Text>
+              <Text>Edit guardians</Text>
               <Text marginLeft="10px" transform="rotate(90deg)"><ArrowRightIcon /></Text>
             </Text>
             <Box marginBottom="0.75em">
@@ -564,6 +564,7 @@ export default function GuardiansSetting() {
                 rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
+                _inputStyles={{ fontFamily: "Martian", fontWeight: 600 }}
               />
               <Box
                 onClick={() => removeGuardian(id)}

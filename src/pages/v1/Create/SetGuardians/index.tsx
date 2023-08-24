@@ -274,8 +274,8 @@ export default function GuardiansSetting() {
 
   if (skipping) {
     return (
-      <Box maxWidth="400px">
-        <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="20px" paddingBottom="0" borderRadius="16px">
+      <Box maxWidth="480px">
+        <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="32px 80px" borderRadius="16px">
           <Box marginBottom="1em"><WarningIcon /></Box>
           <Heading3 width="100%">What if I don’t set up guardian now?</Heading3>
           <TextBody width="100%" marginBottom="1em">Guardians are required to recover your wallet in the case of loss or theft. You can learn more here</TextBody>
@@ -338,6 +338,7 @@ export default function GuardiansSetting() {
                 rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
+                _inputStyles={{ fontFamily: "Martian", fontWeight: 600 }}
               />
               <Box
                 onClick={() => removeGuardian(id)}
