@@ -224,9 +224,9 @@ export const hasCommonElement = (arr1: [], arr2: []) => {
     return arr1.some((item) => arr2.includes(item));
 };
 
-export const toShortAddress = (address: string) => {
+export const toShortAddress = (address: string, firstSlice: number = 6, lastSlice: number = 4) => {
     if (address.length > 10) {
-        return `${address.slice(0, 5)}...${address.slice(-5)}`;
+        return `${address.slice(0, firstSlice)}...${address.slice(-lastSlice)}`;
     }
 
     return address;

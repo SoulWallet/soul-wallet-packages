@@ -2,12 +2,8 @@ import React from "react";
 import { Button as CButton, ButtonProps, Image } from "@chakra-ui/react";
 import IconLoading from "@src/assets/loading.gif";
 
-// TODO: error & retry
-type ButtonType = "default" | "primary" | "disabled" | "error" | "reject" | "link"; // may add 'dash', 'text', 'link', etc. later
-
 interface IProps extends Omit<ButtonProps, "type"> {
     children: React.ReactNode;
-    type?: ButtonType; // 不传使用旧button，传了代表使用淡紫色新button
     onClick: () => void;
     loading?: boolean;
     disabled?: boolean;
@@ -19,7 +15,6 @@ export default function Button({
     children,
     loading,
     disabled,
-    type = "default",
     href,
     ...restProps
 }: IProps) {

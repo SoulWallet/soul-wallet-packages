@@ -123,7 +123,6 @@ export default function Launch() {
               <>
                 <Button
                   onClick={handleAuthorize}
-                  type="primary"
                   py="3"
                   px="4"
                   marginBottom="10px"

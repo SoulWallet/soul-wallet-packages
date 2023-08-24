@@ -1,5 +1,6 @@
-import React, { useState, useImperativeHandle, forwardRef, useRef } from "react";
+import React, { useState, useImperativeHandle, forwardRef, useRef, useEffect } from "react";
 import { Image, Flex, Box, Text, useToast } from "@chakra-ui/react";
+import { useAnimationControls, motion } from "framer-motion";
 import FormInput from "../FormInput";
 import IconLogo from "@src/assets/logo-v3.svg";
 import IconLogoText from "@src/assets/logo-text.svg";
@@ -8,16 +9,36 @@ import Button from "@src/components/Button";
 import useBrowser from "@src/hooks/useBrowser";
 const keyStore = KeyStore.getInstance();
 
+const MotionButton = motion(Button);
+
 export default forwardRef<any>((props, ref) => {
     const { goWebsite } = useBrowser();
     const toast = useToast();
     const [promiseInfo, setPromiseInfo] = useState<any>({});
+    const [shouldShake, setShouldShake] = useState(false);
     const [password, setPassword] = useState<string>("");
     const [visible, setVisible] = useState(false);
     const [passwordError, setPasswordError] = useState<string>("");
     const [unlocking, setUnlocking] = useState<boolean>(false);
+    const controls = useAnimationControls();
+
+    const shakeAnimation = {
+        x: [0, -10, 10, -10, 10, 0],
+        transition: {
+            duration: 0.3,
+        },
+    };
 
     const inputRef: any = useRef(null);
+
+    useEffect(() => {
+        if (!shouldShake) {
+            return;
+        }
+        controls.start(shakeAnimation).then(() => {
+            setShouldShake(false);
+        });
+    }, [controls, shouldShake]);
 
     useImperativeHandle(ref, () => ({
         async show() {
@@ -36,6 +57,7 @@ export default forwardRef<any>((props, ref) => {
     const doUnlock = async () => {
         try {
             if (!password) {
+                setShouldShake(true);
                 toast({
                     title: "Please enter password",
                     status: "error",
@@ -47,6 +69,7 @@ export default forwardRef<any>((props, ref) => {
             setVisible(false);
             setPassword("");
         } catch (err) {
+            setShouldShake(true);
             toast({
                 title: "Wrong password",
                 status: "error",
@@ -97,17 +120,19 @@ export default forwardRef<any>((props, ref) => {
                 }}
                 error={passwordError}
             />
-            <Button
-                onClick={doUnlock}
-                loading={unlocking}
-                fontSize="20px"
-                fontWeight={"800"}
-                bg="#1e1e1e"
-                py="4"
-                w="100%"
-            >
-                Continue
-            </Button>
+            <motion.div animate={controls} style={{ width: "100%" }}>
+                <Button
+                    onClick={doUnlock}
+                    loading={unlocking}
+                    fontSize="20px"
+                    fontWeight={"800"}
+                    bg="#1e1e1e"
+                    py="4"
+                    w="100%"
+                >
+                    Continue
+                </Button>
+            </motion.div>
 
             <Text
                 onClick={() => goWebsite("recover")}

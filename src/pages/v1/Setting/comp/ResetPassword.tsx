@@ -70,7 +70,7 @@ export default function ResetPassword({ onCancel }: IResetPassword) {
                 isPassword={true}
             />
 
-            <Button onClick={doConfirm} mt="5" py="4" fontSize={"20px"} fontWeight={"800"} w="100%" type="primary">
+            <Button onClick={doConfirm} mt="5" py="4" fontSize={"20px"} fontWeight={"800"} w="100%">
                 Reset
             </Button>
         </Box>
