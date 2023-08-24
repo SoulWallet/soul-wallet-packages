@@ -51,7 +51,7 @@ export default function Launch() {
 
   return (
     <FullscreenContainer>
-      <Flex w="460px" direction="column" alignItems="center" padding="10px">
+      <Flex w="352px" direction="column" alignItems="center" padding="10px">
         <Box
           width="100%"
           boxShadow="0px 4px 4px 0px #0000001A"
@@ -59,19 +59,28 @@ export default function Launch() {
           cursor="pointer"
           background="#E3FD8A"
           color="black"
-          padding="16px"
+          padding="20px 40px 20px 20px"
           border="2px solid transparent"
           marginBottom="20px"
           _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD, 'create')}
         >
-          <Box><CreateWalletIcon /></Box>
+          <Box
+            width="44px"
+            height="44px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <CreateWalletIcon />
+          </Box>
           <Box
             width="100%"
             fontSize="24px"
             fontWeight="800"
-            marginTop="10px"
-            marginBottom="5px"
+            marginTop="15px"
+            lineHeight="33px"
+            marginBottom="4px"
           >
             Create New Wallet
           </Box>
@@ -90,18 +99,27 @@ export default function Launch() {
           cursor="pointer"
           background="white"
           color="black"
-          padding="16px"
+          padding="20px 40px 20px 20px"
           border="2px solid transparent"
           _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, 'recover')}
         >
-          <Box><RecoverWalletIcon /></Box>
+          <Box
+            width="44px"
+            height="44px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <RecoverWalletIcon />
+          </Box>
           <Box
             width="100%"
             fontSize="24px"
             fontWeight="800"
-            marginTop="10px"
-            marginBottom="5px"
+            marginTop="15px"
+            lineHeight="33px"
+            marginBottom="4px"
           >
             Wallet recovery
           </Box>

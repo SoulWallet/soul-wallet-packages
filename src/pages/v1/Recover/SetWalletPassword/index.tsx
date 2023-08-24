@@ -100,10 +100,10 @@ export default function SetPassword() {
             payload: RecoverStepEn.GuardiansChecking
           });
         } else {
-          dispatch({
-            type: StepActionTypeEn.JumpToTargetStep,
-            payload: RecoverStepEn.GuardiansImporting
-          });
+          /* dispatch({
+           *   type: StepActionTypeEn.JumpToTargetStep,
+           *   payload: RecoverStepEn.GuardiansImporting
+           * }); */
         }
       }
     } catch (e: any) {
