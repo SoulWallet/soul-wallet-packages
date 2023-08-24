@@ -47,7 +47,7 @@ export default function FormInput({
             onBlur={onBlur}
             borderRadius="1em"
             paddingLeft="1.5rem"
-            paddingRight="1.5rem"
+            paddingRight={isPassword ? '2rem' : '1.5rem'}
             height="3em"
             readOnly={readOnly}
           />

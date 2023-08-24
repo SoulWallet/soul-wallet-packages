@@ -301,7 +301,7 @@ const EnterGuardiansAddress = () => {
                 </Box>
               ))}
               <TextButton onClick={() => addGuardian()} color="#EC588D">
-                Add More Guardian
+                Add more guardians
               </TextButton>
             </Box>
             <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">

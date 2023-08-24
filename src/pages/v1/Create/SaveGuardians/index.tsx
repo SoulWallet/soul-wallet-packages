@@ -262,7 +262,7 @@ const SaveGuardians = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-      <Heading1>Backup Guardians</Heading1>
+      <Heading1>Backup guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">
           Make sure to save your list of guardians for social recovery. Choose at least one method below to keep this list safe.

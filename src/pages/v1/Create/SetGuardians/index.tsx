@@ -293,7 +293,7 @@ export default function GuardiansSetting() {
 
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-      <Heading1>Set Guardians</Heading1>
+      <Heading1>Set guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
           Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
@@ -338,7 +338,10 @@ export default function GuardiansSetting() {
                 rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
-                _inputStyles={{ fontFamily: "Martian", fontWeight: 600 }}
+                _leftInputStyles={!!values[`address_${id}`] ? {
+                  fontFamily: "Martian",
+                  fontWeight: 600
+                }: {}}
               />
               <Box
                 onClick={() => removeGuardian(id)}
@@ -356,8 +359,8 @@ export default function GuardiansSetting() {
               </Box>
             </Box>
           ))}
-          <TextButton onClick={() => addGuardian()} color="#EC588D">
-            Add More Guardian
+          <TextButton onClick={() => addGuardian()} color="#EC588D" _hover={{ color: "#EC588D" }}>
+            Add more guardians
           </TextButton>
         </Box>
         <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">

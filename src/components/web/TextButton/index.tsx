@@ -12,6 +12,7 @@ interface IProps extends Omit<ButtonProps, 'type'> {
   disabled?: boolean;
   href?: string;
   _styles?: any;
+  _hover?: any;
 }
 
 export default function TextButton({
@@ -22,6 +23,7 @@ export default function TextButton({
   type = "default",
   href,
   color,
+  _hover,
   _styles,
   ...restProps
 }: IProps) {
@@ -37,6 +39,7 @@ export default function TextButton({
     moreProps.href = href;
   }
 
+  console.log('_hover', _hover)
   return (
     <Button
       {...moreProps}
@@ -46,7 +49,7 @@ export default function TextButton({
       height="3rem"
       fontWeight="bold"
       fontSize="1em"
-      _hover={{ bg: 'transparent', color: '#1e1e1e' }}
+      _hover={_hover || { color: '#1e1e1e' }}
       _disabled={{ opacity: '0.7', cursor: 'not-allowed', color: color || '#898989' }}
       isDisabled={disabled}
       bg="transparent"

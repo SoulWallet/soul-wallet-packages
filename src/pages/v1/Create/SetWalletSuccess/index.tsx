@@ -15,6 +15,7 @@ import LogoIcon from "@src/assets/logo-v3.svg";
 import CurveArrowIcon from "@src/components/Icons/CurveArrow";
 import BrowserPinIcon from "@src/assets/pinIcon.png";
 import BackgroundImage from "@src/assets/success-background.png";
+import PluginIcon from "@src/components/Icons/Plugin";
 import PinIcon from "@src/components/Icons/Pin";
 
 const defaultOptions = {
@@ -76,10 +77,10 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
           >
             <Box
               position="absolute"
-              right="50px"
-              top="-60px"
+              right="56px"
+              top="-54px"
             >
-              <Image src={BrowserPinIcon} />
+              <PluginIcon />
             </Box>
             <Box
               position="absolute"

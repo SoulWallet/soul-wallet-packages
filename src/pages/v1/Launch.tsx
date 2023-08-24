@@ -61,6 +61,7 @@ export default function Launch() {
           color="black"
           padding="20px 40px 20px 20px"
           border="2px solid transparent"
+          transition="all 0.3s ease"
           marginBottom="20px"
           _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(CreateStepEn.CreatePWD, 'create')}
@@ -88,7 +89,7 @@ export default function Launch() {
             width="100%"
             fontSize="14px"
             fontWeight="700"
-            line-height="normal"
+            lineHeight="normal"
           >
             Begin your Web3 journey by creating a smart contract wallet with us.
           </Box>
@@ -102,6 +103,7 @@ export default function Launch() {
           color="black"
           padding="20px 40px 20px 20px"
           border="2px solid transparent"
+          transition="all 0.3s ease"
           _hover={{ border: '2px solid black' }}
           onClick={() => handleJumpToTargetStep(RecoverStepEn.Start, 'recover')}
         >
@@ -128,7 +130,7 @@ export default function Launch() {
             width="100%"
             fontSize="14px"
             fontWeight="700"
-            line-height="normal"
+            lineHeight="normal"
           >
             If your wallet is lost, recover easily with guardian signatures.
           </Box>

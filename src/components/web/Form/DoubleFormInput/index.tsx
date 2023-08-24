@@ -13,7 +13,7 @@ interface IProps {
   rightOnChange: (value: string) => void;
   rightOnBlur?: (value: string) => void;
   _styles?: any;
-  _inputStyles?: any;
+  _leftInputStyles?: any;
   leftLabel?: String;
   rightLabel?: String;
 }
@@ -32,7 +32,7 @@ export default function DoubleFormInput({
   rightOnChange,
   rightOnBlur,
   _styles,
-  _inputStyles
+  _leftInputStyles
 }: IProps) {
   const handleLeftChange = (e: ChangeEvent<HTMLInputElement>) => {
     leftOnChange(e.target.value);
@@ -70,7 +70,7 @@ export default function DoubleFormInput({
               borderTopRightRadius="0"
               borderBottomRightRadius="0"
               borderRightColor="transparent"
-              {..._inputStyles}
+              {..._leftInputStyles}
             />
           </Box>
         </Box>
@@ -93,7 +93,6 @@ export default function DoubleFormInput({
               background="white"
               borderTopLeftRadius="0"
               borderBottomLeftRadius="0"
-              {..._inputStyles}
             />
           </Box>
         </Box>
