@@ -1,6 +1,7 @@
 ## 0.1.2
 
 -   Fixed multi wallet activate issue
+-   Optimized select account logic
 
 ## 0.1.1
 

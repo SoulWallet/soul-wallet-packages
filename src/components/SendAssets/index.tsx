@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
-import config from "@src/config";
 import { Flex, Box, Text, useToast } from "@chakra-ui/react";
 import BN from "bignumber.js";
 import useTransaction from "@src/hooks/useTransaction";
 import { ethers } from "ethers";
 import { useBalanceStore } from "@src/store/balance";
-import { useAddressStore } from "@src/store/address";
 import AmountInput from "./comp/AmountInput";
-import AddressInput from "./comp/AddressInput";
+import { AddressInput, AddressInputReadonly } from "./comp/AddressInput";
+import { toShortAddress } from "@src/lib/tools";
+import useConfig from "@src/hooks/useConfig";
 
 interface ISendAssets {
     tokenAddress: string;
 }
 
 export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
-    const { selectedAddress } = useAddressStore();
     const [amount, setAmount] = useState<string>("");
     const { getTokenBalance } = useBalanceStore();
     const [sendToken, setSendToken] = useState(tokenAddress);
     const [receiverAddress, setReceiverAddress] = useState<string>("");
     const toast = useToast();
+    const { selectedAddressItem } = useConfig();
 
     const selectedToken = getTokenBalance(sendToken);
     const selectedTokenBalance = BN(selectedToken.tokenBalance).shiftedBy(-selectedToken.decimals).toFixed();
@@ -31,7 +31,7 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
         const trimedAddress = receiverAddress ? receiverAddress.trim() : "";
         if (!trimedAddress || !ethers.isAddress(trimedAddress)) {
             toast({
-                title: "Address not valid",
+                title: "Invalid address",
                 status: "error",
             });
             return;
@@ -66,10 +66,15 @@ export default function SendAssets({ tokenAddress = "" }: ISendAssets) {
             </Text>
             <Flex flexDir={"column"} gap="5">
                 <AmountInput sendToken={sendToken} amount={amount} onChange={setAmount} onTokenChange={setSendToken} />
-                <AddressInput label="From" address={selectedAddress} disabled />
+                <AddressInputReadonly
+                    label="From"
+                    value={selectedAddressItem.title}
+                    memo={toShortAddress(selectedAddressItem.address, 6, 4)}
+                />
                 <AddressInput
                     label="To"
-                    address={receiverAddress}
+                    placeholder="Enter recipient address"
+                    value={receiverAddress}
                     onChange={(e: any) => setReceiverAddress(e.target.value)}
                     onEnter={confirmAddress}
                 />

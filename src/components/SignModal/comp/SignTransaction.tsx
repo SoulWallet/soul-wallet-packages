@@ -1,11 +1,13 @@
 import React from "react";
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 import GasSelect from "../../SendAssets/comp/GasSelect";
-import AddressInput from "../../SendAssets/comp/AddressInput";
+import { AddressInput, AddressInputReadonly } from "../../SendAssets/comp/AddressInput";
 import { useAddressStore } from "@src/store/address";
 import Button from "../../Button";
 import { InfoWrap, InfoItem } from "../index";
 import BN from "bignumber.js";
+import { toShortAddress } from "@src/lib/tools";
+import useConfig from "@src/hooks/useConfig";
 
 export default function SignTransaction({
     decodedData,
@@ -21,6 +23,7 @@ export default function SignTransaction({
     origin,
 }: any) {
     const { selectedAddress } = useAddressStore();
+    const { selectedAddressItem } = useConfig();
 
     return (
         <>
@@ -39,7 +42,7 @@ export default function SignTransaction({
                     <Box>
                         {decodedData && decodedData.length > 0
                             ? decodedData.map((item: any, index: number) => (
-                                  <Text mr="1"  textTransform="capitalize" key={index}>
+                                  <Text mr="1" textTransform="capitalize" key={index}>
                                       {decodedData.length > 1 && `${index + 1}.`}
                                       {item.functionName || "Contract interaction"}
                                   </Text>
@@ -47,11 +50,15 @@ export default function SignTransaction({
                             : "Contract interaction"}
                     </Box>
                 </Box>
-                <AddressInput label="From" address={selectedAddress} disabled />
+                <AddressInputReadonly
+                    label="From"
+                    value={selectedAddressItem.title}
+                    memo={toShortAddress(selectedAddress)}
+                />
                 {sendToAddress ? (
-                    <AddressInput label="To" address={sendToAddress} disabled={true} />
+                    <AddressInput label="To" value={sendToAddress} disabled={true} />
                 ) : (
-                    <AddressInput label="To" address={decodedData[0] && decodedData[0].to} disabled={true} />
+                    <AddressInput label="To" value={decodedData[0] && decodedData[0].to} disabled={true} />
                 )}
 
                 <>

@@ -76,6 +76,7 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
                 <Input
                     value={amount}
                     onChange={onInputChange}
+                    placeholder="0.0"
                     outline="none"
                     bg="none"
                     border="none"

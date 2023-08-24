@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useWalletContext from "@src/context/hooks/useWalletContext";
 import { Navbar } from "@src/components/Navbar";
-import { Box, Text, Flex, useToast, Image } from "@chakra-ui/react";
+import { Box, Text, Flex, useToast, Image, Tooltip } from "@chakra-ui/react";
 import { InfoWrap, InfoItem } from "@src/components/SignModal";
 import IconEth from "@src/assets/chains/eth.svg";
 import { copyText } from "@src/lib/tools";
@@ -35,7 +35,9 @@ export default function AddFund() {
                     <Text>Supported Networks:</Text>
                     <Flex align="center" gap="2px">
                         {chainList.map((item, index) => (
-                            <Image key={index} src={item.icon} w="20px" />
+                            <Tooltip label={item.chainName}>
+                                <Image key={index} src={item.icon} w="20px" />
+                            </Tooltip>
                         ))}
                     </Flex>
                 </InfoItem>
