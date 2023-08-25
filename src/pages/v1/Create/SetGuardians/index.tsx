@@ -179,7 +179,8 @@ export default function GuardiansSetting() {
       initialGuardianHash,
       initialGuardianSafePeriod
     }
-    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod)
+    setSlot(slot)
     setSlotInitInfo(slotInitInfo)
 
     const newAddress = await calcWalletAddress(0);
