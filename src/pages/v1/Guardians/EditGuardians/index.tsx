@@ -28,6 +28,40 @@ import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
 import config from "@src/config";
 
+const checkPaid = (activeGuardiansInfo: any) => {
+  if (activeGuardiansInfo) {
+    if (activeGuardiansInfo.guardianActivateAt) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const checkPending = (activeGuardiansInfo: any) => {
+  if (activeGuardiansInfo) {
+    if (activeGuardiansInfo.pendingGuardianHash && activeGuardiansInfo.activeGuardianHash === activeGuardiansInfo.guardianHash) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const checkFinished = (activeGuardiansInfo: any) => {
+  if (activeGuardiansInfo) {
+    if (!activeGuardiansInfo.guardianActivateAt) {
+      return true
+    } else if (activeGuardiansInfo.pendingGuardianHash && activeGuardiansInfo.activeGuardianHash === activeGuardiansInfo.pendingGuardianHash) {
+      return true
+    }
+
+    return false
+  } else {
+    return true
+  }
+}
+
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
 
 const isGuardiansEmpty = (guardians: any, guardianNames: any, threshold: any) => {
@@ -146,11 +180,13 @@ export default function GuardiansSetting() {
 
     editingGuardiansInfo,
     setEditingGuardiansInfo,
+    cancelEditingGuardiansInfo,
+    setCancelEditingGuardiansInfo
   } = useGuardianStore();
   const toast = useToast()
   const { chainConfig } = useConfig();
 
-  const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
+  const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields, clearFields } = useForm({
     fields,
     validate
   })
@@ -201,16 +237,16 @@ export default function GuardiansSetting() {
     const result = await getActiveGuardianHash()
     setActiveGuardiansInfo(result)
     setLoaded(true)
-    const guardianActivateAt = result.guardianActivateAt
+    /* const guardianActivateAt = result.guardianActivateAt
 
-    if (guardianActivateAt && guardianActivateAt * 1000 < Date.now()) {
-      console.log('finished')
-    }
+     * if (guardianActivateAt && guardianActivateAt * 1000 < Date.now()) {
+     *   console.log('finished')
+     * }
 
-    console.log('getActiveGuardiansHash', result, result && result.guardianActivateAt, Date.now())
-    if (result && result.guardianActivateAt) {
-      onUpdateSuccess()
-    }
+     * console.log('getActiveGuardiansHash', result, result && result.guardianActivateAt, Date.now())
+     * if (result && result.guardianActivateAt) {
+     *   onUpdateSuccess()
+     * } */
   }
 
   useEffect(() => {
@@ -236,7 +272,6 @@ export default function GuardiansSetting() {
 
         return null
       }).filter(i => !!i)
-      console.log('guardiansList', guardiansList)
 
       const guardianAddresses = guardiansList.map((item: any) => item.address)
       const guardianNames = guardiansList.map((item: any) => item.name)
@@ -257,7 +292,11 @@ export default function GuardiansSetting() {
         setEditingGuardians(guardianAddresses)
         setEditingGuardianNames(guardianNames)
         setEditingThreshold(threshold)
+        clearFields(getFieldsByGuardianIds(guardianIds))
+        amountForm.clearFields(['amount'])
       }
+
+      setReediting(false)
       setLoading(false)
       // handleJumpToTargetStep(GuardiansStepEn.Save);
     } catch (error: any) {
@@ -266,13 +305,6 @@ export default function GuardiansSetting() {
         title: error.message,
         status: "error",
       })
-    }
-  }
-
-  const onUpdateSuccess = async () => {
-    console.log('onUpdateSuccess 1')
-    if (editingGuardians.length && editingThreshold && (JSON.stringify(editingGuardians) !== JSON.stringify(guardians) || JSON.stringify(editingGuardianNames) !== JSON.stringify(guardianNames) || editingThreshold !== threshold)) {
-      console.log('onUpdateSuccess 2')
     }
   }
 
@@ -290,31 +322,39 @@ export default function GuardiansSetting() {
     setShowStatusTips(!showStatusTips)
   }
 
-  const copyPayCancelLink = async () => {
+  const handleCancel = async () => {
     try {
       setCanceling(true)
       const cancelSetGuardianInfo: any = await getCancelSetGuardianInfo()
       console.log('cancelSetGuardianInfo', cancelSetGuardianInfo)
+      setCancelEditingGuardiansInfo(cancelSetGuardianInfo)
+      setCanceling(false)
+      /*
+       *       toast({
+       *         title: "Copy success!",
+       *         status: "success",
+       *       }); */
+    } catch (error: any) {
+      setCanceling(false)
+      toast({
+        title: error.message,
+        status: "error",
+      })
+    }
+  }
 
-      if (cancelSetGuardianInfo && cancelSetGuardianInfo.keySignature) {
-        const url = `${config.officialWebUrl}/pay-cancel-edit-guardians/${cancelSetGuardianInfo.slot}?keySignature=${paymentParems.keySignature}&slot=${cancelSetGuardianInfo.slot}`
-
+  const copyPayCancelLink = async () => {
+    try {
+      if (cancelEditingGuardiansInfo && cancelEditingGuardiansInfo.keySignature) {
+        const url = `${config.officialWebUrl}/pay-cancel-edit-guardians/${cancelEditingGuardiansInfo.slot}?keySignature=${cancelEditingGuardiansInfo.keySignature}&slot=${cancelEditingGuardiansInfo.slot}`
         copyText(url)
 
-        setCanceling(false)
         toast({
           title: "Copy success!",
           status: "success",
         });
-      } else {
-        setCanceling(false)
-        toast({
-          title: 'failed',
-          status: "error",
-        })
       }
     } catch (error: any) {
-      setCanceling(false)
       toast({
         title: error.message,
         status: "error",
@@ -338,6 +378,10 @@ export default function GuardiansSetting() {
   };
 
   const isGuardiansNotSet = isGuardiansEmpty(guardians, guardianNames, threshold)
+  const isPaid = checkPaid(activeGuardiansInfo)
+  const isPending = checkPending(activeGuardiansInfo)
+  const isFinished = checkFinished(activeGuardiansInfo)
+  console.log('activeGuardiansInfo', activeGuardiansInfo, isPaid, isPending, isFinished)
 
   if (!loaded) {
     return (
@@ -349,7 +393,30 @@ export default function GuardiansSetting() {
     )
   }
 
-  if (activeGuardiansInfo && activeGuardiansInfo.guardianActivateAt) {
+  if (editingGuardiansInfo && !isPaid) {
+    return (
+      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Heading1>
+          Request Payment
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center">
+
+          </TextBody>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+          <Button
+            onClick={copyPayLink}
+            _styles={{ width: '455px' }}
+          >
+            Copy Pay Link
+          </Button>
+        </Box>
+      </Box>
+    )
+  }
+
+  if (isPending) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
@@ -367,14 +434,24 @@ export default function GuardiansSetting() {
           </TextBody>
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
-          <Button
-            disabled={canceling}
-            loading={canceling}
-            onClick={copyPayCancelLink}
-            _styles={{ width: '455px' }}
-          >
-            Discard Change
-          </Button>
+          {!cancelEditingGuardiansInfo && (
+            <Button
+              disabled={canceling}
+              loading={canceling}
+              onClick={handleCancel}
+              _styles={{ width: '455px' }}
+            >
+              Discard Change
+            </Button>
+          )}
+          {cancelEditingGuardiansInfo && (
+            <Button
+              onClick={copyPayCancelLink}
+              _styles={{ width: '455px' }}
+            >
+              Copy Pay Link
+            </Button>
+          )}
         </Box>
         {!reediting && (
           <Box display="flex" flexDirection="column" alignItems="center" marginTop="300px">
@@ -445,6 +522,10 @@ export default function GuardiansSetting() {
                       rightOnBlur={onBlur(`name_${id}`)}
                       rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                       _styles={{ width: '100%' }}
+                      _leftInputStyles={!!values[`address_${id}`] ? {
+                        fontFamily: "Martian",
+                        fontWeight: 600
+                      }: {}}
                     />
                     <Box
                       onClick={() => removeGuardian(id)}
@@ -498,29 +579,6 @@ export default function GuardiansSetting() {
             </Box>
           </Box>
         )}
-      </Box>
-    )
-  }
-
-  if (editingGuardiansInfo) {
-    return (
-      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <Heading1>
-          Request Payment
-        </Heading1>
-        <Box marginBottom="0.75em">
-          <TextBody textAlign="center">
-
-          </TextBody>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
-          <Button
-            onClick={copyPayLink}
-            _styles={{ width: '455px' }}
-          >
-            Copy Pay Link
-          </Button>
-        </Box>
       </Box>
     )
   }

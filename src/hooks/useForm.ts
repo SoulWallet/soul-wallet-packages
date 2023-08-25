@@ -66,6 +66,16 @@ export default function useForm(props: any) {
         setValues(newValues)
     }
 
+    const clearFields = (fieldNames: string[]) => {
+        const newValues = { ...values }
+
+        for (const fieldName of fieldNames) {
+          newValues[fieldName] = ''
+        }
+
+        setValues(newValues)
+    }
+
     return {
         values,
         errors,
@@ -75,6 +85,7 @@ export default function useForm(props: any) {
         onBlur,
         showErrors,
         addFields,
-        removeFields
+        removeFields,
+        clearFields
     }
 }

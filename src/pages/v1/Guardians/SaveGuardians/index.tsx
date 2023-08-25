@@ -98,7 +98,6 @@ const SaveGuardians = () => {
 
   const handleBackupGuardians = async () => {
     try {
-      return
       setLoading(true)
       const keystore = chainConfig.contracts.l1Keystore
       const initialKey = ethers.zeroPadValue(account, 32)
@@ -147,7 +146,6 @@ const SaveGuardians = () => {
 
   const handleEmailBackupGuardians = async () => {
     try {
-      return
       setSending(true)
       const email = emailForm.values.email
 
@@ -207,7 +205,6 @@ const SaveGuardians = () => {
 
   const handleDownloadGuardians = async () => {
     try {
-      return
       setDownloading(true)
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
