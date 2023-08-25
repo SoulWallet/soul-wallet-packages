@@ -63,11 +63,11 @@ export default function useKeystore() {
     const getReplaceGuardianInfo = async (newGuardianHash: string) => {
         const { initialKey, initialGuardianHash, initialGuardianSafePeriod } = slotInitInfo;
         const initialKeyAddress = `0x${initialKey.slice(-40)}`;
+        console.log('getReplaceGuardianInfo', initialKeyAddress, account)
         if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
             return;
         }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash);
-        console.log('getReplaceGuardianInfo', KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash, ret)
         if (ret.isErr()) {
             return;
         }
