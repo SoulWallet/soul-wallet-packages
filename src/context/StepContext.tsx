@@ -15,6 +15,8 @@ export enum RecoverStepEn {
   GuardiansChecking,
   SignaturePending,
   RecoverInProgress,
+  UploadGuardians,
+  PayRecoveryFee,
   Completed,
 }
 

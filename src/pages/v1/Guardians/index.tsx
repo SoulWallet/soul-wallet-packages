@@ -3,7 +3,6 @@ import React, { ReactNode, useMemo } from "react";
 import { EnHandleMode } from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import EditGuardians from "@src/pages/v1/Guardians/EditGuardians";
-import SetGuardians from "@src/pages/v1/Guardians/SetGuardians";
 import SaveGuardians from "@src/pages/v1/Guardians/SaveGuardians";
 
 type StepNodeInfo = {

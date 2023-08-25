@@ -58,6 +58,26 @@ export default function SetPassword() {
   const [loading, setLoaing] = useState(false)
   const disabled = invalid || loading
 
+  const createRecoverRecord = async (newKey) => {
+    const keystore = chainConfig.contracts.l1Keystore
+
+    const params = {
+      guardianDetails: {
+        guardians: recoveringGuardians,
+        threshold: recoveringThreshold,
+        salt: ethers.ZeroHash
+      },
+      slot: recoveringSlot,
+      slotInitInfo: recoveringSlotInitInfo,
+      keystore,
+      newKey
+    }
+
+    const result = await api.guardian.createRecoverRecord(params)
+    const recoveryRecordID = result.data.recoveryRecordID
+    setRecoverRecordId(recoveryRecordID)
+  }
+
   const handleNext = async () => {
     const { password } = values
 
@@ -70,41 +90,19 @@ export default function SetPassword() {
         console.log('newKey', newKey)
         setNewKey(newKey)
         setRecoverRecordId(null)
-        // getAccount();
-        console.log('loading e', password)
-        setLoaing(false)
 
         console.log('recoveringSlot', recoveringSlot)
         console.log('recoveringSlotInitInfo', recoveringSlotInitInfo)
         if (recoveringSlot && recoveringSlotInitInfo) {
-          const keystore = chainConfig.contracts.l1Keystore
-
-          const params = {
-            guardianDetails: {
-              guardians: recoveringGuardians,
-              threshold: recoveringThreshold,
-              salt: ethers.ZeroHash
-            },
-            slot: recoveringSlot,
-            slotInitInfo: recoveringSlotInitInfo,
-            keystore,
-            newKey
-          }
-
-          const result = await api.guardian.createRecoverRecord(params)
-          const recoveryRecordID = result.data.recoveryRecordID
-          setRecoverRecordId(recoveryRecordID)
+          await createRecoverRecord(newKey)
 
           dispatch({
             type: StepActionTypeEn.JumpToTargetStep,
             payload: RecoverStepEn.GuardiansChecking
           });
-        } else {
-          /* dispatch({
-           *   type: StepActionTypeEn.JumpToTargetStep,
-           *   payload: RecoverStepEn.GuardiansImporting
-           * }); */
         }
+
+        setLoaing(false)
       }
     } catch (e: any) {
       setLoaing(false)
