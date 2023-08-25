@@ -106,7 +106,7 @@ export default function GuardiansSetting() {
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
   const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
-  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo } = useGuardianStore();
+  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, setSlot } = useGuardianStore();
   const toast = useToast()
   const {chainConfig} = useConfig();
 
@@ -179,7 +179,10 @@ export default function GuardiansSetting() {
       initialGuardianHash,
       initialGuardianSafePeriod
     }
+    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
+
     setSlotInitInfo(slotInitInfo)
+    setSlot(slot)
 
     const newAddress = await calcWalletAddress(0);
     const walletName = `Account 1`

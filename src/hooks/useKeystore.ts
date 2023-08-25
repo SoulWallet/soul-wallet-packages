@@ -69,7 +69,7 @@ export default function useKeystore() {
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash);
         console.log('getReplaceGuardianInfo', KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash, ret)
         if (ret.isErr()) {
-            return;
+            throw new Error(ret.ERR.message);
         }
         const { domain, types, value: message } = ret.OK;
 
@@ -91,10 +91,10 @@ export default function useKeystore() {
         if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
             return;
         }
-        const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_CANCEL_SET_GUARDIAN, slot, ethers.ZeroHash);
+        const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_CANCEL_SET_GUARDIAN, slot);
         console.log('getCancelSetGuardianInfo', ret)
         if (ret.isErr()) {
-            return;
+            throw new Error(ret.ERR.message);
         }
         const { domain, types, value: message } = ret.OK;
 

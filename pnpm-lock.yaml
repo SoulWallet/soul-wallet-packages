@@ -12,7 +12,7 @@ specifiers:
   '@emotion/styled': ^11.11.0
   '@soulwallet/abi': ^0.0.8
   '@soulwallet/decoder': ^0.0.12
-  '@soulwallet/sdk': ^0.0.20
+  '@soulwallet/sdk': ^0.1.1
   '@types/chrome': ^0.0.124
   '@types/jest': ^26.0.14
   '@types/lodash': ^4.14.191
@@ -82,7 +82,7 @@ dependencies:
   '@emotion/styled': 11.11.0_yteb73ll6h6uyykb3t5anncyhm
   '@soulwallet/abi': 0.0.8
   '@soulwallet/decoder': 0.0.12
-  '@soulwallet/sdk': 0.0.20
+  '@soulwallet/sdk': 0.1.1
   '@types/qrcode': 1.5.1
   '@types/react-router-dom': 5.3.3
   '@zxcvbn-ts/core': 2.2.1
@@ -3124,8 +3124,8 @@ packages:
     resolution: {integrity: sha512-kuc8kyHIeRXS94iWfYvsK6lMg2NecEjpmnez05TDf37DkYOv0zAa+osb5oIrreLSCWTIT6dUcHck+NoP0R6rjw==}
     dev: false
 
-  /@soulwallet/abi/0.0.9:
-    resolution: {integrity: sha512-0H+bcyZuwaCpjYk6Nho6uJl6FwSASuf3D36FhXm6FL/kHOqNuxRB3fyMq5zYFd+lo805Ko/D5NIVTv19gRigDw==}
+  /@soulwallet/abi/0.1.1:
+    resolution: {integrity: sha512-UXf7LbEX9YJvYjs0seIac5Aw+hbUO9W6BWR3mqXnggvqrXbb0+3jN96bCvWNYMivkifr1JrdaAreW8SU4yPGDQ==}
     dev: false
 
   /@soulwallet/assets/0.0.10:
@@ -3150,11 +3150,15 @@ packages:
     resolution: {integrity: sha512-HZ5JS/uT7NWRtTcmDY0jQuniK1rYXJrUKlig2m1u8CyGQFb3j/Oar+EQzWdf9cnTA4kOKNvreea6xfFliw+xZA==}
     dev: false
 
-  /@soulwallet/sdk/0.0.20:
-    resolution: {integrity: sha512-mAcXXNq/3DJUOwZszAXI3De8ox5QR3VNsr6LOO3Py6Q2dmaH6zmHsx2rY0Purxb3FU8AFI6Lt4Hya1Bkw4xnfw==}
+  /@soulwallet/result/0.1.1:
+    resolution: {integrity: sha512-ykeVUXL5nnFNrXLvhCTPfImXwneTlitcRQbigfnh3TfsQ7j+8B64ieMrYgTLGd+b8eRxcg+K/4kHOn5rR5uqqA==}
+    dev: false
+
+  /@soulwallet/sdk/0.1.1:
+    resolution: {integrity: sha512-3XbVbwNzS75UEcdafU5qTGwU6jYvDYSnHVCfdChnWC6a16uBNP2KdamV/5MYS5cq0dx0YbiO7Y1BTbftFSUwQQ==}
     dependencies:
-      '@soulwallet/abi': 0.0.9
-      '@soulwallet/result': 0.0.6
+      '@soulwallet/abi': 0.1.1
+      '@soulwallet/result': 0.1.1
       ethers: 6.7.0
     transitivePeerDependencies:
       - bufferutil
