@@ -57,6 +57,7 @@ export default function useKeystore() {
                     ? pendingGuardianHash
                     : guardianHash,
             guardianActivateAt,
+            pendingGuardianHash,
         };
     };
 
@@ -68,6 +69,7 @@ export default function useKeystore() {
             return;
         }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash);
+        console.log('bbbbbbb!!!!', ret)
         if (ret.isErr()) {
             throw new Error(ret.ERR.message);
         }

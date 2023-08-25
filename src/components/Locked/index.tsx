@@ -19,7 +19,7 @@ export default forwardRef<any>((props, ref) => {
     const [password, setPassword] = useState<string>("");
     const [visible, setVisible] = useState(false);
     const [passwordError, setPasswordError] = useState<string>("");
-    const [unlocking, setUnlocking] = useState<boolean>(false);
+    // const [unlocking, setUnlocking] = useState<boolean>(false);
     const controls = useAnimationControls();
 
     const shakeAnimation = {
@@ -64,7 +64,7 @@ export default forwardRef<any>((props, ref) => {
                 });
                 return;
             }
-            setUnlocking(true);
+            // setUnlocking(true);
             await keyStore.unlock(password);
             setVisible(false);
             setPassword("");
@@ -75,7 +75,7 @@ export default forwardRef<any>((props, ref) => {
                 status: "error",
             });
         } finally {
-            setUnlocking(false);
+            // setUnlocking(false);
         }
     };
 
@@ -123,7 +123,7 @@ export default forwardRef<any>((props, ref) => {
             <motion.div animate={controls} style={{ width: "100%" }}>
                 <Button
                     onClick={doUnlock}
-                    loading={unlocking}
+                    // loading={unlocking}
                     fontSize="20px"
                     fontWeight={"800"}
                     bg="#1e1e1e"
