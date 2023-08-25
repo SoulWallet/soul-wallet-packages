@@ -5,7 +5,7 @@ import {EnHandleMode} from '@src/lib/type'
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import { Box, Text, Image } from "@chakra-ui/react"
-import Lottie from 'react-lottie';
+import {motion} from 'framer-motion'
 import animationData from './particle.json';
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
@@ -57,6 +57,9 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
           </Box>, (document.getElementById('animation-portal')) as any
         )}
         <Box
+          as={motion.div}
+          initial={{opacity: 0, scale: 0.5}}
+          whileInView={{opacity: 1, scale: 1}}
           position="fixed"
           width="390px"
           height="124px"
