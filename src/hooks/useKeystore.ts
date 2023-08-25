@@ -45,13 +45,16 @@ export default function useKeystore() {
         const res = await getKeyStoreInfo(slot);
         if (res.isErr()) {
             return {
+                guardianHash: null,
                 activeGuardianHash: null,
                 guardianActivateAt: null,
+                pendingGuardianHash: null,
             };
         }
         const { guardianHash, pendingGuardianHash, guardianActivateAt } = res.OK;
 
         return {
+            guardianHash,
             activeGuardianHash:
                 pendingGuardianHash !== ethers.ZeroHash && guardianActivateAt < now
                     ? pendingGuardianHash
