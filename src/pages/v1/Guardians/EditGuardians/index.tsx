@@ -255,6 +255,7 @@ export default function GuardiansSetting() {
     setInterval(() => {
       getActiveGuardiansHash()
     }, 5000)
+    // setCancelEditingGuardiansInfo(null)
   }, [])
 
   const handleSubmit = async () => {
@@ -292,6 +293,7 @@ export default function GuardiansSetting() {
         setEditingGuardians(guardianAddresses)
         setEditingGuardianNames(guardianNames)
         setEditingThreshold(threshold)
+        setCancelEditingGuardiansInfo(null)
         clearFields(getFieldsByGuardianIds(guardianIds))
         amountForm.clearFields(['amount'])
       }
@@ -329,6 +331,7 @@ export default function GuardiansSetting() {
       console.log('cancelSetGuardianInfo', cancelSetGuardianInfo)
       setCancelEditingGuardiansInfo(cancelSetGuardianInfo)
       setCanceling(false)
+      setEditingGuardiansInfo(null)
       /*
        *       toast({
        *         title: "Copy success!",
@@ -416,7 +419,7 @@ export default function GuardiansSetting() {
     )
   }
 
-  if (isPending) {
+  if (isPending && !isFinished) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
