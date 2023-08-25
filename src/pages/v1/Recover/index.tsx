@@ -14,6 +14,7 @@ import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
 import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";
 import EnterGuardiansAddress from "@src/pages/v1/Recover/EnterGuardiansAddress";
 import SignatureRequest from "@src/pages/v1/Recover/SignatureRequest";
+import UploadGuardians from "@src/pages/v1/Recover/UploadGuardians";
 import { useGuardianStore } from "@src/store/guardian";
 
 type StepNodeInfo = {
@@ -41,6 +42,10 @@ const StepComponent = () => {
         title: "Recover your wallet",
         element: <EnterWalletAddress onSubmit={onRecoverSubmit} />,
       },
+      [RecoverStepEn.UploadGuardians]: {
+        title: "Enter Guardian Address",
+        element: <UploadGuardians />,
+      },
       [RecoverStepEn.ResetPassword]: {
         title: "Set New Password",
         element: <SetWalletPassword />,
@@ -52,7 +57,7 @@ const StepComponent = () => {
       [RecoverStepEn.GuardiansChecking]: {
         title: "Enter Guardian Address",
         element: <SignatureRequest />,
-      }
+      },
     };
   }, [walletAddress, payToken, recoverStatus]);
 

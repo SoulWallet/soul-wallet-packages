@@ -58,7 +58,7 @@ export default function SetPassword() {
   const [loading, setLoaing] = useState(false)
   const disabled = invalid || loading
 
-  const createRecoverRecord = async (newKey) => {
+  const createRecoverRecord = async (newKey: any) => {
     const keystore = chainConfig.contracts.l1Keystore
 
     const params = {

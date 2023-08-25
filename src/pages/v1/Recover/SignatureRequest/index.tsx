@@ -28,6 +28,7 @@ const GuardiansChecking = () => {
   const [recoverStatus, setRecoverStatus] = useState(0)
   const [chainStatusList, setChainStatusList] = useState([])
   const [loading, setLoading] = useState(false);
+  const [showPayButton, setShowPayButton] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>("");
   const { generateQrCode } = useTools();
   const {
@@ -100,7 +101,7 @@ const GuardiansChecking = () => {
     }, 5000)
   }, []);
 
-  const handleNext = async () => {
+  const handleCopy = async () => {
     let url
 
     if (recoverStatus === 1) {
@@ -115,6 +116,22 @@ const GuardiansChecking = () => {
       title: "Copy success!",
       status: "success",
     });
+  }
+
+  const handleNext = async () => {
+    setShowPayButton(true)
+  }
+
+  const handlePay = async () => {
+    let url
+
+    if (recoverStatus === 1) {
+      url = `${config.officialWebUrl}/pay-recover/${recoverRecordId}`
+    } else {
+      url = `${config.officialWebUrl}/recover/${recoverRecordId}`
+    }
+
+    window.open(url, '_blank')
   }
 
   const replaceWallet = async () => {
@@ -200,10 +217,31 @@ const GuardiansChecking = () => {
         </Box>
         <Button
           disabled={false}
-          onClick={handleNext}
+          onClick={handleCopy}
           _styles={{ width: '100%' }}
         >
           Copy Pay Link
+        </Button>
+      </Box>
+    )
+  }
+
+  if (showPayButton) {
+    return (
+      <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Heading1>
+          Pay recovery fee
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center" maxWidth="500px">
+            You will be directed to a new tab for payment, please keep this page open for next step.
+          </TextBody>
+        </Box>
+        <Button
+          onClick={handlePay}
+          _styles={{ width: '100%', marginTop: '0.75em' }}
+        >
+          Pay fee
         </Button>
       </Box>
     )

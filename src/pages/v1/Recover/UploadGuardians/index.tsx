@@ -96,7 +96,7 @@ const UploadGuardians = () => {
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
   const { account } = useWalletContext();
-  const { recoveringGuardians, recoveringThreshold, recoveringSlot, recoveringSlotInitInfo, setRecoverRecordId, newKey } = useGuardianStore();
+  const { recoveringGuardians, recoveringThreshold, recoveringSlot, recoveringSlotInitInfo, setRecoverRecordId, newKey, setRecoveringGuardians, setRecoveringThreshold, setRecoveringSlot, setRecoveringSlotInitInfo } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
   const toast = useToast()
   const {chainConfig} = useConfig();
@@ -187,24 +187,19 @@ const UploadGuardians = () => {
       const slot = data.slot
       const slotInitInfo = data.slotInitInfo
       // const newKey = ethers.zeroPadValue(account, 32)
+      console.log('handleFileParseResult', fileJson)
 
-      const params = {
-        guardianDetails,
-        slot,
-        slotInitInfo,
-        keystore,
-        newKey
-      }
+      setRecoverRecordId(null)
+      setRecoveringGuardians(guardians)
+      setRecoveringThreshold(threshold)
+      setRecoveringSlot(slot)
+      setRecoveringSlotInitInfo(slotInitInfo)
 
-      const result = await api.guardian.createRecoverRecord(params)
-      const recoveryRecordID = result.data.recoveryRecordID
-      setRecoverRecordId(recoveryRecordID)
       setUploading(false)
-      console.log('handleFileParseResult', fileJson, params, result)
 
       stepDispatch({
         type: StepActionTypeEn.JumpToTargetStep,
-        payload: RecoverStepEn.GuardiansChecking,
+        payload: RecoverStepEn.ResetPassword,
       });
     } catch (e: any) {
       setUploading(false)
@@ -235,12 +230,12 @@ const UploadGuardians = () => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1 marginBottom="2em">
         Upload guardians file
       </Heading1>
       <Box marginBottom="0.75em">
-        <TextBody fontSize="0.875em" textAlign="center">
+        <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">
           Due to your choice of private onchain guardians, please upload the guardians file you saved during setup.
         </TextBody>
       </Box>
@@ -256,6 +251,7 @@ const UploadGuardians = () => {
           height="100%"
           background="red"
           opacity="0"
+          cursor="pointer"
           onChange={handleFileChange}
         />
       </Button>
