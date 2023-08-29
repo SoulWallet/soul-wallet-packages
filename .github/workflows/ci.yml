@@ -1,38 +1,61 @@
 name: ci
 on:
   push:
-    branches: [ "feature/ui" ]
+    branches: ["feature/ui"]
 jobs:
-  test:
+  UnitTest:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: pnpm install
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Install Playwright Browsers
-      run: pnpm exec playwright install --with-deps
-    
-    - name: Create .env file
-      run: echo "|-${{ secrets.ENV_BUILD }}-|" > .env
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
-    - name: Create .env.test file
-      run: echo "|-${{ secrets.ENV_TEST }}-|" > .env.test
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    - name: Build
-      run: pnpm run build
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
-    - name: Run UI:Test
-      run: pnpm run test:UI
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Create .env file
+        run: echo "|-${{ secrets.ENV_BUILD }}-|" > .env
+
+      - name: Create .env.test file
+        run: echo "|-${{ secrets.ENV_TEST }}-|" > .env.test
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run UI:Test
+        run: pnpm run test:UI
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
