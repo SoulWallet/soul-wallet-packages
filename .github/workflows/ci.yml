@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+    branches: [ "feature/ui" ]
+jobs:
+  test:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Install Playwright Browsers
+      run: pnpm exec playwright install --with-deps
+    
+    - name: Create .env file
+      run: echo "|-${{ secrets.ENV_BUILD }}-|" > .env
+
+    - name: Create .env.test file
+      run: echo "|-${{ secrets.ENV_TEST }}-|" > .env.test
+
+    - name: Build
+      run: pnpm run build
+
+    - name: Run UI:Test
+      run: pnpm run test:UI
+
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
