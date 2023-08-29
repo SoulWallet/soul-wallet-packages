@@ -38,14 +38,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
-
       - name: Create .env file
-        run: echo "|-${{ secrets.ENV_BUILD }}-|" > .env
+        run: |
+         secret_value="${{ secrets.ENV_BUILD }}"
+         echo "|-$secret_value-" > .env
 
       - name: Create .env.test file
-        run: echo "|-${{ secrets.ENV_TEST }}-|" > .env.test
+        run: |
+         secret_value="${{ secrets.ENV_TEST }}"
+         echo "|-$secret_value-" > .env.test
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install chromium --with-deps
 
       - name: Build
         run: pnpm run build
