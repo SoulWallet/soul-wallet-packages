@@ -51,7 +51,7 @@ jobs:
         run: pnpm run build
 
       - name: Run UI:Test
-        run: pnpm run test:UI
+        run: xvfb-run npx playwright test
 
       - uses: actions/upload-artifact@v3
         if: always()
