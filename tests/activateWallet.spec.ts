@@ -8,6 +8,8 @@ import fs from "fs";
 import path from "path";
 
 test("Activate", async ({ context, extensionId }) => {
+    test.setTimeout(1000 * 60 * 2);
+
     console.log("extensionId", extensionId);
 
     const screenshotDir = path.join(__dirname, "screenshot");
@@ -18,9 +20,11 @@ test("Activate", async ({ context, extensionId }) => {
     fs.mkdirSync(screenshotDir);
 
     // list all pages
-    const pages = await context.pages();
+    let pages = await context.pages();
+    debugger;
     if (pages.length < 2) {
         await context.waitForEvent("page");
+        pages = await context.pages();
     }
     // find popup page
     const popupPage = pages.find((page) => {
