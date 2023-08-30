@@ -1,0 +1,76 @@
+name: ci
+on:
+  push:
+    branches: ["feature/ui"]
+jobs:
+  UnitTest:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # base64 < .env
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_BUILD }}" | base64 -d > .env
+        
+      # base64 < .env.test
+      - name: Create .env.test file
+        run: echo "${{ secrets.ENV_TEST }}" | base64 -d > .env.test
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run UI:Test
+        run: xvfb-run npx playwright test
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: screenshot
+          path: tests/screenshot/
+          retention-days: 30
+     
+      - uses: actions/upload-artifact@v3
+        with:
+         name: dist
+         path: dist/
+         retention-days: 30
