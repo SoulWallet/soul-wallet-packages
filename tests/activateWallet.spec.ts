@@ -132,6 +132,7 @@ test("Activate", async ({ context, extensionId }) => {
         */
         expect(networkFeeTxt).not.toEqual("");
         networkFeeEther = parseFloat(networkFeeTxt.split("\n")[0].trim());
+        console.log("networkFeeEther", networkFeeEther);
     }
 
     // get network
@@ -184,13 +185,13 @@ test("Activate", async ({ context, extensionId }) => {
     {
         const tx = await coinBaseWallet.sendTransaction({
             to: walletAddress,
-            value: ethers.parseEther(networkFeeEther.toString()),
+            value: ethers.parseEther(networkFeeEther.toString()).toString(),
         });
         await tx.wait();
         // get balance of walletAddress
         const balance = await ethersProvider.getBalance(walletAddress);
         console.log("balance", balance.toString());
-        if (balance !== BigInt(ethers.parseEther(networkFeeEther.toString()))) {
+        if (balance !== ethers.parseEther(networkFeeEther.toString())) {
             throw new Error("balance !== gasFee");
         }
     }
