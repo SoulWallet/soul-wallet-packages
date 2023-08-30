@@ -13,10 +13,14 @@ export class Config {
         }
         return _privateKey;
     }
-    static Rpc(netWorkName: string): string {
+
+    private static networkName(netWorkName: string): string {
         //  ' ' -> '-' and lowercase
-        netWorkName = netWorkName.replace(/\s+/g, "-").toLowerCase();
-        const envName = `rpc-${netWorkName}`;
+        return netWorkName.replace(/\s+/g, "-").toLowerCase();
+    }
+
+    static Rpc(netWorkName: string): string {
+        const envName = `rpc-${Config.networkName(netWorkName)}`;
         const rpc = process.env[envName];
         if (!rpc) {
             throw new Error(`${envName} is not defined in .env.test file`);
@@ -25,5 +29,17 @@ export class Config {
             throw new Error(`${envName} is not start with http(s)`);
         }
         return rpc;
+    }
+    static maxFee(netWorkName: string): number {
+        const envName = `maxfee-${Config.networkName(netWorkName)}`;
+        const maxFee = process.env[envName];
+        if (!maxFee) {
+            throw new Error(`${envName} is not defined in .env.test file`);
+        }
+        const maxFeeNumber = parseFloat(maxFee);
+        if (isNaN(maxFeeNumber)) {
+            throw new Error(`${envName} is not a number`);
+        }
+        return maxFeeNumber;
     }
 }

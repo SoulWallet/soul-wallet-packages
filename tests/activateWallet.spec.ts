@@ -103,6 +103,23 @@ test("Activate", async ({ context, extensionId }) => {
 
     await screenshot(popupPage, "Activate Wallet");
 
+    // get network
+    let netWorkName = "";
+    {
+        const _network = await popupPage.waitForSelector("text=Network", { state: "visible" });
+        const _networkParent = await _network.$("xpath=..");
+        expect(_networkParent).not.toBeNull();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const _networkParentText = await _networkParent!.innerText();
+        /* 
+    _networkParentText:
+    Network
+    
+    Arbitrum Goerli
+        */
+        netWorkName = _networkParentText.substring("Network".length).trim();
+    }
+
     let networkFeeEther = 0;
     {
         // wait <p>Network fee</p>
@@ -112,15 +129,13 @@ test("Activate", async ({ context, extensionId }) => {
         const networkFeeParent = await networkFee.$("xpath=..");
         expect(networkFeeParent).not.toBeNull();
         let networkFeeTxt = "";
-        let _loadingIndex = 0;
         for (let index = 0; index < 60; index++) {
             // get networkFee parent's text
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const networkFeeParentText = await networkFeeParent!.innerText();
             if (networkFeeParentText.includes("Loading")) {
-                _loadingIndex = index;
             } else {
-                networkFeeTxt = networkFeeParentText.substring(_loadingIndex + "Loading".length).trim();
+                networkFeeTxt = networkFeeParentText.substring(networkFeeKeyWord.length).trim();
                 break;
             }
             await popupPage.waitForTimeout(1000);
@@ -138,23 +153,10 @@ test("Activate", async ({ context, extensionId }) => {
         console.log("networkFeeTxt", networkFeeTxt);
         networkFeeEther = parseFloat(networkFeeTxt.split("\n")[0].trim());
         console.log("networkFeeEther", networkFeeEther);
-    }
-
-    // get network
-    let netWorkName = "";
-    {
-        const _network = await popupPage.waitForSelector("text=Network", { state: "visible" });
-        const _networkParent = await _network.$("xpath=..");
-        expect(_networkParent).not.toBeNull();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const _networkParentText = await _networkParent!.innerText();
-        /* 
-    _networkParentText:
-    Network
-    
-    Arbitrum Goerli
-        */
-        netWorkName = _networkParentText.substring("Network".length).trim();
+        // networkFeeEther must <= env.maxfee-chainname
+        if (networkFeeEther > Config.maxFee(netWorkName)) {
+            throw new Error(`networkFeeEther(${networkFeeEther}) > Config.maxFee(${Config.maxFee(netWorkName)})`);
+        }
     }
 
     const providerEndpoint = Config.Rpc(netWorkName);
