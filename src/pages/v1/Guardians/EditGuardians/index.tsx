@@ -52,7 +52,7 @@ const checkFinished = (activeGuardiansInfo: any) => {
   if (activeGuardiansInfo) {
     if (!activeGuardiansInfo.guardianActivateAt) {
       return true
-    } else if (activeGuardiansInfo.pendingGuardianHash && activeGuardiansInfo.activeGuardianHash === activeGuardiansInfo.pendingGuardianHash) {
+    } else if (activeGuardiansInfo.pendingGuardianHash && activeGuardiansInfo.activeGuardianHash === activeGuardiansInfo.pendingGuardianHash && (Number(activeGuardiansInfo.guardianActivateAt) * 1000 < Date.now())) {
       return true
     }
 
