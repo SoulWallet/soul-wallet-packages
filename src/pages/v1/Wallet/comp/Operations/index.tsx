@@ -12,7 +12,7 @@ export default function Operations() {
 
     return (
         <>
-            <Flex align="center" gap="4" mb="4">
+            <Flex align="center" gap="4" mb="4" mt="6">
                 {tabs.map((item, index) => (
                     <Text
                         key={index}
