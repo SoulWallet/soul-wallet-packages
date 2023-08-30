@@ -38,18 +38,19 @@ export default function SignTransaction({
             )}
 
             <Flex flexDir={"column"} gap="5" mt="6">
-                <Box bg="#fff" py="3" px="4" rounded="20px" fontWeight={"800"}>
-                    <Box>
-                        {decodedData && decodedData.length > 0
-                            ? decodedData.map((item: any, index: number) => (
-                                  <Text mr="1" textTransform="capitalize" key={index}>
-                                      {decodedData.length > 1 && `${index + 1}.`}
-                                      {item.functionName || "Contract interaction"}
-                                  </Text>
-                              ))
-                            : "Contract interaction"}
+                {decodedData && decodedData.length > 0 && (
+                    <Box bg="#fff" py="3" px="4" rounded="20px" fontWeight={"800"}>
+                        <Box>
+                            {decodedData.map((item: any, index: number) => (
+                                <Text mr="1" textTransform="capitalize" key={index}>
+                                    {decodedData.length > 1 && `${index + 1}.`}
+                                    {item.method.name || ""}
+                                </Text>
+                            ))}
+                        </Box>
                     </Box>
-                </Box>
+                )}
+
                 <AddressInputReadonly
                     label="From"
                     value={selectedAddressItem.title}

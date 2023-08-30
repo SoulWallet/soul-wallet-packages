@@ -64,7 +64,7 @@ export default function useWallet() {
             return requiredAmount;
         } else {
             // TODO, estimate fee could be avoided
-            await signAndSend(userOp, payToken, true);
+            await signAndSend(userOp, payToken, null, true);
             // IMPORTANT TODO, what if user don't wait?
             toggleActivatedChain(userOp.sender, selectedChainId);
         }
@@ -75,7 +75,7 @@ export default function useWallet() {
         return soulAbi.encodeFunctionData("setGuardian(bytes32,bytes32,bytes32)", [slot, guardianHash, keySignature]);
     };
 
-    const signAndSend = async (userOp: UserOperation, payToken?: string, waitFinish?: boolean, tabId?: any) => {
+    const signAndSend = async (userOp: UserOperation, payToken?: string,tabId?: any, waitFinish?: boolean,) => {
         // checkpaymaster
         if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
             const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);

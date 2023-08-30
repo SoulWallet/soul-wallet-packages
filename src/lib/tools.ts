@@ -232,6 +232,18 @@ export const toShortAddress = (address: string, firstSlice: number = 6, lastSlic
     return address;
 };
 
+export const numToFixed = (num: any, precision: number) => {
+    const bn = BN(num);
+    let str = bn.toFixed(precision);
+    if (str.indexOf('.') > 0) {
+      str = str.replace(/0+$/, '');
+      if (str[str.length - 1] === '.') {
+        str = str.substring(0, str.length - 1);
+      }
+    }
+    return str;
+  }
+
 export const getNetwork = (chainId: number) => {
     const name = chainIdMapping[chainId as keyof typeof chainIdMapping] || "";
     console.log("getNetwork", chainId, name);

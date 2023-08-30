@@ -79,14 +79,13 @@ export default function SignPage() {
 
                 // if from dapp, return trsanction result
                 if (tabId) {
-                    await signAndSend(userOp, payToken, false, tabId);
+                    await signAndSend(userOp, payToken, tabId, false);
                     window.close();
                 } else {
-                    await signAndSend(userOp, payToken, true, tabId);
-
+                    await signAndSend(userOp, payToken, tabId, false);
                     toast({
                         title: "Transaction sent.",
-                        status: "success",
+                        status: "info",
                     });
                     navigate("wallet");
                 }

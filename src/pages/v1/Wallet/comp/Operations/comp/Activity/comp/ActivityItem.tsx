@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import config from "@src/config";
 import ListItem from "../../ListItem";
 import useTools from "@src/hooks/useTools";
+import { numToFixed } from "@src/lib/tools";
+import BN from "bignumber.js";
+import { toShortAddress } from "@src/lib/tools";
 
 enum ActivityStatusEn {
     Success,
@@ -14,6 +16,7 @@ interface IActivityItem {
     txHash: string;
     status: ActivityStatusEn;
     amount?: string;
+    to?: string;
 }
 
 export default function ActivityItem({ item, scanUrl }: any) {
@@ -23,7 +26,7 @@ export default function ActivityItem({ item, scanUrl }: any) {
     const formatItem = async () => {
         const callDataDecodes = await decodeCalldata(item.chainId, item.entrypointAddress, item.userOp);
 
-        console.log('activity decoded', callDataDecodes)
+        console.log("activity decoded", callDataDecodes);
 
         const functionNames = callDataDecodes.map((item: any) => item.functionName || item.method.name).join(", ");
 
@@ -32,6 +35,7 @@ export default function ActivityItem({ item, scanUrl }: any) {
         setDetail({
             functionName: functionNames,
             txHash: item.trxHash,
+            to: callDataDecodes[0].to,
             status,
         });
     };
@@ -53,9 +57,11 @@ export default function ActivityItem({ item, scanUrl }: any) {
                 idx={item.idx}
                 icon={getIconMapping(detail.functionName)}
                 title={detail.functionName}
-                titleDesc="May 20, 2023"
-                amount={"0.23 ETH"}
-                amountDesc="to 0x123...1111"
+                titleDesc={new Date(item.timestamp * 1000).toLocaleString()}
+                amount={
+                    item.actualGasCost ? `${numToFixed(BN(item.actualGasCost).shiftedBy(-18).toString(), 6)} ETH` : ""
+                }
+                amountDesc={detail && detail.to ? `to ${toShortAddress(detail.to || "")} ` : ""}
             />
         </a>
     );
