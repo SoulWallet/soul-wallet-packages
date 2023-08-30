@@ -21,10 +21,11 @@ async function screenshot(page: Page, name: string) {
     screenshotIndex++;
     const imgPath1 = path.join(screenshotDir, `${screenshotIndex}-pre-${name}.png`);
     const imgPath2 = path.join(screenshotDir, `${screenshotIndex}-post-${name}.png`);
+    await page.waitForTimeout(50);
     await page.screenshot({ path: imgPath1 });
     setTimeout(async () => {
         await page.screenshot({ path: imgPath2 });
-    }, 300);
+    }, 350);
     return imgPath1;
 }
 
@@ -112,7 +113,7 @@ test("Activate", async ({ context, extensionId }) => {
         expect(networkFeeParent).not.toBeNull();
         let networkFeeTxt = "";
         let _loadingIndex = 0;
-        for (let index = 0; index < 10; index++) {
+        for (let index = 0; index < 60; index++) {
             // get networkFee parent's text
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const networkFeeParentText = await networkFeeParent!.innerText();
@@ -124,6 +125,8 @@ test("Activate", async ({ context, extensionId }) => {
             }
             await popupPage.waitForTimeout(1000);
         }
+
+        await screenshot(popupPage, "Activate Wallet - Network Fee");
 
         /* 
         networkFeeTxt: 

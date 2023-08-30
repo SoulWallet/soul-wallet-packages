@@ -68,3 +68,9 @@ jobs:
           name: screenshot
           path: tests/screenshot/
           retention-days: 30
+     
+      - uses: actions/upload-artifact@v3
+        with:
+         name: dist
+         path: dist/
+         retention-days: 30
