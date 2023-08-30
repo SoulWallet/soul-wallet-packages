@@ -16,7 +16,7 @@ export default {
     bundlerUrl: "https://api-dev.soulwallet.io/bundler/eth-goerli/rpc",
     maxCostMultiplier: 110,
     chainId: 5,
-    chainIdHex: (5).toString(16),
+    chainIdHex: `0x${(5).toString(16)}`,
     defaultMaxFee: "1700000000",
     defaultMaxPriorityFee: "1500000000",
     chainName: "Goerli",
