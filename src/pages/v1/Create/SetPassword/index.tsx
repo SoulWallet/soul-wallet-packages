@@ -82,6 +82,7 @@ export default function SetPassword() {
         onBlur={onBlur('password')}
         errorMsg={showErrors.password && errors.password}
         isPassword={true}
+        autoFocus={true}
       />
       <PasswordStrengthBar password={values.password || ''} />
       <FormInput

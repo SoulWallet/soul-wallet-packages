@@ -519,6 +519,7 @@ export default function GuardiansSetting() {
                       leftOnChange={onChange(`address_${id}`)}
                       leftOnBlur={onBlur(`address_${id}`)}
                       leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                      leftAutoFocus={id === guardianIds[0]}
                       rightPlaceholder="Assign nickname"
                       rightValue={values[`name_${id}`]}
                       rightOnChange={onChange(`name_${id}`)}

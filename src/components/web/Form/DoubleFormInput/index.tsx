@@ -16,6 +16,7 @@ interface IProps {
   _leftInputStyles?: any;
   leftLabel?: String;
   rightLabel?: String;
+  leftAutoFocus?: any;
 }
 
 export default function DoubleFormInput({
@@ -32,7 +33,8 @@ export default function DoubleFormInput({
   rightOnChange,
   rightOnBlur,
   _styles,
-  _leftInputStyles
+  _leftInputStyles,
+  leftAutoFocus
 }: IProps) {
   const handleLeftChange = (e: ChangeEvent<HTMLInputElement>) => {
     leftOnChange(e.target.value);
@@ -70,6 +72,7 @@ export default function DoubleFormInput({
               borderTopRightRadius="0"
               borderBottomRightRadius="0"
               borderRightColor="transparent"
+              autoFocus={leftAutoFocus}
               {..._leftInputStyles}
             />
           </Box>

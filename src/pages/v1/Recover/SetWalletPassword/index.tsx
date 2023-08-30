@@ -132,6 +132,7 @@ export default function SetPassword() {
         errorMsg={showErrors.password && errors.password}
         _styles={{ marginTop: '0.75em', width: '100%' }}
         isPassword={true}
+        autoFocus={true}
       />
       <PasswordStrengthBar password={values.password || ''} _styles={{ marginTop: '0.75em', width: '100%' }} />
       <FormInput

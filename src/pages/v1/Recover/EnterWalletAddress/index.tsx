@@ -99,6 +99,7 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         onBlur={onBlur('address')}
         errorMsg={showErrors.address && errors.address}
         _styles={{ marginTop: '0.75em', width: '100%' }}
+        autoFocus={true}
       />
       <Button
         onClick={handleNext}
