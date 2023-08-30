@@ -40,7 +40,7 @@ export interface IBalanceStore {
     tokenBalance: ITokenBalanceItem[];
     nftBalance: INftBalanceItem[];
     getTokenBalance: (tokenAddress: string) => any;
-    fetchTokenBalance: (address: string, chainId: number) => void;
+    fetchTokenBalance: (address: string, chainId: string, paymasterTokens: string[]) => void;
     getNftBalance: (tokenAddress: string) => any;
     fetchNftBalance: (address: string, chainId: number) => void;
 }
@@ -81,10 +81,11 @@ export const useBalanceStore = create<IBalanceStore>()(
             getTokenBalance: (tokenAddress: string) => {
                 return get().tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === tokenAddress)[0];
             },
-            fetchTokenBalance: async (address: string, chainId: number) => {
+            fetchTokenBalance: async (address: string, chainId: string, paymasterTokens: string[]) => {
                 const res = await api.balance.token({
                     walletAddress: address,
                     chainId,
+                    reservedTokenAddresses:paymasterTokens,
                 });
 
                 const tokenList = res.data.map((item: ITokenBalanceItem) => formatTokenBalance(item));

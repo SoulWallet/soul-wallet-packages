@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Box } from "@chakra-ui/react";
-import BN from "bignumber.js";
 import { ITokenBalanceItem, useBalanceStore } from "@src/store/balance";
 import ListItem from "../ListItem";
+import useConfig from "@src/hooks/useConfig";
 import IconDefaultToken from "@src/assets/tokens/default.svg";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
@@ -11,15 +11,17 @@ import { useChainStore } from "@src/store/chain";
 export default function Tokens() {
     const { selectedAddress } = useAddressStore();
     const { tokenBalance, fetchTokenBalance } = useBalanceStore();
-    const { selectedChainId } = useChainStore();
+    const { selectedChainItem } = useConfig();
     const { navigate } = useBrowser();
 
     useEffect(() => {
+        const { chainIdHex, paymasterTokens } = selectedChainItem;
+
         if (!selectedAddress) {
             return;
         }
-        fetchTokenBalance(selectedAddress, selectedChainId);
-    }, [selectedAddress, selectedChainId]);
+        fetchTokenBalance(selectedAddress, chainIdHex, paymasterTokens);
+    }, [selectedAddress, selectedChainItem]);
 
     return (
         <Box color="#1e1e1e" fontSize={"14px"} lineHeight={"1"}>

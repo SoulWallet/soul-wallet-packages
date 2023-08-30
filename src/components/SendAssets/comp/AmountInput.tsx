@@ -6,11 +6,13 @@ import { ITokenBalanceItem, useBalanceStore } from "@src/store/balance";
 import IconChevronRight from "@src/assets/icons/chevron-right.svg";
 import { useAddressStore } from "@src/store/address";
 import { useChainStore } from "@src/store/chain";
+import useConfig from "@src/hooks/useConfig";
 
 export default function AmountInput({ sendToken, onTokenChange, amount, onChange }: any) {
     const { tokenBalance, fetchTokenBalance } = useBalanceStore();
     const { selectedAddress } = useAddressStore();
     const { selectedChainId } = useChainStore();
+    const { selectedChainItem } = useConfig();
 
     const selectedToken = tokenBalance.filter((item: ITokenBalanceItem) => item.contractAddress === sendToken)[0];
 
@@ -33,11 +35,12 @@ export default function AmountInput({ sendToken, onTokenChange, amount, onChange
     };
 
     useEffect(() => {
-        if (!selectedAddress || !selectedChainId) {
+        const { chainIdHex, paymasterTokens } = selectedChainItem;
+        if (!selectedAddress || !chainIdHex || !paymasterTokens) {
             return;
         }
-        fetchTokenBalance(selectedAddress, selectedChainId);
-    }, [selectedAddress, selectedChainId]);
+        fetchTokenBalance(selectedAddress, chainIdHex, paymasterTokens);
+    }, [selectedAddress, selectedChainItem]);
 
     return (
         <Flex flexDir={"column"} gap="3" py="3" px="4" bg="#fff" rounded="20px">

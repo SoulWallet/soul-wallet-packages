@@ -46,7 +46,7 @@ const guardian = {
 
 const balance = {
     nft: (params: any) => axio.get("/nft-balance", { params }),
-    token: (params: any) => axio.get("/user-token-balance", { params }),
+    token: (params: any) => axio.post("/token/erc20", params),
 };
 
 const sponsor = {

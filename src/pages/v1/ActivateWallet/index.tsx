@@ -84,11 +84,14 @@ export default function ActivateWallet() {
     }, [payToken, account, selectedAddress]);
 
     const checkBalance = async () => {
-        if (!selectedAddress || !selectedChainId) {
+        const { chainIdHex, paymasterTokens } = selectedChainItem;
+
+        if (!selectedAddress || !chainIdHex || !paymasterTokens) {
             return;
         }
+        
         // set user balance
-        fetchTokenBalance(selectedAddress, selectedChainId);
+        fetchTokenBalance(selectedAddress, chainIdHex, paymasterTokens);
         setUserBalance(getTokenBalance(payToken).tokenBalanceFormatted);
     };
 

@@ -4,6 +4,7 @@
 -   Fixed multi wallet activate issue
 -   Optimized select account logic
 -   Completed setup/cancel guardian flow
+-   Adapt new token balance API
 
 ## 0.1.1
 
