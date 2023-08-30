@@ -135,6 +135,7 @@ test("Activate", async ({ context, extensionId }) => {
         ETH
         */
         expect(networkFeeTxt).not.toEqual("");
+        console.log("networkFeeTxt", networkFeeTxt);
         networkFeeEther = parseFloat(networkFeeTxt.split("\n")[0].trim());
         console.log("networkFeeEther", networkFeeEther);
     }
