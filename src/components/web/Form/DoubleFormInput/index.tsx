@@ -17,6 +17,7 @@ interface IProps {
   leftLabel?: String;
   rightLabel?: String;
   leftAutoFocus?: any;
+  onEnter?: any;
 }
 
 export default function DoubleFormInput({
@@ -34,7 +35,8 @@ export default function DoubleFormInput({
   rightOnBlur,
   _styles,
   _leftInputStyles,
-  leftAutoFocus
+  leftAutoFocus,
+  onEnter
 }: IProps) {
   const handleLeftChange = (e: ChangeEvent<HTMLInputElement>) => {
     leftOnChange(e.target.value);
@@ -51,6 +53,12 @@ export default function DoubleFormInput({
   const handleRightBlur = (e: ChangeEvent<HTMLInputElement>) => {
     if (rightOnBlur) rightOnBlur(e.target.value);
   };
+
+  const onKeyDown = (event: any) => {
+    if (event.keyCode === 13 && onEnter) {
+      onEnter();
+    }
+  }
 
   return (
     <Box display="flex" flexDirection="row" {..._styles}>
@@ -73,6 +81,7 @@ export default function DoubleFormInput({
               borderBottomRightRadius="0"
               borderRightColor="transparent"
               autoFocus={leftAutoFocus}
+              onKeyDown={onKeyDown}
               {..._leftInputStyles}
             />
           </Box>
@@ -96,6 +105,7 @@ export default function DoubleFormInput({
               background="white"
               borderTopLeftRadius="0"
               borderBottomLeftRadius="0"
+              onKeyDown={onKeyDown}
             />
           </Box>
         </Box>

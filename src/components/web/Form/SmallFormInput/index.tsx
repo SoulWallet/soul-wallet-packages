@@ -11,6 +11,7 @@ interface IProps {
   _styles?: any;
   RightComponent?: any;
   readOnly?: boolean;
+  onEnter?: any;
 }
 
 export default function FormInput({
@@ -22,11 +23,18 @@ export default function FormInput({
   onBlur,
   _styles,
   RightComponent,
-  readOnly
+  readOnly,
+  onEnter
 }: IProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
+
+  const onKeyDown = (event: any) => {
+    if (event.keyCode === 13 && onEnter) {
+      onEnter();
+    }
+  }
 
   return (
     <Box display="flex" flexDirection="column" position="relative" {..._styles}>
@@ -44,6 +52,7 @@ export default function FormInput({
             paddingRight="1.5rem"
             height="3em"
             readOnly={readOnly}
+            onKeyDown={onKeyDown}
           />
         </Box>
         <Box position="absolute" top="0" right="10px" height="100%" display="flex" alignItems="center" justifyContent="center">

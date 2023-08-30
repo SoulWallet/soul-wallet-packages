@@ -298,6 +298,7 @@ const SaveGuardians = () => {
             errorMsg={emailForm.showErrors.email && emailForm.errors.email}
             onChange={emailForm.onChange('email')}
             onBlur={emailForm.onBlur('email')}
+            onEnter={handleEmailBackupGuardians}
             _styles={{ width: '100%', marginTop: '0.75em' }}
             RightIcon={(
               <IconButton
