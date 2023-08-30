@@ -17,13 +17,15 @@ fs.mkdirSync(screenshotDir);
 
 let screenshotIndex = 0;
 
-function screenshot(page: Page, name: string) {
+async function screenshot(page: Page, name: string) {
     screenshotIndex++;
-    const imgPath = path.join(screenshotDir, `${screenshotIndex}-${name}.png`);
+    const imgPath1 = path.join(screenshotDir, `${screenshotIndex}-pre-${name}.png`);
+    const imgPath2 = path.join(screenshotDir, `${screenshotIndex}-post-${name}.png`);
+    await page.screenshot({ path: imgPath1 });
     setTimeout(async () => {
-        await page.screenshot({ path: imgPath });
-    }, 100);
-    return imgPath;
+        await page.screenshot({ path: imgPath2 });
+    }, 300);
+    return imgPath1;
 }
 
 test("Activate", async ({ context, extensionId }) => {
@@ -33,7 +35,6 @@ test("Activate", async ({ context, extensionId }) => {
 
     // list all pages
     let pages = await context.pages();
-    debugger;
     if (pages.length < 2) {
         await context.waitForEvent("page");
         pages = await context.pages();
@@ -46,12 +47,12 @@ test("Activate", async ({ context, extensionId }) => {
         throw new Error("popupPage is undefined");
     }
 
-    screenshot(popupPage, "Terms");
+    await screenshot(popupPage, "Terms");
 
     await popupPage.getByRole("button", { name: "I Understand" }).click();
     await popupPage.getByText("Create New Wallet").click();
 
-    screenshot(popupPage, "Create New Wallet - Set Password");
+    await screenshot(popupPage, "Create New Wallet - Set Password");
 
     const password = "password%" + new Date().getTime();
     await popupPage.getByPlaceholder("Set Password").click();
@@ -60,7 +61,7 @@ test("Activate", async ({ context, extensionId }) => {
     await popupPage.getByPlaceholder("Confirm password").fill(password);
     await popupPage.getByRole("button", { name: "Continue" }).click();
 
-    screenshot(popupPage, "Create New Wallet - Set Guardians");
+    await screenshot(popupPage, "Create New Wallet - Set Guardians");
 
     const guardians: string[] = [
         ethers.Wallet.createRandom().privateKey,
@@ -84,7 +85,7 @@ test("Activate", async ({ context, extensionId }) => {
     await popupPage.getByPlaceholder("Enter amount").fill(threshold.toString());
     await popupPage.getByRole("button", { name: "Continue" }).click();
 
-    screenshot(popupPage, "Create New Wallet - Store Guardians");
+    await screenshot(popupPage, "Create New Wallet - Store Guardians");
 
     await popupPage.getByRole("button", { name: "Store On-chain" }).click();
     await popupPage.getByRole("button", { name: "Continue" }).click();
@@ -93,13 +94,13 @@ test("Activate", async ({ context, extensionId }) => {
 
     await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    screenshot(popupPage, "Home Page");
+    await screenshot(popupPage, "Home Page");
 
     // wait text: Activate wallet now!
     await popupPage.waitForSelector("text=Activate wallet now!");
     await popupPage.getByRole("button", { name: "Begin" }).click();
 
-    screenshot(popupPage, "Activate Wallet");
+    await screenshot(popupPage, "Activate Wallet");
 
     let networkFeeEther = 0;
     {
@@ -157,7 +158,7 @@ test("Activate", async ({ context, extensionId }) => {
     const coinBaseWallet = new ethers.Wallet(Config.privateKey(), ethersProvider);
 
     // get wallet address
-    const qrAddress = screenshot(popupPage, "Activate Wallet - QR Code");
+    const qrAddress = await screenshot(popupPage, "Activate Wallet - QR Code");
     await popupPage.waitForTimeout(1000);
     const buffer = fs.readFileSync(qrAddress);
     const imageData = await Jimp.read(buffer);
@@ -197,7 +198,7 @@ test("Activate", async ({ context, extensionId }) => {
     }
     await popupPage.getByRole("button", { name: "Activate" }).click();
 
-    screenshot(popupPage, "Activate Wallet - Activate");
+    await screenshot(popupPage, "Activate Wallet - Activate");
 
     // wait walletAddress code != '0x' ,max 60s
     let walletCode = "0x";
@@ -213,7 +214,7 @@ test("Activate", async ({ context, extensionId }) => {
         throw new Error("walletCode === 0x");
     }
 
-    screenshot(popupPage, "Activate Wallet - Activated");
+    await screenshot(popupPage, "Activate Wallet - Activated");
 
     // wait div hasText 'Send tokens' (Home page)
     await popupPage
@@ -235,7 +236,7 @@ test("Activate", async ({ context, extensionId }) => {
     // wait div hasText 'Send tokens' (Home page)
     await popupPage.locator("div").filter({ hasText: /^Send tokens$/ });
 
-    screenshot(popupPage, "Send tokens");
+    await screenshot(popupPage, "Send tokens");
 
     await popupPage.waitForTimeout(1000);
 });
