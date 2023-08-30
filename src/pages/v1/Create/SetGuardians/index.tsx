@@ -132,6 +132,8 @@ export default function GuardiansSetting() {
   }, [guardiansList])
 
   const handleSubmit = async () => {
+    if (disabled) return
+
     try {
       setLoading(true)
 
@@ -340,6 +342,7 @@ export default function GuardiansSetting() {
                 rightOnChange={onChange(`name_${id}`)}
                 rightOnBlur={onBlur(`name_${id}`)}
                 rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                onEnter={handleSubmit}
                 _styles={{ width: '100%' }}
                 _leftInputStyles={!!values[`address_${id}`] ? {
                   fontFamily: "Martian",
@@ -376,6 +379,7 @@ export default function GuardiansSetting() {
           onBlur={amountForm.onBlur('amount')}
           errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
           RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
+          onEnter={handleSubmit}
           _styles={{ width: '180px', marginTop: '0.75em' }}
         />
       </Box>

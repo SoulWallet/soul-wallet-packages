@@ -46,6 +46,8 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
   const disabled = loading || invalid
 
   const handleNext = async () => {
+    if (disabled) return
+
     try {
       setLoading(true)
       const result = await api.guardian.getSlotInfo({ walletAddress: values.address })
@@ -100,6 +102,7 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         errorMsg={showErrors.address && errors.address}
         _styles={{ marginTop: '0.75em', width: '100%' }}
         autoFocus={true}
+        onEnter={handleNext}
       />
       <Button
         onClick={handleNext}

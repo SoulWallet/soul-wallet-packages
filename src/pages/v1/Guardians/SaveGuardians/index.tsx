@@ -295,6 +295,7 @@ const SaveGuardians = () => {
             onChange={emailForm.onChange('email')}
             onBlur={emailForm.onBlur('email')}
             _styles={{ width: '100%', marginTop: '0.75em' }}
+            onEnter={handleEmailBackupGuardians}
             RightIcon={(
               <IconButton
                 onClick={handleEmailBackupGuardians}

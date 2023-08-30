@@ -50,6 +50,7 @@ export default function SetPassword() {
 
   const handleNext = async () => {
     const { password } = values
+    if (disabled) return
 
     try {
       if (password) {
@@ -83,6 +84,7 @@ export default function SetPassword() {
         errorMsg={showErrors.password && errors.password}
         isPassword={true}
         autoFocus={true}
+        onEnter={handleNext}
       />
       <PasswordStrengthBar password={values.password || ''} />
       <FormInput
@@ -94,6 +96,7 @@ export default function SetPassword() {
         errorMsg={showErrors.confirmPassword && errors.confirmPassword}
         _styles={{ marginTop: '0.75em' }}
         isPassword={true}
+        onEnter={handleNext}
       />
       <Button
         disabled={disabled}
