@@ -1,14 +1,15 @@
 ## 0.1.2
 
+-   Fixed style issues in v0.1.1
 -   Fixed multi wallet activate issue
 -   Optimized select account logic
+-   Completed setup/cancel guardian flow
 
 ## 0.1.1
 
 -   Optimized component style
 -   Optimized sponsor check logic
 -   Optimized some function call logic
-
 
 ## 0.1.0
 

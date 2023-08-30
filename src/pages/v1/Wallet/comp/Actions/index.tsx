@@ -29,24 +29,32 @@ const ActionItem = ({ icon, title, onClick }: any) => {
     );
 };
 
-export default function Actions() {
+export default function Actions({ showSetGuardian }: any) {
     const { navigate, goWebsite } = useBrowser();
     const toast = useToast();
     return (
         <>
-            <Grid templateColumns={"repeat(2, 1fr)"} gap="1" mt="4" mb="6">
+            <Grid templateColumns={"repeat(2, 1fr)"} gap="1" mt="4">
                 <ActionItem title="Add funds" icon={IconAddFunds} onClick={() => navigate(`add-fund`)} />
                 <ActionItem
                     title="Send tokens"
                     icon={IconSend}
                     onClick={() => navigate(`send/${ethers.ZeroAddress}`)}
                 />
-                <ActionItem title="Guardians" icon={IconGuardians} onClick={() => goWebsite(`edit-guardians`)} />
-                <ActionItem
-                    title="Authenticate"
-                    icon={Icon2FA}
-                    onClick={() => toast({ title: "Coming soon", status: "info" })}
-                />
+                {!showSetGuardian && (
+                    <>
+                        <ActionItem
+                            title="Guardians"
+                            icon={IconGuardians}
+                            onClick={() => goWebsite(`edit-guardians`)}
+                        />
+                        <ActionItem
+                            title="Authenticate"
+                            icon={Icon2FA}
+                            onClick={() => toast({ title: "Coming soon", status: "info" })}
+                        />
+                    </>
+                )}
             </Grid>
         </>
     );
