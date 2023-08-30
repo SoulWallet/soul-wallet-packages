@@ -123,14 +123,7 @@ const GuardiansChecking = () => {
   }
 
   const handlePay = async () => {
-    let url
-
-    if (recoverStatus === 1) {
-      url = `${config.officialWebUrl}/pay-recover/${recoverRecordId}`
-    } else {
-      url = `${config.officialWebUrl}/recover/${recoverRecordId}`
-    }
-
+    const url = `${config.officialWebUrl}/pay-recover/${recoverRecordId}`
     window.open(url, '_blank')
   }
 
