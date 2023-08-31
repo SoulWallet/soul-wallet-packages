@@ -29,7 +29,6 @@ export default {
         });
     },
     resolve(data: any) {
-        console.log("before resolving", data);
         window.postMessage(data);
     },
 };

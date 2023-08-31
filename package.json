@@ -1,6 +1,6 @@
 {
     "name": "soul-wallet-plugin",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Browser extension for soul wallet",
     "main": "index.js",
     "scripts": {
