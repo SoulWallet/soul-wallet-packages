@@ -9,6 +9,7 @@ import BN from "bignumber.js";
 import { toShortAddress } from "@src/lib/tools";
 import useConfig from "@src/hooks/useConfig";
 
+
 export default function SignTransaction({
     decodedData,
     sendToAddress,
@@ -25,10 +26,13 @@ export default function SignTransaction({
     const { selectedAddress } = useAddressStore();
     const { selectedAddressItem } = useConfig();
 
+    console.log('D', decodedData)
+
     return (
         <>
             <Text fontSize="20px" fontWeight="800" color="#1e1e1e">
-                Sign Transaction
+                {/* Sign Transaction */}
+                Review
             </Text>
 
             {origin && (
@@ -44,7 +48,7 @@ export default function SignTransaction({
                             {decodedData.map((item: any, index: number) => (
                                 <Text mr="1" textTransform="capitalize" key={index}>
                                     {decodedData.length > 1 && `${index + 1}.`}
-                                    {item.method.name || ""}
+                                    {item.functionName ? item.functionName : item.method ? item.method.name : ""}
                                 </Text>
                             ))}
                         </Box>
