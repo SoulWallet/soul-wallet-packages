@@ -1,11 +1,12 @@
 ## 0.1.2
 
+-   Completed setup/cancel guardian flow
 -   Fixed style issues in v0.1.1
 -   Fixed multi wallet activate issue
 -   Optimized select account logic
 -   Optimized transaction list
 -   Optimized token balance API
--   Completed setup/cancel guardian flow
+
 
 ## 0.1.1
 

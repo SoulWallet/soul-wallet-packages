@@ -7,9 +7,9 @@ interface IEmptyHint {
 }
 export default function EmptyHint({ title }: IEmptyHint) {
     return (
-        <Box textAlign={"center"}>
+        <Box textAlign={"center"} pb="10">
             <Image src={IconEmpty} w="32" mx="auto" mt="8" display={"block"} />
-            <Text mt="2">{title}</Text>
+            <Text mt="2" fontWeight={"700"}>{title}</Text>
         </Box>
     );
 }

@@ -27,6 +27,14 @@ export default function useWallet() {
 
     const getIsOwner = (signerKey: string) => {};
 
+    /**
+     * Get activate initial params by wallet address
+     * @param address 
+     */
+    const getInitialParams = async (address: string) => {
+
+    }
+
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
         const guardianHash = calcGuardianHash(guardians, threshold);
 

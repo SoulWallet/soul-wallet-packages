@@ -15,8 +15,8 @@ export default function AccountSelect() {
     const isAccountsPage = location.pathname.includes("/accounts");
 
     return isAccountsPage ? (
-        <Flex align="center" gap="1" fontWeight={"800"} cursor={"pointer"}>
-            <Text>All accounts</Text>
+        <Flex onClick={() => navigate("wallet")} align="center" gap="1" fontWeight={"800"} cursor={"pointer"}>
+            <Text>All Accounts</Text>
         </Flex>
     ) : (
         <Flex
