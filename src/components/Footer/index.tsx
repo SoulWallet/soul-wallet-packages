@@ -4,6 +4,7 @@ import { Box, Text, Flex, Image, Tooltip } from "@chakra-ui/react";
 import IconConnected from "@src/assets/icons/connected.svg";
 import { useSettingStore } from "@src/store/setting";
 import useBrowser from "@src/hooks/useBrowser";
+import { checkShouldInject } from "@src/lib/tools";
 
 export default function Footer() {
     const { getConnectedDapp } = useBrowser();
@@ -35,25 +36,16 @@ export default function Footer() {
         }
     };
 
-    const checkShouldInject = async () => {
-        let flag = true;
-        if (shouldInjectList.includes(origin)) {
-            flag = true;
-        } else if (shouldNotInjectList.includes(origin)) {
-            flag = false;
-        } else if (globalShouldInject) {
-            flag = true;
-        } else if (!globalShouldInject) {
-            flag = false;
-        }
-        setShouldInject(flag);
-    };
+    const check = () => {
+        const should = checkShouldInject(origin);
+        setShouldInject(should)
+    }
 
     useEffect(() => {
         if (!origin) {
             return;
         }
-        checkShouldInject();
+        check();
     }, [origin]);
 
     if (!isValidOrigin) {

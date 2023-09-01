@@ -13,14 +13,17 @@ function injectScript(file, node) {
 injectScript(browser.runtime.getURL("js/inpage.js"), "html");
 
 function sendMessage(data) {
-    // todo, make version variable
-    data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.type}`;
-    data.pos = {
-        width: 360,
-        height: 600 + 28, // 28 is title bar
-        top: 0,
-        left: window.screen.width - 360,
-    };
+    // todo, make version variable & judge target only from soul wallet
+    if (typeof data === "object") {
+        data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.type}`;
+        data.pos = {
+            width: 360,
+            height: 600 + 28, // 28 is title bar
+            top: 0,
+            left: window.screen.width - 360,
+        };
+    }
+
     browser.runtime.sendMessage(data);
 }
 
@@ -28,7 +31,6 @@ function sendMessage(data) {
 window.addEventListener(
     "message",
     (msg) => {
-        console.log("ContentScript Window msg", msg);
         if (!msg.data.isResponse) {
             sendMessage(msg.data);
         }
