@@ -30,7 +30,7 @@ export default function WalletCard({ statusText }: { statusText: string }) {
         <Box width="100%" fontSize="16px" fontWeight="bold" marginTop="10px">
           <Box fontSize="12px" background="white" borderRadius="12px" padding="0 10px" display="inline-block" fontWeight="600" fontFamily="Martian">{statusText}</Box>
         </Box>
-        <Box width="100%" fontSize="16px" fontWeight="600" marginTop="10px" fontFamily="Martian">NEW SOUL WALLET...</Box>
+        <Box width="100%" fontSize="16px" fontWeight="600" marginTop="10px" fontFamily="Martian">YOUR SOUL WALLET!</Box>
       </Box>
     </Box>
   )

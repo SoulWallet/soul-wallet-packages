@@ -157,7 +157,6 @@ const GuardiansChecking = () => {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
         <Heading1 _styles={{ marginBottom: '20px' }}>Recover wallet success</Heading1>
-
         {replaced ? (
           <Button
             disabled={true}
@@ -178,7 +177,28 @@ const GuardiansChecking = () => {
     )
   }
 
-  if (recoverStatus > 0) {
+  if (recoverStatus === 1) {
+    return (
+      <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Heading1>
+          Pay recovery fee
+        </Heading1>
+        <Box marginBottom="0.75em">
+          <TextBody textAlign="center" maxWidth="500px">
+            You will be directed to a new tab for payment, please keep this page open for next step.
+          </TextBody>
+        </Box>
+        <Button
+          onClick={handlePay}
+          _styles={{ width: '100%', marginTop: '0.75em' }}
+        >
+          Pay fee
+        </Button>
+      </Box>
+    )
+  }
+
+  if (recoverStatus > 1) {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginBottom="20px">
         <Heading1 _styles={{ marginBottom: "0.75em" }}>Recovery in progress</Heading1>
@@ -208,34 +228,6 @@ const GuardiansChecking = () => {
             </Box>
           )}
         </Box>
-        <Button
-          disabled={false}
-          onClick={handleCopy}
-          _styles={{ width: '100%' }}
-        >
-          Copy Pay Link
-        </Button>
-      </Box>
-    )
-  }
-
-  if (showPayButton) {
-    return (
-      <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-        <Heading1>
-          Pay recovery fee
-        </Heading1>
-        <Box marginBottom="0.75em">
-          <TextBody textAlign="center" maxWidth="500px">
-            You will be directed to a new tab for payment, please keep this page open for next step.
-          </TextBody>
-        </Box>
-        <Button
-          onClick={handlePay}
-          _styles={{ width: '100%', marginTop: '0.75em' }}
-        >
-          Pay fee
-        </Button>
       </Box>
     )
   }
@@ -292,7 +284,7 @@ const GuardiansChecking = () => {
       </Box>
       <Button
         disabled={false}
-        onClick={handleNext}
+        onClick={handleCopy}
         _styles={{ width: '100%' }}
       >
         Next

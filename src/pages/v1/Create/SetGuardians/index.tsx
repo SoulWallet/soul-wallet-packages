@@ -61,6 +61,11 @@ const getFieldsByGuardianIds = (ids: any) => {
   return fields
 }
 
+const isENSAddress = (address: string) => {
+  const ensRegex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/
+  return ensRegex.test(address)
+}
+
 const validate = (values: any) => {
   const errors: any = {}
   const addressKeys = Object.keys(values).filter(key => key.indexOf('address') === 0)
