@@ -1,8 +1,8 @@
 ## 0.1.3
 
--   Fixed activting wallet after being recovered
+-   Fixed activating wallet after being recovered
 -   Fixed provider injection logic
--   Optimized recover wallet flow
+-   Optimized recovery wallet flow
 -   Optimized text
 
 ## 0.1.2
