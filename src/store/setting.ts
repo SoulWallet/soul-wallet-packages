@@ -12,7 +12,7 @@ export interface ISettingStore {
 }
 
 const createSettingSlice = immer<ISettingStore>((set, get) => ({
-    globalShouldInject: true,
+    globalShouldInject: false,
     shouldInjectList: [],
     shouldNotInjectList: [],
     setGlobalShouldInject: (shouldInject: boolean) => {

@@ -21,7 +21,7 @@ export default function useWallet() {
     const { selectedChainId } = useChainStore();
     const { getFeeCost, getPrefund } = useQuery();
     const { chainConfig } = useConfig();
-    const { guardians, threshold } = useGuardianStore();
+    const { guardians, threshold, slotInitInfo } = useGuardianStore();
     const keystore = useKeyring();
     const { soulWallet } = useSdk();
 
@@ -36,9 +36,9 @@ export default function useWallet() {
     }
 
     const activateWallet = async (index: number, payToken: string, estimateCost: boolean = false) => {
-        const guardianHash = calcGuardianHash(guardians, threshold);
-
-        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(index, account, guardianHash);
+        const { initialKey, initialGuardianHash } = slotInitInfo;
+        const initialKeyAddress = `0x${initialKey.slice(-40)}`;
+        const userOpRet = await soulWallet.createUnsignedDeployWalletUserOp(index, initialKeyAddress, initialGuardianHash);
 
         if (userOpRet.isErr()) {
             throw new Error(userOpRet.ERR.message);

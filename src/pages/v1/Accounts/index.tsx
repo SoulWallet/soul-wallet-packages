@@ -264,7 +264,7 @@ export default function Accounts() {
     return (
         <Box p="5">
             <Navbar />
-            <AccountsNavbar onAdd={onAdd} adding={adding} />
+            <AccountsNavbar onAdd={onAdd} adding={adding} onBack={onBack} />
             <Grid templateColumns={"repeat(2, 1fr)"} gap="3">
                 {addressList.map((item: any, index: number) => {
                     return (

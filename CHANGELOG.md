@@ -1,3 +1,10 @@
+## 0.1.3
+
+-   Fixed activating wallet after being recovered
+-   Fixed provider injection logic
+-   Optimized recovery wallet flow
+-   Optimized text
+
 ## 0.1.2
 
 -   Completed setup/cancel guardian flow

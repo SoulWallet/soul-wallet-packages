@@ -146,8 +146,12 @@ export const checkShouldInject = (origin: string) => {
     const shouldInjectList = settingStorage.state.shouldInjectList;
     const shouldNotInjectList = settingStorage.state.shouldNotInjectList;
 
-    let flag = true;
-    if (shouldInjectList.includes(origin)) {
+    console.log("1111111", origin, shouldInjectList, shouldNotInjectList, globalShouldInject);
+
+    let flag = false;
+    if (!origin.startsWith("http")) {
+        flag = false;
+    } else if (shouldInjectList.includes(origin)) {
         flag = true;
     } else if (shouldNotInjectList.includes(origin)) {
         flag = false;
@@ -156,6 +160,8 @@ export const checkShouldInject = (origin: string) => {
     } else if (!globalShouldInject) {
         flag = false;
     }
+
+    console.log("Should inject", flag);
 
     return flag;
 };
@@ -235,14 +241,14 @@ export const toShortAddress = (address: string, firstSlice: number = 6, lastSlic
 export const numToFixed = (num: any, precision: number) => {
     const bn = BN(num);
     let str = bn.toFixed(precision);
-    if (str.indexOf('.') > 0) {
-      str = str.replace(/0+$/, '');
-      if (str[str.length - 1] === '.') {
-        str = str.substring(0, str.length - 1);
-      }
+    if (str.indexOf(".") > 0) {
+        str = str.replace(/0+$/, "");
+        if (str[str.length - 1] === ".") {
+            str = str.substring(0, str.length - 1);
+        }
     }
     return str;
-  }
+};
 
 export const getNetwork = (chainId: number) => {
     const name = chainIdMapping[chainId as keyof typeof chainIdMapping] || "";
