@@ -66,11 +66,11 @@ export default function useKeystore() {
 
     const getReplaceGuardianInfo = async (newGuardianHash: string) => {
         const { initialKey, initialGuardianHash, initialGuardianSafePeriod } = slotInitInfo;
-        const initialKeyAddress = `0x${initialKey.slice(-40)}`;
-        console.log('getReplaceGuardianInfo', initialKeyAddress, account)
-        if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
-            return;
-        }
+        // const initialKeyAddress = `0x${initialKey.slice(-40)}`;
+        // console.log('getReplaceGuardianInfo', initialKeyAddress, account)
+        // if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
+        //     return;
+        // }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_SET_GUARDIAN, slot, newGuardianHash);
         if (ret.isErr()) {
             throw new Error(ret.ERR.message);
@@ -90,11 +90,11 @@ export default function useKeystore() {
     };
 
     const getCancelSetGuardianInfo = async () => {
-        const { initialKey } = slotInitInfo;
-        const initialKeyAddress = `0x${initialKey.slice(-40)}`;
-        if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
-            return;
-        }
+        // const { initialKey } = slotInitInfo;
+        // const initialKeyAddress = `0x${initialKey.slice(-40)}`;
+        // if (initialKeyAddress.toLowerCase() !== account.toLowerCase()) {
+        //     return;
+        // }
         const ret = await keystore.getTypedData(KeyStoreTypedDataType.TYPE_HASH_CANCEL_SET_GUARDIAN, slot);
         console.log('getCancelSetGuardianInfo', ret)
         if (ret.isErr()) {
