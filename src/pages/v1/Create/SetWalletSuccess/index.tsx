@@ -34,7 +34,7 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
   if (mode === EnHandleMode.Create) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" position="relative" paddingBottom="20px">
-        <Heading1>Congratulation!</Heading1>
+        <Heading1>Congratulations!</Heading1>
         <Box marginBottom="2em">
           <TextBody maxWidth="400px" textAlign="center">
             You're now ready to navigate Ethereum with security and simplicity thanks to your new Soul Wallet.
@@ -123,7 +123,7 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
                 fontWeight="600"
                 fontFamily="Martian"
               >
-                {`WELCOME:)`}
+                {`WELCOME!`}
               </Box>
               <Box
                 color="#29510A"
