@@ -175,10 +175,18 @@ const AccountItem = ({ item, selected, onClick }: any) => {
                         {item.title}
                     </Text>
                     <Menu>
-                        <MenuButton>
+                        <MenuButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
                             <Image src={isActivated ? IconAccountMoreGreen : IconAccountMore} />
                         </MenuButton>
-                        <MenuList>
+                        <MenuList
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
                             {accountMenus.map((item, idx) => (
                                 <React.Fragment key={idx}>
                                     {idx > 0 && <MenuDivider />}
