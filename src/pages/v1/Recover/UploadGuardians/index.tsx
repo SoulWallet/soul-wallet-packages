@@ -23,6 +23,7 @@ import useKeystore from "@src/hooks/useKeystore";
 import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
+import ArrowRightIcon from "@src/components/Icons/ArrowRight";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import config from "@src/config";
@@ -41,6 +42,14 @@ const getFieldsByGuardianIds = (ids: any) => {
   }
 
   return fields
+}
+
+const getRecommandCount = (c: number) => {
+  if (!c) {
+    return 1
+  }
+
+  return Math.ceil(c / 2)
 }
 
 const getInitialValues = (ids: string[], guardians: string[]) => {
@@ -98,6 +107,7 @@ const UploadGuardians = () => {
   const { account } = useWalletContext();
   const { recoveringGuardians, recoveringThreshold, recoveringSlot, recoveringSlotInitInfo, setRecoverRecordId, newKey, setRecoveringGuardians, setRecoveringThreshold, setRecoveringSlot, setRecoveringSlotInitInfo } = useGuardianStore();
   const [amountData, setAmountData] = useState<any>({})
+  const [showMannualInput, setShowMannualInput] = useState(false)
   const toast = useToast()
   const {chainConfig} = useConfig();
 
@@ -131,6 +141,10 @@ const UploadGuardians = () => {
   useEffect(() => {
     setAmountData({ guardiansCount: guardiansList.length })
   }, [guardiansList])
+
+  const handleSubmit = async () => {
+
+  }
 
   const handleNext = async () => {
     try {
@@ -255,6 +269,97 @@ const UploadGuardians = () => {
           onChange={handleFileChange}
         />
       </Button>
+      <Box display="flex" flexDirection="column" alignItems="center" marginTop="20px">
+        <TextBody>Or</TextBody>
+      </Box>
+      {!showMannualInput && (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <TextButton
+            color="rgb(137, 137, 137)"
+            onClick={() => setShowMannualInput(true)}
+            _styles={{
+              width: '455px',
+              cursor: 'pointer',
+              fontSize: '20px',
+              fontWeight: '800'
+            }}
+          >
+            Enter guardians info manually
+            <Text marginLeft="5px"><ArrowRightIcon color="rgb(137, 137, 137)" /></Text>
+          </TextButton>
+        </Box>
+      )}
+      {!!showMannualInput && (
+        <>
+          <TextBody
+            fontSize="20px"
+            lineHeight="48px"
+            fontWeight="800"
+            cursor="pointer"
+            marginBottom="10px"
+            onClick={() => setShowMannualInput(false)}
+          >
+            Enter guardians info manually
+          </TextBody>
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
+              {(guardianIds).map((id: any) => (
+                <Box position="relative" width="100%" key={id}>
+                  <FormInput
+                    placeholder="Enter guardian address"
+                    value={values[`address_${id}`]}
+                    onChange={onChange(`address_${id}`)}
+                    onBlur={onBlur(`address_${id}`)}
+                    errorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                    _styles={{ width: '100%' }}
+                  />
+                  <Box
+                    onClick={() => removeGuardian(id)}
+                    position="absolute"
+                    width="40px"
+                    right="-40px"
+                    top="0"
+                    height="100%"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    cursor="pointer"
+                  >
+                    <Icon src={MinusIcon} />
+                  </Box>
+                </Box>
+              ))}
+              <TextButton
+                onClick={() => addGuardian()}
+                color="#EC588D"
+                _hover={{ color: "#EC588D" }}
+              >
+                Add more guardians
+              </TextButton>
+            </Box>
+            <SmallFormInput
+              placeholder="Enter amount"
+              value={amountForm.values.amount}
+              onChange={amountForm.onChange('amount')}
+              onBlur={amountForm.onBlur('amount')}
+              errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+              RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
+              onEnter={handleSubmit}
+              _styles={{ width: '180px', marginTop: '0.75em' }}
+            />
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em" width="100%">
+            <Button
+              disabled={disabled}
+              loading={loading}
+              onClick={handleSubmit}
+              _styles={{ width: '100%' }}
+            >
+              Next
+            </Button>
+          </Box>
+        </>
+      )}
     </Box>
   )
 };
