@@ -137,6 +137,7 @@ export async function recovery(
         });
 
         const text = await popupPage.innerText("body");
+        console.log("recovery body", text);
         // 'Recovery in progress\n\nYour Keystore\nRecovered\n\nL2 recover status\n\nGoerli\nPending (9/2/2023, 8:51:38 PM)\nOptimism Goerli\nPending (9/2/2023, 8:51:38 PM)\nArbitrum Goerli\nPending (9/2/2023, 8:51:38 PM)'
         if (text.includes("Goerli\nRecovered")) {
             recoveryStatus = true;
