@@ -24,6 +24,7 @@ export class MetaMask {
         await metamask.getByTestId("pin-extension-next").click();
         await metamask.getByTestId("pin-extension-done").click();
         await metamask.getByTestId("popover-close").click();
+        await metamask.waitForTimeout(500);
         await metamask.close();
     }
     static async importPrivateKey(context: BrowserContext, privateKey: string) {
@@ -33,6 +34,7 @@ export class MetaMask {
         await metamask.getByRole("button", { name: "Import account" }).click();
         await metamask.getByLabel("Enter your private key string here:").fill(privateKey);
         await metamask.getByTestId("import-account-confirm-button").click();
+        await metamask.waitForTimeout(500);
         await metamask.close();
     }
 }

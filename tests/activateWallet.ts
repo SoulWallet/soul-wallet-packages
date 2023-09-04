@@ -89,7 +89,7 @@ export async function activate(
     //     await UIKit.chooseChain(popupPage, chainName);
     //     await UIKit.activateWallet(popupPage, chainName, screenshotDir);
     // }
-
+    await popupPage.waitForTimeout(1000);
     await popupPage.close();
 
     return {
