@@ -153,7 +153,4 @@ export async function recovery(
 
     // activate a new wallet
     // #TODO
-
-    await popupPage.waitForTimeout(1000);
-    await popupPage.close();
 }

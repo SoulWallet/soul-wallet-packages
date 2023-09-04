@@ -57,10 +57,9 @@ test.describe("CI", () => {
         console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * (3 + 5));
+        test.setTimeout(1000 * 60 * 5);
         console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
-        await page.waitForTimeout(1000 * 10);
         while (!fs.existsSync(SHARING_FILE)) {
             //console.log("wait for activate wallet");
             await page.waitForTimeout(1000);
