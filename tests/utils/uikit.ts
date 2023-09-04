@@ -71,9 +71,12 @@ export class UIKit {
         }
 
         // get wallet address
-
+        const qr_img_bound = await page.getByRole("img").nth(1).boundingBox();
+        if (qr_img_bound === null) {
+            throw new Error("qr_img_bound is null");
+        }
         const qrPath = path.join(screenshotDir, `QR-walletAddress-${new Date().getTime()}.png`);
-        await page.screenshot({ path: qrPath });
+        await page.screenshot({ path: qrPath, clip: qr_img_bound });
         const buffer = fs.readFileSync(qrPath);
         const imageData = await Jimp.read(buffer);
         const qrCodeInstance = new qrCodeReader();
@@ -86,7 +89,7 @@ export class UIKit {
                 qrResult = value.result;
             }
         };
-        qrCodeInstance.decode(imageData.crop(120, 280, 150, 150).bitmap);
+        qrCodeInstance.decode(imageData.bitmap);
         while (qrResult === "") {
             await page.waitForTimeout(100);
         }

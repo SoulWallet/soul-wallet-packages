@@ -64,8 +64,16 @@ export async function recovery(
     await popupPage.getByRole("button", { name: "Continue" }).click();
     await popupPage.getByRole("button", { name: "Next" }).click();
     await popupPage.waitForTimeout(500);
+    const qr_img_bound = await popupPage
+        .locator("div")
+        .filter({ hasText: /^Copy to Clickboard$/ })
+        .locator("img")
+        .boundingBox();
+    if (qr_img_bound === null) {
+        throw new Error("qr_img_bound is null");
+    }
     const qrPath = path.join(screenshotDir, `QR-recovery-${new Date().getTime()}.png`);
-    await popupPage.screenshot({ path: qrPath });
+    await popupPage.screenshot({ path: qrPath, clip: qr_img_bound });
     const buffer = fs.readFileSync(qrPath);
     const imageData = await Jimp.read(buffer);
     const qrCodeInstance = new qrCodeReader();
@@ -78,7 +86,7 @@ export async function recovery(
             recoveryUrl = value.result;
         }
     };
-    qrCodeInstance.decode(imageData.crop(500, 250, 300, 300).bitmap);
+    qrCodeInstance.decode(imageData.bitmap);
     while (recoveryUrl === "") {
         await popupPage.waitForTimeout(100);
     }
