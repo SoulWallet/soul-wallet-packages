@@ -57,10 +57,11 @@ test.describe("CI", () => {
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
         test.setTimeout(1000 * 60 * (3 + 5));
-        await new Promise((resolve) => setTimeout(resolve, 1000 * 10));
+        const page = (await context.pages())[0];
+        await page.waitForTimeout(1000 * 10);
         while (!fs.existsSync(SHARING_FILE)) {
             //console.log("wait for activate wallet");
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await page.waitForTimeout(1000);
         }
         const fileContent = fs.readFileSync(SHARING_FILE, "utf-8");
         if (fileContent === "") {

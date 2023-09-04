@@ -56,6 +56,7 @@ export async function recovery(
     await popupPage.getByPlaceholder("Confirm password").fill("111111111");
     await popupPage.getByRole("button", { name: "Continue" }).click();
     await popupPage.getByRole("button", { name: "Next" }).click();
+    await popupPage.waitForTimeout(500);
     const qrPath = path.join(screenshotDir, `QR-recovery-${new Date().getTime()}.png`);
     await popupPage.screenshot({ path: qrPath });
     const buffer = fs.readFileSync(qrPath);
