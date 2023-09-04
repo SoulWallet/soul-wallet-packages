@@ -1,7 +1,7 @@
 name: ci
 on:
   push:
-    branches: ["*"]
+    branches: ["feature/ui"]
 jobs:
   UnitTest:
     timeout-minutes: 20
