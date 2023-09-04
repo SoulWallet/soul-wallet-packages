@@ -146,8 +146,6 @@ export const checkShouldInject = (origin: string) => {
     const shouldInjectList = settingStorage.state.shouldInjectList;
     const shouldNotInjectList = settingStorage.state.shouldNotInjectList;
 
-    console.log("1111111", origin, shouldInjectList, shouldNotInjectList, globalShouldInject);
-
     let flag = false;
     if (!origin.startsWith("http")) {
         flag = false;
@@ -160,8 +158,6 @@ export const checkShouldInject = (origin: string) => {
     } else if (!globalShouldInject) {
         flag = false;
     }
-
-    console.log("Should inject", flag);
 
     return flag;
 };

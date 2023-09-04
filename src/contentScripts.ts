@@ -14,7 +14,7 @@ injectScript(browser.runtime.getURL("js/inpage.js"), "html");
 
 function sendMessage(data) {
     // todo, make version variable & judge target only from soul wallet
-    if (typeof data === "object") {
+    if (data !== null && typeof data === "object") {
         data.url = `chrome-extension://${browser.runtime.id}/popup.html#/v1/sign?action=${data.type}`;
         data.pos = {
             width: 360,
