@@ -145,7 +145,41 @@ const UploadGuardians = () => {
   }, [guardiansList])
 
   const handleSubmit = async () => {
+    try {
+      setLoading(true)
+      const guardiansList = guardianIds.map(id => {
+        const addressKey = `address_${id}`
+        const nameKey = `name_${id}`
+        let address = values[addressKey]
 
+        if (address && address.length) {
+          return { address, name: values[nameKey] }
+        }
+
+        return null
+      }).filter(i => !!i)
+      console.log('guardiansList', guardiansList)
+
+      const guardianAddresses = guardiansList.map((item: any) => item.address)
+      const threshold = amountForm.values.amount || 0
+
+      setRecoverRecordId(null)
+      setRecoveringGuardians(guardianAddresses)
+      setRecoveringThreshold(threshold)
+
+      setLoading(false)
+
+      stepDispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.ResetPassword,
+      });
+    } catch (e: any) {
+      setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
+    }
   }
 
   const handleNext = async () => {
@@ -352,7 +386,6 @@ const UploadGuardians = () => {
                 onChange={amountForm.onChange('amount')}
                 onBlur={amountForm.onBlur('amount')}
                 errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-                RightComponent={<Text fontWeight="bold">/</Text>}
                 onEnter={handleSubmit}
                 _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
               />
