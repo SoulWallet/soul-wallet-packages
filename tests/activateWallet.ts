@@ -26,6 +26,13 @@ export async function activate(
         debugger;
         throw new Error("popupPage is undefined");
     }
+    for (let index = 0; index < pages.length; index++) {
+        const page = pages[index];
+        if (page.url() === "about:blank") {
+            await page.close();
+            break;
+        }
+    }
 
     await popupPage.getByRole("button", { name: "I Understand" }).click();
     await popupPage.getByText("Create New Wallet").click();
