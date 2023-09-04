@@ -46,7 +46,7 @@ export async function recovery(
         } catch (e) {
             // loaded
             await popupPage.reload({
-                waitUntil: "networkidle",
+                waitUntil: "load",
             });
             continue;
         }
@@ -79,7 +79,7 @@ export async function recovery(
         throw new Error("qrResult is error");
     }
     const signPage = await context.newPage();
-    await signPage.goto(recoveryUrl, { waitUntil: "networkidle" });
+    await signPage.goto(recoveryUrl, { waitUntil: "load" });
     await signPage.getByRole("button", { name: "Connect wallet" }).click();
     await signPage.getByRole("button", { name: "Sign" }).click();
     // wait 'Guardian signature received!'
@@ -134,8 +134,9 @@ export async function recovery(
         // Recovery in progress
 
         await popupPage.reload({
-            waitUntil: "networkidle",
+            waitUntil: "load",
         });
+        await popupPage.waitForTimeout(500);
 
         const text = await popupPage.innerText("body");
         console.log("recovery body", text);
