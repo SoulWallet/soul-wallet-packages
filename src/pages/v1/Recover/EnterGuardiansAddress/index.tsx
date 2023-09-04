@@ -243,7 +243,7 @@ const EnterGuardiansAddress = () => {
         <Box width="400px" borderRight="1px solid #D7D7D7" padding="20px" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start">
           <Heading2>Option 1</Heading2>
           <Box marginBottom="0.75em">
-            <TextBody fontSize="0.875em" textAlign="center">
+            <TextBody fontSize="16px" textAlign="center">
               Due to your choice of private on-chain guardians, information must be manually entered to continue recovery.
             </TextBody>
           </Box>
@@ -268,7 +268,7 @@ const EnterGuardiansAddress = () => {
             Option 2
           </Heading2>
           <Box marginBottom="0.75em">
-            <TextBody fontSize="0.875em" textAlign="center">
+            <TextBody fontSize="16px" textAlign="center">
               Enter the Ethereum wallets addresses you sat up as  guardians.
             </TextBody>
           </Box>

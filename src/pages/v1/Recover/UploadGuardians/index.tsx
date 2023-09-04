@@ -24,6 +24,8 @@ import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import ArrowRightIcon from "@src/components/Icons/ArrowRight";
+import ArrowDownIcon from "@src/components/Icons/ArrowDown";
+import PlusIcon from "@src/components/Icons/Plus";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import config from "@src/config";
@@ -143,7 +145,41 @@ const UploadGuardians = () => {
   }, [guardiansList])
 
   const handleSubmit = async () => {
+    try {
+      setLoading(true)
+      const guardiansList = guardianIds.map(id => {
+        const addressKey = `address_${id}`
+        const nameKey = `name_${id}`
+        let address = values[addressKey]
 
+        if (address && address.length) {
+          return { address, name: values[nameKey] }
+        }
+
+        return null
+      }).filter(i => !!i)
+      console.log('guardiansList', guardiansList)
+
+      const guardianAddresses = guardiansList.map((item: any) => item.address)
+      const threshold = amountForm.values.amount || 0
+
+      setRecoverRecordId(null)
+      setRecoveringGuardians(guardianAddresses)
+      setRecoveringThreshold(threshold)
+
+      setLoading(false)
+
+      stepDispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.ResetPassword,
+      });
+    } catch (e: any) {
+      setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
+    }
   }
 
   const handleNext = async () => {
@@ -244,16 +280,16 @@ const UploadGuardians = () => {
   }
 
   return (
-    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-      <Heading1 marginBottom="2em">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Heading1 marginBottom="24px">
         Upload guardians file
       </Heading1>
-      <Box marginBottom="0.75em">
-        <TextBody fontSize="0.875em" textAlign="center" maxWidth="500px">
+      <Box marginBottom="12px">
+        <TextBody fontSize="16px" textAlign="center" maxWidth="500px">
           Due to your choice of private onchain guardians, please upload the guardians file you saved during setup.
         </TextBody>
       </Box>
-      <Button disabled={uploading} loading={uploading} _styles={{ width: '100%', marginTop: '0.75em', position: 'relative' }}>
+      <Button disabled={uploading} loading={uploading} _styles={{ width: '350px', marginTop: '12px', position: 'relative' }}>
         Upload file
         <Input
           type="file"
@@ -297,12 +333,16 @@ const UploadGuardians = () => {
             fontWeight="800"
             cursor="pointer"
             marginBottom="10px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             onClick={() => setShowMannualInput(false)}
           >
             Enter guardians info manually
+            <Text marginLeft="5px"><ArrowDownIcon color="rgb(137, 137, 137)" /></Text>
           </TextBody>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
-            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="12px" width="100%">
               {(guardianIds).map((id: any) => (
                 <Box position="relative" width="100%" key={id}>
                   <FormInput
@@ -334,26 +374,30 @@ const UploadGuardians = () => {
                 color="#EC588D"
                 _hover={{ color: "#EC588D" }}
               >
-                Add more guardians
+                <PlusIcon color="#EC588D" />
+                <Text marginLeft="5px">Add more guardians</Text>
               </TextButton>
             </Box>
-            <SmallFormInput
-              placeholder="Enter amount"
-              value={amountForm.values.amount}
-              onChange={amountForm.onChange('amount')}
-              onBlur={amountForm.onBlur('amount')}
-              errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-              RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
-              onEnter={handleSubmit}
-              _styles={{ width: '180px', marginTop: '0.75em' }}
-            />
+            <Box display="flex" alignItems="center">
+              <TextBody>Wallet recovery requires</TextBody>
+              <SmallFormInput
+                placeholder="Enter amount"
+                value={amountForm.values.amount}
+                onChange={amountForm.onChange('amount')}
+                onBlur={amountForm.onBlur('amount')}
+                errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+                onEnter={handleSubmit}
+                _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
+              />
+              <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
+            </Box>
           </Box>
-          <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em" width="100%">
+          <Box display="flex" flexDirection="column" alignItems="center" marginTop="12px" width="100%">
             <Button
               disabled={disabled}
               loading={loading}
               onClick={handleSubmit}
-              _styles={{ width: '100%' }}
+              _styles={{ width: '350px' }}
             >
               Next
             </Button>

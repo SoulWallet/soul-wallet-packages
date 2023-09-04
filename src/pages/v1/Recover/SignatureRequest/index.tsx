@@ -251,7 +251,7 @@ const GuardiansChecking = () => {
         justifyContent="center"
         flexDirection="column"
       >
-        <Text fontSize="0.875em" fontWeight="bold" marginBottom="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center" onClick={doCopy}>Copy to Clickboard
+        <Text fontSize="16px" fontWeight="bold" marginBottom="0.75em" cursor="pointer" display="flex" alignItems="center" justifyContent="center" onClick={doCopy}>Copy to Clickboard
           <Text marginLeft="4px"><CopyIcon /></Text>
         </Text>
         <Box width="150px" height="150px">
