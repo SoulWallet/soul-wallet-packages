@@ -132,15 +132,16 @@ export async function recovery(
     for (let index = 0; index < 60; index++) {
         await popupPage.waitForTimeout(1000 * 5);
         // Recovery in progress
-
+        let text = await popupPage.innerText("body");
+        if (text.includes("Goerli\nRecovered")) {
+            recoveryStatus = true;
+            break;
+        }
         await popupPage.reload({
             waitUntil: "load",
         });
         await popupPage.waitForTimeout(500);
-
-        const text = await popupPage.innerText("body");
-        console.log("recovery body", text);
-        // 'Recovery in progress\n\nYour Keystore\nRecovered\n\nL2 recover status\n\nGoerli\nPending (9/2/2023, 8:51:38 PM)\nOptimism Goerli\nPending (9/2/2023, 8:51:38 PM)\nArbitrum Goerli\nPending (9/2/2023, 8:51:38 PM)'
+        text = await popupPage.innerText("body");
         if (text.includes("Goerli\nRecovered")) {
             recoveryStatus = true;
             break;

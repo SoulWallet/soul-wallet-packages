@@ -55,7 +55,7 @@ jobs:
 
       - name: Run UI:Test
         run: xvfb-run npx playwright test
-        timeout-minutes: 5
+        timeout-minutes: 10
 
       - uses: actions/upload-artifact@v3
         if: always()

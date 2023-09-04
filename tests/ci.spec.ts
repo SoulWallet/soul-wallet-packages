@@ -44,7 +44,7 @@ if (!fs.existsSync(metamaskChromeDir)) {
 test.describe("CI", () => {
     test("Activate Wallet", async ({ context, extensionId }) => {
         test.setTimeout(1000 * 60 * 3);
-        console.log("extensionId", extensionId);
+        console.log("Activate Wallet start");
         try {
             const { walletAddress, guardians, threshold } = await activate(context, extensionId, screenshotDir, {
                 skipActivate: false,
@@ -54,9 +54,11 @@ test.describe("CI", () => {
             fs.writeFileSync(SHARING_FILE, "");
             throw e;
         }
+        console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
         test.setTimeout(1000 * 60 * (3 + 5));
+        console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
         await page.waitForTimeout(1000 * 10);
         while (!fs.existsSync(SHARING_FILE)) {
@@ -73,5 +75,6 @@ test.describe("CI", () => {
         const threshold: number = json.threshold;
 
         await recovery(context, extensionId, screenshotDir, walletAddress[0], guardians, threshold);
+        console.log("Recovery Wallet done");
     });
 });
