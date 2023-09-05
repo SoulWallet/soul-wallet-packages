@@ -201,10 +201,10 @@ const GuardiansChecking = () => {
   if (recoverStatus > 1) {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginBottom="20px">
-        <Heading1 _styles={{ marginBottom: "0.75em" }}>Recovery in progress</Heading1>
+        <Heading1 _styles={{ marginBottom: "24px" }}>Recovery in progress</Heading1>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">Your Keystore</Box>
+            <Box fontSize="14px" fontWeight="bold">Ethereum Wallet(s)</Box>
             {recoverStatus >= 3 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
               {getKeystoreStatus(recoverStatus)}
               <Text marginLeft="4px"><CheckedIcon /></Text>
@@ -213,23 +213,48 @@ const GuardiansChecking = () => {
               {getKeystoreStatus(recoverStatus)}
             </Box>}
           </Box>
-        </Box>
-        <Box marginTop="2em" marginBottom="1em">
-          <TextBody textAlign="center">
-            L2 recover status
-          </TextBody>
-        </Box>
-        <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           {chainStatusList.map((item: any) =>
             <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))}</Box>
-              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending {item.expectFinishTime && `(${new Date(item.expectFinishTime).toLocaleString()})`}</Box>}
+              <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))} Wallet(s)</Box>
+              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending</Box>}
               {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">Recovered</Box>}
             </Box>
           )}
         </Box>
       </Box>
     )
+
+    /* return (
+     *   <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginBottom="20px">
+     *     <Heading1 _styles={{ marginBottom: "0.75em" }}>Recovery in progress</Heading1>
+     *     <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
+     *       <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+     *         <Box fontSize="14px" fontWeight="bold">Your Keystore</Box>
+     *         {recoverStatus >= 3 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
+     *           {getKeystoreStatus(recoverStatus)}
+     *           <Text marginLeft="4px"><CheckedIcon /></Text>
+     *         </Box>}
+     *         {recoverStatus < 3 && <Box fontSize="14px" fontWeight="bold" color="#848488" display="flex" alignItems="center" justifyContent="center">
+     *           {getKeystoreStatus(recoverStatus)}
+     *         </Box>}
+     *       </Box>
+     *     </Box>
+     *     <Box marginTop="2em" marginBottom="1em">
+     *       <TextBody textAlign="center">
+     *         L2 recover status
+     *       </TextBody>
+     *     </Box>
+     *     <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
+     *       {chainStatusList.map((item: any) =>
+     *         <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
+     *           <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))}</Box>
+     *           {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending {item.expectFinishTime && `(${new Date(item.expectFinishTime).toLocaleString()})`}</Box>}
+     *           {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">Recovered</Box>}
+     *         </Box>
+     *       )}
+     *     </Box>
+     *   </Box>
+     * ) */
   }
 
   return (
