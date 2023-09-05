@@ -41,7 +41,6 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	babel-jest	](	https://github.com/facebook/jest	) | 	MIT	 | 	26.6.3	 |
 | [	babel-loader	](	https://github.com/babel/babel-loader	) | 	MIT	 | 	8.3.0	 |
 | [	bignumber.js	](	https://github.com/MikeMcl/bignumber.js	) | 	MIT	 | 	9.1.1	 |
-| [	classnames	](	https://github.com/JedWatson/classnames	) | 	MIT	 | 	2.3.2	 |
 | [	css-loader	](	https://github.com/webpack-contrib/css-loader	) | 	MIT	 | 	4.3.0	 |
 | [	daisyui	](	https://github.com/saadeghi/daisyui	) | 	MIT	 | 	2.51.4	 |
 | [	eslint-config-prettier	](	https://github.com/prettier/eslint-config-prettier	) | 	MIT	 | 	6.15.0	 |

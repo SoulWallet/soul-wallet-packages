@@ -1,8 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
 @font-face {
     font-family: 'Nunito';
     font-weight: 400;
@@ -62,75 +57,13 @@ body::-webkit-scrollbar {
     display: none;
 }
 
-.hide-scrollbar {
-    scrollbar-width   : none;
-    -ms-overflow-style: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-@layer components {
-
-    /** max width 800px, max height 600px */
-    .plugin-board {
-        /* @apply w-[360px] h-[600px] flex flex-col mx-auto rounded-xl overflow-hidden; */
-        @apply w-[360px] h-[600px] flex flex-col mx-auto rounded-xl overflow-hidden;
-    }
-
-    .btn {
-        @apply font-normal text-base rounded-3xl;
-    }
-
-    .input {
-        @apply rounded-full bg-black bg-opacity-5 border-transparent;
-
-    }
-
-    .input {
-        @apply rounded-full bg-[#fafafa] border border-[#e0e0e0];
-    }
-
-    .input::placeholder {
-        color: rgba(0, 0, 0, .4);
-    }
-
-    .input {
-        @apply rounded-full bg-black bg-opacity-5 border-transparent;
-
-    }
-
-    .input {
-        @apply rounded-full bg-black bg-opacity-5 border-transparent;
-
-    }
-
-    .pwd-indicator {
-        @apply flex-1 bg-slate-300;
-    }
-
-}
-
 .input:focus {
     outline: none;
     border : 1px solid #3840ff;
 }
 
-.btn {
-    text-transform: unset;
-}
-
 .Toastify__toast {
     border-radius: 0;
-}
-
-
-.progress-window-shadow {
-    background                           : rgba(255, 255, 255, 0.02);
-    /* box-shadow                        : 12.8px 57.6px 83.2px rgba(184, 158, 253, 0.3); */
-    /* backdrop-filter                   : blur(20px); */
-    /* comment this otherwise position   : fixed will not working */
 }
 
 .logo {

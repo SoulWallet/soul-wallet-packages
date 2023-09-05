@@ -1,3 +1,9 @@
+## 0.1.4
+
+-   Added Optimism goerli support
+-   Optimizd general style
+-   Removed tailwindcss and daisyUI
+
 ## 0.1.3
 
 -   Fixed activating wallet after being recovered

@@ -1,6 +1,6 @@
 {
     "name": "soul-wallet-plugin",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Browser extension for soul wallet",
     "main": "index.js",
     "scripts": {
@@ -86,8 +86,6 @@
         "@zxcvbn-ts/language-en": "^2.1.0",
         "axios": "^0.27.2",
         "bignumber.js": "^9.1.0",
-        "classnames": "^2.3.1",
-        "daisyui": "^2.20.0",
         "ethers": "^6.6.4",
         "framer-motion": "^10.12.18",
         "immer": "^9.0.19",
