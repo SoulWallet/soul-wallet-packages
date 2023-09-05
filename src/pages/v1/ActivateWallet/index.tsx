@@ -127,8 +127,8 @@ export default function ActivateWallet() {
                         <Text>Network fee</Text>
                         {needCost ? (
                             <Flex gap="2">
-                                <Text>{BN(needCost).toFixed(6)}</Text>
-                                <GasSelect gasToken={payToken} onChange={setPayToken} />
+                                <Text data-testid="network-fee">{BN(needCost).toFixed(6)}</Text>
+                                <GasSelect data-testid="paytoken-select" gasToken={payToken} onChange={setPayToken} />
                             </Flex>
                         ) : (
                             <Text>Loading...</Text>

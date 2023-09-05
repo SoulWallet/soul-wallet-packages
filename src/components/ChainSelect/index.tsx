@@ -10,7 +10,7 @@ export default function ChainSelect() {
     const { selectedChainItem } = useConfig();
     return (
         <Menu>
-            <MenuButton>
+            <MenuButton data-testid="btn-chain-select">
                 <Flex p="5px" bg="white" rounded={"full"} cursor={"pointer"}>
                     <Image src={selectedChainItem.icon} w="22px" h="22px" />
                     <Image src={IconCheveronDownBlack} w="20px" h="20px" />
@@ -26,7 +26,7 @@ export default function ChainSelect() {
                                 <Flex w="100%" align={"center"} justify={"space-between"}>
                                     <Flex align={"center"} gap="2">
                                         <Image src={item.icon} w="5" h="5" />
-                                        <Text fontWeight={"700"}>{item.chainName}</Text>
+                                        <Text data-testid={`text-chainname-${idx}`} fontWeight={"700"}>{item.chainName}</Text>
                                     </Flex>
                                     {item.chainId === selectedChainId && <Image src={IconChecked} w="5" h="5" />}
                                 </Flex>
