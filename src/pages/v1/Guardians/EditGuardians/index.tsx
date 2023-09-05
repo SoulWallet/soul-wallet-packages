@@ -433,7 +433,7 @@ export default function GuardiansSetting() {
 
   if (!loaded) {
     return (
-      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
           Loading...
         </Heading1>
@@ -466,7 +466,7 @@ export default function GuardiansSetting() {
 
   if (isPending && !isFinished) {
     return (
-      <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Heading1>
           Discard Change
         </Heading1>
@@ -559,23 +559,23 @@ export default function GuardiansSetting() {
                 {(guardianIds).map((id: any) => (
                   <Box position="relative" width="100%" key={id}>
                     <DoubleFormInput
-                      leftPlaceholder="Enter guardian address"
+                      onEnter={handleSubmit}
+                      _styles={{ width: '100%' }}
+                      _rightInputStyles={!!values[`address_${id}`] ? {
+                        fontFamily: "Martian",
+                        fontWeight: 600,
+                      }: {}}
+                      leftPlaceholder="Guardian address"
                       leftValue={values[`address_${id}`]}
                       leftOnChange={onChange(`address_${id}`)}
                       leftOnBlur={onBlur(`address_${id}`)}
                       leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
                       leftAutoFocus={id === guardianIds[0]}
-                      rightPlaceholder="Assign nickname"
+                      rightPlaceholder="Name"
                       rightValue={values[`name_${id}`]}
                       rightOnChange={onChange(`name_${id}`)}
                       rightOnBlur={onBlur(`name_${id}`)}
                       rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
-                      onEnter={handleSubmit}
-                      _styles={{ width: '100%' }}
-                      _leftInputStyles={!!values[`address_${id}`] ? {
-                        fontFamily: "Martian",
-                        fontWeight: 600
-                      }: {}}
                     />
                     <Box
                       onClick={() => removeGuardian(id)}
@@ -634,7 +634,7 @@ export default function GuardiansSetting() {
   }
 
   return (
-    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
       {!!isGuardiansNotSet && (
         <Heading1>
           Set guardians
@@ -645,13 +645,13 @@ export default function GuardiansSetting() {
           Edit guardians
         </Heading1>
       )}
-      <Box marginBottom="0.75em">
+      <Box marginBottom="0.75em" maxWidth="500px">
         <TextBody textAlign="center">
           Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
         </TextBody>
       </Box>
       {showTips && (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em" maxWidth="500px">
           <Box>
             <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
             <TextBody marginBottom="1em">
@@ -673,26 +673,26 @@ export default function GuardiansSetting() {
           </Box>
         </Box>
       )}
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" maxWidth="700px">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any) => (
             <Box position="relative" width="100%" key={id}>
               <DoubleFormInput
-                leftPlaceholder="Enter guardian address"
-                leftValue={values[`address_${id}`]}
-                leftOnChange={onChange(`address_${id}`)}
-                leftOnBlur={onBlur(`address_${id}`)}
-                leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
-                rightPlaceholder="Assign nickname"
-                rightValue={values[`name_${id}`]}
-                rightOnChange={onChange(`name_${id}`)}
-                rightOnBlur={onBlur(`name_${id}`)}
-                rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                leftPlaceholder="Name"
+                leftValue={values[`name_${id}`]}
+                leftOnChange={onChange(`name_${id}`)}
+                leftOnBlur={onBlur(`name_${id}`)}
+                leftErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 _styles={{ width: '100%' }}
-                _leftInputStyles={!!values[`address_${id}`] ? {
+                _rightInputStyles={!!values[`address_${id}`] ? {
                   fontFamily: "Martian",
-                  fontWeight: 600
+                  fontWeight: 600,
                 }: {}}
+                rightPlaceholder="Guardian address"
+                rightValue={values[`address_${id}`]}
+                rightOnChange={onChange(`address_${id}`)}
+                rightOnBlur={onBlur(`address_${id}`)}
+                rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
               />
               <Box
                 onClick={() => removeGuardian(id)}
@@ -718,7 +718,7 @@ export default function GuardiansSetting() {
             Add more guardians
           </TextButton>
         </Box>
-        <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
+        <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center" maxWidth="500px">
           Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
         </TextBody>
         <SmallFormInput

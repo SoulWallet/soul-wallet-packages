@@ -10,7 +10,6 @@ import { Box, Input, Text, Image, useToast, Select } from "@chakra-ui/react"
 // import { TriangleDownIcon } from "@chakra-ui/icons"
 import FormInput from "@src/components/web/Form/FormInput";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
-import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
 import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import TextBody from "@src/components/web/TextBody";

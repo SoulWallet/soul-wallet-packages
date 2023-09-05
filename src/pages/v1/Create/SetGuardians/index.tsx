@@ -336,20 +336,20 @@ export default function GuardiansSetting() {
           {(guardianIds).map((id: any) => (
             <Box position="relative" width="100%" key={id}>
               <DoubleFormInput
-                leftPlaceholder="Enter guardian address"
-                leftValue={values[`address_${id}`]}
-                leftOnChange={onChange(`address_${id}`)}
-                leftOnBlur={onBlur(`address_${id}`)}
-                leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                rightPlaceholder="Guardian address"
+                rightValue={values[`address_${id}`]}
+                rightOnChange={onChange(`address_${id}`)}
+                rightOnBlur={onBlur(`address_${id}`)}
+                rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
                 leftAutoFocus={id === guardianIds[0]}
-                rightPlaceholder="Assign nickname"
-                rightValue={values[`name_${id}`]}
-                rightOnChange={onChange(`name_${id}`)}
-                rightOnBlur={onBlur(`name_${id}`)}
-                rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                leftPlaceholder="Name"
+                leftValue={values[`name_${id}`]}
+                leftOnChange={onChange(`name_${id}`)}
+                leftOnBlur={onBlur(`name_${id}`)}
+                leftErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                 onEnter={handleSubmit}
                 _styles={{ width: '100%' }}
-                _leftInputStyles={!!values[`address_${id}`] ? {
+                _rightInputStyles={!!values[`address_${id}`] ? {
                   fontFamily: "Martian",
                   fontWeight: 600
                 }: {}}

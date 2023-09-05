@@ -14,6 +14,7 @@ interface IProps {
   rightOnBlur?: (value: string) => void;
   _styles?: any;
   _leftInputStyles?: any;
+  _rightInputStyles?: any;
   leftLabel?: String;
   rightLabel?: String;
   leftAutoFocus?: any;
@@ -35,6 +36,7 @@ export default function DoubleFormInput({
   rightOnBlur,
   _styles,
   _leftInputStyles,
+  _rightInputStyles,
   leftAutoFocus,
   onEnter
 }: IProps) {
@@ -62,7 +64,7 @@ export default function DoubleFormInput({
 
   return (
     <Box display="flex" flexDirection="row" {..._styles}>
-      <Box display="flex" flexDirection="column" width="50%">
+      <Box display="flex" flexDirection="column" width="30%">
         {leftLabel && (<Box as="label" htmlFor="leftLabel">{leftLabel}</Box>)}
         <Box position="relative">
           <Box>
@@ -88,7 +90,7 @@ export default function DoubleFormInput({
         </Box>
         <Text color="#FF4343" padding="0 10px" fontSize="14px">{leftErrorMsg}</Text>
       </Box>
-      <Box display="flex" flexDirection="column" width="50%">
+      <Box display="flex" flexDirection="column" width="70%">
         {rightLabel && (<Box as="label" htmlFor="rightLabel">{rightLabel}</Box>)}
         <Box position="relative">
           <Box>
@@ -106,6 +108,7 @@ export default function DoubleFormInput({
               borderTopLeftRadius="0"
               borderBottomLeftRadius="0"
               onKeyDown={onKeyDown}
+              {..._rightInputStyles}
             />
           </Box>
         </Box>
