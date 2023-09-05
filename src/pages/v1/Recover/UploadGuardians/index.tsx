@@ -6,7 +6,8 @@ import { RecoveryActionTypeEn, useRecoveryDispatchContext } from "@src/context/R
 import { nanoid } from "nanoid";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
-import { Box, Input, Text, Image, useToast } from "@chakra-ui/react"
+import { Box, Input, Text, Image, useToast, Select } from "@chakra-ui/react"
+// import { TriangleDownIcon } from "@chakra-ui/icons"
 import FormInput from "@src/components/web/Form/FormInput";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
@@ -279,6 +280,10 @@ const UploadGuardians = () => {
     }
   }
 
+  const selectAmount = (amount: any) => () => {
+    console.log('selectAmount', amount)
+  }
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1 marginBottom="24px">
@@ -389,6 +394,13 @@ const UploadGuardians = () => {
                 onEnter={handleSubmit}
                 _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
               />
+              {/* <Box width="80px" margin="0 10px">
+                  <Select placeholder={amountForm.values.amount} width="80px" borderRadius="16px" onChange={selectAmount(1)}>
+                  {Array(amountData.guardiansCount || 0).map((_: any, i: number) =>
+                  <option value={i} onClick={selectAmount(i)}>{i}</option>
+                  )}
+                  </Select>
+                  </Box> */}
               <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
             </Box>
           </Box>

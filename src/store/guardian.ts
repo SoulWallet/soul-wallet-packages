@@ -28,12 +28,14 @@ export interface GuardianStore {
     recoveringThreshold: number;
     recoveringSlot: any;
     recoveringSlotInitInfo: any;
+    isRecovering: boolean;
 
     editingGuardians: string[];
     editingGuardianNames: any;
     editingThreshold: number;
     editingGuardiansInfo: any;
     cancelEditingGuardiansInfo: any;
+    isEditing: boolean;
 
     setGuardians: (guardian: string[]) => void;
     setGuardianNames: (guardianNames: string[]) => void;
@@ -50,12 +52,14 @@ export interface GuardianStore {
     setRecoveringThreshold: (recoveringThreshold: number) => void;
     setRecoveringSlot: (recoveringSlot: string) => void;
     setRecoveringSlotInitInfo: (recoveringSlotInitInfo: any) => void;
+    setIsRecovering: (isRecovering: boolean) => void;
 
     setEditingGuardians: (editingGuardians: string[]) => void;
     setEditingGuardianNames: (editingGuardianNames: string[]) => void;
     setEditingThreshold: (editingThreshold: number) => void;
     setEditingGuardiansInfo: (editingGuardiansInfo: any) => void;
     setCancelEditingGuardiansInfo: (cancelEditingGuardiansInfo: any) => void;
+    setIsEditing: (isEditing: boolean) => void;
 }
 
 const createGuardianSlice = immer<GuardianStore>((set, get) => ({
@@ -73,12 +77,14 @@ const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     recoveringThreshold: 0,
     recoveringSlot: null,
     recoveringSlotInitInfo: null,
+    isRecovering: false,
 
     editingGuardians: [],
     editingGuardianNames: null,
     editingThreshold: 0,
     editingGuardiansInfo: null,
     cancelEditingGuardiansInfo: null,
+    isEditing: false,
 
     setGuardians: (guardians: string[]) => set({ guardians }),
     setGuardianNames: (guardianNames: string[]) => set({ guardianNames }),
@@ -97,12 +103,14 @@ const createGuardianSlice = immer<GuardianStore>((set, get) => ({
     setRecoveringThreshold: (recoveringThreshold: number) => set({ recoveringThreshold }),
     setRecoveringSlot: (recoveringSlot: string) => set({ recoveringSlot }),
     setRecoveringSlotInitInfo: (recoveringSlotInitInfo: any) => set({ recoveringSlotInitInfo }),
+    setIsRecovering: (isRecovering: boolean) => set({ isRecovering }),
 
     setEditingGuardians: (editingGuardians: string[]) => set({ editingGuardians }),
     setEditingGuardianNames: (editingGuardianNames: string[]) => set({ editingGuardianNames }),
     setEditingThreshold: (editingThreshold: number) => set({ editingThreshold }),
     setEditingGuardiansInfo: (editingGuardiansInfo: any) => set({ editingGuardiansInfo }),
     setCancelEditingGuardiansInfo: (cancelEditingGuardiansInfo: any) => set({ cancelEditingGuardiansInfo }),
+    setIsEditing: (isEditing: boolean) => set({ isEditing }),
 }));
 
 export type GuardianState = ReturnType<typeof createGuardianStore>;

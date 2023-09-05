@@ -6,6 +6,7 @@ import { getLocalStorage } from "@src/lib/tools";
 import useKeyring from "../hooks/useKeyring";
 import RouterV1 from "./v1";
 import { useAddressStore } from "@src/store/address";
+import { useGuardianStore } from "@src/store/guardian";
 
 export default function PluginRouter() {
     const location = useLocation();
@@ -13,6 +14,8 @@ export default function PluginRouter() {
     const mode = new URLSearchParams(location.search).get("mode");
     const keystore = useKeyring();
     const { addressList } = useAddressStore()
+    const { isEditing, isRecovering } = useGuardianStore()
+    console.log('guardians', isEditing, isRecovering)
 
     const findRoute = async () => {
         const sessionPw = await keystore.getPassword();

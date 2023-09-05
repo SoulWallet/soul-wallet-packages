@@ -150,6 +150,7 @@ export default function GuardiansSetting() {
   const [loading, setLoading] = useState(false)
   const [canceling, setCanceling] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [replaced, setReplaced] = useState(false)
   // const [canceling, setCanceling] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
   const [updatingInfo, setUpdatingInfo] = useState<any>(null)
@@ -173,10 +174,12 @@ export default function GuardiansSetting() {
     editingGuardians,
     editingGuardianNames,
     editingThreshold,
+    isEditing,
 
     setEditingGuardians,
     setEditingGuardianNames,
     setEditingThreshold,
+    setIsEditing,
 
     editingGuardiansInfo,
     setEditingGuardiansInfo,
@@ -298,6 +301,7 @@ export default function GuardiansSetting() {
         setCancelEditingGuardiansInfo(null)
         clearFields(getFieldsByGuardianIds(guardianIds))
         amountForm.clearFields(['amount'])
+        setIsEditing(true)
       }
 
       setReediting(false)
@@ -334,6 +338,7 @@ export default function GuardiansSetting() {
       setCancelEditingGuardiansInfo(cancelSetGuardianInfo)
       setCanceling(false)
       setEditingGuardiansInfo(null)
+      setIsEditing(false)
       /*
        *       toast({
        *         title: "Copy success!",
@@ -382,11 +387,49 @@ export default function GuardiansSetting() {
     }
   };
 
+  const replaceGuardians = async () => {
+    setGuardians(editingGuardians)
+    setGuardianNames(editingGuardianNames)
+    setThreshold(editingThreshold)
+
+    setEditingGuardiansInfo(null)
+    setEditingGuardians([])
+    setEditingGuardianNames([])
+    setEditingThreshold(0)
+    setCancelEditingGuardiansInfo(null)
+    setIsEditing(false)
+  }
+
   const isGuardiansNotSet = isGuardiansEmpty(guardians, guardianNames, threshold)
   const isPaid = checkPaid(activeGuardiansInfo)
   const isPending = checkPending(activeGuardiansInfo)
   const isFinished = checkFinished(activeGuardiansInfo)
   console.log('activeGuardiansInfo', activeGuardiansInfo, isPaid, isPending, isFinished)
+  console.log('shouldReplace', isFinished, isEditing, editingGuardiansInfo)
+
+  if (isFinished && isEditing && false) {
+    return (
+      <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Heading1 _styles={{ marginBottom: '20px' }}>Edit guardians success</Heading1>
+        {replaced ? (
+          <Button
+            disabled={true}
+            _styles={{ width: '100%' }}
+          >
+            Replaced
+          </Button>
+        ): (
+          <Button
+            disabled={false}
+            onClick={replaceGuardians}
+            _styles={{ width: '100%' }}
+          >
+            Replace Guardians
+          </Button>
+        )}
+      </Box>
+    )
+  }
 
   if (!loaded) {
     return (
