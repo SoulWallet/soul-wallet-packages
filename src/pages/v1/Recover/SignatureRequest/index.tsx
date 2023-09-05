@@ -22,6 +22,23 @@ import config from "@src/config";
 import useBrowser from "@src/hooks/useBrowser";
 import { copyText, toShortAddress, getNetwork, getStatus, getKeystoreStatus } from '@src/lib/tools'
 
+const getProgressPercent = (startTime: any, endTime: any) => {
+  if (startTime && endTime) {
+    const ct = Date.now()
+    const st = +new Date(startTime)
+    const et = +new Date(endTime)
+    console.log('getProgressPercent',`${((ct - st) / (et - st)) * 100}%`)
+
+    if (ct > et) {
+      return '100%'
+    } else if (ct > st && et > ct) {
+      return `${((ct - st) / (et - st)) * 100}%`
+    }
+  }
+
+  return '0%'
+}
+
 const GuardiansChecking = () => {
   const [loaded, setLoaded] = useState(false)
   const [replaced, setReplaced] = useState(false)
@@ -214,10 +231,11 @@ const GuardiansChecking = () => {
             </Box>}
           </Box>
           {chainStatusList.map((item: any) =>
-            <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-              <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))} Wallet(s)</Box>
-              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending</Box>}
-              {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">Recovered</Box>}
+            <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em" position="relative" overflow="hidden">
+              {item.status === 0 && <Box position="absolute" top="0" left="0" width={getProgressPercent(item.startTime, item.expectFinishTime)} height="100%" zIndex="1" background="#1CD20F" />}
+              <Box fontSize="14px" fontWeight="bold" zIndex="2">{getNetwork(Number(item.chainId))} Wallet(s)</Box>
+              {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488" zIndex="2">Pending</Box>}
+              {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center" zIndex="2">Recovered<Text marginLeft="4px"><CheckedIcon /></Text></Box>}
             </Box>
           )}
         </Box>
