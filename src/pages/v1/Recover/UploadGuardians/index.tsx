@@ -47,6 +47,16 @@ const getFieldsByGuardianIds = (ids: any) => {
   return fields
 }
 
+const getIndexArray = (count: number) => {
+  const arr = []
+
+  for (let i = 1; i <= count; i++) {
+    arr.push(i)
+  }
+
+  return arr
+}
+
 const getRecommandCount = (c: number) => {
   if (!c) {
     return 1
@@ -277,12 +287,22 @@ const UploadGuardians = () => {
       setGuardianIds(newGuardianIds)
       setFields(newFields)
       removeFields(getFieldsByGuardianIds([deleteId]))
+
+      if (amountForm.values.amount && newGuardianIds.length && +amountForm.values.amount > newGuardianIds.length) {
+        amountForm.onChange('amount')(1)
+      }
     }
   }
 
-  const selectAmount = (amount: any) => () => {
-    console.log('selectAmount', amount)
+  const selectAmount = (event: any) => {
+    console.log('selectAmount', event.target.value)
+
+    if (event.target.value) {
+      amountForm.onChange('amount')(event.target.value)
+    }
   }
+
+  console.log('getIndexArray', getIndexArray(amountData.guardiansCount || 0))
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
@@ -385,22 +405,22 @@ const UploadGuardians = () => {
             </Box>
             <Box display="flex" alignItems="center">
               <TextBody>Wallet recovery requires</TextBody>
-              <SmallFormInput
-                placeholder="Enter amount"
-                value={amountForm.values.amount}
-                onChange={amountForm.onChange('amount')}
-                onBlur={amountForm.onBlur('amount')}
-                errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-                onEnter={handleSubmit}
-                _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
-              />
-              {/* <Box width="80px" margin="0 10px">
-                  <Select placeholder={amountForm.values.amount} width="80px" borderRadius="16px" onChange={selectAmount(1)}>
-                  {Array(amountData.guardiansCount || 0).map((_: any, i: number) =>
-                  <option value={i} onClick={selectAmount(i)}>{i}</option>
+              {/* <SmallFormInput
+                  placeholder="Enter amount"
+                  value={amountForm.values.amount}
+                  onChange={amountForm.onChange('amount')}
+                  onBlur={amountForm.onBlur('amount')}
+                  errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+                  onEnter={handleSubmit}
+                  _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
+                  /> */}
+              <Box width="80px" margin="0 10px">
+                <Select width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
+                  {getIndexArray(amountData.guardiansCount || 0).map((i: any) =>
+                    <option key={nanoid(4)} value={i}>{i}</option>
                   )}
-                  </Select>
-                  </Box> */}
+                </Select>
+              </Box>
               <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
             </Box>
           </Box>
