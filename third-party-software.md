@@ -21,7 +21,6 @@ Thanks to all open source authors for their efforts to make the world better ðŸ˜
 | [	@zxcvbn-ts/core	](	https://github.com/zxcvbn-ts/zxcvbn	) | 	MIT	 | 	2.2.1	 |
 | [	@zxcvbn-ts/language-common	](	https://github.com/zxcvbn-ts/zxcvbn	) | 	MIT	 | 	2.0.1	 |
 | [	@zxcvbn-ts/language-en	](	https://github.com/zxcvbn-ts/zxcvbn	) | 	MIT	 | 	2.1.0	 |
-| [	autoprefixer	](	https://github.com/postcss/autoprefixer	) | 	MIT	 | 	10.4.14	 |
 | [	awesome-typescript-loader	](	https://github.com/s-panferov/awesome-typescript-loader	) | 	MIT	 | 	5.2.1	 |
 | [	axios	](	https://github.com/axios/axios	) | 	MIT	 | 	0.27.2	 |
 | [	babel-core	](	https://github.com/babel/babel/tree/master/packages/babel-core	) | 	MIT	 | 	6.26.3	 |
