@@ -51,9 +51,11 @@ jobs:
 
       - name: Build
         run: pnpm run build
+        timeout-minutes: 3
 
       - name: Run UI:Test
         run: xvfb-run npx playwright test
+        timeout-minutes: 10
 
       - uses: actions/upload-artifact@v3
         if: always()
@@ -65,8 +67,15 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: screenshot
-          path: tests/screenshot/
+          name: screen recording
+          path: tests/archive/screenrecord/
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: network recording
+          path: tests/archive/network/
           retention-days: 30
      
       - uses: actions/upload-artifact@v3

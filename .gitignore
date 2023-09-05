@@ -16,4 +16,4 @@ memo.md
 /playwright-report/
 /playwright/.cache/
 .env.test
-tests/screenshot
+tests/archive
