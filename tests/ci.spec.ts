@@ -40,7 +40,7 @@ if (!fs.existsSync(metamaskChromeDir)) {
 
 test.describe("CI", () => {
     test("Activate Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * 5);
+        test.setTimeout(1000 * 60 * 4);
         console.log("Activate Wallet start");
         try {
             const { walletAddress, guardians, threshold } = await activate(context, extensionId, screenshotDir, {
@@ -54,7 +54,7 @@ test.describe("CI", () => {
         console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * 6);
+        test.setTimeout(1000 * 60 * 5);
         console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
         while (!fs.existsSync(SHARING_FILE)) {
