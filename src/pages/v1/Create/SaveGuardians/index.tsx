@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import LogoIcon from "@src/assets/logo-v3.svg";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
 import { useGlobalStore } from "@src/store/global";
@@ -320,6 +321,7 @@ const SaveGuardians = () => {
             </TextBody>
           </Box>
           <Button disabled={loading} loading={loading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
+            <Image width="28px" src={LogoIcon as any} alt="Logo" marginRight="4px" />
             Store onchain
           </Button>
         </Box>
