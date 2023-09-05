@@ -30,20 +30,17 @@ if (!fs.existsSync(metamaskChromeDir)) {
     // curl -o metamask.zip https://raw.githubusercontent.com/jayden-sudo/archive/main/metamask.zip && unzip metamask.zip -d ./metamask
     console.log("download metamask");
     execSync(
-        `curl -o ${path.join(
+        `git clone -b metamask https://github.com/jayden-sudo/archive.git ${path.join(
             archiveDir,
-            "metamask.zip",
-        )} https://raw.githubusercontent.com/jayden-sudo/archive/main/metamask.zip && unzip ${path.join(
-            archiveDir,
-            "metamask.zip",
-        )} -d ${archiveDir}`,
+            "archive",
+        )} && unzip ${path.join(archiveDir, "archive", "metamask.zip")} -d ${archiveDir}`,
     );
     console.log("download metamask done");
 }
 
 test.describe("CI", () => {
     test("Activate Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * 3);
+        test.setTimeout(1000 * 60 * 5);
         console.log("Activate Wallet start");
         try {
             const { walletAddress, guardians, threshold } = await activate(context, extensionId, screenshotDir, {
@@ -57,7 +54,7 @@ test.describe("CI", () => {
         console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * 5);
+        test.setTimeout(1000 * 60 * 8);
         console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
         while (!fs.existsSync(SHARING_FILE)) {

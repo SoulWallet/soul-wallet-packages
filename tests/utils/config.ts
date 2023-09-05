@@ -42,4 +42,22 @@ export class Config {
         }
         return maxFeeNumber;
     }
+
+    static getChainList(): string {
+        const envName = `CHAINLIST`;
+        const chainList = process.env[envName];
+        if (!chainList) {
+            throw new Error(`${envName} is not defined in .env.test file`);
+        }
+        return chainList;
+    }
+
+    static activateWallet(netWorkName: string): boolean {
+        const envName = `activatewallet-${Config.networkName(netWorkName)}`;
+        const activate = process.env[envName];
+        if (!activate) {
+            throw new Error(`${envName} is not defined in .env.test file`);
+        }
+        return activate === "true";
+    }
 }
