@@ -320,7 +320,7 @@ const SaveGuardians = () => {
             </TextBody>
           </Box>
           <Button disabled={loading} loading={loading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
-            Store On-chain
+            Store onchain
           </Button>
         </Box>
       </Box>

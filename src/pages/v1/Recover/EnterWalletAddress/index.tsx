@@ -90,7 +90,10 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
       </Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center" maxWidth="500px">
-          Enter the address of the Soul Wallet you want to recover.
+          Enter the address you want to recover.
+        </TextBody>
+        <TextBody textAlign="center" maxWidth="500px">
+          (Recommend using an activated wallet address.)
         </TextBody>
       </Box>
       <FormInput
