@@ -25,7 +25,7 @@ module.exports = {
             // Treat src/css/app.css as a global stylesheet
             {
                 test: /\.css$/,
-                use: ["style-loader", "css-loader", "postcss-loader"],
+                use: ["style-loader", "css-loader"],
             },
             // Load .module.css files as CSS modules
             {
