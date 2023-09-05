@@ -17,3 +17,4 @@ memo.md
 /playwright/.cache/
 .env.test
 tests/archive
+zip
