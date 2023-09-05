@@ -10,9 +10,8 @@ export const chainIdMapping = {
     128: "HECO Mainnet",
     97: "BSC Testnet",
     420: "Optimism Goerli",
-    421613: "Arbitrum Goerli"
-  };
-
+    421613: "Arbitrum Goerli",
+};
 
 export default {
     walletName: "Soul Wallet",
@@ -35,5 +34,9 @@ export default {
     backendURL: "https://api-dev.soulwallet.io/appapi",
     soulScanURL: "https://api-dev.soulwallet.io/opapi",
     officialWebUrl: process.env.OFFICIAL_WEB_URL,
-    chainList: [require(`./chains/arb-goerli`).default, require(`./chains/goerli`).default],
+    chainList: [
+        require(`./chains/arb-goerli`).default,
+        require(`./chains/op-goerli`).default,
+        require(`./chains/goerli`).default,
+    ],
 };

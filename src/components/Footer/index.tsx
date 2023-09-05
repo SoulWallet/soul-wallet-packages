@@ -13,10 +13,15 @@ export default function Footer() {
     const [isValidOrigin, setIsValidOrigin] = useState(false);
 
     const getOrigin = async () => {
-        const url = new URL((await getConnectedDapp()) || "");
-        setOrigin(url.origin);
-        setHost(url.host);
-        setIsValidOrigin(url.origin.startsWith("http"));
+        const connectedUrl = await getConnectedDapp();
+        if (connectedUrl) {
+            const url = new URL((await getConnectedDapp()) || "");
+            setOrigin(url.origin);
+            setHost(url.host);
+            setIsValidOrigin(url.origin.startsWith("http"));
+        } else {
+            setIsValidOrigin(false);
+        }
     };
 
     useEffect(() => {
@@ -24,8 +29,7 @@ export default function Footer() {
     }, []);
 
     const [shouldInject, setShouldInject] = useState(false);
-    const { globalShouldInject, shouldInjectList, shouldNotInjectList, addShouldInject, removeShouldInject } =
-        useSettingStore();
+    const { addShouldInject, removeShouldInject } = useSettingStore();
 
     const onChange = async (checked: boolean) => {
         setShouldInject(checked);
@@ -38,8 +42,8 @@ export default function Footer() {
 
     const check = () => {
         const should = checkShouldInject(origin);
-        setShouldInject(should)
-    }
+        setShouldInject(should);
+    };
 
     useEffect(() => {
         if (!origin) {

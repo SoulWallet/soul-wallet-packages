@@ -22,7 +22,7 @@ export default {
     chainName: "Goerli",
     chainToken: "ETH",
     addressPrefix: "gor:",
-    fileName: "goerli",
+    // fileName: "goerli",
     support1559: true,
     paymasterTokens: [
         // test u

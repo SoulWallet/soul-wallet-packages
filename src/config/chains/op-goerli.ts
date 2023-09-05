@@ -2,31 +2,31 @@
  * Arbitrum Goerli
  */
 
-import IconArb from "@src/assets/chains/arb.svg";
-import IconArbFaded from "@src/assets/chains/arb-faded.svg";
+import IconOp from "@src/assets/chains/op.svg";
+import IconOpFaded from "@src/assets/chains/op-faded.svg";
 
 export default {
-    icon: IconArb,
-    iconFaded: IconArbFaded,
-    cardBg: "radial-gradient(52.03% 100.00% at 100.00% 100.00%, #73DDFF 0%, #E2FC89 100%)",
-    cardBgUnactivated: "radial-gradient(52.03% 100.00% at 100.00% 100.00%, #73DDFF 0%, #D7D7D7 100%)",
-    provider: `https://arbitrum-goerli.publicnode.com`,
+    icon: IconOp,
+    iconFaded: IconOpFaded,
+    cardBg: "radial-gradient(52.03% 100% at 100% 100%, #FF9595 0%, #E2FC89 100%)",
+    cardBgUnactivated: "radial-gradient(52.03% 100% at 100% 100%, #FF9595 0%, #D7D7D7 100%)",
+    provider: `https://optimism-goerli.publicnode.com`,
     l1Provider: `https://goerli.infura.io/v3/36edb4e805524ba696b5b83b3e23ad18`,
-    scanUrl: "https://testnet.arbiscan.io/",
-    bundlerUrl: "https://api-dev.soulwallet.io/bundler/arb-goerli/rpc",
+    scanUrl: "https://goerli-optimism.etherscan.io/",
+    bundlerUrl: "https://api-dev.soulwallet.io/bundler/op-goerli/rpc",
     maxCostMultiplier: 120,
-    chainId: 421613,
-    chainIdHex: `0x${(421613).toString(16)}`,
+    chainId: 420,
+    chainIdHex: `0x${(420).toString(16)}`,
     defaultMaxFee: "0.135",
     defaultMaxPriorityFee: "0",
-    chainName: "Arbitrum Goerli",
+    chainName: "Optimism Goerli",
     chainToken: "ETH",
-    addressPrefix: "arb:",
+    addressPrefix: "op:",
     // fileName: "arb-goerli",
     support1559: true,
     paymasterTokens: [
         // test u
-        "0xfd064A18f3BF249cf1f87FC203E90D8f650f2d63",
+        "0xe05606174bac4A6364B31bd0eCA4bf4dD368f8C6",
     ],
     contracts: {
         l1Keystore: "0x76a43ef7Cc3b49736951759494D2aeE8cae1cdec",

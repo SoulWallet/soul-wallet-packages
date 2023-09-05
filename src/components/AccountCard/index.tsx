@@ -16,8 +16,6 @@ export default function AccountCard() {
     const { selectedChainItem, selectedAddressItem } = useConfig();
     const isActivated = getIsActivated(selectedAddress, selectedChainId);
 
-    console.log("selected item", selectedChainItem);
-
     const toast = useToast();
 
     const doCopy = () => {
