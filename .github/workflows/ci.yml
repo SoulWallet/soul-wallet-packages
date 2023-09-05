@@ -1,7 +1,12 @@
 name: ci
+
 on:
   push:
-    branches: ["feature/ui"]
+    branches:
+      - '*'
+  pull_request:
+    types: [opened, reopened, synchronize]
+
 jobs:
   UnitTest:
     timeout-minutes: 20
