@@ -114,6 +114,7 @@ const UploadGuardians = () => {
   const keystore = useKeystore();
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploaded, setUploaded] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
@@ -257,11 +258,14 @@ const UploadGuardians = () => {
       setRecoveringSlotInitInfo(slotInitInfo)
 
       setUploading(false)
+      setUploaded(true)
 
-      stepDispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: RecoverStepEn.ResetPassword,
-      });
+      setTimeout(() => {
+        stepDispatch({
+          type: StepActionTypeEn.JumpToTargetStep,
+          payload: RecoverStepEn.ResetPassword,
+        });
+      }, 1000)
     } catch (e: any) {
       setUploading(false)
       toast({
@@ -314,8 +318,8 @@ const UploadGuardians = () => {
           Due to your choice of private onchain guardians, please upload the guardians file you saved during setup.
         </TextBody>
       </Box>
-      <Button disabled={uploading} loading={uploading} _styles={{ width: '350px', marginTop: '12px', position: 'relative' }}>
-        Upload file
+      <Button disabled={uploading} loading={uploading} _styles={{ width: '350px', marginTop: '12px', position: 'relative', background: uploaded ? '#EE3F99' : undefined, _hover: { background: uploaded ? '#EE3F99' : undefined } }}>
+        {!uploaded ? 'Upload file' : 'Upload successful!'}
         <Input
           type="file"
           id="file"
