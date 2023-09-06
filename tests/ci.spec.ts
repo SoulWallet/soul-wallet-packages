@@ -32,6 +32,8 @@ if (fs.existsSync(SHARING_FILE)) {
     }
     const testEnvContent = fs.readFileSync(testEnvFile, "utf-8");
     if (!testEnvContent.includes('PRIVATEKEY: "0x')) {
+        console.log("testEnvFile", testEnvFile);
+        console.log("testEnvContent", testEnvContent);
         throw new Error("Please set PRIVATEKEY in .env.test file");
     }
 }
