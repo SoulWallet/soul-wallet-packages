@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config({ path: ".env.test" });
+import path from "path";
+const testEnvFile = path.join(__dirname, "..", "..", ".env.test");
+dotenv.config({ path: testEnvFile });
 
 export class Config {
     static privateKey(): string {
