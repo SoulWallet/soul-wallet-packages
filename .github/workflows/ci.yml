@@ -18,13 +18,13 @@ jobs:
       # base64 < .env
       - name: Create .env file
         run: |
-          echo "${{ secrets.BUILDENV }}" | base64 -d > .env
+          echo "${{ secrets.ENV_BUILD }}" | base64 -d > .env
           ls -la .env
         
       # base64 < .env.test
       - name: Create .env.test file
         run: |
-          echo "${{ secrets.TESTENV }}" | base64 -d > .env.test
+          echo "${{ secrets.ENV_TEST }}" | base64 -d > .env.test
           ls -la .env.test
 
       - name: Install Node.js
