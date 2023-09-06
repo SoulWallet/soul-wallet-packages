@@ -83,7 +83,15 @@ jobs:
           retention-days: 30
      
       - uses: actions/upload-artifact@v3
+        if: success()
         with:
          name: dist
          path: dist/
          retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+         name: dist(failure)
+         path: dist/
+         retention-days: 1
