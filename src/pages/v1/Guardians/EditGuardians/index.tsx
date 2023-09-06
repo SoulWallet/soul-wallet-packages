@@ -136,6 +136,32 @@ const amountValidate = (values: any, props: any) => {
   return errors
 }
 
+const TipsInfo = () => {
+  return (
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
+      <Box>
+        <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
+        <TextBody marginBottom="1em">
+          Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
+        </TextBody>
+
+        <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
+        <TextBody marginBottom="1em">
+          You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
+        </TextBody>
+
+        <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
+        <TextBody marginBottom="1em">
+          If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
+        </TextBody>
+        <TextBody marginBottom="1em">
+          After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
+        </TextBody>
+      </Box>
+    </Box>
+  )
+}
+
 export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
@@ -531,29 +557,7 @@ export default function GuardiansSetting() {
                 Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
               </TextBody>
             </Box>
-            {showTips && (
-              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
-                <Box>
-                  <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
-                  <TextBody marginBottom="1em">
-                    Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
-                  </TextBody>
-
-                  <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
-                  <TextBody marginBottom="1em">
-                    You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
-                  </TextBody>
-
-                  <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
-                  <TextBody marginBottom="1em">
-                    If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
-                  </TextBody>
-                  <TextBody marginBottom="1em">
-                    After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
-                  </TextBody>
-                </Box>
-              </Box>
-            )}
+            {showTips && <TipsInfo />}
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
               <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
                 {(guardianIds).map((id: any) => (
@@ -650,29 +654,7 @@ export default function GuardiansSetting() {
           Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
         </TextBody>
       </Box>
-      {showTips && (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em" maxWidth="500px">
-          <Box>
-            <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
-            <TextBody marginBottom="1em">
-              Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
-            </TextBody>
-
-            <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
-            <TextBody marginBottom="1em">
-              You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
-            </TextBody>
-
-            <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
-            <TextBody marginBottom="1em">
-              If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
-            </TextBody>
-            <TextBody marginBottom="1em">
-              After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
-            </TextBody>
-          </Box>
-        </Box>
-      )}
+      {showTips && <TipsInfo />}
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" maxWidth="700px">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any) => (

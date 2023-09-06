@@ -15,8 +15,12 @@ interface IProps {
   _styles?: any;
   _leftInputStyles?: any;
   _rightInputStyles?: any;
+  _leftContainerStyles?: any;
+  _rightContainerStyles?: any;
   leftLabel?: String;
   rightLabel?: String;
+  leftComponent?: any;
+  rightComponent?: any;
   leftAutoFocus?: any;
   onEnter?: any;
 }
@@ -37,6 +41,10 @@ export default function DoubleFormInput({
   _styles,
   _leftInputStyles,
   _rightInputStyles,
+  _leftContainerStyles,
+  _rightContainerStyles,
+  leftComponent,
+  rightComponent,
   leftAutoFocus,
   onEnter
 }: IProps) {
@@ -64,7 +72,7 @@ export default function DoubleFormInput({
 
   return (
     <Box display="flex" flexDirection="row" {..._styles}>
-      <Box display="flex" flexDirection="column" width="30%">
+      <Box display="flex" flexDirection="column" width="50%" {..._leftContainerStyles}>
         {leftLabel && (<Box as="label" htmlFor="leftLabel">{leftLabel}</Box>)}
         <Box position="relative">
           <Box>
@@ -74,10 +82,10 @@ export default function DoubleFormInput({
               value={leftValue ?? ""}
               onChange={handleLeftChange}
               onBlur={handleLeftBlur}
-              borderRadius="1em"
-              paddingLeft="1.5rem"
-              paddingRight="1.5rem"
-              height="3em"
+              borderRadius="16px"
+              paddingLeft="24px"
+              paddingRight="24px"
+              height="48px"
               background="white"
               borderTopRightRadius="0"
               borderBottomRightRadius="0"
@@ -90,9 +98,24 @@ export default function DoubleFormInput({
         </Box>
         <Text color="#FF4343" padding="0 10px" fontSize="14px">{leftErrorMsg}</Text>
       </Box>
-      <Box display="flex" flexDirection="column" width="70%">
+      <Box display="flex" flexDirection="column" width="50%" {..._rightContainerStyles}>
         {rightLabel && (<Box as="label" htmlFor="rightLabel">{rightLabel}</Box>)}
         <Box position="relative">
+          {leftComponent && (
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              height="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              zIndex="2"
+              paddingLeft="10px"
+            >
+              {leftComponent}
+            </Box>
+          )}
           <Box>
             <Input
               type="text"
@@ -100,10 +123,10 @@ export default function DoubleFormInput({
               value={rightValue ?? ""}
               onChange={handleRightChange}
               onBlur={handleRightBlur}
-              borderRadius="1em"
-              paddingLeft="1.5rem"
-              paddingRight="1.5rem"
-              height="3em"
+              borderRadius="16px"
+              paddingLeft={leftComponent ? '40px' : '24px'}
+              paddingRight="24px"
+              height="48px"
               background="white"
               borderTopLeftRadius="0"
               borderBottomLeftRadius="0"

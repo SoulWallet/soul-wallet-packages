@@ -333,26 +333,31 @@ export default function GuardiansSetting() {
       )}
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
-          {(guardianIds).map((id: any) => (
+          {(guardianIds).map((id: any, i: number) => (
             <Box position="relative" width="100%" key={id}>
               <DoubleFormInput
-                rightPlaceholder="Guardian address"
+                rightPlaceholder={`Guardian address ${i + 1}`}
                 rightValue={values[`address_${id}`]}
                 rightOnChange={onChange(`address_${id}`)}
                 rightOnBlur={onBlur(`address_${id}`)}
                 rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                _rightInputStyles={!!values[`address_${id}`] ? {
+                  fontFamily: 'Martian',
+                  fontWeight: 600,
+                  fontSize: '14px'
+                }: {}}
+                _rightContainerStyles={{ width: '70%', minWidth: '520px' }}
                 leftAutoFocus={id === guardianIds[0]}
                 leftPlaceholder="Name"
                 leftValue={values[`name_${id}`]}
                 leftOnChange={onChange(`name_${id}`)}
                 leftOnBlur={onBlur(`name_${id}`)}
                 leftErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                leftComponent={<Text color="#898989" fontWeight="600">eth:</Text>}
+                _leftContainerStyles={{ width: '30%', minWidth: '240px' }}
                 onEnter={handleSubmit}
-                _styles={{ width: '100%' }}
-                _rightInputStyles={!!values[`address_${id}`] ? {
-                  fontFamily: "Martian",
-                  fontWeight: 600
-                }: {}}
+                _styles={{ width: '100%', minWidth: '760px', fontSize: '16px' }}
+
               />
               <Box
                 onClick={() => removeGuardian(id)}
