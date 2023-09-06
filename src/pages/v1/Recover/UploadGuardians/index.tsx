@@ -25,6 +25,7 @@ import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import ArrowRightIcon from "@src/components/Icons/ArrowRight";
 import ArrowDownIcon from "@src/components/Icons/ArrowDown";
+import DropDownIcon from "@src/components/Icons/DropDown";
 import PlusIcon from "@src/components/Icons/Plus";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
@@ -46,7 +47,7 @@ const getFieldsByGuardianIds = (ids: any) => {
   return fields
 }
 
-const getIndexArray = (count: number) => {
+const getNumberArray = (count: number) => {
   const arr = []
 
   for (let i = 1; i <= count; i++) {
@@ -305,7 +306,7 @@ const UploadGuardians = () => {
     }
   }
 
-  console.log('getIndexArray', getIndexArray(amountData.guardiansCount || 0))
+  console.log('getNumberArray', getNumberArray(amountData.guardiansCount || 0))
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
@@ -371,7 +372,7 @@ const UploadGuardians = () => {
           </TextBody>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="12px" width="100%">
-              {(guardianIds).map((id: any) => (
+              {(guardianIds).map((id: any, i: number) => (
                 <Box position="relative" width="100%" key={id}>
                   <FormInput
                     placeholder="Enter guardian address"
@@ -379,22 +380,29 @@ const UploadGuardians = () => {
                     onChange={onChange(`address_${id}`)}
                     onBlur={onBlur(`address_${id}`)}
                     errorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
-                    _styles={{ width: '100%' }}
+                    _styles={{ width: '100%', minWidth: '520px' }}
+                    _inputStyles={!!values[`address_${id}`] ? {
+                      fontFamily: 'Martian',
+                      fontWeight: 600,
+                      fontSize: '14px',
+                    }: {}}
                   />
-                  <Box
-                    onClick={() => removeGuardian(id)}
-                    position="absolute"
-                    width="40px"
-                    right="-40px"
-                    top="0"
-                    height="100%"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    cursor="pointer"
-                  >
-                    <Icon src={MinusIcon} />
-                  </Box>
+                  {i > 0 && (
+                    <Box
+                      onClick={() => removeGuardian(id)}
+                      position="absolute"
+                      width="40px"
+                      right="-40px"
+                      top="0"
+                      height="100%"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      cursor="pointer"
+                    >
+                      <Icon src={MinusIcon} />
+                    </Box>
+                  )}
                 </Box>
               ))}
               <TextButton
@@ -418,8 +426,9 @@ const UploadGuardians = () => {
                   _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
                   /> */}
               <Box width="80px" margin="0 10px">
-                <Select width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
-                  {getIndexArray(amountData.guardiansCount || 0).map((i: any) =>
+                <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
+                  {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
+                  {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
                     <option key={nanoid(4)} value={i}>{i}</option>
                   )}
                 </Select>

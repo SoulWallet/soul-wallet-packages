@@ -6,7 +6,7 @@ import { CreateStepEn, GuardiansStepEn, StepActionTypeEn, useStepDispatchContext
 import useKeyring from "@src/hooks/useKeyring";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
-import { Box, Text, Image, useToast } from "@chakra-ui/react"
+import { Box, Text, Image, useToast, Select } from "@chakra-ui/react"
 import { copyText, nextRandomId } from "@src/lib/tools";
 import useConfig from "@src/hooks/useConfig";
 import { L1KeyStore } from "@soulwallet/sdk";
@@ -23,10 +23,23 @@ import useKeystore from "@src/hooks/useKeystore";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
 import DoubleFormInput from "@src/components/web/Form/DoubleFormInput";
 import ArrowRightIcon from "@src/components/Icons/ArrowRight";
+import DropDownIcon from "@src/components/Icons/DropDown";
+import PlusIcon from "@src/components/Icons/Plus";
 import MinusIcon from "@src/assets/icons/minus.svg";
 import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
 import config from "@src/config";
+import { nanoid } from "nanoid";
+
+const getNumberArray = (count: number) => {
+  const arr = []
+
+  for (let i = 1; i <= count; i++) {
+    arr.push(i)
+  }
+
+  return arr
+}
 
 const checkPaid = (activeGuardiansInfo: any) => {
   if (activeGuardiansInfo) {
@@ -426,6 +439,14 @@ export default function GuardiansSetting() {
     setIsEditing(false)
   }
 
+  const selectAmount = (event: any) => {
+    console.log('selectAmount', event.target.value)
+
+    if (event.target.value) {
+      amountForm.onChange('amount')(event.target.value)
+    }
+  }
+
   const isGuardiansNotSet = isGuardiansEmpty(guardians, guardianNames, threshold)
   const isPaid = checkPaid(activeGuardiansInfo)
   const isPending = checkPending(activeGuardiansInfo)
@@ -598,21 +619,22 @@ export default function GuardiansSetting() {
                   </Box>
                 ))}
                 <TextButton onClick={() => addGuardian()} color="#EC588D">
+                  <PlusIcon color="#EC588D" />
                   Add more guardians
                 </TextButton>
               </Box>
-              <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
-                Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
-              </TextBody>
-              <SmallFormInput
-                placeholder="Enter amount"
-                value={amountForm.values.amount}
-                onChange={amountForm.onChange('amount')}
-                onBlur={amountForm.onBlur('amount')}
-                errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-                RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
-                _styles={{ width: '180px', marginTop: '0.75em' }}
-              />
+              <Box display="flex" alignItems="center">
+                <TextBody>Wallet recovery requires</TextBody>
+                <Box width="80px" margin="0 10px">
+                  <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
+                    {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
+                    {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+                      <option key={nanoid(4)} value={i}>{i}</option>
+                    )}
+                  </Select>
+                </Box>
+                <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
+              </Box>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
               <Button
@@ -655,41 +677,50 @@ export default function GuardiansSetting() {
         </TextBody>
       </Box>
       {showTips && <TipsInfo />}
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" maxWidth="700px">
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
-          {(guardianIds).map((id: any) => (
+          {(guardianIds).map((id: any, i: number) => (
             <Box position="relative" width="100%" key={id}>
               <DoubleFormInput
+                rightPlaceholder={`Guardian address ${i + 1}`}
+                rightValue={values[`address_${id}`]}
+                rightOnChange={onChange(`address_${id}`)}
+                rightOnBlur={onBlur(`address_${id}`)}
+                rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                _rightInputStyles={!!values[`address_${id}`] ? {
+                  fontFamily: 'Martian',
+                  fontWeight: 600,
+                  fontSize: '14px'
+                }: {}}
+                _rightContainerStyles={{ width: '70%', minWidth: '520px' }}
+                leftAutoFocus={id === guardianIds[0]}
                 leftPlaceholder="Name"
                 leftValue={values[`name_${id}`]}
                 leftOnChange={onChange(`name_${id}`)}
                 leftOnBlur={onBlur(`name_${id}`)}
                 leftErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
-                _styles={{ width: '100%' }}
-                _rightInputStyles={!!values[`address_${id}`] ? {
-                  fontFamily: "Martian",
-                  fontWeight: 600,
-                }: {}}
-                rightPlaceholder="Guardian address"
-                rightValue={values[`address_${id}`]}
-                rightOnChange={onChange(`address_${id}`)}
-                rightOnBlur={onBlur(`address_${id}`)}
-                rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                leftComponent={<Text color="#898989" fontWeight="600">eth:</Text>}
+                _leftContainerStyles={{ width: '30%', minWidth: '240px' }}
+                onEnter={handleSubmit}
+                _styles={{ width: '100%', minWidth: '760px', fontSize: '16px' }}
+
               />
-              <Box
-                onClick={() => removeGuardian(id)}
-                position="absolute"
-                width="40px"
-                right="-40px"
-                top="0"
-                height="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                cursor="pointer"
-              >
-                <Icon src={MinusIcon} />
-              </Box>
+              {i > 0 && (
+                <Box
+                  onClick={() => removeGuardian(id)}
+                  position="absolute"
+                  width="40px"
+                  right="-40px"
+                  top="0"
+                  height="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  cursor="pointer"
+                >
+                  <Icon src={MinusIcon} />
+                </Box>
+              )}
             </Box>
           ))}
           <TextButton
@@ -697,22 +728,22 @@ export default function GuardiansSetting() {
             color="#EC588D"
             _hover={{ color: "#EC588D" }}
           >
+            <PlusIcon color="#EC588D" />
             Add more guardians
           </TextButton>
         </Box>
-        <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center" maxWidth="500px">
-          Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
-        </TextBody>
-        <SmallFormInput
-          placeholder="Enter amount"
-          value={amountForm.values.amount}
-          onChange={amountForm.onChange('amount')}
-          onBlur={amountForm.onBlur('amount')}
-          errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-          RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
-          onEnter={handleSubmit}
-          _styles={{ width: '180px', marginTop: '0.75em' }}
-        />
+      </Box>
+      <Box display="flex" alignItems="center">
+        <TextBody>Wallet recovery requires</TextBody>
+        <Box width="80px" margin="0 10px">
+          <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
+            {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
+            {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+              <option key={nanoid(4)} value={i}>{i}</option>
+            )}
+          </Select>
+        </Box>
+        <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
         <Button

@@ -78,11 +78,16 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         });
       }
     } catch (e: any) {
-      setLoading(false)
-      toast({
-        title: e.message,
-        status: "error",
-      })
+      /* setLoading(false)
+       * toast({
+       *   title: e.message,
+       *   status: "error",
+       * }) */
+
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: RecoverStepEn.UploadGuardians,
+      });
     }
   };
 

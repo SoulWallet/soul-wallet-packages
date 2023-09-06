@@ -12,7 +12,7 @@ import useKeystore from "@src/hooks/useKeystore";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
 import useSdk from '@src/hooks/useSdk';
-import { Box, Text, Image, useToast } from "@chakra-ui/react"
+import { Box, Text, Image, useToast, Select } from "@chakra-ui/react"
 import Heading1 from "@src/components/web/Heading1";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
@@ -20,13 +20,25 @@ import useForm from "@src/hooks/useForm";
 import Icon from "@src/components/Icon";
 import { nextRandomId } from "@src/lib/tools";
 import WarningIcon from "@src/components/Icons/Warning";
+import DropDownIcon from "@src/components/Icons/DropDown";
 import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import useConfig from "@src/hooks/useConfig";
 import { L1KeyStore } from "@soulwallet/sdk";
+import { nanoid } from "nanoid";
 
 const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
+
+const getNumberArray = (count: number) => {
+  const arr = []
+
+  for (let i = 1; i <= count; i++) {
+    arr.push(i)
+  }
+
+  return arr
+}
 
 const toHex = (num: any) => {
   let hexStr = num.toString(16)
@@ -281,6 +293,14 @@ export default function GuardiansSetting() {
     // removeGuardian(id);
   };
 
+  const selectAmount = (event: any) => {
+    console.log('selectAmount', event.target.value)
+
+    if (event.target.value) {
+      amountForm.onChange('amount')(event.target.value)
+    }
+  }
+
   if (skipping) {
     return (
       <Box maxWidth="480px">
@@ -381,19 +401,31 @@ export default function GuardiansSetting() {
             Add more guardians
           </TextButton>
         </Box>
-        <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
-          Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
-        </TextBody>
-        <SmallFormInput
-          placeholder="Enter amount"
-          value={amountForm.values.amount}
-          onChange={amountForm.onChange('amount')}
-          onBlur={amountForm.onBlur('amount')}
-          errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-          RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
-          onEnter={handleSubmit}
-          _styles={{ width: '180px', marginTop: '0.75em' }}
-        />
+        {/* <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
+            Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
+            </TextBody>
+            <SmallFormInput
+            placeholder="Enter amount"
+            value={amountForm.values.amount}
+            onChange={amountForm.onChange('amount')}
+            onBlur={amountForm.onBlur('amount')}
+            errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
+            RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
+            onEnter={handleSubmit}
+            _styles={{ width: '180px', marginTop: '0.75em' }}
+            /> */}
+      </Box>
+      <Box display="flex" alignItems="center">
+        <TextBody>Wallet recovery requires</TextBody>
+        <Box width="80px" margin="0 10px">
+          <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
+            {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
+            {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+              <option key={nanoid(4)} value={i}>{i}</option>
+            )}
+          </Select>
+        </Box>
+        <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
         <Button

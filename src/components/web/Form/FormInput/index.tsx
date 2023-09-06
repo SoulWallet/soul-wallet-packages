@@ -11,6 +11,7 @@ interface IProps {
   onChange: (value: string) => void;
   onBlur?: any;
   _styles?: any;
+  _inputStyles?: any;
   isPassword?: boolean;
   readOnly?: boolean;
   RightIcon?: any;
@@ -26,6 +27,7 @@ export default function FormInput({
   onChange,
   onBlur,
   _styles,
+  _inputStyles,
   isPassword,
   RightIcon,
   readOnly,
@@ -62,6 +64,7 @@ export default function FormInput({
             height="3em"
             readOnly={readOnly}
             autoFocus={autoFocus}
+            {..._inputStyles}
           />
           {visible !== undefined && isPassword && (
             <Box position="absolute" top="0" right="4px" height="100%" width="40px" display="flex" alignItems="center" justifyContent="center" cursor="pointer" zIndex="1">
