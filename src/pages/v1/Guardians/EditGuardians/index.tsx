@@ -99,7 +99,7 @@ const toHex = (num: any) => {
 
 const getRecommandCount = (c: number) => {
   if (!c) {
-    return 1
+    return 0
   }
 
   return Math.ceil(c / 2)
@@ -151,7 +151,7 @@ const amountValidate = (values: any, props: any) => {
 
 const TipsInfo = () => {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em" maxWidth="500px">
       <Box>
         <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
         <TextBody marginBottom="1em">
@@ -236,7 +236,10 @@ export default function GuardiansSetting() {
   const amountForm = useForm({
     fields: ['amount'],
     validate: amountValidate,
-    restProps: amountData
+    restProps: amountData,
+    initialValues: {
+      amount: getRecommandCount(amountData.guardiansCount || 0)
+    }
   })
 
   const disabled = invalid || !guardiansList.length || amountForm.invalid || loading
@@ -440,12 +443,17 @@ export default function GuardiansSetting() {
   }
 
   const selectAmount = (event: any) => {
-    console.log('selectAmount', event.target.value)
-
     if (event.target.value) {
-      amountForm.onChange('amount')(event.target.value)
+      amountForm.onChange('amount')(Number(event.target.value))
     }
   }
+
+  useEffect(() => {
+    // console.log('amountData.guardiansCount', amountData.guardiansCount, amountForm.values.amount)
+    if (!amountForm.values.amount || (Number(amountForm.values.amount) > amountData.guardiansCount)) {
+      amountForm.onChange('amount')(getRecommandCount(amountData.guardiansCount))
+    }
+  }, [amountData.guardiansCount, amountForm.values.amount])
 
   const isGuardiansNotSet = isGuardiansEmpty(guardians, guardianNames, threshold)
   const isPaid = checkPaid(activeGuardiansInfo)
@@ -581,7 +589,7 @@ export default function GuardiansSetting() {
             {showTips && <TipsInfo />}
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
               <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
-                {(guardianIds).map((id: any) => (
+                {(guardianIds).map((id: any, i: number) => (
                   <Box position="relative" width="100%" key={id}>
                     <DoubleFormInput
                       onEnter={handleSubmit}
@@ -602,25 +610,27 @@ export default function GuardiansSetting() {
                       rightOnBlur={onBlur(`name_${id}`)}
                       rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
                     />
-                    <Box
-                      onClick={() => removeGuardian(id)}
-                      position="absolute"
-                      width="40px"
-                      right="-40px"
-                      top="0"
-                      height="100%"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      cursor="pointer"
-                    >
-                      <Icon src={MinusIcon} />
-                    </Box>
+                    {i > 0 && (
+                      <Box
+                        onClick={() => removeGuardian(id)}
+                        position="absolute"
+                        width="40px"
+                        right="-40px"
+                        top="0"
+                        height="100%"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        cursor="pointer"
+                      >
+                        <Icon src={MinusIcon} />
+                      </Box>
+                    )}
                   </Box>
                 ))}
                 <TextButton onClick={() => addGuardian()} color="#EC588D">
                   <PlusIcon color="#EC588D" />
-                  Add more guardians
+                  <Text marginLeft="4px">Add more guardians</Text>
                 </TextButton>
               </Box>
               <Box display="flex" alignItems="center">
@@ -729,7 +739,7 @@ export default function GuardiansSetting() {
             _hover={{ color: "#EC588D" }}
           >
             <PlusIcon color="#EC588D" />
-            Add more guardians
+            <Text marginLeft="4px">Add more guardians</Text>
           </TextButton>
         </Box>
       </Box>

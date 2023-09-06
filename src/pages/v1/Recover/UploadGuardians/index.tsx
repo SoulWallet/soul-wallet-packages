@@ -59,7 +59,7 @@ const getNumberArray = (count: number) => {
 
 const getRecommandCount = (c: number) => {
   if (!c) {
-    return 1
+    return 0
   }
 
   return Math.ceil(c / 2)
@@ -138,7 +138,7 @@ const UploadGuardians = () => {
     validate: amountValidate,
     restProps: amountData,
     initialValues: {
-      amount: recoveringThreshold
+      amount: recoveringThreshold || getRecommandCount(amountData.guardiansCount)
     }
   })
 
@@ -299,12 +299,16 @@ const UploadGuardians = () => {
   }
 
   const selectAmount = (event: any) => {
-    console.log('selectAmount', event.target.value)
-
     if (event.target.value) {
-      amountForm.onChange('amount')(event.target.value)
+      amountForm.onChange('amount')(Number(event.target.value))
     }
   }
+
+  useEffect(() => {
+    if (!amountForm.values.amount || (Number(amountForm.values.amount) > amountData.guardiansCount)) {
+      amountForm.onChange('amount')(getRecommandCount(amountData.guardiansCount))
+    }
+  }, [amountData.guardiansCount, amountForm.values.amount])
 
   console.log('getNumberArray', getNumberArray(amountData.guardiansCount || 0))
 
@@ -380,11 +384,13 @@ const UploadGuardians = () => {
                     onChange={onChange(`address_${id}`)}
                     onBlur={onBlur(`address_${id}`)}
                     errorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                    leftComponent={<Text color="#898989" fontWeight="600">eth:</Text>}
                     _styles={{ width: '100%', minWidth: '520px' }}
                     _inputStyles={!!values[`address_${id}`] ? {
                       fontFamily: 'Martian',
                       fontWeight: 600,
                       fontSize: '14px',
+                      height: '48px'
                     }: {}}
                   />
                   {i > 0 && (
@@ -416,15 +422,6 @@ const UploadGuardians = () => {
             </Box>
             <Box display="flex" alignItems="center">
               <TextBody>Wallet recovery requires</TextBody>
-              {/* <SmallFormInput
-                  placeholder="Enter amount"
-                  value={amountForm.values.amount}
-                  onChange={amountForm.onChange('amount')}
-                  onBlur={amountForm.onBlur('amount')}
-                  errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-                  onEnter={handleSubmit}
-                  _styles={{ width: '180px', marginLeft: '10px', marginRight: '10px' }}
-                  /> */}
               <Box width="80px" margin="0 10px">
                 <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
                   {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}

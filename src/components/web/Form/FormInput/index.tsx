@@ -17,6 +17,7 @@ interface IProps {
   RightIcon?: any;
   autoFocus?: any;
   onEnter?: any;
+  leftComponent?: any;
 }
 
 export default function FormInput({
@@ -32,7 +33,8 @@ export default function FormInput({
   RightIcon,
   readOnly,
   autoFocus,
-  onEnter
+  onEnter,
+  leftComponent
 }: IProps) {
   const [visible, setVisible] = useState(false);
 
@@ -50,6 +52,21 @@ export default function FormInput({
     <Box display="flex" flexDirection="column" {..._styles}>
       {label && (<Box as="label" htmlFor={label}>{label}</Box>)}
       <Box position="relative">
+        {leftComponent && (
+          <Box
+            position="absolute"
+            top="0"
+            left="0"
+            height="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex="2"
+            paddingLeft="10px"
+          >
+            {leftComponent}
+          </Box>
+        )}
         <Box>
           <Input
             type={(isPassword && !visible) ? "password" : "text"}
@@ -59,7 +76,7 @@ export default function FormInput({
             onKeyDown={onKeyDown}
             onBlur={onBlur}
             borderRadius="1em"
-            paddingLeft="1.5rem"
+            paddingLeft={leftComponent ? '40px' : '24px'}
             paddingRight={isPassword ? '2rem' : '1.5rem'}
             height="3em"
             readOnly={readOnly}

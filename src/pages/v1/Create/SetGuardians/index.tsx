@@ -21,6 +21,7 @@ import Icon from "@src/components/Icon";
 import { nextRandomId } from "@src/lib/tools";
 import WarningIcon from "@src/components/Icons/Warning";
 import DropDownIcon from "@src/components/Icons/DropDown";
+import PlusIcon from "@src/components/Icons/Plus";
 import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
@@ -54,7 +55,7 @@ const toHex = (num: any) => {
 
 const getRecommandCount = (c: number) => {
   if (!c) {
-    return 1
+    return 0
   }
 
   return Math.ceil(c / 2)
@@ -135,7 +136,10 @@ export default function GuardiansSetting() {
   const amountForm = useForm({
     fields: ['amount'],
     validate: amountValidate,
-    restProps: amountData
+    restProps: amountData,
+    initialValues: {
+      amount: getRecommandCount(amountData.guardiansCount)
+    }
   })
 
   const disabled = invalid || !guardiansList.length || amountForm.invalid || loading
@@ -294,12 +298,16 @@ export default function GuardiansSetting() {
   };
 
   const selectAmount = (event: any) => {
-    console.log('selectAmount', event.target.value)
-
     if (event.target.value) {
-      amountForm.onChange('amount')(event.target.value)
+      amountForm.onChange('amount')(Number(event.target.value))
     }
   }
+
+  useEffect(() => {
+    if (!amountForm.values.amount || (Number(amountForm.values.amount) > amountData.guardiansCount)) {
+      amountForm.onChange('amount')(getRecommandCount(amountData.guardiansCount))
+    }
+  }, [amountData.guardiansCount, amountForm.values.amount])
 
   if (skipping) {
     return (
@@ -398,22 +406,10 @@ export default function GuardiansSetting() {
             </Box>
           ))}
           <TextButton onClick={() => addGuardian()} color="#EC588D" _hover={{ color: "#EC588D" }}>
-            Add more guardians
+            <PlusIcon color="#EC588D" />
+            <Text marginLeft="5px">Add more guardians</Text>
           </TextButton>
         </Box>
-        {/* <TextBody marginTop="0.75em" marginBottom="0.75em" textAlign="center">
-            Set number of guardian signatures required to recover if you lose access to your wallet. We recommend requiring at least {getRecommandCount(amountData.guardiansCount || 0)} for safety.
-            </TextBody>
-            <SmallFormInput
-            placeholder="Enter amount"
-            value={amountForm.values.amount}
-            onChange={amountForm.onChange('amount')}
-            onBlur={amountForm.onBlur('amount')}
-            errorMsg={amountForm.showErrors.amount && !!amountForm.values.amount && amountForm.errors.amount}
-            RightComponent={<Text fontWeight="bold">/ {amountData.guardiansCount || 0}</Text>}
-            onEnter={handleSubmit}
-            _styles={{ width: '180px', marginTop: '0.75em' }}
-            /> */}
       </Box>
       <Box display="flex" alignItems="center">
         <TextBody>Wallet recovery requires</TextBody>
