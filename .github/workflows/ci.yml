@@ -1,7 +1,11 @@
 name: ci
+
 on:
   push:
-    branches: ["feature/ui"]
+    branches: ["develop"]
+  pull_request:
+    types: [opened, reopened, synchronize]
+
 jobs:
   UnitTest:
     timeout-minutes: 20
@@ -36,7 +40,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       # base64 < .env
       - name: Create .env file
@@ -55,7 +59,7 @@ jobs:
 
       - name: Run UI:Test
         run: xvfb-run npx playwright test
-        timeout-minutes: 10
+        timeout-minutes: 20
 
       - uses: actions/upload-artifact@v3
         if: always()

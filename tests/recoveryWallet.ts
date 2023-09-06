@@ -63,7 +63,7 @@ export async function recovery(
     await popupPage.getByPlaceholder("Confirm password").fill("111111111");
     await popupPage.getByRole("button", { name: "Continue" }).click();
     await popupPage.getByRole("button", { name: "Next" }).click();
-    await popupPage.waitForTimeout(500);
+    await popupPage.waitForTimeout(1000);
     const qr_img_bound = await popupPage
         .locator("div")
         .filter({ hasText: /^Copy to Clickboard$/ })
@@ -148,7 +148,7 @@ export async function recovery(
         await popupPage.waitForTimeout(1000 * 5);
         // Recovery in progress
         let text = await popupPage.innerText("body");
-        if (text.includes("Goerli\nRecovered")) {
+        if (text.includes("Goerli Wallet(s)\nRecovered")) {
             recoveryStatus = true;
             break;
         }
@@ -157,9 +157,11 @@ export async function recovery(
         });
         await popupPage.waitForTimeout(500);
         text = await popupPage.innerText("body");
-        if (text.includes("Goerli\nRecovered")) {
+        if (text.includes("Goerli Wallet(s)\nRecovered")) {
             recoveryStatus = true;
             break;
+        } else {
+            console.log(text);
         }
     }
     if (!recoveryStatus) {
