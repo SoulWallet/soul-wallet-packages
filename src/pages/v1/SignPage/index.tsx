@@ -1,22 +1,22 @@
 import React, { createRef, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import browser from "webextension-polyfill";
-import config from "@src/config";
+import { Box } from "@chakra-ui/react";
 import { getMessageType } from "@src/lib/tools";
-import useQuery from "@src/hooks/useQuery";
 import useKeyring from "@src/hooks/useKeyring";
 import { useToast } from "@chakra-ui/react";
 import { useSearchParams } from "react-router-dom";
-import useSdk from "@src/hooks/useSdk";
 import SignModal from "@src/components/SignModal";
 import useWallet from "@src/hooks/useWallet";
 import useBrowser from "@src/hooks/useBrowser";
 import { useAddressStore } from "@src/store/address";
+import { useChainStore } from "@src/store/chain";
 
 export default function SignPage() {
     const params = useSearchParams();
     const [searchParams, setSearchParams] = useState<any>({});
     const { selectedAddress, toggleAllowedOrigin } = useAddressStore();
+    const { setSelectedChainId } = useChainStore();
     const toast = useToast();
     const { signAndSend } = useWallet();
     const { navigate } = useBrowser();
@@ -35,6 +35,7 @@ export default function SignPage() {
             data: param.get("data"),
             sendTo: param.get("sendTo"),
             id: param.get("id"),
+            targetChainId: param.get('targetChainId'),
         });
     }, [params[0]]);
 
@@ -42,7 +43,7 @@ export default function SignPage() {
      * Determine what data user want
      */
     const determineAction = async () => {
-        const { actionType, origin, tabId, data, sendTo, id } = searchParams;
+        const { actionType, origin, tabId, data, sendTo, id, targetChainId, } = searchParams;
 
         const currentSignModal = signModal.current;
 
@@ -64,7 +65,17 @@ export default function SignPage() {
                     tabId,
                 });
                 window.close();
-            } else if (actionType === "approve") {
+            }  if (actionType === "switchChain") {
+                await currentSignModal.show({ txns: "", actionType, origin, keepVisible: false, targetChainId  });
+                setSelectedChainId(targetChainId);
+                await browser.tabs.sendMessage(Number(tabId), {
+                    id,
+                    isResponse: true,
+                    data: targetChainId,
+                    tabId,
+                });
+                window.close();
+            }else if (actionType === "approve") {
                 // IMPORTANT TODO, move to signModal
                 // const userOp = formatOperation();
                 const { txns } = searchParams;
@@ -157,9 +168,9 @@ export default function SignPage() {
     }, [searchParams.actionType, signModal.current, selectedAddress]);
 
     return (
-        <div>
+        <Box>
             {/* <img src={LogoLoading} /> */}
             <SignModal ref={signModal} />
-        </div>
+        </Box>
     );
 }

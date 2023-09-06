@@ -78,8 +78,8 @@ export default function useTools() {
         return /^0x[0-9a-fA-F]{40}$/.test(address);
     };
 
-    const decodeCalldata = async (chainId: number, entrypoint: string, userOp: UserOperation) => {
-        const decodeRet = await DecodeUserOp(chainId, entrypoint, userOp);
+    const decodeCalldata = async (chainId: string, entrypoint: string, userOp: UserOperation) => {
+        const decodeRet = await DecodeUserOp(parseInt(chainId), entrypoint, userOp);
         if (decodeRet.isErr()) {
             console.error(decodeRet.ERR);
             return [];

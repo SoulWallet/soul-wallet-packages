@@ -3,7 +3,8 @@ import { nanoid } from "nanoid";
 import { ethers } from "ethers";
 import { IAddressItem } from "@src/store/address";
 import BN from "bignumber.js";
-import { chainIdMapping } from "@src/config";
+import { chainIdMapping, chainMapping } from "@src/config";
+import IconDefault from "@src/assets/tokens/default.svg";
 
 export function notify(title: string, message: string) {
     const randomId = nanoid();
@@ -165,7 +166,9 @@ export const checkShouldInject = (origin: string) => {
 export const getSelectedChainItem = () => {
     const chainStorage = JSON.parse(localStorage.getItem("chain-storage") || "{}");
     const selectedChainId = chainStorage.state.selectedChainId;
-    const selectedChainItem = chainStorage.state.chainList.filter((item: any) => item.chainId === selectedChainId)[0];
+    const selectedChainItem = chainStorage.state.chainList.filter(
+        (item: any) => item.chainIdHex === selectedChainId,
+    )[0];
     return selectedChainItem;
 };
 
@@ -250,6 +253,10 @@ export const getNetwork = (chainId: number) => {
     const name = chainIdMapping[chainId as keyof typeof chainIdMapping] || "";
     console.log("getNetwork", chainId, name);
     return name;
+};
+
+export const getChainInfo = (chainId: string) => {
+    return chainMapping[chainId as keyof typeof chainMapping] || { icon: IconDefault, name: `Chain ID: ${Number(chainId)}` };
 };
 
 export const getStatus = (statusId: number) => {

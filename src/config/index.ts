@@ -1,6 +1,9 @@
 import IconTwitter from "@src/assets/socials/twitter.svg";
 import IconTelegram from "@src/assets/socials/telegram.svg";
 import IconGithub from "@src/assets/socials/github.svg";
+import IconOp from "@src/assets/chains/op.svg";
+import IconArb from "@src/assets/chains/arb.svg";
+import IconEth from "@src/assets/chains/eth.svg";
 
 export const chainIdMapping = {
     1: "ETH Mainnet",
@@ -11,6 +14,34 @@ export const chainIdMapping = {
     97: "BSC Testnet",
     420: "Optimism Goerli",
     421613: "Arbitrum Goerli",
+};
+
+// get all chainId mapping, especially for switch chain.
+export const chainMapping = {
+    "0x1": {
+        icon: IconEth,
+        name: "Ethereum",
+    },
+    "0x5": {
+        icon: IconEth,
+        name: "Goerli",
+    },
+    "0xa": {
+        icon: IconOp,
+        name: "Optimism",
+    },
+    "0x1a4": {
+        icon: IconOp,
+        name: "Optimism Goerli",
+    },
+    "0xa4b1": {
+        icon: IconArb,
+        name: "Arbitrum",
+    },
+    "0x66eed": {
+        icon: IconArb,
+        name: "Arbitrum Goerli",
+    },
 };
 
 export default {

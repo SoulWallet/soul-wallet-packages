@@ -2,9 +2,11 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import config from "@src/config";
+import BN from 'bignumber.js'
 
 interface IChainItem {
     chainId: number;
+    chainIdHex: string;
     chainName: string;
     icon: any;
     contracts: any;
@@ -13,27 +15,26 @@ interface IChainItem {
 }
 
 interface IChainStore {
-    selectedChainId: number;
+    selectedChainId: string;
     chainList: IChainItem[];
-    // getSelectedChainItem: () => IChainItem;
     getSelectedChainItem: () => any;
-    setSelectedChainId: (chainId: number) => void;
+    setSelectedChainId: (chainId: string) => void;
 }
 
-const getIndexByChainId = (chainList: IChainItem[], chainId: number) => {
-    return chainList.findIndex((item: IChainItem) => item.chainId === chainId);
+const getIndexByChainId = (chainList: IChainItem[], chainId: string) => {
+    return chainList.findIndex((item: IChainItem) => BN(item.chainIdHex).isEqualTo(chainId));
 };
 
 const createChainSlice = immer<IChainStore>((set, get) => ({
     // default first one
-    selectedChainId: config.chainList[0].chainId,
+    selectedChainId: config.chainList[0].chainIdHex,
     // IMPORTANT TODO, don't persist this
     chainList: config.chainList,
     getSelectedChainItem: () => {
         const index = getIndexByChainId(get().chainList, get().selectedChainId);
         return get().chainList[index];
     },
-    setSelectedChainId: (chainId: number) =>
+    setSelectedChainId: (chainId: string) =>
         set({
             selectedChainId: chainId,
         }),
@@ -42,7 +43,7 @@ const createChainSlice = immer<IChainStore>((set, get) => ({
 export const useChainStore = create<IChainStore>()(
     persist((...set) => ({ ...createChainSlice(...set) }), {
         name: "chain-storage",
-        version: 4,
+        version: 5,
         // partialize: (state) => ({ selectedChainId: state.selectedChainId }),
     }),
 );
