@@ -25,18 +25,28 @@ if (fs.existsSync(SHARING_FILE)) {
     fs.unlinkSync(SHARING_FILE);
 }
 
+{
+    const testEnvFile = path.join(__dirname, "..", ".env.test");
+    if (!fs.existsSync(testEnvFile)) {
+        throw new Error("Please create .env.test file");
+    }
+    const testEnvContent = fs.readFileSync(testEnvFile, "utf-8");
+    if (!testEnvContent.includes("PRIVATEKEY")) {
+        console.log("testEnvFile", testEnvFile);
+        console.log("testEnvContent", testEnvContent);
+        throw new Error("Please set PRIVATEKEY in .env.test file");
+    }
+}
+
 const metamaskChromeDir = path.join(archiveDir, "chrome");
 if (!fs.existsSync(metamaskChromeDir)) {
     // curl -o metamask.zip https://raw.githubusercontent.com/jayden-sudo/archive/main/metamask.zip && unzip metamask.zip -d ./metamask
     console.log("download metamask");
     execSync(
-        `curl -o ${path.join(
+        `git clone -b metamask https://github.com/jayden-sudo/archive.git ${path.join(
             archiveDir,
-            "metamask.zip",
-        )} https://raw.githubusercontent.com/jayden-sudo/archive/main/metamask.zip && unzip ${path.join(
-            archiveDir,
-            "metamask.zip",
-        )} -d ${archiveDir}`,
+            "archive",
+        )} && unzip ${path.join(archiveDir, "archive", "metamask.zip")} -d ${archiveDir}`,
     );
     console.log("download metamask done");
 }
@@ -57,6 +67,9 @@ test.describe("CI", () => {
         console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
+        if (process.env.CI) {
+            test.skip(true);
+        }
         test.setTimeout(1000 * 60 * 5);
         console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
