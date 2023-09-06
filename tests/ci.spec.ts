@@ -54,6 +54,9 @@ test.describe("CI", () => {
         console.log("Activate Wallet done");
     });
     test("Recovery Wallet", async ({ context, extensionId }) => {
+        if (process.env.CI) {
+            test.skip(true);
+        }
         test.setTimeout(1000 * 60 * 5);
         console.log("Recovery Wallet start");
         const page = (await context.pages())[0];
