@@ -359,20 +359,22 @@ export default function GuardiansSetting() {
                 _styles={{ width: '100%', minWidth: '760px', fontSize: '16px' }}
 
               />
-              <Box
-                onClick={() => removeGuardian(id)}
-                position="absolute"
-                width="40px"
-                right="-40px"
-                top="0"
-                height="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                cursor="pointer"
-              >
-                <Icon src={MinusIcon} />
-              </Box>
+              {i > 0 && (
+                <Box
+                  onClick={() => removeGuardian(id)}
+                  position="absolute"
+                  width="40px"
+                  right="-40px"
+                  top="0"
+                  height="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  cursor="pointer"
+                >
+                  <Icon src={MinusIcon} />
+                </Box>
+              )}
             </Box>
           ))}
           <TextButton onClick={() => addGuardian()} color="#EC588D" _hover={{ color: "#EC588D" }}>

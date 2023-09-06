@@ -52,34 +52,37 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
       setLoading(true)
       const result = await api.guardian.getSlotInfo({ walletAddress: values.address })
       const data = result.data
-      const guardianDetails = data.guardianDetails
-      const guardians = guardianDetails.guardians
-      const threshold = guardianDetails.threshold
       const slot = data.slot
       const slotInitInfo = data.slotInitInfo
-
       setRecoverRecordId(null)
-      setRecoveringGuardians(guardians)
-      setRecoveringThreshold(threshold)
       setRecoveringSlot(slot)
       setRecoveringSlotInitInfo(slotInitInfo)
+      const guardianDetails = data.guardianDetails
 
-      setLoading(false)
+      if (guardianDetails && guardianDetails.guardians) {
+        const guardians = guardianDetails.guardians
+        const threshold = guardianDetails.threshold
+        setRecoveringGuardians(guardians)
+        setRecoveringThreshold(threshold)
+        setLoading(false)
 
-      dispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: RecoverStepEn.ResetPassword,
-      });
+        dispatch({
+          type: StepActionTypeEn.JumpToTargetStep,
+          payload: RecoverStepEn.ResetPassword,
+        });
+      } else {
+        setLoading(false)
+        dispatch({
+          type: StepActionTypeEn.JumpToTargetStep,
+          payload: RecoverStepEn.UploadGuardians,
+        });
+      }
     } catch (e: any) {
-      /* setLoading(false)
-       * toast({
-       *   title: e.message,
-       *   status: "error",
-       * }) */
-      dispatch({
-        type: StepActionTypeEn.JumpToTargetStep,
-        payload: RecoverStepEn.UploadGuardians,
-      });
+      setLoading(false)
+      toast({
+        title: e.message,
+        status: "error",
+      })
     }
   };
 
