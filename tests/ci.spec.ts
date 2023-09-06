@@ -25,19 +25,6 @@ if (fs.existsSync(SHARING_FILE)) {
     fs.unlinkSync(SHARING_FILE);
 }
 
-{
-    const testEnvFile = path.join(__dirname, "..", ".env.test");
-    if (!fs.existsSync(testEnvFile)) {
-        throw new Error("Please create .env.test file");
-    }
-    const testEnvContent = fs.readFileSync(testEnvFile, "utf-8");
-    if (!testEnvContent.includes('PRIVATEKEY: "0x')) {
-        console.log("testEnvFile", testEnvFile);
-        console.log("testEnvContent", testEnvContent);
-        throw new Error("Please set PRIVATEKEY in .env.test file");
-    }
-}
-
 const metamaskChromeDir = path.join(archiveDir, "chrome");
 if (!fs.existsSync(metamaskChromeDir)) {
     // curl -o metamask.zip https://raw.githubusercontent.com/jayden-sudo/archive/main/metamask.zip && unzip metamask.zip -d ./metamask

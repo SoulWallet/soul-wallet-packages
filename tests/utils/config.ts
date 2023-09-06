@@ -1,8 +1,5 @@
 import dotenv from "dotenv";
-import path from "path";
-const testEnvFile = path.join(__dirname, "..", "..", ".env.test");
-dotenv.config({ path: testEnvFile });
-
+dotenv.config({ path: ".env.test" });
 export class Config {
     static privateKey(): string {
         const _privateKey = process.env.PRIVATEKEY;
