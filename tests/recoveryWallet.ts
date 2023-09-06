@@ -28,13 +28,6 @@ export async function recovery(
         debugger;
         throw new Error("popupPage is undefined");
     }
-    for (let index = 0; index < pages.length; index++) {
-        const page = pages[index];
-        if (page.url() === "about:blank") {
-            await page.close();
-            break;
-        }
-    }
 
     await MetaMask.init(context);
     await MetaMask.importPrivateKey(context, guardians[0]);

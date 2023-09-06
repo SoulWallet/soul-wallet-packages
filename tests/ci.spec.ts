@@ -40,7 +40,7 @@ if (!fs.existsSync(metamaskChromeDir)) {
 
 test.describe("CI", () => {
     test("Activate Wallet", async ({ context, extensionId }) => {
-        test.setTimeout(1000 * 60 * 4);
+        test.setTimeout(1000 * 60 * 3);
         console.log("Activate Wallet start");
         try {
             const { walletAddress, guardians, threshold } = await activate(context, extensionId, screenshotDir, {
