@@ -1,7 +1,9 @@
 name: ci
+
 on:
   push:
-    branches: ["feature/ui"]
+    branches: ["develop"]
+
 jobs:
   UnitTest:
     timeout-minutes: 20
@@ -10,6 +12,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # base64 < .env
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_BUILD }}" | base64 -d > .env
+          ls -la .env
+        
+      # base64 < .env.test
+      - name: Create .env.test file
+        run: |
+          echo "${{ secrets.ENV_TEST }}" | base64 -d > .env.test
+          ls -la .env.test
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -36,15 +50,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # base64 < .env
-      - name: Create .env file
-        run: echo "${{ secrets.ENV_BUILD }}" | base64 -d > .env
-        
-      # base64 < .env.test
-      - name: Create .env.test file
-        run: echo "${{ secrets.ENV_TEST }}" | base64 -d > .env.test
+        run: pnpm install
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install chromium --with-deps
@@ -55,7 +61,7 @@ jobs:
 
       - name: Run UI:Test
         run: xvfb-run npx playwright test
-        timeout-minutes: 10
+        timeout-minutes: 20
 
       - uses: actions/upload-artifact@v3
         if: always()
@@ -79,7 +85,15 @@ jobs:
           retention-days: 30
      
       - uses: actions/upload-artifact@v3
+        if: success()
         with:
          name: dist
          path: dist/
          retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+         name: dist(failure)
+         path: dist/
+         retention-days: 1

@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.test" });
-
 export class Config {
     static privateKey(): string {
         const _privateKey = process.env.PRIVATEKEY;
@@ -41,5 +40,23 @@ export class Config {
             throw new Error(`${envName} is not a number`);
         }
         return maxFeeNumber;
+    }
+
+    static getChainList(): string {
+        const envName = `CHAINLIST`;
+        const chainList = process.env[envName];
+        if (!chainList) {
+            throw new Error(`${envName} is not defined in .env.test file`);
+        }
+        return chainList;
+    }
+
+    static activateWallet(netWorkName: string): boolean {
+        const envName = `activatewallet-${Config.networkName(netWorkName)}`;
+        const activate = process.env[envName];
+        if (!activate) {
+            throw new Error(`${envName} is not defined in .env.test file`);
+        }
+        return activate === "true";
     }
 }
