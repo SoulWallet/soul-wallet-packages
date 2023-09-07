@@ -98,39 +98,41 @@ const SaveGuardians = () => {
     setEditingGuardiansInfo(null)
   }
 
+  const getGuardiansInfo = () => {
+    const keystore = chainConfig.contracts.l1Keystore
+    const initialKey = ethers.zeroPadValue(account, 32)
+    const guardianHash = calcGuardianHash(guardians, threshold)
+    const initialGuardianHash = guardianHash
+    const salt = ethers.ZeroHash
+    let initialGuardianSafePeriod = L1KeyStore.days * 2
+    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
+    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod)
+    const slotInitInfo = {
+      initialKey,
+      initialGuardianHash,
+      initialGuardianSafePeriod
+    }
+
+    return {
+      keystore,
+      guardianHash,
+      guardianDetails: {
+        guardians,
+        threshold: Number(threshold),
+        salt
+      },
+      slot,
+      slotInitInfo
+    }
+  }
+
   const handleBackupGuardians = async () => {
     try {
       setLoading(true)
-      const keystore = chainConfig.contracts.l1Keystore
-      const initialKey = ethers.zeroPadValue(account, 32)
-      const guardianHash = calcGuardianHash(guardians, threshold)
-      console.log('guardianHash', guardians, threshold, guardianHash)
-      const initialGuardianHash = guardianHash
-      const salt = ethers.ZeroHash
-      let initialGuardianSafePeriod = L1KeyStore.days * 2
-      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-      const slotInitInfo = {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
-      }
-
-      const params = {
-        keystore,
-        guardianHash,
-        guardianDetails: {
-          guardians,
-          threshold: Number(threshold),
-          salt
-        },
-        slot,
-        slotInitInfo
-      }
-
-      const result = await api.guardian.backup(params)
-      setSlot(slot)
-      setSlotInitInfo(slotInitInfo)
+      const info = getGuardiansInfo()
+      const result = await api.guardian.backup(info)
+      setSlot(info.slot)
+      setSlotInitInfo(info.slotInitInfo)
       setLoading(false)
       setLoaded(true)
       toast({
@@ -151,53 +153,19 @@ const SaveGuardians = () => {
     try {
       setSending(true)
       const email = emailForm.values.email
-
-      if (!email) {
-
-      }
-
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const keystore = chainConfig.contracts.l1Keystore
-      const initialKey = ethers.zeroPadValue(account, 32)
-      const guardianHash = calcGuardianHash(guardians, threshold)
-      const initialGuardianHash = guardianHash
-      const salt = ethers.ZeroHash
-      let initialGuardianSafePeriod = L1KeyStore.days * 2
-      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-      // guardianNames
-      const slotInitInfo = {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
-      }
-
-      const params = {
-        email,
-        filename,
-        keystore,
-        guardianHash,
-        guardianNames,
-        guardianDetails: {
-          guardians,
-          threshold: Number(threshold),
-          salt
-        },
-        slot,
-        slotInitInfo
-      }
-
-      const result = await api.guardian.emailBackup(params)
-      setSlot(slot)
-      setSlotInitInfo(slotInitInfo)
+      const info = getGuardiansInfo()
+      const result = await api.guardian.emailBackup({ email, filename, ...info })
+      setSlot(info.slot)
+      setSlotInitInfo(info.slotInitInfo)
       setSending(false)
       setSended(true)
       toast({
         title: "Email Backup Success!",
         status: "success",
       })
-      console.log('handleEmailBackupGuardians', params, result)
+      console.log('handleEmailBackupGuardians', info, result)
     } catch (e: any) {
       setSending(false)
       toast({
@@ -212,44 +180,16 @@ const SaveGuardians = () => {
       setDownloading(true)
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const keystore = chainConfig.contracts.l1Keystore
-      const initialKey = ethers.zeroPadValue(account, 32)
-      const guardianHash = calcGuardianHash(guardians, threshold)
-      const initialGuardianHash = guardianHash
-      const salt = ethers.ZeroHash
-      let initialGuardianSafePeriod = L1KeyStore.days * 2
-      initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-      const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod);
-      // guardianNames
-      const slotInitInfo = {
-        initialKey,
-        initialGuardianHash,
-        initialGuardianSafePeriod
-      }
-
-      const params = {
-        filename,
-        keystore,
-        guardianHash,
-        guardianNames,
-        guardianDetails: {
-          guardians,
-          threshold: Number(threshold),
-          salt
-        },
-        slot,
-        slotInitInfo
-      }
-
-      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(params))}`
+      const info = getGuardiansInfo()
+      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify({ filename, ...info }))}`
       const link = document.createElement("a")
       link.setAttribute("href", dataStr)
       link.setAttribute("target", "_blank")
       link.setAttribute("download", filename)
       link.click()
 
-      setSlot(slot)
-      setSlotInitInfo(slotInitInfo)
+      setSlot(info.slot)
+      setSlotInitInfo(info.slotInitInfo)
       setDownloading(false)
       setDownloaded(true)
     } catch (e: any) {
