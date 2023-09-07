@@ -62,7 +62,8 @@ const GuardiansChecking = () => {
     setGuardianNames,
     setThreshold,
     setSlot,
-    setSlotInitInfo
+    setSlotInitInfo,
+    newKey
   } = useGuardianStore();
   // const { initRecoverWallet } = useWallet();
   const toast = useToast()
@@ -103,6 +104,16 @@ const GuardiansChecking = () => {
       setRecoverStatus(status)
       const statusList = result.data.statusData.chainRecoveryStatus
       setChainStatusList(statusList)
+
+      if (status === 3 && newKey && account !== `0x${newKey.slice(-40)}`) {
+        replaceAddress();
+        setGuardians(recoveringGuardians);
+        setGuardianNames(recoveringGuardianNames);
+        setThreshold(recoveringThreshold);
+      } else if (status === 4) {
+        setRecoverRecordId(null)
+      }
+
       setLoaded(true)
       console.log('recoveryRecordID', result, guardianSignatures)
     } catch (error: any) {
@@ -153,7 +164,10 @@ const GuardiansChecking = () => {
     // setSlot(recoveringSlot)
     // setSlotInitInfo(recoveringSlotInitInfo)
     goPlugin('wallet')
-    setReplaced(true)
+  }
+
+  const openWallet = async () => {
+    goPlugin('wallet')
   }
 
   console.log('account111', account, recoverStatus, chainStatusList)
@@ -174,22 +188,13 @@ const GuardiansChecking = () => {
     return (
       <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
         <Heading1 _styles={{ marginBottom: '20px' }}>Recover wallet success</Heading1>
-        {replaced ? (
-          <Button
-            disabled={true}
-            _styles={{ width: '100%' }}
-          >
-            Replaced
-          </Button>
-        ): (
-          <Button
-            disabled={false}
-            onClick={replaceWallet}
-            _styles={{ width: '100%' }}
-          >
-            Replace Wallet
-          </Button>
-        )}
+        <Button
+          disabled={false}
+          onClick={openWallet}
+          _styles={{ width: '100%' }}
+        >
+          Open Wallet
+        </Button>
       </Box>
     )
   }
