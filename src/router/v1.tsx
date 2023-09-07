@@ -20,7 +20,7 @@ export default (
     <Route path="setting" element={<Setting />} />
     <Route path="add-fund" element={<AddFund />} />
     <Route path="sign" element={<SignPage />} />
-    <Route path="activate-wallet" element={<ActivateWallet />} />
+    <Route path="activate" element={<ActivateWallet />} />
     <Route path="launch" element={<Launch />} />
     <Route path="create" element={<CreatePage />} />
     <Route path="recover" element={<RecoverPage />} />

@@ -22,7 +22,7 @@ export default function PluginRouter() {
         const recovering = await getLocalStorage("recovering");
         const isLocked = await keystore.checkLocked();
         const isSign = location.pathname.includes("/sign");
-        const isActivate = location.pathname.includes("/activate-wallet");
+        const isActivate = location.pathname.includes("/activate");
 
         if (sessionPw) {
             await keystore.unlock(sessionPw);
@@ -30,7 +30,7 @@ export default function PluginRouter() {
 
         if (mode !== "web") {
             if (isActivate) {
-                navigate("activate-wallet");
+                navigate("activate");
             } else if (recovering) {
                 goWebsite("recover");
             } else if ((isLocked || sessionPw) && !isSign && addressList.length > 0) {

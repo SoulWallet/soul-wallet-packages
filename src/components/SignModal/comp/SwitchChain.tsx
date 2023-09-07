@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Image, Flex, Text, Menu, MenuButton, MenuList, MenuItem, Tooltip } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Image, Flex, Text, Menu, MenuButton, MenuList, MenuItem, Tooltip, useDisclosure } from "@chakra-ui/react";
 import SwitchNetworkLine from "@src/assets/switch-chain-line.svg";
 import Button from "../../Button";
 import useConfig from "@src/hooks/useConfig";
@@ -9,6 +9,9 @@ import { InfoWrap, InfoItem } from "../index";
 import { useChainStore } from "@src/store/chain";
 import { useAddressStore } from "@src/store/address";
 import { toShortAddress, getChainInfo } from "@src/lib/tools";
+import useBrowser from "@src/hooks/useBrowser";
+import ErrorModal from "@src/components/ErrorModal";
+import config from "@src/config";
 
 const ChainAvatar = ({ avatar }: any) => (
     <Flex align="center" justify={"center"} bg="#fff" rounded="full" w="72px" h="72px">
@@ -20,7 +23,36 @@ export default function ConnectDapp({ onConfirm, targetChainId }: any) {
     const { selectedAddressItem } = useConfig();
     const { selectedChainId } = useChainStore();
     const { addressList, setSelectedAddress } = useAddressStore();
+    const { setSelectedChainId } = useChainStore();
     const { title, address } = selectedAddressItem;
+    const [errorType, setErrorType] = useState(0);
+    const { navigate } = useBrowser();
+
+    const checkIfCanSwitch = () => {
+        const chainSupported = config.chainList.filter((item) => item.chainIdHex === targetChainId).length > 0;
+
+        const targetChainActivited = selectedAddressItem.activatedChains.includes(targetChainId);
+        const otherAccountsTargetChainActivited =
+            addressList.map((item) => item.activatedChains.includes(targetChainId)).length > 0;
+
+        if (!chainSupported) {
+            setErrorType(1);
+        } else if (!targetChainActivited && otherAccountsTargetChainActivited) {
+            setErrorType(2);
+        } else if (!targetChainActivited && !otherAccountsTargetChainActivited) {
+            setErrorType(3);
+        }
+    };
+
+    const cancelSwitch = () => {
+        // TODO, throw error here
+        setErrorType(0);
+        window.close();
+    };
+
+    useEffect(() => {
+        checkIfCanSwitch();
+    }, []);
 
     const canSwitch = selectedAddressItem.activatedChains.includes(targetChainId);
 
@@ -106,6 +138,51 @@ export default function ConnectDapp({ onConfirm, targetChainId }: any) {
             >
                 Switch network
             </Button>
+
+            {errorType === 1 && (
+                <ErrorModal
+                    text="Unfortunately, your selected network is not supported yet. Please try again later."
+                    cancelText="Cancel"
+                    onCancel={cancelSwitch}
+                    onClose={() => {}}
+                    okText="Back"
+                    onOk={() => {
+                        navigate("wallet");
+                    }}
+                />
+            )}
+
+            {errorType === 2 && (
+                <ErrorModal
+                    text="Please activate your account or select an activated account on this network to continue"
+                    cancelText="Other account"
+                    onCancel={() => {
+                        setErrorType(0);
+                    }}
+                    onClose={() => {
+                        setErrorType(0);
+                    }}
+                    okText="Activate"
+                    onOk={() => {
+                        setSelectedChainId(targetChainId);
+                        navigate("activate");
+                    }}
+                />
+            )}
+
+            {errorType === 3 && (
+                <ErrorModal
+                    text="Please activate your account on this network to continue"
+                    cancelText="Cancel"
+                    onCancel={cancelSwitch}
+                    onClose={() => {}}
+                    okText="Activate"
+                    onOk={() => {
+                        setSelectedChainId(targetChainId);
+                        navigate("activate");
+                    }}
+                />
+            )}
         </Box>
     );
 }
