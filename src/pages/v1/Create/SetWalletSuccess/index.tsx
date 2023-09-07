@@ -41,7 +41,7 @@ const SetWalletSuccess = ({ mode }: IStepCompletion) => {
           </TextBody>
         </Box>
         <Button onClick={() => {
-          goPlugin(`activate-wallet`)
+          goPlugin(`activate`)
         }} _styles={{ width: '100%', marginTop: '0.75em' }}>
           Activate Wallet
         </Button>

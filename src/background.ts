@@ -61,11 +61,17 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
             } else {
                 openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}`, windowWidth);
             }
-
+            break;
+        
+        case "switchChain":
+            console.log('Swith chain msg', msg);
+            const targetChainId = msg.data.chainId
+            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}&targetChainId=${targetChainId}`, windowWidth);
             break;
 
         case "getChainConfig":
             const chainConfig = getSelectedChainItem();
+            console.log("SO you see", chainConfig)
             browser.tabs.sendMessage(Number(senderTabId), {
                 id,
                 isResponse: true,

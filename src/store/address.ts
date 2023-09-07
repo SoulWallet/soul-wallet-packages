@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 export interface IAddressItem {
     title: string;
     address: string;
-    activatedChains: number[];
+    activatedChains: string[];
     allowedOrigins: string[];
 }
 
@@ -18,8 +18,8 @@ export interface IAddressStore {
     updateAddressItem: (address: string, addressItem: Partial<IAddressItem>) => void;
     deleteAddress: (address: string) => void;
     toggleAllowedOrigin: (address: string, origin: string, isAdd?: boolean) => void;
-    toggleActivatedChain: (address: string, chainId: number, isAdd?: boolean) => void;
-    getIsActivated: (address:string, chainId: number) => boolean;
+    toggleActivatedChain: (address: string, chainId: string, isAdd?: boolean) => void;
+    getIsActivated: (address:string, chainId: string) => boolean;
     getSelectedAddressItem: () => IAddressItem;
 }
 

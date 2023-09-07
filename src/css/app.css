@@ -69,3 +69,7 @@ body::-webkit-scrollbar {
 .logo {
     height: 100px;
 }
+
+.chakra-modal__content-container{
+    outline: 0;
+}

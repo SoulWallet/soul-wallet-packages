@@ -14,7 +14,7 @@ export default function ActivateHint() {
                 Welcome to a world of possibilities! Add ETH, USDC, DAI, or USDT to continue the setup of your wallet.
             </Text>
             <Box textAlign={"right"}>
-                <Button fontSize="14px" fontWeight={"800"} py="2" onClick={() => navigate("activate-wallet")}>
+                <Button fontSize="14px" fontWeight={"800"} py="2" onClick={() => navigate("activate")}>
                     Begin
                 </Button>
             </Box>

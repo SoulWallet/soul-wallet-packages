@@ -19,6 +19,7 @@ const providerToInject = {
     request: async (call) => {
         // get latest chain config
         const chainConfig = await windowBus.send("getChainConfig");
+        console.log("CHAIN CONFIG", chainConfig)
         return await handleRequests(call, chainConfig);
     },
     sendAsync: async (call, fn) => {
@@ -59,17 +60,3 @@ const injectProvider = async () => {
 };
 
 injectProvider();
-// const checkProvider = async () => {
-//     console.log("check provider", window.ethereum);
-
-//     // should get this from store
-//     const isDefaultProvider = true;
-
-//     if (isDefaultProvider && !window.ethereum.isSoul) {
-//         window.ethereum = providerToInject;
-//     }
-// };
-
-// setInterval(() => {
-//     checkProvider();
-// }, 3000);

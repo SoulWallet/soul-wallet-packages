@@ -14,11 +14,13 @@ import useConfig from "@src/hooks/useConfig";
 import ConnectDapp from "./comp/ConnectDapp";
 import SignTransaction from "./comp/SignTransaction";
 import SignMessage from "./comp/SignMessage";
+import SwitchChain from "./comp/SwitchChain";
 
 enum SignTypeEn {
     Transaction,
     Message,
     Account,
+    SwitchChain,
 }
 
 export const InfoWrap = ({ children, ...restProps }: any) => (
@@ -55,6 +57,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
     const [activeTxns, setActiveTxns] = useState<any>(null); // [
     const { selectedChainId } = useChainStore();
     const { decodeCalldata } = useTools();
+    const [targetChainId, setTargetChainId] = useState("");
     const { getFeeCost, getGasPrice, getPrefund } = useQuery();
     const [sendToAddress, setSendToAddress] = useState("");
     const { chainConfig, selectedAddressItem } = useConfig();
@@ -101,11 +104,11 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
     useImperativeHandle(ref, () => ({
         async show(obj: any) {
-            const { txns, actionType, origin, keepVisible, msgToSign, sendTo } = obj;
+            const { txns, actionType, origin, keepVisible, msgToSign, sendTo, targetChainId: tChainId } = obj;
             setVisible(true);
             setOrigin(origin);
 
-            console.log('show sign modal', txns, actionType, origin, keepVisible, msgToSign, sendTo);
+            console.log("show sign modal", txns, actionType, origin, keepVisible, msgToSign, sendTo);
             setKeepModalVisible(keepVisible || false);
 
             setSendToAddress(sendTo);
@@ -114,6 +117,9 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                 setSignType(SignTypeEn.Account);
             } else if (actionType === "signMessage" || actionType === "signMessageV4") {
                 setSignType(SignTypeEn.Message);
+            } else if (actionType === "switchChain") {
+                setSignType(SignTypeEn.SwitchChain);
+                setTargetChainId(tChainId);
             } else {
                 setSignType(SignTypeEn.Transaction);
             }
@@ -170,6 +176,10 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
         }
     };
 
+    const onSwitchChain = async () => {
+        promiseInfo.resolve();
+    };
+
     const onConnect = () => {
         promiseInfo.resolve();
     };
@@ -180,7 +190,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
 
     const checkSponser = async (userOp: UserOperation) => {
         const res = await api.sponsor.check(
-            `0x${selectedChainId.toString(16)}`,
+            selectedChainId,
             chainConfig.contracts.entryPoint,
             UserOpUtils.userOperationFromJSON(UserOpUtils.userOperationToJSON(userOp)),
         );
@@ -241,6 +251,7 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                         h="full"
                         zIndex={"20"}
                         position={"absolute"}
+                        w="360px"
                         top="0"
                         bottom={"0"}
                         left={"0"}
@@ -266,6 +277,9 @@ const SignModal = (_: unknown, ref: Ref<any>) => {
                         )}
                         {signType === SignTypeEn.Message && (
                             <SignMessage messageToSign={messageToSign} onSign={onSign} origin={origin} />
+                        )}
+                        {signType === SignTypeEn.SwitchChain && (
+                            <SwitchChain targetChainId={targetChainId} onConfirm={onSwitchChain} />
                         )}
                         <Text
                             color="danger"

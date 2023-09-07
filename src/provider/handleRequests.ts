@@ -13,6 +13,10 @@ const getAccounts = async () => {
     return [account];
 };
 
+const switchChain = async (params: any) => {
+    return await windowBus.send("switchChain", params[0]);
+}
+
 const sendTransaction = async (params: any) => {
     params.forEach((item: any) => {
         if (!item.value) {
@@ -150,7 +154,9 @@ export default async function handleRequests(call: any, chainConfig: any) {
         case "eth_signTypedData_v4":
             return await signTypedDataV4(params);
         case "wallet_switchEthereumChain":
-            console.log("Not supported yet");
-            return true;
+            console.log("switch chain prompt", params);
+            return await switchChain(params);
+            // return true;
+
     }
 }

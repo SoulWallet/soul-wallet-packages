@@ -22,13 +22,13 @@ export default function ChainSelect() {
                     return (
                         <React.Fragment key={idx}>
                             {idx ? <MenuDivider /> : ""}
-                            <MenuItem key={item.chainId} onClick={() => setSelectedChainId(item.chainId)}>
+                            <MenuItem key={item.chainIdHex} onClick={() => setSelectedChainId(item.chainIdHex)}>
                                 <Flex w="100%" align={"center"} justify={"space-between"}>
                                     <Flex align={"center"} gap="2">
                                         <Image src={item.icon} w="5" h="5" />
                                         <Text data-testid={`text-chainname-${idx}`} fontWeight={"700"}>{item.chainName}</Text>
                                     </Flex>
-                                    {item.chainId === selectedChainId && <Image src={IconChecked} w="5" h="5" />}
+                                    {item.chainIdHex === selectedChainId && <Image src={IconChecked} w="5" h="5" />}
                                 </Flex>
                             </MenuItem>
                         </React.Fragment>

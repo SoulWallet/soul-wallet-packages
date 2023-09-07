@@ -10,14 +10,7 @@ interface IProps extends Omit<ButtonProps, "type"> {
     href?: string;
 }
 
-export default function Button({
-    onClick,
-    children,
-    loading,
-    disabled,
-    href,
-    ...restProps
-}: IProps) {
+export default function Button({ onClick, children, loading, disabled, href, ...restProps }: IProps) {
     const doClick = () => {
         if (!loading && !disabled) {
             onClick();
@@ -37,7 +30,7 @@ export default function Button({
             _hover={{ bg: "brand.redDarken" }}
             h="unset"
             transition={"all 0.2s ease-in-out"}
-            _disabled={{ opacity: "0.5", cursor: "not-allowed" }}
+            _disabled={{ bg: "#898989", cursor: "not-allowed" }}
             onClick={doClick}
             rounded={"20px"}
             lineHeight={"1"}
