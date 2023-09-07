@@ -7,7 +7,8 @@ export default function Logo() {
   return (
     <Box
       display="flex"
-      h="100px"
+      height="100px"
+      minHeight="100px"
       alignItems="center"
     >
       <Image width="70px" src={LogoIcon as any} alt="Logo" />
