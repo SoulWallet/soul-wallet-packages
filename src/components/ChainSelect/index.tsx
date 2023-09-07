@@ -4,9 +4,11 @@ import IconCheveronDownBlack from "@src/assets/icons/chevron-down-black.svg";
 import IconChecked from "@src/assets/icons/checked.svg";
 import { useChainStore } from "@src/store/chain";
 import useConfig from "@src/hooks/useConfig";
+import useBrowser from "@src/hooks/useBrowser";
 
 export default function ChainSelect() {
     const { chainList, setSelectedChainId, selectedChainId } = useChainStore();
+    const { goWebsite } = useBrowser();
     const { selectedChainItem } = useConfig();
     return (
         <Menu>
@@ -22,13 +24,24 @@ export default function ChainSelect() {
                     return (
                         <React.Fragment key={idx}>
                             {idx ? <MenuDivider /> : ""}
-                            <MenuItem key={item.chainIdHex} onClick={() => setSelectedChainId(item.chainIdHex)}>
+                            <MenuItem
+                                key={item.chainIdHex}
+                                filter={item.recovering ? "grayscale(1)" : ""}
+                                onClick={() =>
+                                    item.recovering ? goWebsite("recover") : setSelectedChainId(item.chainIdHex)
+                                }
+                            >
                                 <Flex w="100%" align={"center"} justify={"space-between"}>
                                     <Flex align={"center"} gap="2">
                                         <Image src={item.icon} w="5" h="5" />
-                                        <Text data-testid={`text-chainname-${idx}`} fontWeight={"700"}>{item.chainName}</Text>
+                                        <Text data-testid={`text-chainname-${idx}`} fontWeight={"700"}>
+                                            {item.chainName}
+                                        </Text>
                                     </Flex>
-                                    {item.chainIdHex === selectedChainId && <Image src={IconChecked} w="5" h="5" />}
+                                    {item.recovering && <Text fontSize="12px">Recovering</Text>}
+                                    {item.chainIdHex === selectedChainId && !item.recovering && (
+                                        <Image src={IconChecked} w="5" h="5" />
+                                    )}
                                 </Flex>
                             </MenuItem>
                         </React.Fragment>

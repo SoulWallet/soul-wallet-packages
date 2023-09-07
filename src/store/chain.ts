@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import config from "@src/config";
-import BN from 'bignumber.js'
+import BN from "bignumber.js";
 
 interface IChainItem {
     chainId: number;
@@ -12,6 +12,7 @@ interface IChainItem {
     contracts: any;
     provider: string;
     bundlerUrl: string;
+    recovering: boolean;
 }
 
 interface IChainStore {
@@ -19,6 +20,7 @@ interface IChainStore {
     chainList: IChainItem[];
     getSelectedChainItem: () => any;
     setSelectedChainId: (chainId: string) => void;
+    updateChainItem: (chainId: string, chainItem: Partial<IChainItem>) => void;
 }
 
 const getIndexByChainId = (chainList: IChainItem[], chainId: string) => {
@@ -28,7 +30,6 @@ const getIndexByChainId = (chainList: IChainItem[], chainId: string) => {
 const createChainSlice = immer<IChainStore>((set, get) => ({
     // default first one
     selectedChainId: config.chainList[0].chainIdHex,
-    // IMPORTANT TODO, don't persist this
     chainList: config.chainList,
     getSelectedChainItem: () => {
         const index = getIndexByChainId(get().chainList, get().selectedChainId);
@@ -38,6 +39,17 @@ const createChainSlice = immer<IChainStore>((set, get) => ({
         set({
             selectedChainId: chainId,
         }),
+    updateChainItem: (chainId: string, chainItem: Partial<IChainItem>) => {
+        set((state) => {
+            const index = getIndexByChainId(state.chainList, chainId);
+            const item = state.chainList.filter((item: IChainItem) => item.chainIdHex === chainId)[0];
+            const itemToSet = {
+                ...item,
+                ...chainItem,
+            };
+            state.chainList[index] = itemToSet;
+        });
+    },
 }));
 
 export const useChainStore = create<IChainStore>()(

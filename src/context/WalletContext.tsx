@@ -6,6 +6,7 @@ import useKeyring from "@src/hooks/useKeyring";
 import useConfig from "@src/hooks/useConfig";
 import api from "@src/lib/api";
 import { useGuardianStore } from "@src/store/guardian";
+import { useChainStore } from "@src/store/chain";
 
 interface IWalletContext {
     ethersProvider: ethers.JsonRpcProvider;
@@ -27,8 +28,20 @@ export const WalletContextProvider = ({ children }: any) => {
     const { selectedChainItem } = useConfig();
     const [account, setAccount] = useState<string>("");
     const [checkingLocked, setCheckingLocked] = useState(true);
-    const { recoverRecordId } = useGuardianStore();
+    const {
+        recoverRecordId,
+        setRecoverRecordId,
+        setGuardians,
+        recoveringGuardians,
+        setGuardianNames,
+        recoveringGuardianNames,
+        setThreshold,
+        recoveringThreshold,
+    } = useGuardianStore();
+    const { setSelectedChainId } = useChainStore();
     const [recoverCheckInterval, setRecoverCheckInterval] = useState<any>();
+    const { updateChainItem } = useChainStore();
+
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeyring();
@@ -67,9 +80,32 @@ export const WalletContextProvider = ({ children }: any) => {
         await lockedModal.current.show();
     };
 
-    const checkRecoverStatus = async() => {
-        console.log('check recover status')
-        const res = await api.guardian.getRecoverRecord({recoveryRecordID: recoverRecordId});
+    const checkRecoverStatus = async () => {
+        const res = (await api.guardian.getRecoverRecord({ recoveryRecordID: recoverRecordId })).data;
+
+        // check if should replace key
+        if (res.status >= 3 && account !== `0x${res.newKey.slice(-40)}`) {
+            replaceAddress();
+            setGuardians(recoveringGuardians);
+            setGuardianNames(recoveringGuardianNames);
+            setThreshold(recoveringThreshold);
+        }
+
+        if (res.status === 4) {
+            setRecoverRecordId(null);
+        }
+
+        const chainRecoverStatus = res.statusData.chainRecoveryStatus;
+        for (let item of chainRecoverStatus) {
+            updateChainItem(item.chainId, {
+                recovering: item.status === 0,
+            });
+        }
+
+        // IMPORTANT TODO, Judge first available chain and set as default
+        if (chainRecoverStatus.filter((item: any) => item.chainId === selectedChainItem.chainIdHex).length === 0) {
+            setSelectedChainId(chainRecoverStatus.filter((item: any) => item.status)[0].chainId);
+        }
     };
 
     useEffect(() => {
