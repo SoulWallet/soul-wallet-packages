@@ -33,7 +33,7 @@ export default function ConnectDapp({ onConfirm, targetChainId }: any) {
 
         const targetChainActivited = selectedAddressItem.activatedChains.includes(targetChainId);
         const otherAccountsTargetChainActivited =
-            addressList.map((item) => item.activatedChains.includes(targetChainId)).length > 0;
+            addressList.filter((item) => item.activatedChains.includes(targetChainId)).length > 0;
 
         if (!chainSupported) {
             setErrorType(1);
@@ -45,9 +45,9 @@ export default function ConnectDapp({ onConfirm, targetChainId }: any) {
     };
 
     const cancelSwitch = () => {
-        // TODO, throw error here
         setErrorType(0);
         window.close();
+        // throw new Error('User rejected switch network');
     };
 
     useEffect(() => {
