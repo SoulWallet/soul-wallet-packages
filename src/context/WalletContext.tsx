@@ -4,6 +4,8 @@ import SignModal from "@src/components/SignModal";
 import Locked from "@src/components/Locked";
 import useKeyring from "@src/hooks/useKeyring";
 import useConfig from "@src/hooks/useConfig";
+import api from "@src/lib/api";
+import { useGuardianStore } from "@src/store/guardian";
 
 interface IWalletContext {
     ethersProvider: ethers.JsonRpcProvider;
@@ -25,6 +27,8 @@ export const WalletContextProvider = ({ children }: any) => {
     const { selectedChainItem } = useConfig();
     const [account, setAccount] = useState<string>("");
     const [checkingLocked, setCheckingLocked] = useState(true);
+    const { recoverRecordId } = useGuardianStore();
+    const [recoverCheckInterval, setRecoverCheckInterval] = useState<any>();
     const signModal = createRef<any>();
     const lockedModal = createRef<any>();
     const keystore = useKeyring();
@@ -63,9 +67,30 @@ export const WalletContextProvider = ({ children }: any) => {
         await lockedModal.current.show();
     };
 
+    const checkRecoverStatus = async() => {
+        console.log('check recover status')
+        const res = await api.guardian.getRecoverRecord({recoveryRecordID: recoverRecordId});
+    };
+
     useEffect(() => {
         getAccount();
     }, []);
+
+    useEffect(() => {
+        if (!recoverRecordId) {
+            return;
+        }
+
+        checkRecoverStatus();
+
+        const interval = setInterval(checkRecoverStatus, 5000);
+
+        setRecoverCheckInterval(interval);
+
+        return () => {
+            clearInterval(recoverCheckInterval);
+        };
+    }, [recoverRecordId]);
 
     useEffect(() => {
         const current = lockedModal.current;
