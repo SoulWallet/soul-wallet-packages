@@ -46,11 +46,6 @@ const doSignAndSend = async (msg) => {
         },
         id: msg.id,
     });
-
-    // const receipt = await executeTransaction(signedUserOp, chainConfig);
-    // notify("Transaction success", "Your transaction was confirmed on chain");
-
-    // bgBus.resolve(msg.id, receipt);
 };
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {

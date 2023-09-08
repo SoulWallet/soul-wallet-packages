@@ -42,7 +42,7 @@ export const WalletContextProvider = ({ children }: any) => {
     } = useGuardianStore();
     const { setSelectedChainId, selectedChainId, updateChainItem } = useChainStore();
     const [recoverCheckInterval, setRecoverCheckInterval] = useState<any>();
-    const { addressList, addAddressItem, selectedAddress, getIsActivated, setSelectedAddress, toggleActivatedChain } =
+    const { addAddressItem, selectedAddress, getIsActivated, setSelectedAddress, toggleActivatedChain } =
         useAddressStore();
 
     const signModal = createRef<any>();
@@ -94,6 +94,7 @@ export const WalletContextProvider = ({ children }: any) => {
                     title: `Account ${index + 1}`,
                     address: item as any,
                     activatedChains: [],
+                    activatingChains: [],
                     allowedOrigins: [],
                 });
             }
