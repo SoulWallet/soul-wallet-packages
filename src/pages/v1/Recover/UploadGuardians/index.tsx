@@ -6,7 +6,7 @@ import { RecoveryActionTypeEn, useRecoveryDispatchContext } from "@src/context/R
 import { nanoid } from "nanoid";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
-import { Box, Input, Text, Image, useToast, Select } from "@chakra-ui/react"
+import { Box, Input, Text, Image, useToast, Select, Menu, MenuList, MenuButton, MenuItem } from "@chakra-ui/react"
 // import { TriangleDownIcon } from "@chakra-ui/icons"
 import FormInput from "@src/components/web/Form/FormInput";
 import SmallFormInput from "@src/components/web/Form/SmallFormInput";
@@ -298,10 +298,8 @@ const UploadGuardians = () => {
     }
   }
 
-  const selectAmount = (event: any) => {
-    if (event.target.value) {
-      amountForm.onChange('amount')(Number(event.target.value))
-    }
+  const selectAmount = (amount: any) => () => {
+    amountForm.onChange('amount')(amount)
   }
 
   useEffect(() => {
@@ -423,12 +421,33 @@ const UploadGuardians = () => {
             <Box display="flex" alignItems="center">
               <TextBody>Wallet recovery requires</TextBody>
               <Box width="80px" margin="0 10px">
-                <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
-                  {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
-                  {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
-                    <option key={nanoid(4)} value={i}>{i}</option>
-                  )}
-                </Select>
+                <Menu>
+                  <MenuButton
+                    px={2}
+                    py={2}
+                    width="80px"
+                    transition="all 0.2s"
+                    borderRadius="16px"
+                    borderWidth="1px"
+                    padding="12px"
+                    _hover={{
+                      borderColor: '#3182ce',
+                      boxShadow: '0 0 0 1px #3182ce'
+                    }}
+                    _expanded={{
+                      borderColor: '#3182ce',
+                      boxShadow: '0 0 0 1px #3182ce'
+                    }}
+                  >
+                    <Box display="flex" alignItems="center" justifyContent="space-between">{amountForm.values.amount}<DropDownIcon /></Box>
+                  </MenuButton>
+                  <MenuList>
+                    {!amountData.guardiansCount && <MenuItem key={nanoid(4)} onClick={selectAmount(0)}>0</MenuItem>}
+                    {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+                      <MenuItem key={nanoid(4)} onClick={selectAmount(i)}>{i}</MenuItem>
+                    )}
+                  </MenuList>
+                </Menu>
               </Box>
               <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
             </Box>
