@@ -22,9 +22,10 @@ export default function SetGuardianHint({ onSkip }: any) {
                     fontSize="14px"
                     fontWeight={"800"}
                     py="2"
-                    bg="#FAD5E2"
-                    color="#595068"
-                    _hover={{ bg: "#e2c3ce" }}
+                    color="#898989"
+                    bg="#fff"
+                    border="1px solid #898989"
+                    _hover={{ bg: "#898989", color: "#fff" }}
                     onClick={doSkip}
                 >
                     Skip
