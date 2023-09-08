@@ -276,3 +276,14 @@ export const getKeystoreStatus = (statusId: number) => {
 
     return "Pending";
 };
+
+// on new device, user need to retrive their address store
+// export const initAddressStatus = async(addressList: string[], chainList: any) => {
+
+//     return [
+//         {
+//             address: addressList[0],
+//             activatedChains: [],
+//         }
+//     ]
+// }

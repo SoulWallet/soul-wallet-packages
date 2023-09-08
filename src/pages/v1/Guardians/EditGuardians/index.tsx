@@ -6,7 +6,7 @@ import { CreateStepEn, GuardiansStepEn, StepActionTypeEn, useStepDispatchContext
 import useKeyring from "@src/hooks/useKeyring";
 import useWallet from "@src/hooks/useWallet";
 import { GuardianItem } from "@src/lib/type";
-import { Box, Text, Image, useToast, Select } from "@chakra-ui/react"
+import { Box, Text, Image, useToast, Select, Menu, MenuList, MenuButton, MenuItem } from "@chakra-ui/react"
 import { copyText, nextRandomId } from "@src/lib/tools";
 import useConfig from "@src/hooks/useConfig";
 import { L1KeyStore } from "@soulwallet/sdk";
@@ -30,6 +30,7 @@ import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
 import config from "@src/config";
 import { nanoid } from "nanoid";
+import GuardiansTips from "@src/components/web/GuardiansTips";
 
 const getNumberArray = (count: number) => {
   const arr = []
@@ -179,7 +180,6 @@ export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { calcGuardianHash, getReplaceGuardianInfo, getCancelSetGuardianInfo, getActiveGuardianHash } = useKeystore()
-  const [showTips, setShowTips] = useState(false)
   const [showStatusTips, setShowStatusTips] = useState(false)
 
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
@@ -362,11 +362,6 @@ export default function GuardiansSetting() {
     handleJumpToTargetStep(GuardiansStepEn.Save);
   };
 
-  const toggleTips = (event: any) => {
-    console.log('toggleTips', event)
-    setShowTips(!showTips)
-  }
-
   const toggleStatusTips = (event: any) => {
     console.log('toggleStatusTips', event)
     setShowStatusTips(!showStatusTips)
@@ -442,10 +437,8 @@ export default function GuardiansSetting() {
     setIsEditing(false)
   }
 
-  const selectAmount = (event: any) => {
-    if (event.target.value) {
-      amountForm.onChange('amount')(Number(event.target.value))
-    }
+  const selectAmount = (amount: any) => () => {
+    amountForm.onChange('amount')(amount)
   }
 
   useEffect(() => {
@@ -581,12 +574,7 @@ export default function GuardiansSetting() {
               <Text>Edit guardians</Text>
               <Text marginLeft="10px" transform="rotate(90deg)"><ArrowRightIcon /></Text>
             </Text>
-            <Box marginBottom="0.75em">
-              <TextBody textAlign="center">
-                Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
-              </TextBody>
-            </Box>
-            {showTips && <TipsInfo />}
+            <GuardiansTips />
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
               <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
                 {(guardianIds).map((id: any, i: number) => (
@@ -681,12 +669,7 @@ export default function GuardiansSetting() {
           Edit guardians
         </Heading1>
       )}
-      <Box marginBottom="0.75em" maxWidth="500px">
-        <TextBody textAlign="center">
-          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
-        </TextBody>
-      </Box>
-      {showTips && <TipsInfo />}
+      <GuardiansTips />
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any, i: number) => (
@@ -746,12 +729,33 @@ export default function GuardiansSetting() {
       <Box display="flex" alignItems="center">
         <TextBody>Wallet recovery requires</TextBody>
         <Box width="80px" margin="0 10px">
-          <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
-            {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
-            {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
-              <option key={nanoid(4)} value={i}>{i}</option>
-            )}
-          </Select>
+          <Menu>
+            <MenuButton
+              px={2}
+              py={2}
+              width="80px"
+              transition="all 0.2s"
+              borderRadius="16px"
+              borderWidth="1px"
+              padding="12px"
+              _hover={{
+                borderColor: '#3182ce',
+                boxShadow: '0 0 0 1px #3182ce'
+              }}
+              _expanded={{
+                borderColor: '#3182ce',
+                boxShadow: '0 0 0 1px #3182ce'
+              }}
+            >
+              <Box display="flex" alignItems="center" justifyContent="space-between">{amountForm.values.amount}<DropDownIcon /></Box>
+            </MenuButton>
+            <MenuList>
+              {!amountData.guardiansCount && <MenuItem key={nanoid(4)} onClick={selectAmount(0)}>0</MenuItem>}
+              {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+                <MenuItem key={nanoid(4)} onClick={selectAmount(i)}>{i}</MenuItem>
+              )}
+            </MenuList>
+          </Menu>
         </Box>
         <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
       </Box>

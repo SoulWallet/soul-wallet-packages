@@ -1,4 +1,4 @@
-import React, { useState, useRef, useImperativeHandle, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useImperativeHandle, useCallback, useEffect, Fragment } from 'react';
 import { ethers } from "ethers";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
@@ -111,22 +111,12 @@ const amountValidate = (values: any, props: any) => {
   return errors
 }
 
-export default function GuardiansSetting() {
-  const dispatch = useStepDispatchContext();
-  const keystore = useKeystore();
-  const { calcGuardianHash } = useKeystore()
-  const [loading, setLoading] = useState(false)
-  const [skipping, setSkipping] = useState(false)
+export default function SetGuardiansForm({ onSubmit, loading, textButton }: any) {
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
   const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
   const [guardiansList, setGuardiansList] = useState([])
   const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
-  const {calcWalletAddress} = useSdk();
-  const { selectedAddress, setSelectedAddress, setAddressList } = useAddressStore();
-  const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, setSlot } = useGuardianStore();
-  const toast = useToast()
-  const {chainConfig} = useConfig();
 
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields } = useForm({
     fields,
@@ -155,100 +145,25 @@ export default function GuardiansSetting() {
   const handleSubmit = async () => {
     if (disabled) return
 
-    try {
-      setLoading(true)
+    const guardiansList = guardianIds.map(id => {
+      const addressKey = `address_${id}`
+      const nameKey = `name_${id}`
+      let address = values[addressKey]
 
-      const guardiansList = guardianIds.map(id => {
-        const addressKey = `address_${id}`
-        const nameKey = `name_${id}`
-        let address = values[addressKey]
+      if (address && address.length) {
+        return { address, name: values[nameKey] }
+      }
 
-        if (address && address.length) {
-          return { address, name: values[nameKey] }
-        }
+      return null
+    }).filter(i => !!i)
+    console.log('guardiansList', guardiansList)
 
-        return null
-      }).filter(i => !!i)
-      console.log('guardiansList', guardiansList)
+    const guardianAddresses = guardiansList.map((item: any) => item.address)
+    const guardianNames = guardiansList.map((item: any) => item.name)
+    const threshold = amountForm.values.amount || 0
 
-      const guardianAddresses = guardiansList.map((item: any) => item.address)
-      const guardianNames = guardiansList.map((item: any) => item.name)
-      const threshold = amountForm.values.amount || 0
-
-      setGuardians(guardianAddresses)
-      setGuardianNames(guardianNames)
-      setThreshold(threshold)
-      setLoading(false)
-      handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    } catch (error: any) {
-      setLoading(false)
-      toast({
-        title: error.message,
-        status: "error",
-      })
-    }
+    if (onSubmit) onSubmit(guardianAddresses, guardianNames, threshold)
   }
-
-  const createInitialWallet = async () => {
-    const keystore = chainConfig.contracts.l1Keystore
-    const initialKey = ethers.zeroPadValue(account, 32)
-    const guardianHash = calcGuardianHash([], 0)
-    const initialGuardianHash = guardianHash
-    let initialGuardianSafePeriod = L1KeyStore.days * 2
-    initialGuardianSafePeriod = toHex(initialGuardianSafePeriod as any)
-
-    const slotInitInfo = {
-      initialKey,
-      initialGuardianHash,
-      initialGuardianSafePeriod
-    }
-    const slot = L1KeyStore.getSlot(initialKey, initialGuardianHash, initialGuardianSafePeriod)
-    setSlotInitInfo(slotInitInfo)
-    setSlot(slot)
-
-    const newAddress = await calcWalletAddress(0);
-    const walletName = `Account 1`
-    setAddressList([{ title: walletName, address: newAddress, activatedChains: [], activatingChains: [], allowedOrigins: [] }])
-    console.log('createInitialWallet', newAddress)
-    setSelectedAddress(newAddress)
-  }
-
-  const handleSkip = async () => {
-    try {
-      setLoading(true)
-
-      const guardiansList = guardianIds.map(id => {
-        const addressKey = `address_${id}`
-        const nameKey = `name_${id}`
-        let address = values[addressKey]
-
-        if (address && address.length) {
-          return { address, name: values[nameKey] }
-        }
-
-        return null
-      }).filter(i => !!i)
-      console.log('guardiansList', guardiansList)
-
-      const guardianAddresses = guardiansList.map((item: any) => item.address)
-      const guardianNames = guardiansList.map((item: any) => item.name)
-      const threshold = amountForm.values.amount || 0
-
-      setGuardians(guardianAddresses)
-      setGuardianNames(guardianNames)
-      setThreshold(threshold)
-      await createInitialWallet()
-      setLoading(false)
-      handleJumpToTargetStep(CreateStepEn.SetSoulWalletAsDefault);
-    } catch (error: any) {
-      setLoading(false)
-      toast({
-        title: error.message,
-        status: "error",
-      })
-    }
-  }
-  console.log('selectedAddress', selectedAddress, amountForm)
 
   const addGuardian = () => {
     const id = nextRandomId()
@@ -269,29 +184,6 @@ export default function GuardiansSetting() {
     }
   }
 
-  const handleJumpToTargetStep = (targetStep: CreateStepEn) => {
-    dispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: targetStep,
-    });
-  };
-
-  const handleNext = async () => {
-    try {
-      handleJumpToTargetStep(CreateStepEn.SaveGuardianList);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const onSkip = () => {
-    setSkipping(true)
-  };
-
-  const handleDelete = () => {
-    // removeGuardian(id);
-  };
-
   const selectAmount = (amount: any) => () => {
     amountForm.onChange('amount')(amount)
   }
@@ -302,29 +194,8 @@ export default function GuardiansSetting() {
     }
   }, [amountData.guardiansCount, amountForm.values.amount])
 
-  if (skipping) {
-    return (
-      <Box maxWidth="480px">
-        <Box background="white" display="flex" flexDirection="column" justifyContent="center" alignItems="center" padding="32px 80px" borderRadius="16px">
-          <Box marginBottom="1em"><WarningIcon /></Box>
-          <Heading3 width="100%">What if I don’t set up guardian now?</Heading3>
-          <TextBody width="100%" marginBottom="1em">Guardians are required to recover your wallet in the case of loss or theft. You can learn more here</TextBody>
-          <Heading3 width="100%">Can I set guardians in the future?</Heading3>
-          <TextBody width="100%" marginBottom="1em">Yes. You can setup or change your guardians anytime on your home page.</TextBody>
-          <Button width="100%" onClick={() => setSkipping(false)}>Set guardians now</Button>
-          <TextButton loading={loading} width="100%" disabled={loading} onClick={handleSkip}>
-            {loading && 'skipping'}
-            {!loading && 'I understand the risks, skip for now'}
-          </TextButton>
-        </Box>
-      </Box>
-    )
-  }
-
   return (
-    <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
-      <Heading1>Set guardians</Heading1>
-      <GuardiansTips />
+    <Fragment>
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any, i: number) => (
@@ -407,12 +278,6 @@ export default function GuardiansSetting() {
               )}
             </MenuList>
           </Menu>
-          {/* <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
-              {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
-              {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
-              <option key={nanoid(4)} value={i}>{i}</option>
-              )}
-              </Select> */}
         </Box>
         <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
       </Box>
@@ -425,14 +290,8 @@ export default function GuardiansSetting() {
         >
           Continue
         </Button>
-        <TextButton
-          color="rgb(137, 137, 137)"
-          onClick={onSkip}
-          _styles={{ width: '455px' }}
-        >
-          Skip for now
-        </TextButton>
+        {textButton}
       </Box>
-    </Box>
+    </Fragment>
   );
 }

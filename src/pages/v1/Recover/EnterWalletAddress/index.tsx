@@ -92,15 +92,15 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
   };
 
   return (
-    <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+    <Box width="432px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>
         Wallet recovery
       </Heading1>
       <Box marginBottom="0.75em">
-        <TextBody textAlign="center" maxWidth="500px">
+        <TextBody textAlign="center" maxWidth="350px">
           Enter the address you want to recover.
         </TextBody>
-        <TextBody textAlign="center" maxWidth="500px">
+        <TextBody textAlign="center" maxWidth="350px">
           (Recommend using an activated wallet address.)
         </TextBody>
       </Box>
@@ -112,12 +112,14 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         onBlur={onBlur('address')}
         errorMsg={showErrors.address && errors.address}
         _styles={{ marginTop: '0.75em', width: '100%' }}
+        // _inputStyles={{ width: "480px"}}
         autoFocus={true}
         onEnter={handleNext}
+        
       />
       <Button
         onClick={handleNext}
-        _styles={{ width: '100%', marginTop: '0.75em' }}
+        _styles={{ width: '350px', marginTop: '0.75em' }}
         loading={loading}
         disabled={disabled}
       >

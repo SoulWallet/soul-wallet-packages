@@ -12,7 +12,6 @@ import { RecoveryContextProvider } from "@src/context/RecoveryContext";
 import {EnHandleMode} from '@src/lib/type'
 import EnterWalletAddress from "@src/pages/v1/Recover/EnterWalletAddress";
 import SetWalletPassword from "@src/pages/v1/Recover/SetWalletPassword";
-import EnterGuardiansAddress from "@src/pages/v1/Recover/EnterGuardiansAddress";
 import SignatureRequest from "@src/pages/v1/Recover/SignatureRequest";
 import UploadGuardians from "@src/pages/v1/Recover/UploadGuardians";
 import { useGuardianStore } from "@src/store/guardian";
@@ -49,10 +48,6 @@ const StepComponent = () => {
       [RecoverStepEn.ResetPassword]: {
         title: "Set New Password",
         element: <SetWalletPassword />,
-      },
-      [RecoverStepEn.GuardiansImporting]: {
-        title: "Import Guardian Address File",
-        element: <EnterGuardiansAddress />,
       },
       [RecoverStepEn.GuardiansChecking]: {
         title: "Enter Guardian Address",

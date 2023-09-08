@@ -91,7 +91,7 @@ export default function Launch() {
             fontWeight="700"
             lineHeight="normal"
           >
-            Begin your Web3 journey by creating a smart contract wallet with us.
+            Begin your Ethereum journey by creating a smart contract wallet with us.
           </Box>
         </Box>
         <Box

@@ -13,7 +13,7 @@ import { useChainStore } from "@src/store/chain";
 export default function AccountCard() {
     const { selectedAddress, getIsActivated } = useAddressStore();
     const { selectedChainId } = useChainStore();
-    const { selectedChainItem, selectedAddressItem } = useConfig();
+    const { selectedChainItem } = useConfig();
     const isActivated = getIsActivated(selectedAddress, selectedChainId);
 
     const toast = useToast();
