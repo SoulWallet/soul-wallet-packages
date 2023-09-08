@@ -123,7 +123,7 @@ export default function GuardiansSetting() {
   const [amountData, setAmountData] = useState<any>({})
   const {account} = useWalletContext();
   const {calcWalletAddress} = useSdk();
-  const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
+  const { selectedAddress, setSelectedAddress, setAddressList } = useAddressStore();
   const { setGuardians, setGuardianNames, setThreshold, setSlotInitInfo, setSlot } = useGuardianStore();
   const toast = useToast()
   const {chainConfig} = useConfig();
