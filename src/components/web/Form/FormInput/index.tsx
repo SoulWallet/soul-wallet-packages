@@ -81,6 +81,7 @@ export default function FormInput({
             height="3em"
             readOnly={readOnly}
             autoFocus={autoFocus}
+            spellCheck={false}
             {..._inputStyles}
           />
           {visible !== undefined && isPassword && (

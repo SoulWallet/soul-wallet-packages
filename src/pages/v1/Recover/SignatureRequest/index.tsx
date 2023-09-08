@@ -226,7 +226,7 @@ const GuardiansChecking = () => {
         <Heading1 _styles={{ marginBottom: "24px" }}>Recovery in progress</Heading1>
         <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-            <Box fontSize="14px" fontWeight="bold">Ethereum Wallet(s)</Box>
+            <Box fontSize="14px" fontWeight="bold">Ethereum Wallet</Box>
             {recoverStatus >= 3 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
               {getKeystoreStatus(recoverStatus)}
               <Text marginLeft="4px"><CheckedIcon /></Text>

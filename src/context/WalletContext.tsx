@@ -103,7 +103,7 @@ export const WalletContextProvider = ({ children }: any) => {
         }
 
         // IMPORTANT TODO, Judge first available chain and set as default
-        if (chainRecoverStatus.filter((item: any) => item.chainId === selectedChainItem.chainIdHex).length === 0) {
+        if (chainRecoverStatus.filter((item: any) => item.chainId === selectedChainItem.chainIdHex && item.status === 1).length === 0) {
             setSelectedChainId(chainRecoverStatus.filter((item: any) => item.status)[0].chainId);
         }
     };

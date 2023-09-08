@@ -19,7 +19,7 @@ export default function ChainSelect() {
                 </Flex>
             </MenuButton>
 
-            <MenuList>
+            <MenuList w="266px">
                 {chainList.map((item: any, idx: number) => {
                     return (
                         <React.Fragment key={idx}>
