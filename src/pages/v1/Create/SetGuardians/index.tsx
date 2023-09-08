@@ -208,7 +208,7 @@ export default function GuardiansSetting() {
 
     const newAddress = await calcWalletAddress(0);
     const walletName = `Account 1`
-    setAddressList([{ title: walletName, address: newAddress, activatedChains: [], allowedOrigins: [] }])
+    setAddressList([{ title: walletName, address: newAddress, activatedChains: [], activatingChains: [], allowedOrigins: [] }])
     console.log('createInitialWallet', newAddress)
     setSelectedAddress(newAddress)
   }

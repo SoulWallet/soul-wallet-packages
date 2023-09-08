@@ -1,12 +1,57 @@
 // @ts-nocheck
 import browser from "webextension-polyfill";
-import { getLocalStorage, openWindow, checkAllowed, checkShouldInject, getSelectedChainItem } from "@src/lib/tools";
-import { executeTransaction } from "@src/lib/tx";
+import { openWindow, checkAllowed, checkShouldInject, getSelectedChainItem } from "@src/lib/tools";
+import { executeTransaction, signAndSend } from "@src/lib/tx";
 import { UserOpUtils } from "@soulwallet/sdk";
 import bgBus from "./lib/bgBus";
 import { notify } from "@src/lib/tools";
 
 let password = null;
+
+const doExecute = async (msg) => {
+    const { userOp, tabId, chainConfig } = msg.data;
+    const receipt = await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), chainConfig);
+    notify("Transaction success", "Your transaction was confirmed on chain");
+
+    if (tabId) {
+        //return to dapp
+        browser.tabs.sendMessage(Number(tabId), {
+            id: msg.id,
+            tabId,
+            isResponse: true,
+            data: receipt.hash,
+        });
+    } else {
+        // return to popup
+        bgBus.resolve(msg.id, receipt);
+    }
+};
+
+const doSignAndSend = async (msg) => {
+    const { chainConfig, userOp, payToken, tabId, waitFinish } = msg.data;
+    const signedUserOp = await signAndSend(
+        password,
+        chainConfig,
+        UserOpUtils.userOperationFromJSON(userOp),
+        payToken,
+        tabId,
+        waitFinish,
+    );
+
+    doExecute({
+        data: {
+            userOp: UserOpUtils.userOperationToJSON(signedUserOp),
+            tabId,
+            chainConfig,
+        },
+        id: msg.id,
+    });
+
+    // const receipt = await executeTransaction(signedUserOp, chainConfig);
+    // notify("Transaction success", "Your transaction was confirmed on chain");
+
+    // bgBus.resolve(msg.id, receipt);
+};
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
     console.log("BG msg", msg);
@@ -17,22 +62,11 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
     switch (msg.type) {
         // send UserOP to bundler
         case "execute":
-            const { userOp, tabId, chainConfig: chainConfig2 } = msg.data;
-            const receipt = await executeTransaction(UserOpUtils.userOperationFromJSON(userOp), chainConfig2);
-            notify("Transaction success", "Your transaction was confirmed on chain");
+            doExecute(msg);
+            break;
 
-            if (tabId) {
-                //return to dapp
-                browser.tabs.sendMessage(Number(tabId), {
-                    id,
-                    tabId,
-                    isResponse: true,
-                    data: receipt.hash,
-                });
-            } else {
-                // return to popup
-                bgBus.resolve(id, receipt);
-            }
+        case "signAndSend":
+            doSignAndSend(msg);
             break;
 
         case "set/password":
@@ -62,16 +96,18 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
                 openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}`, windowWidth);
             }
             break;
-        
+
         case "switchChain":
-            console.log('Swith chain msg', msg);
-            const targetChainId = msg.data.chainId
-            openWindow(`${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}&targetChainId=${targetChainId}`, windowWidth);
+            const targetChainId = msg.data.chainId;
+            openWindow(
+                `${msg.url}&tabId=${senderTabId}&origin=${msg.data.origin}&id=${id}&targetChainId=${targetChainId}`,
+                windowWidth,
+            );
             break;
 
         case "getChainConfig":
             const chainConfig = getSelectedChainItem();
-            console.log("SO you see", chainConfig)
+            console.log("SO you see", chainConfig);
             browser.tabs.sendMessage(Number(senderTabId), {
                 id,
                 isResponse: true,
@@ -95,7 +131,7 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
         case "approve":
             const { origin, txns } = msg.data;
 
-            console.log("BEFORE APPROVE ID IS", id)
+            console.log("BEFORE APPROVE ID IS", id);
             openWindow(
                 `${msg.url}&tabId=${senderTabId}&origin=${origin}&txns=${JSON.stringify(txns)}&id=${id}`,
                 windowWidth,

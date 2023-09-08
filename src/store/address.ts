@@ -5,6 +5,7 @@ import { persist } from "zustand/middleware";
 export interface IAddressItem {
     title: string;
     address: string;
+    activatingChains: string[];
     activatedChains: string[];
     allowedOrigins: string[];
 }
@@ -19,7 +20,10 @@ export interface IAddressStore {
     deleteAddress: (address: string) => void;
     toggleAllowedOrigin: (address: string, origin: string, isAdd?: boolean) => void;
     toggleActivatedChain: (address: string, chainId: string, isAdd?: boolean) => void;
-    getIsActivated: (address:string, chainId: string) => boolean;
+    toggleActivatingChain: (address: string, chainId: string, isAdd?: boolean) => void;
+    addActivatingChain: (address: string, chainId: string) => void;
+    addActivatedChain: (address: string, chainId: string) => void;
+    getIsActivated: (address: string, chainId: string) => boolean;
     getSelectedAddressItem: () => IAddressItem;
 }
 
@@ -40,8 +44,8 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
         }),
     setAddressList: (addressList: IAddressItem[]) => {
         set((state) => {
-            state.addressList = addressList
-        })
+            state.addressList = addressList;
+        });
     },
     addAddressItem: (addressItem: IAddressItem) => {
         set((state) => {
@@ -90,10 +94,36 @@ const createAddressSlice = immer<IAddressStore>((set, get) => ({
             }
         });
     },
+    toggleActivatingChain: (address, chainId, isAdd = true) => {
+        set((state: IAddressStore) => {
+            const index = getIndexByAddress(state.addressList, address);
+            if (isAdd) {
+                state.addressList[index].activatingChains.push(chainId);
+            } else {
+                state.addressList[index].activatingChains.splice(index, 1);
+            }
+        });
+    },
+    addActivatingChain: (address, chainId) => {
+        set((state: IAddressStore) => {
+            const index = getIndexByAddress(state.addressList, address);
+            state.addressList[index].activatingChains.push(chainId);
+        });
+    },
+    addActivatedChain: (address, chainId) => {
+        set((state: IAddressStore) => {
+            const index = getIndexByAddress(state.addressList, address);
+            state.addressList[index].activatedChains.push(chainId);
+            if(state.addressList[index].activatingChains.includes(chainId)){
+                state.addressList[index].activatingChains.splice(index, 1);
+            }
+        });
+    },
 }));
 
 export const useAddressStore = create<IAddressStore>()(
     persist((...set) => ({ ...createAddressSlice(...set) }), {
         name: "address-storage",
+        version: 2,
     }),
 );

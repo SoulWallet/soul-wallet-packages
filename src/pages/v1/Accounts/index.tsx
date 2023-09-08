@@ -260,6 +260,7 @@ export default function Accounts() {
             title: `Account ${newIndex + 1}`,
             address: newAddress,
             activatedChains: [],
+            activatingChains: [],
             allowedOrigins: [],
         });
         setAdding(false);

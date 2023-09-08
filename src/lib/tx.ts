@@ -1,6 +1,12 @@
 import { SoulWallet, Bundler } from "@soulwallet/sdk";
 import { notify } from "@src/lib/tools";
+import { UserOperation, UserOpUtils } from "@soulwallet/sdk";
+import { addPaymasterAndData } from "@src/lib/tools";
 import { printUserOp } from "@src/lib/tools";
+import { ethers } from "ethers";
+import bgBus from "./bgBus";
+import KeyStore from "@src/lib/keystore";
+const keyStore = KeyStore.getInstance();
 
 let soulWallet: any = null;
 let currentChainId: any = null;
@@ -80,4 +86,60 @@ export const executeTransaction = async (userOp: any, chainConfig: any) => {
             }
         }
     });
+};
+
+export const signAndSend = async (
+    password: string,
+    chainConfig: any,
+    userOp: UserOperation,
+    payToken?: string,
+    tabId?: any,
+    waitFinish?: boolean,
+) => {
+    if (!soulWallet || currentChainId !== chainConfig.chainId) {
+        initSoulWallet(chainConfig);
+    }
+
+    await keyStore.unlock(password);
+
+    if (payToken && payToken !== ethers.ZeroAddress && userOp.paymasterAndData === "0x") {
+        const paymasterAndData = addPaymasterAndData(payToken, chainConfig.contracts.paymaster);
+        userOp.paymasterAndData = paymasterAndData;
+    }
+
+    const validAfter = Math.floor(Date.now() / 1000);
+    const validUntil = validAfter + 3600;
+
+    const packedUserOpHashRet = await soulWallet.packUserOpHash(userOp, validAfter, validUntil);
+
+    if (packedUserOpHashRet.isErr()) {
+        throw new Error(packedUserOpHashRet.ERR.message);
+    }
+    const packedUserOpHash = packedUserOpHashRet.OK;
+
+    const signature = await keyStore.sign(packedUserOpHash.packedUserOpHash);
+
+    if (!signature) {
+        throw new Error("Failed to sign");
+    }
+
+    const packedSignatureRet = await soulWallet.packUserOpSignature(signature, packedUserOpHash.validationData);
+
+    if (packedSignatureRet.isErr()) {
+        throw new Error(packedSignatureRet.ERR.message);
+    }
+
+    userOp.signature = packedSignatureRet.OK;
+
+    return userOp;
+
+    // const resultPromise = bgBus.send("execute", {
+    //     userOp: UserOpUtils.userOperationToJSON(userOp),
+    //     chainConfig,
+    //     tabId,
+    // });
+
+    // if (waitFinish) {
+    //     await resultPromise;
+    // }
 };

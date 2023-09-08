@@ -47,11 +47,12 @@ export default function ActivateWallet() {
             console.log("activateIndex", activateIndex);
             await activateWallet(activateIndex, payToken, false);
             navigate("wallet");
-            toast({
-                title: "Wallet activated",
-                status: "success",
-            });
+            // toast({
+            //     title: "Wallet activated",
+            //     status: "success",
+            // });
         } catch (err) {
+            console.log('err is', err)
             toast({
                 title: "Activate wallet failed",
                 status: "error",
