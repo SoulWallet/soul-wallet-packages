@@ -8,61 +8,27 @@ import Button from "@src/components/web/Button";
 import FormInput from "@src/components/web/Form/FormInput";
 import useForm from "@src/hooks/useForm";
 import useWalletContext from "@src/context/hooks/useWalletContext";
-
-interface PasswordFormField {
-  password?: string;
-  confirmPassword?: string;
-}
-
-const validate = (values: PasswordFormField) => {
-  const errors: PasswordFormField = {}
-  const { password, confirmPassword } = values
-
-  if (!password || password.length < 9) {
-    errors.password = 'Password must be at least 9 characters long'
-  } else if (password !== confirmPassword) {
-    errors.confirmPassword = 'Please enter the same password'
-  }
-
-  return errors
-}
+import PasswordForm from "@src/components/web/PasswordForm";
 
 export default function SetPassword() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const {getAccount} = useWalletContext()
   const toast = useToast()
-
-  const {
-    values,
-    errors,
-    invalid,
-    onChange,
-    onBlur,
-    showErrors
-  } = useForm({
-    fields: ['password', 'confirmPassword'],
-    validate
-  })
-
   const [loading, setLoaing] = useState(false)
-  const disabled = invalid || loading
 
-  const handleNext = async () => {
+  const handleNext = async (values: any) => {
     const { password } = values
-    if (disabled) return
 
     try {
-      if (password) {
-        setLoaing(true)
-        await keystore.createNewAddress(password, true);
-        getAccount();
-        setLoaing(false)
-        dispatch({
-          type: StepActionTypeEn.JumpToTargetStep,
-          payload: CreateStepEn.SetupGuardians,
-        });
-      }
+      setLoaing(true)
+      await keystore.createNewAddress(password, true);
+      getAccount();
+      setLoaing(false)
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: CreateStepEn.SetupGuardians,
+      });
     } catch (e: any) {
       setLoaing(false)
       toast({
@@ -75,36 +41,7 @@ export default function SetPassword() {
   return (
     <Box width="428px" marginTop="1em" display="flex" flexDirection="column" paddingBottom="20px">
       <WalletCard statusText="SETTING UP..." />
-      <FormInput
-        label=""
-        placeholder="Set Password"
-        value={values.password}
-        onChange={onChange('password')}
-        onBlur={onBlur('password')}
-        errorMsg={showErrors.password && errors.password}
-        isPassword={true}
-        autoFocus={true}
-        onEnter={handleNext}
-      />
-      <PasswordStrengthBar password={values.password || ''} />
-      <FormInput
-        label=""
-        placeholder="Confirm password"
-        value={values.confirmPassword}
-        onChange={onChange('confirmPassword')}
-        onBlur={onBlur('confirmPassword')}
-        errorMsg={showErrors.confirmPassword && errors.confirmPassword}
-        _styles={{ marginTop: '0.75em' }}
-        isPassword={true}
-        onEnter={handleNext}
-      />
-      <Button
-        disabled={disabled}
-        onClick={handleNext}
-        _styles={{ marginTop: '0.75em' }}
-      >
-        Continue
-      </Button>
+      <PasswordForm onSubmit={handleNext} loading={loading} />
     </Box>
   );
 }
