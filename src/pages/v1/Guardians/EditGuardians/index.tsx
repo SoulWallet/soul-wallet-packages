@@ -30,6 +30,7 @@ import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
 import config from "@src/config";
 import { nanoid } from "nanoid";
+import GuardiansTips from "@src/components/web/GuardiansTips";
 
 const getNumberArray = (count: number) => {
   const arr = []
@@ -179,7 +180,6 @@ export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { calcGuardianHash, getReplaceGuardianInfo, getCancelSetGuardianInfo, getActiveGuardianHash } = useKeystore()
-  const [showTips, setShowTips] = useState(false)
   const [showStatusTips, setShowStatusTips] = useState(false)
 
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
@@ -361,11 +361,6 @@ export default function GuardiansSetting() {
   const handleNext = async () => {
     handleJumpToTargetStep(GuardiansStepEn.Save);
   };
-
-  const toggleTips = (event: any) => {
-    console.log('toggleTips', event)
-    setShowTips(!showTips)
-  }
 
   const toggleStatusTips = (event: any) => {
     console.log('toggleStatusTips', event)
@@ -579,12 +574,7 @@ export default function GuardiansSetting() {
               <Text>Edit guardians</Text>
               <Text marginLeft="10px" transform="rotate(90deg)"><ArrowRightIcon /></Text>
             </Text>
-            <Box marginBottom="0.75em">
-              <TextBody textAlign="center">
-                Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
-              </TextBody>
-            </Box>
-            {showTips && <TipsInfo />}
+            <GuardiansTips />
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
               <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
                 {(guardianIds).map((id: any, i: number) => (
@@ -679,12 +669,7 @@ export default function GuardiansSetting() {
           Edit guardians
         </Heading1>
       )}
-      <Box marginBottom="0.75em" maxWidth="500px">
-        <TextBody textAlign="center">
-          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
-        </TextBody>
-      </Box>
-      {showTips && <TipsInfo />}
+      <GuardiansTips />
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any, i: number) => (

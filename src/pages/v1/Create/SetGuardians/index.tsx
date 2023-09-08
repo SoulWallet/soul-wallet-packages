@@ -23,6 +23,7 @@ import WarningIcon from "@src/components/Icons/Warning";
 import DropDownIcon from "@src/components/Icons/DropDown";
 import PlusIcon from "@src/components/Icons/Plus";
 import useWalletContext from '@src/context/hooks/useWalletContext';
+import GuardiansTips from "@src/components/web/GuardiansTips";
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import useConfig from "@src/hooks/useConfig";
@@ -114,7 +115,6 @@ export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeystore();
   const { calcGuardianHash } = useKeystore()
-  const [showTips, setShowTips] = useState(false)
   const [loading, setLoading] = useState(false)
   const [skipping, setSkipping] = useState(false)
   const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
@@ -288,11 +288,6 @@ export default function GuardiansSetting() {
     setSkipping(true)
   };
 
-  const toggleTips = (event: any) => {
-    console.log('toggleTips', event)
-    setShowTips(!showTips)
-  }
-
   const handleDelete = () => {
     // removeGuardian(id);
   };
@@ -329,34 +324,7 @@ export default function GuardiansSetting() {
   return (
     <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Set guardians</Heading1>
-      <Box marginBottom="0.75em">
-        <TextBody textAlign="center">
-          Choose trusted friends or use your existing Ethereum wallets as guardians. We recommend setting up at least three for optimal protection. <Text onClick={toggleTips} color="#EC588D" cursor="pointer">Show {showTips ? 'less' : 'more'}</Text>
-        </TextBody>
-      </Box>
-      {showTips && (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em">
-          <Box>
-            <Heading3 marginBottom="0.75em">What is a guardian?</Heading3>
-            <TextBody marginBottom="1em">
-              Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces seed phrases with guardian-signature social recovery, improving security and usability.
-            </TextBody>
-
-            <Heading3 marginBottom="0.75em">What wallet can be set as guardian?</Heading3>
-            <TextBody marginBottom="1em">
-              You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as one of your guardians, ensure it's currently setup on Ethereum for social recovery.
-            </TextBody>
-
-            <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
-            <TextBody marginBottom="1em">
-              If your Soul Wallet is lost or stolen, social recovery help you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
-            </TextBody>
-            <TextBody marginBottom="1em">
-              After successfully recovering your wallet, your guardians' addresses will be visible on-chain. To maintain privacy, consider changing your guardian list after you complete a recovery.
-            </TextBody>
-          </Box>
-        </Box>
-      )}
+      <GuardiansTips />
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em" width="100%">
           {(guardianIds).map((id: any, i: number) => (
