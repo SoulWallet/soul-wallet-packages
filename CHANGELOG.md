@@ -1,3 +1,9 @@
+## 0.1.5
+
+-   Added switch network logic
+-   Optimized recovery process and style
+-   Fixed issues on test notes
+
 ## 0.1.4
 
 -   Added Optimism goerli support
