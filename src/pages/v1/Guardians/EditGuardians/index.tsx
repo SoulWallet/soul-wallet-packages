@@ -76,7 +76,15 @@ const checkFinished = (activeGuardiansInfo: any) => {
   }
 }
 
-const defaultGuardianIds = [nextRandomId(), nextRandomId(), nextRandomId()]
+const getDefaultGuardianIds = (count: number) => {
+  const ids = []
+
+  for (let i = 0; i < count; i++) {
+    ids.push(nextRandomId())
+  }
+
+  return ids
+}
 
 const isGuardiansEmpty = (guardians: any, guardianNames: any, threshold: any) => {
   if ((!guardians || guardians.length === 0) && (!guardianNames || guardianNames.length === 0) && (!threshold || threshold === 0)) {
@@ -117,6 +125,22 @@ const getFieldsByGuardianIds = (ids: any) => {
   }
 
   return fields
+}
+
+const getInitialValues = (ids: string[], guardians: string[], guardianNames: string[]) => {
+  const idCount = ids.length
+  const guardianCount = guardians.length
+  const count = idCount > guardianCount ? idCount : guardianCount
+  const values: any = {}
+
+  for (let i = 0; i < count; i++) {
+    if (ids[i]) {
+      values[`address_${ids[i]}`] = guardians[i]
+      values[`name_${ids[i]}`] = guardianNames[i]
+    }
+  }
+
+  return values
 }
 
 const validate = (values: any) => {
@@ -180,27 +204,6 @@ export default function GuardiansSetting() {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { calcGuardianHash, getReplaceGuardianInfo, getCancelSetGuardianInfo, getActiveGuardianHash } = useKeystore()
-  const [showStatusTips, setShowStatusTips] = useState(false)
-
-  const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
-  const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
-  const [guardiansList, setGuardiansList] = useState([])
-  const [amountData, setAmountData] = useState<any>({})
-  const [loading, setLoading] = useState(false)
-  const [canceling, setCanceling] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const [replaced, setReplaced] = useState(false)
-  // const [canceling, setCanceling] = useState(false)
-  const [paymentRequesting, setPaymentRequesting] = useState(false)
-  const [updatingInfo, setUpdatingInfo] = useState<any>(null)
-  const [reediting, setReediting] = useState(false)
-  const [paymentParems, setPaymentParems] = useState<any>(null)
-  const [paymentCancelParems, setPaymentCancelParems] = useState<any>(null)
-  const [activeGuardiansInfo, setActiveGuardiansInfo] = useState<any>(null)
-
-  const { account } = useWalletContext();
-  const { calcWalletAddress } = useSdk();
-  const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore();
   const {
     guardians,
     guardianNames,
@@ -225,12 +228,32 @@ export default function GuardiansSetting() {
     cancelEditingGuardiansInfo,
     setCancelEditingGuardiansInfo
   } = useGuardianStore();
+  const [showStatusTips, setShowStatusTips] = useState(false)
+  const defaultGuardianIds = getDefaultGuardianIds((guardians && guardians.length > 3 && guardians.length) || 3)
+  const [guardianIds, setGuardianIds] = useState(defaultGuardianIds)
+  const [fields, setFields] = useState(getFieldsByGuardianIds(defaultGuardianIds))
+  const [guardiansList, setGuardiansList] = useState([])
+  const [amountData, setAmountData] = useState<any>({})
+  const [loading, setLoading] = useState(false)
+  const [canceling, setCanceling] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const [replaced, setReplaced] = useState(false)
+  // const [canceling, setCanceling] = useState(false)
+  const [paymentRequesting, setPaymentRequesting] = useState(false)
+  const [updatingInfo, setUpdatingInfo] = useState<any>(null)
+  const [reediting, setReediting] = useState(false)
+  const [paymentParems, setPaymentParems] = useState<any>(null)
+  const [paymentCancelParems, setPaymentCancelParems] = useState<any>(null)
+  const [activeGuardiansInfo, setActiveGuardiansInfo] = useState<any>(null)
+  const { account } = useWalletContext()
+  const { calcWalletAddress } = useSdk()
+  const { selectedAddress, setSelectedAddress, addAddressItem, setAddressList } = useAddressStore()
   const toast = useToast()
-  const { chainConfig } = useConfig();
-
+  const { chainConfig } = useConfig()
   const { values, errors, invalid, onChange, onBlur, showErrors, addFields, removeFields, clearFields } = useForm({
     fields,
-    validate
+    validate,
+    initialValues: getInitialValues(defaultGuardianIds, guardians, guardianNames)
   })
 
   const amountForm = useForm({
@@ -238,7 +261,7 @@ export default function GuardiansSetting() {
     validate: amountValidate,
     restProps: amountData,
     initialValues: {
-      amount: getRecommandCount(amountData.guardiansCount || 0)
+      amount: threshold || getRecommandCount(amountData.guardiansCount || 0)
     }
   })
 
