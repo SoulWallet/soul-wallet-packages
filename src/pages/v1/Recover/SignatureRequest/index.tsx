@@ -280,6 +280,8 @@ const GuardiansChecking = () => {
      * ) */
   }
 
+  const signatures = (guardianSignatures && guardianSignatures.length) ? guardianSignatures : (recoveringGuardians || []).map(item => ({ guardian: item, status: 0 }))
+  console.log('recoveringGuardians', signatures)
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
       <Heading1>Guardian signature request</Heading1>
@@ -312,19 +314,18 @@ const GuardiansChecking = () => {
         </TextBody>
       </Box>
       <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
-        {(guardianSignatures || []).map((item: any) =>
+        {(signatures).map((item: any) =>
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
             <Box fontSize="14px" fontWeight="bold">{toShortAddress(item.guardian)}</Box>
-            {item.valid && (
+            {item.status === 1 && (
               <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
                 Signed
                 <Text marginLeft="4px"><CheckedIcon /></Text>
               </Box>
             )}
-            {!item.valid && (
-              <Box fontSize="14px" fontWeight="bold" color="#E83D26" display="flex" alignItems="center" justifyContent="center">
-                Error
-                <Text marginLeft="4px"><ErrorIcon /></Text>
+            {item.status === 0 && (
+              <Box fontSize="14px" fontWeight="bold" color="#848488" display="flex" alignItems="center" justifyContent="center">
+                Waiting
               </Box>
             )}
           </Box>

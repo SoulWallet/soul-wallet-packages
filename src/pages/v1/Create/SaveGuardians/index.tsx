@@ -69,7 +69,7 @@ const SaveGuardians = ({ getPassword, onStepChange }: any) => {
   // const { account } = useWalletContext();
   const accountRef = useRef('')
   const newAddressRef = useRef('')
-  const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot, setEditingGuardiansInfo } = useGuardianStore();
+  const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot, setEditingGuardiansInfo, setRecoverRecordId } = useGuardianStore();
   const { setSelectedAddress, setAddressList } = useAddressStore();
   const { calcGuardianHash, getSlot } = useKeystore()
   const keystore = useKeyring();
@@ -106,6 +106,7 @@ const SaveGuardians = ({ getPassword, onStepChange }: any) => {
     console.log('createInitialWallet', newAddress)
     setSelectedAddress(newAddress)
     setEditingGuardiansInfo(null)
+    setRecoverRecordId(null)
     return newAddress
   }
 
