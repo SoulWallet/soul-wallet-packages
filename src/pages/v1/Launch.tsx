@@ -11,6 +11,7 @@ import CreateWalletIcon from "@src/components/Icons/CreateWallet";
 import RecoverWalletIcon from "@src/components/Icons/RecoverWallet";
 import React, { useEffect, useState, Fragment } from "react";
 import TextButton from "@src/components/web/TextButton";
+import TextBody from "@src/components/web/TextBody";
 
 export default function Launch() {
   const [authorized, setAuthorized] = useState(false);
@@ -48,6 +49,14 @@ export default function Launch() {
       setShowModal(true)
     }
   };
+
+  const goToTerms = () => {
+    // window.open('', '_blank')
+  }
+
+  const goToPrivacyPolicy = () => {
+
+  }
 
   return (
     <FullscreenContainer>
@@ -134,6 +143,16 @@ export default function Launch() {
           >
             If your wallet is lost, recover easily with guardian signatures.
           </Box>
+        </Box>
+        <Box marginTop="60px">
+          <TextBody
+            fontWeight="700"
+            fontSize="14px"
+            color="#898989"
+            textAlign="center"
+          >
+            By continuing, you agree with Soul Wallet’s <Box as="span" color="#EE3F99" onClick={goToTerms} cursor="pointer">Terms of Services</Box> & <Box as="span" color="#EE3F99" onClick={goToPrivacyPolicy} cursor="pointer">Privacy Policy</Box>
+          </TextBody>
         </Box>
       </Flex>
       <ModalV2

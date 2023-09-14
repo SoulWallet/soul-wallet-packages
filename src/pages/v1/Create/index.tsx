@@ -1,5 +1,5 @@
-import { CreateStepEn, StepContextProvider, useStepContext } from "@src/context/StepContext";
-import React, { ReactNode, useMemo } from "react";
+import { CreateStepEn, StepContextProvider, useStepContext, useStepDispatchContext, StepActionTypeEn } from "@src/context/StepContext";
+import React, { ReactNode, useMemo, useState, useRef } from "react";
 import {EnHandleMode} from '@src/lib/type'
 import FullscreenContainer from "@src/components/FullscreenContainer";
 import SetPassword from "@src/pages/v1/Create/SetPassword";
@@ -15,19 +15,39 @@ type StepNodeInfo = {
 };
 
 const StepComponent = () => {
+  const dispatch = useStepDispatchContext();
+  const passwordRef = useRef('')
+
+  const onStepChange = (i: any) => {
+    console.log('onStepChange', i)
+    dispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: i,
+    });
+  }
+
+  const setPassword = (password: any) => {
+    passwordRef.current = password
+  }
+
+  const getPassword = () => {
+    return passwordRef.current
+  }
+  console.log('password 222', passwordRef)
+
   const stepNodeMap: Record<number, StepNodeInfo> = useMemo(() => {
     return {
       [CreateStepEn.CreatePWD]: {
         title: "Get Started",
-        element: <SetPassword />,
+        element: <SetPassword onStepChange={onStepChange} setPassword={setPassword} />,
       },
-      [CreateStepEn.SetupGuardians]: {
+      [CreateStepEn.SetGuardians]: {
         title: "Set up Guardians",
-        element: <SetGuardians />
+        element: <SetGuardians onStepChange={onStepChange} />
       },
-      [CreateStepEn.SaveGuardianList]: {
+      [CreateStepEn.SaveGuardian]: {
         title: "Save Guardian List",
-        element: <SaveGuardians />,
+        element: <SaveGuardians onStepChange={onStepChange} getPassword={getPassword} />,
       },
       [CreateStepEn.SetSoulWalletAsDefault]: {
         title: "Set as default plugin wallet",

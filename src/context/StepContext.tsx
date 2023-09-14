@@ -1,11 +1,11 @@
 import React, { createContext, Dispatch, ReactNode, useContext, useReducer } from "react";
 
 export enum CreateStepEn {
-    CreatePWD,
-    SetupGuardians,
-    SaveGuardianList,
-    SetSoulWalletAsDefault,
-    Completed,
+  CreatePWD,
+  SetGuardians,
+  SaveGuardian,
+  SetSoulWalletAsDefault,
+  Completed,
 }
 
 export enum RecoverStepEn {

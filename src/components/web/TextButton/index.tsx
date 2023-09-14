@@ -13,6 +13,7 @@ interface IProps extends Omit<ButtonProps, 'type'> {
   href?: string;
   _styles?: any;
   _hover?: any;
+  leftIcon?: any;
 }
 
 export default function TextButton({
@@ -23,6 +24,7 @@ export default function TextButton({
   type = "default",
   href,
   color,
+  leftIcon,
   _hover,
   _styles,
   ...restProps
@@ -57,6 +59,7 @@ export default function TextButton({
       color={color || '#898989'}
       {..._styles}
     >
+      {leftIcon}
       {children}
     </Button>
   );

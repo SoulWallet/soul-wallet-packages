@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LogoIcon from "@src/assets/logo-v3.svg";
 import { CreateStepEn, StepActionTypeEn, useStepDispatchContext } from "@src/context/StepContext";
 import { getLocalStorage, validateEmail } from "@src/lib/tools";
@@ -11,6 +11,7 @@ import Heading1 from "@src/components/web/Heading1";
 import Heading2 from "@src/components/web/Heading2";
 import Heading3 from "@src/components/web/Heading3";
 import TextBody from "@src/components/web/TextBody";
+import Steps from "@src/components/web/Steps";
 import Button from "@src/components/web/Button";
 import TextButton from "@src/components/web/TextButton";
 import IconButton from "@src/components/web/IconButton";
@@ -22,11 +23,13 @@ import useWalletContext from '@src/context/hooks/useWalletContext';
 import { useAddressStore } from "@src/store/address";
 import { useGuardianStore } from "@src/store/guardian";
 import useKeystore from "@src/hooks/useKeystore";
+import useKeyring from "@src/hooks/useKeyring";
 import { L1KeyStore } from "@soulwallet/sdk";
 import config from "@src/config";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import useConfig from "@src/hooks/useConfig";
+import BlockBoxIcon from "@src/components/Icons/BlockBox";
 
 const toHex = (num: any) => {
   let hexStr = num.toString(16)
@@ -51,7 +54,7 @@ const validate = (values: any) => {
   return errors
 }
 
-const SaveGuardians = () => {
+const SaveGuardians = ({ getPassword, onStepChange }: any) => {
   const [hasSaved, setHasSaved] = useState(false);
   const { downloadJsonFile, emailJsonFile, formatGuardianFile } = useTools();
   // const { guardians } = useGlobalStore();
@@ -63,10 +66,13 @@ const SaveGuardians = () => {
   const [downloaded, setDownloaded] = useState(false);
   const [sended, setSended] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const { account } = useWalletContext();
+  // const { account } = useWalletContext();
+  const accountRef = useRef('')
+  const newAddressRef = useRef('')
   const { guardians, guardianNames, threshold, setSlotInitInfo, setSlot, setEditingGuardiansInfo } = useGuardianStore();
   const { setSelectedAddress, setAddressList } = useAddressStore();
   const { calcGuardianHash, getSlot } = useKeystore()
+  const keystore = useKeyring();
   const {chainConfig} = useConfig();
   const { calcWalletAddress } = useSdk();
   const toast = useToast()
@@ -79,15 +85,19 @@ const SaveGuardians = () => {
   const dispatch = useStepDispatchContext();
 
   const handleNext = async () => {
-    setCreating(true)
-    await createInitialWallet()
-    setCreating(false)
+    // setCreating(true)
+    // await createInitialWallet()
+    // setCreating(false)
 
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: CreateStepEn.SetSoulWalletAsDefault,
     });
   };
+
+  const createInitialKeystore = async () => {
+    return await keystore.createNewAddress(getPassword(), true);
+  }
 
   const createInitialWallet = async () => {
     const newAddress = await calcWalletAddress(0);
@@ -96,11 +106,16 @@ const SaveGuardians = () => {
     console.log('createInitialWallet', newAddress)
     setSelectedAddress(newAddress)
     setEditingGuardiansInfo(null)
+    return newAddress
   }
 
-  const getGuardiansInfo = () => {
+  const getGuardiansInfo = async () => {
+    if (!accountRef.current) {
+      accountRef.current = await createInitialKeystore()
+    }
+
     const keystore = chainConfig.contracts.l1Keystore
-    const initialKey = ethers.zeroPadValue(account, 32)
+    const initialKey = ethers.zeroPadValue(accountRef.current, 32)
     const guardianHash = calcGuardianHash(guardians, threshold)
     const initialGuardianHash = guardianHash
     const salt = ethers.ZeroHash
@@ -129,10 +144,15 @@ const SaveGuardians = () => {
   const handleBackupGuardians = async () => {
     try {
       setLoading(true)
-      const info = getGuardiansInfo()
+      const info = await getGuardiansInfo()
       const result = await api.guardian.backup(info)
       setSlot(info.slot)
       setSlotInitInfo(info.slotInitInfo)
+
+      if (!newAddressRef.current) {
+        newAddressRef.current = await createInitialWallet()
+      }
+
       setLoading(false)
       setLoaded(true)
       toast({
@@ -155,10 +175,15 @@ const SaveGuardians = () => {
       const email = emailForm.values.email
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const info = getGuardiansInfo()
+      const info = await getGuardiansInfo()
       const result = await api.guardian.emailBackup({ email, filename, ...info })
       setSlot(info.slot)
       setSlotInitInfo(info.slotInitInfo)
+
+      if (!newAddressRef.current) {
+        newAddressRef.current = await createInitialWallet()
+      }
+
       setSending(false)
       setSended(true)
       toast({
@@ -180,7 +205,7 @@ const SaveGuardians = () => {
       setDownloading(true)
       const date = new Date()
       const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-guardian.json`
-      const info = getGuardiansInfo()
+      const info = await getGuardiansInfo()
       const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify({ filename, ...info }))}`
       const link = document.createElement("a")
       link.setAttribute("href", dataStr)
@@ -190,6 +215,11 @@ const SaveGuardians = () => {
 
       setSlot(info.slot)
       setSlotInitInfo(info.slotInitInfo)
+
+      if (!newAddressRef.current) {
+        newAddressRef.current = await createInitialWallet()
+      }
+
       setDownloading(false)
       setDownloaded(true)
     } catch (e: any) {
@@ -201,8 +231,13 @@ const SaveGuardians = () => {
     }
   };
 
+  console.log('password111', getPassword(), accountRef, newAddressRef)
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="24px" paddingRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={3} activeIndex={1} marginTop="24px" onStepChange={onStepChange} showBackButton />
+      </Box>
       <Heading1>Backup guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody fontSize="16px" textAlign="center" maxWidth="500px">
@@ -261,7 +296,7 @@ const SaveGuardians = () => {
             </TextBody>
           </Box>
           <Button disabled={loading} loading={loading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
-            <Image width="28px" src={LogoIcon as any} alt="Logo" marginRight="4px" />
+            <Box marginRight="8px"><BlockBoxIcon /></Box>
             Store onchain
           </Button>
         </Box>
