@@ -280,7 +280,10 @@ const GuardiansChecking = () => {
      * ) */
   }
 
-  const signatures = (guardianSignatures && guardianSignatures.length) ? guardianSignatures : (recoveringGuardians || []).map(item => ({ guardian: item, status: 0 }))
+  const signatures = (recoveringGuardians || []).map(item => {
+    const isValid = (guardianSignatures || []).filter(sig => sig.guardian === item && sig.valid).length === 1
+    return ({ guardian: item, isValid })
+  })
   console.log('recoveringGuardians', signatures)
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
@@ -317,13 +320,13 @@ const GuardiansChecking = () => {
         {(signatures).map((item: any) =>
           <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
             <Box fontSize="14px" fontWeight="bold">{toShortAddress(item.guardian)}</Box>
-            {item.status === 1 && (
+            {item.isValid && (
               <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
                 Signed
                 <Text marginLeft="4px"><CheckedIcon /></Text>
               </Box>
             )}
-            {item.status === 0 && (
+            {!item.isValid && (
               <Box fontSize="14px" fontWeight="bold" color="#848488" display="flex" alignItems="center" justifyContent="center">
                 Waiting
               </Box>
