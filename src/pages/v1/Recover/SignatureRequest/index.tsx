@@ -21,6 +21,7 @@ import api from "@src/lib/api";
 import config from "@src/config";
 import useBrowser from "@src/hooks/useBrowser";
 import { copyText, toShortAddress, getNetwork, getStatus, getKeystoreStatus } from '@src/lib/tools'
+import Steps from "@src/components/web/Steps";
 
 const getProgressPercent = (startTime: any, endTime: any) => {
   if (startTime && endTime) {
@@ -202,6 +203,9 @@ const GuardiansChecking = () => {
   if (recoverStatus === 1) {
     return (
       <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Box marginBottom="12px">
+          <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={3} marginTop="24px" />
+        </Box>
         <Heading1>
           Pay recovery fee
         </Heading1>
@@ -246,38 +250,6 @@ const GuardiansChecking = () => {
         </Box>
       </Box>
     )
-
-    /* return (
-     *   <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginBottom="20px">
-     *     <Heading1 _styles={{ marginBottom: "0.75em" }}>Recovery in progress</Heading1>
-     *     <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
-     *       <Box display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-     *         <Box fontSize="14px" fontWeight="bold">Your Keystore</Box>
-     *         {recoverStatus >= 3 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">
-     *           {getKeystoreStatus(recoverStatus)}
-     *           <Text marginLeft="4px"><CheckedIcon /></Text>
-     *         </Box>}
-     *         {recoverStatus < 3 && <Box fontSize="14px" fontWeight="bold" color="#848488" display="flex" alignItems="center" justifyContent="center">
-     *           {getKeystoreStatus(recoverStatus)}
-     *         </Box>}
-     *       </Box>
-     *     </Box>
-     *     <Box marginTop="2em" marginBottom="1em">
-     *       <TextBody textAlign="center">
-     *         L2 recover status
-     *       </TextBody>
-     *     </Box>
-     *     <Box marginBottom="0.75em" width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="0.75em">
-     *       {chainStatusList.map((item: any) =>
-     *         <Box key={item.chainId} display="flex" width="100%" background="white" height="3em" borderRadius="1em" alignItems="center" justifyContent="space-between" padding="0 1em">
-     *           <Box fontSize="14px" fontWeight="bold">{getNetwork(Number(item.chainId))}</Box>
-     *           {item.status === 0 && <Box fontSize="14px" fontWeight="bold" color="#848488">Pending {item.expectFinishTime && `(${new Date(item.expectFinishTime).toLocaleString()})`}</Box>}
-     *           {item.status === 1 && <Box fontSize="14px" fontWeight="bold" color="#1CD20F" display="flex" alignItems="center" justifyContent="center">Recovered</Box>}
-     *         </Box>
-     *       )}
-     *     </Box>
-     *   </Box>
-     * ) */
   }
 
   const signatures = (recoveringGuardians || []).map((item: any) => {
@@ -287,6 +259,9 @@ const GuardiansChecking = () => {
   console.log('recoveringGuardians', signatures)
   return (
     <Box width="400px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="12px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={2} marginTop="24px" />
+      </Box>
       <Heading1>Guardian signature request</Heading1>
       <Box marginBottom="0.75em">
         <TextBody textAlign="center">
