@@ -307,6 +307,6 @@ const SaveGuardians = ({ getPassword, onStepChange }: any) => {
       </Button>
     </Box>
   )
-};
+}
 
 export default SaveGuardians;

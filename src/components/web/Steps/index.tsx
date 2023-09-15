@@ -19,7 +19,7 @@ export default function Steps({ count, backgroundColor, foregroundColor, activeI
           width="24px"
           height="24px"
           cursor="pointer"
-          onClick={(onStepChange && activeIndex > 0) ? () => onStepChange(activeIndex - 1) : () => {}}
+          onClick={(onStepChange && activeIndex >= 0) ? () => onStepChange(activeIndex - 1) : () => {}}
         >
           <ArrowLeftIcon />
         </Box>

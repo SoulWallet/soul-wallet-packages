@@ -28,6 +28,7 @@ import ArrowDownIcon from "@src/components/Icons/ArrowDown";
 import DropDownIcon from "@src/components/Icons/DropDown";
 import PlusIcon from "@src/components/Icons/Plus";
 import api from "@src/lib/api";
+import Steps from "@src/components/web/Steps";
 import { ethers } from "ethers";
 import config from "@src/config";
 import useConfig from "@src/hooks/useConfig";
@@ -109,7 +110,7 @@ const amountValidate = (values: any, props: any) => {
   return errors
 }
 
-const UploadGuardians = () => {
+const UploadGuardians = ({ onStepChange }: any) => {
   const { getJsonFromFile } = useTools();
   const keystore = useKeystore();
   const [loading, setLoading] = useState(false)
@@ -312,6 +313,9 @@ const UploadGuardians = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="12px" paddingRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={1} marginTop="24px" onStepChange={onStepChange} showBackButton />
+      </Box>
       <Heading1 marginBottom="24px">
         Upload guardians file
       </Heading1>

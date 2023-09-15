@@ -280,8 +280,8 @@ const GuardiansChecking = () => {
      * ) */
   }
 
-  const signatures = (recoveringGuardians || []).map(item => {
-    const isValid = (guardianSignatures || []).filter(sig => sig.guardian === item && sig.valid).length === 1
+  const signatures = (recoveringGuardians || []).map((item: any) => {
+    const isValid = (guardianSignatures || []).filter((sig: any) => sig.guardian === item && sig.valid).length === 1
     return ({ guardian: item, isValid })
   })
   console.log('recoveringGuardians', signatures)

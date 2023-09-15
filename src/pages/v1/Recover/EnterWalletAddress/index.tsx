@@ -8,6 +8,7 @@ import Heading1 from "@src/components/web/Heading1";
 import TextBody from "@src/components/web/TextBody";
 import useForm from "@src/hooks/useForm";
 import api from "@src/lib/api";
+import Steps from "@src/components/web/Steps";
 import { useGuardianStore } from "@src/store/guardian";
 
 interface IRecoverStarter {
@@ -25,7 +26,7 @@ const validate = (values: any) => {
   return errors
 }
 
-const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
+const EnterWalletAddress = ({ onSubmit, onStepChange }: any) => {
   const [loading, setLoading] = useState(false)
   const { setRecoveringGuardians, setRecoveringThreshold, setRecoveringSlot, setRecoveringSlotInitInfo, setRecoverRecordId } = useGuardianStore();
   const dispatch = useStepDispatchContext();
@@ -93,6 +94,9 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
 
   return (
     <Box width="432px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="12px" paddingRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={0} marginTop="24px" onStepChange={onStepChange} showBackButton />
+      </Box>
       <Heading1>
         Wallet recovery
       </Heading1>
@@ -112,10 +116,9 @@ const EnterWalletAddress = ({ onSubmit }: IRecoverStarter) => {
         onBlur={onBlur('address')}
         errorMsg={showErrors.address && errors.address}
         _styles={{ marginTop: '0.75em', width: '100%' }}
-        // _inputStyles={{ width: "480px"}}
+      // _inputStyles={{ width: "480px"}}
         autoFocus={true}
         onEnter={handleNext}
-        
       />
       <Button
         onClick={handleNext}

@@ -16,9 +16,10 @@ import { useGuardianStore } from "@src/store/guardian";
 import { ethers } from "ethers";
 import useConfig from "@src/hooks/useConfig";
 import api from "@src/lib/api";
+import Steps from "@src/components/web/Steps";
 import PasswordForm from "@src/components/web/PasswordForm";
 
-export default function SetPassword() {
+export default function SetPassword({ onStepChange }: any) {
   const dispatch = useStepDispatchContext();
   const keystore = useKeyring();
   const { getAccount } = useWalletContext()
@@ -81,6 +82,9 @@ export default function SetPassword() {
 
   return (
     <Box width="350px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="12px" paddingRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={1} marginTop="24px" onStepChange={onStepChange} showBackButton />
+      </Box>
       <Heading1>
         Reset wallet password
       </Heading1>

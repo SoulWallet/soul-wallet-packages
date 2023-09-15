@@ -19,7 +19,6 @@ const StepComponent = () => {
   const passwordRef = useRef('')
 
   const onStepChange = (i: any) => {
-    console.log('onStepChange', i)
     dispatch({
       type: StepActionTypeEn.JumpToTargetStep,
       payload: i,
