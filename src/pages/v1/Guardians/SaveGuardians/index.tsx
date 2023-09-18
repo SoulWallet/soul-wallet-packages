@@ -27,6 +27,8 @@ import config from "@src/config";
 import api from "@src/lib/api";
 import { ethers } from "ethers";
 import useConfig from "@src/hooks/useConfig";
+import BlockBoxIcon from "@src/components/Icons/BlockBox";
+import Steps from "@src/components/web/Steps";
 
 const toHex = (num: any) => {
   let hexStr = num.toString(16)
@@ -197,8 +199,21 @@ const SaveGuardians = () => {
     }
   };
 
+  const onStepChange = (i: number) => {
+    if (i < 3) {
+      dispatch({
+        type: StepActionTypeEn.JumpToTargetStep,
+        payload: GuardiansStepEn.Edit
+      })
+    }
+    console.log('onStepChange', i)
+  }
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+      <Box marginBottom="12px" marginRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={3} marginTop="24px" showBackButton onStepChange={onStepChange} />
+      </Box>
       <Heading1>Backup guardians</Heading1>
       <Box marginBottom="0.75em">
         <TextBody fontSize="16px" textAlign="center" maxWidth="500px">
@@ -257,7 +272,7 @@ const SaveGuardians = () => {
             </TextBody>
           </Box>
           <Button disabled={loading} loading={loading} _styles={{ width: '100%' }} onClick={handleBackupGuardians}>
-            <Image width="28px" src={LogoIcon as any} alt="Logo" marginRight="4px" />
+            <Box marginRight="8px"><BlockBoxIcon /></Box>
             Store onchain
           </Button>
         </Box>

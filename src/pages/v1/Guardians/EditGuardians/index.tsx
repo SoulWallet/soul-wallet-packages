@@ -30,6 +30,7 @@ import Icon from "@src/components/Icon";
 import useForm from "@src/hooks/useForm";
 import config from "@src/config";
 import { nanoid } from "nanoid";
+import Steps from "@src/components/web/Steps";
 import GuardiansTips from "@src/components/web/GuardiansTips";
 
 const getNumberArray = (count: number) => {
@@ -241,6 +242,7 @@ export default function GuardiansSetting() {
   // const [canceling, setCanceling] = useState(false)
   const [paymentRequesting, setPaymentRequesting] = useState(false)
   const [updatingInfo, setUpdatingInfo] = useState<any>(null)
+  const [editing, setEditing] = useState(false)
   const [reediting, setReediting] = useState(false)
   const [paymentParems, setPaymentParems] = useState<any>(null)
   const [paymentCancelParems, setPaymentCancelParems] = useState<any>(null)
@@ -293,13 +295,6 @@ export default function GuardiansSetting() {
       removeFields(getFieldsByGuardianIds([deleteId]))
     }
   }
-
-  const handleJumpToTargetStep = (targetStep: GuardiansStepEn) => {
-    dispatch({
-      type: StepActionTypeEn.JumpToTargetStep,
-      payload: targetStep,
-    });
-  };
 
   const getActiveGuardiansHash = async () => {
     const result = await getActiveGuardianHash()
@@ -371,7 +366,6 @@ export default function GuardiansSetting() {
 
       setReediting(false)
       setLoading(false)
-      // handleJumpToTargetStep(GuardiansStepEn.Save);
     } catch (error: any) {
       setLoading(false)
       toast({
@@ -382,7 +376,10 @@ export default function GuardiansSetting() {
   }
 
   const handleNext = async () => {
-    handleJumpToTargetStep(GuardiansStepEn.Save);
+    dispatch({
+      type: StepActionTypeEn.JumpToTargetStep,
+      payload: GuardiansStepEn.Save
+    });
   };
 
   const toggleStatusTips = (event: any) => {
@@ -464,6 +461,13 @@ export default function GuardiansSetting() {
     amountForm.onChange('amount')(amount)
   }
 
+  const onStepChange = (i: number) => {
+    if (i === 0) {
+      setEditing(false)
+    }
+    console.log('onStepChange', i)
+  }
+
   useEffect(() => {
     // console.log('amountData.guardiansCount', amountData.guardiansCount, amountForm.values.amount)
     if (!amountForm.values.amount || (Number(amountForm.values.amount) > amountData.guardiansCount)) {
@@ -512,9 +516,55 @@ export default function GuardiansSetting() {
     )
   }
 
+  if (!editing) {
+    return (
+      <Box maxWidth="800px" display="flex" flexDirection="column" alignItems="center" justifyContent="center" paddingBottom="20px">
+        <Box marginBottom="12px">
+          <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={0} marginTop="24px" onStepChange={onStepChange} />
+        </Box>
+        <Heading1>Secure your wallet</Heading1>
+        <Box marginBottom="12px">
+          <TextBody textAlign="center" maxWidth="500px">
+            Watch this intro video and set up your guardians now!
+          </TextBody>
+        </Box>
+        <Box as="video" width="800px" height="428px" borderRadius="24px" marginBottom="16px" marginTop="16px" controls>
+          <source src="https://static-assets.soulwallet.io/videos/guardians-and-recovery-intro.webm" type="video/webm" />
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" marginTop="0.75em">
+          <Button
+            onClick={() => setEditing(true)}
+            _styles={{ width: '455px' }}
+          >
+            Set guardians now
+          </Button>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" marginBottom="1.5em" marginTop="1.5em" maxWidth="500px">
+          <Box>
+            <Heading3 marginBottom="0.75em">What is Soul Wallet guardian?</Heading3>
+            <TextBody marginBottom="1em">
+              Guardians are Ethereum wallet addresses that assist you in recovering your wallet if needed. Soul Wallet replaces recovery phrases with guardian-signature social recovery, improving security and usability.
+            </TextBody>
+            <Heading3 marginBottom="0.75em">Who can be my guardians?</Heading3>
+            <TextBody marginBottom="1em">
+              Choose trusted friends or use your existing Ethereum wallets as guardians. You can setup using regular Ethereum wallets (e.g MetaMask, Ledger, Coinbase Wallet, etc) and other Soul Wallets as your guardians. If choosing a Soul Wallet as your guardian, ensure it's activated on Ethereum for social recovery.
+            </TextBody>
+            <Heading3 marginBottom="0.75em">What is wallet recovery?</Heading3>
+            <TextBody marginBottom="1em">
+              If your Soul Wallet is lost or stolen, social recovery helps you easily retrieve wallets with guardian signatures. The guardian list will be stored in an Ethereum-based keystore contract.
+            </TextBody>
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
   if (editingGuardiansInfo && !isPaid) {
     return (
       <Box maxWidth="500px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Box marginBottom="12px">
+          <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={2} marginTop="24px" onStepChange={onStepChange} />
+        </Box>
         <Heading1>
           Request Payment
         </Heading1>
@@ -538,6 +588,9 @@ export default function GuardiansSetting() {
   if (isPending && !isFinished) {
     return (
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Box marginBottom="12px">
+          <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={2} marginTop="24px" onStepChange={onStepChange} />
+        </Box>
         <Heading1>
           Discard Change
         </Heading1>
@@ -603,23 +656,27 @@ export default function GuardiansSetting() {
                 {(guardianIds).map((id: any, i: number) => (
                   <Box position="relative" width="100%" key={id}>
                     <DoubleFormInput
-                      onEnter={handleSubmit}
-                      _styles={{ width: '100%' }}
+                      rightPlaceholder={`Guardian address ${i + 1}`}
+                      rightValue={values[`address_${id}`]}
+                      rightOnChange={onChange(`address_${id}`)}
+                      rightOnBlur={onBlur(`address_${id}`)}
+                      rightErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
                       _rightInputStyles={!!values[`address_${id}`] ? {
-                        fontFamily: "Martian",
+                        fontFamily: 'Martian',
                         fontWeight: 600,
+                        fontSize: '14px'
                       }: {}}
-                      leftPlaceholder="Guardian address"
-                      leftValue={values[`address_${id}`]}
-                      leftOnChange={onChange(`address_${id}`)}
-                      leftOnBlur={onBlur(`address_${id}`)}
-                      leftErrorMsg={showErrors[`address_${id}`] && errors[`address_${id}`]}
+                      _rightContainerStyles={{ width: '70%', minWidth: '520px' }}
                       leftAutoFocus={id === guardianIds[0]}
-                      rightPlaceholder="Name"
-                      rightValue={values[`name_${id}`]}
-                      rightOnChange={onChange(`name_${id}`)}
-                      rightOnBlur={onBlur(`name_${id}`)}
-                      rightErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                      leftPlaceholder="Name"
+                      leftValue={values[`name_${id}`]}
+                      leftOnChange={onChange(`name_${id}`)}
+                      leftOnBlur={onBlur(`name_${id}`)}
+                      leftErrorMsg={showErrors[`name_${id}`] && errors[`name_${id}`]}
+                      leftComponent={<Text color="#898989" fontWeight="600">eth:</Text>}
+                      _leftContainerStyles={{ width: '30%', minWidth: '240px' }}
+                      onEnter={handleSubmit}
+                      _styles={{ width: '100%', minWidth: '760px', fontSize: '16px' }}
                     />
                     {i > 0 && (
                       <Box
@@ -639,7 +696,11 @@ export default function GuardiansSetting() {
                     )}
                   </Box>
                 ))}
-                <TextButton onClick={() => addGuardian()} color="#EC588D">
+                <TextButton
+                  onClick={() => addGuardian()}
+                  color="#EC588D"
+                  _hover={{ color: "#EC588D" }}
+                >
                   <PlusIcon color="#EC588D" />
                   <Text marginLeft="4px">Add more guardians</Text>
                 </TextButton>
@@ -647,12 +708,33 @@ export default function GuardiansSetting() {
               <Box display="flex" alignItems="center">
                 <TextBody>Wallet recovery requires</TextBody>
                 <Box width="80px" margin="0 10px">
-                  <Select icon={<DropDownIcon />} width="80px" borderRadius="16px" value={amountForm.values.amount} onChange={selectAmount}>
-                    {!amountData.guardiansCount && <option key={nanoid(4)} value={0}>0</option>}
-                    {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
-                      <option key={nanoid(4)} value={i}>{i}</option>
-                    )}
-                  </Select>
+                  <Menu>
+                    <MenuButton
+                      px={2}
+                      py={2}
+                      width="80px"
+                      transition="all 0.2s"
+                      borderRadius="16px"
+                      borderWidth="1px"
+                      padding="12px"
+                      _hover={{
+                        borderColor: '#3182ce',
+                        boxShadow: '0 0 0 1px #3182ce'
+                      }}
+                      _expanded={{
+                        borderColor: '#3182ce',
+                        boxShadow: '0 0 0 1px #3182ce'
+                      }}
+                    >
+                      <Box display="flex" alignItems="center" justifyContent="space-between">{amountForm.values.amount}<DropDownIcon /></Box>
+                    </MenuButton>
+                    <MenuList>
+                      {!amountData.guardiansCount && <MenuItem key={nanoid(4)} onClick={selectAmount(0)}>0</MenuItem>}
+                      {!!amountData.guardiansCount && getNumberArray(amountData.guardiansCount || 0).map((i: any) =>
+                        <MenuItem key={nanoid(4)} onClick={selectAmount(i)}>{i}</MenuItem>
+                      )}
+                    </MenuList>
+                  </Menu>
                 </Box>
                 <TextBody>out of {amountData.guardiansCount || 0} guardian(s) confirmation. </TextBody>
               </Box>
@@ -682,6 +764,9 @@ export default function GuardiansSetting() {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Box marginBottom="12px" marginRight="24px">
+        <Steps backgroundColor="#1E1E1E" foregroundColor="white" count={4} activeIndex={1} marginTop="24px" showBackButton onStepChange={onStepChange} />
+      </Box>
       {!!isGuardiansNotSet && (
         <Heading1>
           Set guardians
