@@ -8,6 +8,7 @@ function injectScript(file, node) {
     s.setAttribute("type", "text/javascript");
     s.setAttribute("src", file);
     th.insertBefore(s, th.children[0]);
+    th.removeChild(s);
 }
 
 injectScript(browser.runtime.getURL("js/inpage.js"), "html");

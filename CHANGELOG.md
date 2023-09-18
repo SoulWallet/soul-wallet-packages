@@ -1,3 +1,7 @@
+## 0.1.6
+
+-   Optimized styles on testnote
+
 ## 0.1.5
 
 -   Added switch network logic
